@@ -17,9 +17,10 @@
 
 ## Integration Scope in MVP
 
-- Task/list integrations are built first.
-- Google Calendar integration comes after list/task baseline.
-- Obsidian integration is intentionally scheduled last.
+- Task/list integration baseline is included in MVP.
+- Google Calendar integration is post-MVP (Phase 2), after list/task baseline.
+- Obsidian integration is post-MVP and intentionally scheduled as the last
+  provider in the initial integration wave.
 
 ## Not Included in MVP
 

@@ -239,12 +239,18 @@ Last updated: 2026-03-15
   - Done when: all tasks `NEST-061` to `NEST-081` from
     `docs/implementation_plan_full.md` are delivered and signed off.
 
-- [ ] NEST-082 Resolve documentation phase sequencing inconsistencies
-  - Status: BACKLOG
+- [x] NEST-082 Resolve documentation phase sequencing inconsistencies
+  - Status: DONE
   - Owner: Documentation Agent
   - Depends on: none
   - Done when: AI and integration sequencing are consistent across roadmap,
     MVP scope, AI layer, and implementation plans.
+  - Done on: 2026-03-16
+  - Notes:
+    - Aligned AI sequencing to start with first end-user surface in Phase 3.
+    - Clarified that Phase 2 remains integration-only and AI surface stays
+      disabled there.
+    - Clarified MVP vs post-MVP integration scope wording in `docs/mvp_scope.md`.
 
 ## In Progress
 

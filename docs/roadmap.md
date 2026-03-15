@@ -18,6 +18,7 @@ Implementation references:
 - Add additional list/task providers (up to 3 major providers for the area).
 - Add Obsidian synchronization as last provider in the initial wave.
 - Improve sync conflict resolution workflows.
+- Keep end-user AI surface disabled during this phase.
 
 ## Phase 3 - Intelligence and Insights
 

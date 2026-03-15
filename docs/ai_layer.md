@@ -36,8 +36,8 @@ operations without compromising data integrity or security.
 ## Delivery Phases
 
 - Phase 1: no end-user AI surface in MVP.
-- Phase 2: first AI surface and tool-assisted operations.
-- Phase 3: in-app AI assistant for web and mobile clients.
+- Phase 2: no end-user AI surface; focus remains on integration expansion.
+- Phase 3: first end-user AI surface and in-app assistant for web and mobile.
 
 ## MVP Enforcement
 

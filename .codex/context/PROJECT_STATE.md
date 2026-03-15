@@ -97,6 +97,8 @@ Last updated: 2026-03-15
   sign-off record
 - `NEST-030` completed: pre-commit quality gate workflow enforced with script,
   manual checklist acknowledgement, and diff review support
+- `NEST-082` completed: documentation sequencing aligned so Phase 2 remains
+  integration-focused and first end-user AI surface starts in Phase 3
 - Current execution focus: implementation bootstrap (Phase 1), next task
   `NEST-031` Phase 2 integration expansion release program
 

@@ -17,6 +17,8 @@ plan aligned with `docs/roadmap.md` phases 1-4.
 
 ## Phase 2 - Integration Expansion (`NEST-031` to `NEST-045`)
 
+Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
+
 ### Integration platform maturity
 
 - [ ] NEST-031 Define post-MVP integration contract versioning strategy
