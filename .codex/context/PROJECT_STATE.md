@@ -25,7 +25,10 @@ Last updated: 2026-03-15
 
 - Architecture and documentation foundation complete
 - Planning baseline complete for MVP and full-product roadmap
-- Next phase: implementation bootstrap (Phase 1)
+- `NEST-001` completed: monorepo structure approved and documented in
+  `docs/monorepo_structure.md`
+- Current execution focus: implementation bootstrap (Phase 1), starting with
+  `NEST-002` backend skeleton
 
 ## Planning Baseline
 
@@ -49,9 +52,10 @@ Last updated: 2026-03-15
 
 ## Canonical Docs
 
-- `docs/readme.md`
+- `docs/overview.md`
 - `docs/system_architecture.md`
 - `docs/tech_stack.md`
 - `docs/database_decision.md`
 - `docs/frontend_strategy.md`
 - `docs/backend_strategy.md`
+- `docs/monorepo_structure.md`

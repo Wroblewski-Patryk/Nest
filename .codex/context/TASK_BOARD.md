@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-001 Define monorepo structure and directory layout
-  - Status: BACKLOG
-  - Owner: Planning Agent
-  - Depends on: none
-  - Done when: structure proposal approved and documented
-
 - [ ] NEST-002 Bootstrap backend Laravel app skeleton
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -79,3 +73,9 @@ Last updated: 2026-03-15
   - Status: DONE
   - Owner: Documentation Agent
   - Done on: 2026-03-15
+
+- [x] NEST-001 Define monorepo structure and directory layout
+  - Status: DONE
+  - Owner: Planning Agent
+  - Done on: 2026-03-15
+  - Notes: approved structure documented in `docs/monorepo_structure.md`.
