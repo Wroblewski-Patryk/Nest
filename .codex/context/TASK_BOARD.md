@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-004 Bootstrap mobile app shell (Expo)
-  - Status: BACKLOG
-  - Owner: Execution Agent
-  - Depends on: NEST-001
-  - Done when: app runs in Expo with base navigation
-
 - [ ] NEST-005 Define API contract v1 for tasks and lists
   - Status: BACKLOG
   - Owner: Documentation Agent
@@ -85,3 +79,12 @@ Last updated: 2026-03-15
     - Next.js app shell bootstrapped in `apps/web` (TypeScript + App Router).
     - Base layout present in `apps/web/app/layout.tsx`.
     - Production build passes (`pnpm build` in `apps/web`).
+
+- [x] NEST-004 Bootstrap mobile app shell (Expo)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - Expo app shell bootstrapped in `apps/mobile` (Expo Router tabs template).
+    - Base navigation available via tabs routes.
+    - Web export/build passes (`pnpm exec expo export --platform web`).

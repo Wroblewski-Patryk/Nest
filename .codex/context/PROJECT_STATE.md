@@ -31,8 +31,10 @@ Last updated: 2026-03-15
   with health endpoint (`GET /health`) and passing baseline tests
 - `NEST-003` completed: Next.js web shell bootstrapped in `apps/web` with
   baseline layout and passing production build
+- `NEST-004` completed: Expo mobile shell bootstrapped in `apps/mobile` with
+  base tabs navigation and passing web export build
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-004` mobile app shell
+  `NEST-005` API contract v1
 
 ## Planning Baseline
 
