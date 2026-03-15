@@ -177,11 +177,17 @@ Last updated: 2026-03-15
     - Added feature tests validating encrypted-at-rest behavior and revoke
       protection.
 
-- [ ] NEST-028 Run backup and restore drill with documentation
-  - Status: BACKLOG
+- [x] NEST-028 Run backup and restore drill with documentation
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-020
   - Done when: backup/restore drill is executed and documented.
+  - Done on: 2026-03-16
+  - Notes:
+    - Executed local backup/restore drill for API SQLite database snapshot.
+    - Verified backup integrity with SHA256 checksum match.
+    - Documented runbook and outcomes in `docs/backup_restore_drill.md`
+      including observed RTO/RPO.
 
 - [ ] NEST-029 Finalize MVP release checklist and staging sign-off
   - Status: BACKLOG

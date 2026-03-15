@@ -91,8 +91,10 @@ Last updated: 2026-03-15
   UX contract and MVP route coverage
 - `NEST-027` completed: integration credential security baseline added with
   encrypted token vault and revoke coverage tests
+- `NEST-028` completed: backup/restore drill executed and documented with local
+  integrity and recovery metrics
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-028` backup and restore drill documentation
+  `NEST-029` MVP release checklist and staging sign-off
 
 ## Auth, AI, Offline, Notifications
 

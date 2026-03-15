@@ -41,6 +41,7 @@ Current workflow implementation:
 - Daily encrypted database backups.
 - Point-in-time recovery configuration.
 - Quarterly restore drill with documented RTO/RPO outcomes.
+- Latest local drill runbook: `docs/backup_restore_drill.md`.
 
 ## Observability Baseline
 
