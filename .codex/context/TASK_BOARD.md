@@ -137,11 +137,18 @@ Last updated: 2026-03-15
     - Verified client build checks (`pnpm lint`, `pnpm build`, Expo web export)
       after integration.
 
-- [ ] NEST-025 Add backend test suites
-  - Status: BACKLOG
+- [x] NEST-025 Add backend test suites
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-012, NEST-013, NEST-014, NEST-015, NEST-016, NEST-017
   - Done when: unit/feature/integration tests cover core behavior.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added dedicated `Integration` test suite in `phpunit.xml`.
+    - Added new unit tests for observability counter and integration adapter
+      registry behavior.
+    - Added end-to-end integration tests validating API task/list creation and
+      provider sync pipeline idempotency.
 
 - [ ] NEST-026 Add frontend/mobile test suites
   - Status: BACKLOG

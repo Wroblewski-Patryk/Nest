@@ -85,8 +85,10 @@ Last updated: 2026-03-15
   web/mobile clients through common type contracts
 - `NEST-024` completed: web/mobile clients integrated with shared API client
   contract and shared domain response types
+- `NEST-025` completed: backend unit/feature/integration suite baseline
+  expanded with integration pipeline coverage
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-025` backend test suites expansion
+  `NEST-026` frontend/mobile test suites
 
 ## Auth, AI, Offline, Notifications
 
