@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\HabitController;
 use App\Http\Controllers\Api\RoutineController;
+use App\Http\Controllers\Api\TargetController;
 use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\TaskListController;
 use App\Http\Controllers\Api\UserSettingsController;
@@ -41,5 +43,17 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/routines/{routineId}', [RoutineController::class, 'show']);
         Route::patch('/routines/{routineId}', [RoutineController::class, 'update']);
         Route::delete('/routines/{routineId}', [RoutineController::class, 'destroy']);
+
+        Route::get('/goals', [GoalController::class, 'index']);
+        Route::post('/goals', [GoalController::class, 'store']);
+        Route::get('/goals/{goalId}', [GoalController::class, 'show']);
+        Route::patch('/goals/{goalId}', [GoalController::class, 'update']);
+        Route::delete('/goals/{goalId}', [GoalController::class, 'destroy']);
+
+        Route::get('/targets', [TargetController::class, 'index']);
+        Route::post('/targets', [TargetController::class, 'store']);
+        Route::get('/targets/{targetId}', [TargetController::class, 'show']);
+        Route::patch('/targets/{targetId}', [TargetController::class, 'update']);
+        Route::delete('/targets/{targetId}', [TargetController::class, 'destroy']);
     });
 });

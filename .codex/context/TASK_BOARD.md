@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-014 Implement goals and targets module
-  - Status: BACKLOG
-  - Owner: Execution Agent
-  - Depends on: NEST-011
-  - Done when: goals and measurable targets are available.
-
 - [ ] NEST-015 Implement journal and life areas module
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -267,3 +261,12 @@ Last updated: 2026-03-15
     - Delivered habits CRUD + logging endpoints (`/api/v1/habits`, `/logs`).
     - Delivered routines CRUD endpoints with ordered step sequences.
     - Added tenant-scoped feature tests for habits/routines module.
+
+- [x] NEST-014 Implement goals and targets module
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - Delivered goals CRUD endpoints (`/api/v1/goals`).
+    - Delivered targets CRUD endpoints (`/api/v1/targets`).
+    - Added measurable target update flow and tenant-scoped feature tests.

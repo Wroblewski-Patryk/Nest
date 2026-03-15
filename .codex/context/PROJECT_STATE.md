@@ -62,8 +62,10 @@ Last updated: 2026-03-15
   tenant isolation checks
 - `NEST-013` completed: habits/routines API with habit logging and routine step
   sequences, covered by feature tests
+- `NEST-014` completed: goals/targets API with CRUD and measurable progress
+  update support, covered by feature tests
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-014` goals and targets module
+  `NEST-015` journal and life areas module
 
 ## Auth, AI, Offline, Notifications
 
