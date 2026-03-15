@@ -95,8 +95,10 @@ Last updated: 2026-03-15
   integrity and recovery metrics
 - `NEST-029` completed: MVP release checklist finalized with staging baseline
   sign-off record
+- `NEST-030` completed: pre-commit quality gate workflow enforced with script,
+  manual checklist acknowledgement, and diff review support
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-030` quality gate enforcement before commit
+  `NEST-031` Phase 2 integration expansion release program
 
 ## Auth, AI, Offline, Notifications
 

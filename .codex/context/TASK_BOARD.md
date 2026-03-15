@@ -201,8 +201,8 @@ Last updated: 2026-03-15
     - Recorded scope, quality, security, and resilience gates as complete.
     - Added explicit sign-off record for MVP staging baseline.
 
-- [ ] NEST-030 Enforce quality gate before commit
-  - Status: BACKLOG
+- [x] NEST-030 Enforce quality gate before commit
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: none
   - Done when:
@@ -210,6 +210,13 @@ Last updated: 2026-03-15
     - manual regression checklist (feature + UI) is applied before commits,
     - unintended change detection (`git diff --name-only` + diff review) is
       part of commit workflow.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added local quality gate script (`scripts/quality-gate.ps1`) with scoped
+      automated checks for API/web/mobile changes.
+    - Added mandatory manual checklist acknowledgement gate.
+    - Added untracked/staged/unstaged diff aggregation for unintended change
+      review and documented workflow in `docs/quality_gate_workflow.md`.
 
 - [ ] NEST-031 Phase 2 integration expansion release program
   - Status: BACKLOG

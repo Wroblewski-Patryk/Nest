@@ -36,6 +36,12 @@ Current workflow implementation:
 - Production deploy via manual approval gate.
 - Zero-downtime migration strategy for schema changes.
 
+## Pre-commit Quality Gate
+
+- Local gate script: `scripts/quality-gate.ps1`
+- Usage: `pwsh ./scripts/quality-gate.ps1 -AcknowledgeManualChecks`
+- Workflow details: `docs/quality_gate_workflow.md`
+
 ## Data Protection and Recovery
 
 - Daily encrypted database backups.
