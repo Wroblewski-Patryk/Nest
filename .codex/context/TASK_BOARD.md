@@ -44,6 +44,27 @@ Last updated: 2026-03-15
     - unintended change detection (`git diff --name-only` + diff review) is
       part of commit workflow.
 
+- [ ] NEST-031 Phase 2 integration expansion release program
+  - Status: BACKLOG
+  - Owner: Planning Agent
+  - Depends on: NEST-029
+  - Done when: all tasks `NEST-031` to `NEST-045` from
+    `docs/implementation_plan_full.md` are delivered and signed off.
+
+- [ ] NEST-046 Phase 3 intelligence and insights release program
+  - Status: BACKLOG
+  - Owner: Planning Agent
+  - Depends on: NEST-031
+  - Done when: all tasks `NEST-046` to `NEST-060` from
+    `docs/implementation_plan_full.md` are delivered and signed off.
+
+- [ ] NEST-061 Phase 4 SaaS hardening release program
+  - Status: BACKLOG
+  - Owner: Planning Agent
+  - Depends on: NEST-046
+  - Done when: all tasks `NEST-061` to `NEST-080` from
+    `docs/implementation_plan_full.md` are delivered and signed off.
+
 ## In Progress
 
 - [ ] (none)

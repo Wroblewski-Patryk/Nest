@@ -1,4 +1,9 @@
-﻿# Roadmap
+# Roadmap
+
+Implementation references:
+
+- MVP delivery backlog: `docs/implementation_plan_mvp.md`
+- Full product delivery backlog: `docs/implementation_plan_full.md`
 
 ## Phase 1 - Foundation and MVP
 

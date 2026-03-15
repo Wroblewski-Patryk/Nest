@@ -24,7 +24,14 @@ Last updated: 2026-03-15
 ## Current Phase
 
 - Architecture and documentation foundation complete
-- Next phase: planning and implementation bootstrap
+- Planning baseline complete for MVP and full-product roadmap
+- Next phase: implementation bootstrap (Phase 1)
+
+## Planning Baseline
+
+- MVP execution backlog: `docs/implementation_plan_mvp.md`
+- Full-product execution backlog: `docs/implementation_plan_full.md`
+- Roadmap overview: `docs/roadmap.md`
 
 ## Working Agreements
 

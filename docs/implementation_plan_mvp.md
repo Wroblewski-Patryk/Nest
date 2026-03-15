@@ -7,6 +7,9 @@ Last updated: 2026-03-15
 This document defines the executable MVP implementation backlog for Nest and
 the mandatory quality/commit rules for delivery.
 
+For post-MVP phases (integration expansion, intelligence, SaaS hardening), see
+`docs/implementation_plan_full.md`.
+
 ## Backlog (NEST-001 to NEST-029)
 
 ### Foundation
