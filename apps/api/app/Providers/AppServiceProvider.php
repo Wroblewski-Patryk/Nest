@@ -5,6 +5,10 @@ namespace App\Providers;
 use App\Integrations\Adapters\GoogleTasksAdapter;
 use App\Integrations\Adapters\TrelloAdapter;
 use App\Integrations\IntegrationAdapterRegistry;
+use App\Observability\MetricCounter;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
                 new GoogleTasksAdapter,
             ]);
         });
+
+        $this->app->singleton(MetricCounter::class, fn (): MetricCounter => new MetricCounter);
     }
 
     /**
@@ -27,6 +33,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Queue::after(function (JobProcessed $event): void {
+            app(MetricCounter::class)->increment('queue.jobs.processed');
+        });
+
+        Queue::failing(function (JobFailed $event): void {
+            app(MetricCounter::class)->increment('queue.jobs.failed');
+        });
     }
 }

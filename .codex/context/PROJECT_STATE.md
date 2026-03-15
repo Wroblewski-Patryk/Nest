@@ -75,8 +75,10 @@ Last updated: 2026-03-15
   `google_tasks` with authenticated sync trigger and idempotent re-sync
 - `NEST-019` completed: MVP AI surface guard enforced with default-off feature
   flag, route-level absence checks, and documented policy
+- `NEST-020` completed: observability baseline with API trace IDs, queue/sync
+  counters, and middleware + queue event instrumentation
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-020` observability baseline
+  `NEST-021` web MVP screens
 
 ## Auth, AI, Offline, Notifications
 

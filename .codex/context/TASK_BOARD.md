@@ -71,11 +71,18 @@ Last updated: 2026-03-15
       and verify AI endpoint pattern returns `404`.
     - Updated `docs/ai_layer.md` with MVP enforcement policy.
 
-- [ ] NEST-020 Add observability baseline
-  - Status: BACKLOG
+- [x] NEST-020 Add observability baseline
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-012, NEST-017
   - Done when: logs, trace IDs, and core API/queue/sync metrics are active.
+  - Done on: 2026-03-15
+  - Notes:
+    - Added API trace middleware with response header `X-Trace-Id` and logging
+      context enrichment.
+    - Added cache-based metric counter baseline for API, queue, and integration
+      sync flows.
+    - Added queue processed/failed hooks and observability feature tests.
 
 - [ ] NEST-021 Deliver web MVP screens
   - Status: BACKLOG

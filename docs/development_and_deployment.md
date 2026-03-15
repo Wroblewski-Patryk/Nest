@@ -47,6 +47,10 @@ Current workflow implementation:
 - Centralized logs with request/job correlation IDs.
 - Metrics dashboards: API latency, error rate, queue depth, sync failures.
 - Alerting on SLO breaches and integration outage patterns.
+- MVP implementation note:
+  - backend API responses expose `X-Trace-Id`,
+  - queue and integration counters are emitted (`api.requests.*`,
+    `queue.jobs.*`, `integration.sync.*`).
 
 ## Security Baseline
 

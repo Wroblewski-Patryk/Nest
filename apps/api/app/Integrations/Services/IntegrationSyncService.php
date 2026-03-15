@@ -4,6 +4,7 @@ namespace App\Integrations\Services;
 
 use App\Integrations\IntegrationAdapterRegistry;
 use App\Models\SyncMapping;
+use App\Observability\MetricCounter;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -11,7 +12,8 @@ use InvalidArgumentException;
 class IntegrationSyncService
 {
     public function __construct(
-        private readonly IntegrationAdapterRegistry $registry
+        private readonly IntegrationAdapterRegistry $registry,
+        private readonly MetricCounter $metrics,
     ) {}
 
     /**
@@ -24,6 +26,8 @@ class IntegrationSyncService
         $idempotencyKey = (string) $validated['idempotency_key'];
 
         if (! $this->acquireIdempotencyLock($validated['tenant_id'], $validated['provider'], $idempotencyKey)) {
+            $this->metrics->increment('integration.sync.duplicate');
+
             return [
                 'status' => 'duplicate_skipped',
                 'idempotency_key' => $idempotencyKey,
@@ -48,6 +52,8 @@ class IntegrationSyncService
                 'sync_hash' => $result->syncHash ?? $this->payloadHash($validated),
             ]
         );
+
+        $this->metrics->increment('integration.sync.processed');
 
         return [
             'status' => $result->status,

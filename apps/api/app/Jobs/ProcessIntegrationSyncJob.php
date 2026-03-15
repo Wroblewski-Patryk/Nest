@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Integrations\Services\IntegrationSyncService;
 use App\Models\IntegrationSyncFailure;
+use App\Observability\MetricCounter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -39,6 +40,8 @@ class ProcessIntegrationSyncJob implements ShouldQueue
 
     public function failed(Throwable $exception): void
     {
+        app(MetricCounter::class)->increment('integration.sync.failed');
+
         IntegrationSyncFailure::query()->updateOrCreate(
             [
                 'provider' => (string) ($this->payload['provider'] ?? 'unknown'),
