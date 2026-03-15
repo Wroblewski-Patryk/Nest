@@ -189,11 +189,17 @@ Last updated: 2026-03-15
     - Documented runbook and outcomes in `docs/backup_restore_drill.md`
       including observed RTO/RPO.
 
-- [ ] NEST-029 Finalize MVP release checklist and staging sign-off
-  - Status: BACKLOG
+- [x] NEST-029 Finalize MVP release checklist and staging sign-off
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-018, NEST-019, NEST-025, NEST-026, NEST-027, NEST-028
   - Done when: MVP sign-off is recorded for agreed scope.
+  - Done on: 2026-03-16
+  - Notes:
+    - Created formal MVP release checklist and staging sign-off artifact in
+      `docs/mvp_release_checklist.md`.
+    - Recorded scope, quality, security, and resilience gates as complete.
+    - Added explicit sign-off record for MVP staging baseline.
 
 - [ ] NEST-030 Enforce quality gate before commit
   - Status: BACKLOG

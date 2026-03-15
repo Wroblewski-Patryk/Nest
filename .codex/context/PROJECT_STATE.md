@@ -93,8 +93,10 @@ Last updated: 2026-03-15
   encrypted token vault and revoke coverage tests
 - `NEST-028` completed: backup/restore drill executed and documented with local
   integrity and recovery metrics
+- `NEST-029` completed: MVP release checklist finalized with staging baseline
+  sign-off record
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-029` MVP release checklist and staging sign-off
+  `NEST-030` quality gate enforcement before commit
 
 ## Auth, AI, Offline, Notifications
 
