@@ -10,18 +10,18 @@ Implementation references:
 - Finalize architecture and contracts.
 - Build backend core modules and API.
 - Deliver web app and mobile app baseline parity.
-- Release Google Calendar integration.
-- Ship first AI toolset with auditability.
+- Build list/task integration baseline.
 
 ## Phase 2 - Integration Expansion
 
-- Add mature ClickUp two-way synchronization.
-- Add Microsoft To Do synchronization.
-- Add Obsidian synchronization.
+- Add Google Calendar synchronization after list/task baseline.
+- Add additional list/task providers (up to 3 major providers for the area).
+- Add Obsidian synchronization as last provider in the initial wave.
 - Improve sync conflict resolution workflows.
 
 ## Phase 3 - Intelligence and Insights
 
+- Introduce first end-user AI features (default ON).
 - Advanced life analytics and trend reporting.
 - Planning assistant with explainable recommendations.
 - Better cross-module automation rules.
@@ -29,5 +29,6 @@ Implementation references:
 ## Phase 4 - SaaS Hardening
 
 - Multi-tenant operations hardening.
+- Family/friends collaboration model hardening and permissions.
 - Billing and subscription model.
 - Organization-level features and advanced security controls.

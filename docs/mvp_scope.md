@@ -2,14 +2,13 @@
 
 ## Included in MVP
 
-- User account and authentication.
+- User account and authentication (email + password).
 - Tasks, lists, priorities, due dates.
 - Habits and basic routine tracking.
 - Goals with measurable targets.
 - Journal entries.
 - Life areas tagging and basic balance view.
-- Calendar event sync (Google Calendar first).
-- AI assistant core tools (limited, auditable).
+- Calendar module for internal planning and scheduling.
 
 ## Platforms in MVP
 
@@ -18,9 +17,9 @@
 
 ## Integration Scope in MVP
 
-- Google Calendar: full MVP integration.
-- ClickUp: one-way import first, then two-way in post-MVP.
-- Microsoft To Do and Obsidian: post-MVP unless time permits.
+- Task/list integrations are built first.
+- Google Calendar integration comes after list/task baseline.
+- Obsidian integration is intentionally scheduled last.
 
 ## Not Included in MVP
 
@@ -28,3 +27,13 @@
 - Full offline-first with complex merge strategies.
 - Third-party plugin marketplace.
 - Advanced predictive analytics and autonomous AI planning.
+- OAuth providers (Google/Apple/etc.) in auth layer.
+- Full notifications matrix (email + full push strategy).
+- Family/friends shared collaboration spaces.
+
+## Confirmed Product Decisions (March 15, 2026)
+
+- Multi-tenant architecture, single active user at launch.
+- Online-only operation in MVP (no offline support).
+- AI introduced after MVP and default ON when released.
+- Notifications mostly post-MVP; simple mobile push can be the first step.

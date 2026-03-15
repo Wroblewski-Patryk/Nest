@@ -6,6 +6,15 @@ Last updated: 2026-03-15
 
 - Name: Nest (LifeOS)
 - Goal: unified life orchestration platform with AI support
+- Commercial intent: SaaS
+
+## Product Decisions (Confirmed)
+
+- Tenancy: multi-tenant architecture from day one
+- Launch mode: one active user (founder)
+- Audience: private users first, then family/friends shared collaboration
+- Planning hierarchy: goals -> targets -> lists/tasks -> habits/routines ->
+  calendar -> journal
 
 ## Platform Strategy
 
@@ -39,6 +48,20 @@ Last updated: 2026-03-15
   `.github/workflows/ci.yml` (backend/web/mobile checks + security + OpenAPI validation)
 - Current execution focus: implementation bootstrap (Phase 1), next task
   `NEST-007` extend API contract for core modules
+
+## Auth, AI, Offline, Notifications
+
+- MVP auth: email + password
+- OAuth providers: post-MVP
+- AI: post-MVP rollout, default ON when introduced
+- Offline: not planned in MVP
+- Notifications: mostly post-MVP, simplest mobile push can be first
+
+## Integrations Direction
+
+- Sequence: list/task providers first (Trello + Google Tasks + one by demand),
+  then Google Calendar, Obsidian last
+- Long-term: up to 3 major providers per functional area where practical
 
 ## Planning Baseline
 

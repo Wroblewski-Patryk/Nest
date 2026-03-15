@@ -20,18 +20,26 @@
 
 ## Authentication and Authorization
 
+- MVP auth: email + password.
+- Post-MVP auth expansion: OAuth providers (Google, Apple, others).
 - Laravel Sanctum for first-party clients.
 - Policy-based authorization at resource/action level.
 - Tenant-aware guards and scoping in every query path.
 
+## Tenancy Model
+
+- Multi-tenant data model from day one.
+- Launch profile can run with one active user/tenant.
+- Future phases extend to invite-based family/friends collaboration spaces.
+
 ## Modules (Bounded Contexts)
 
-- Tasks and Lists
-- Habits and Routines
 - Goals and Targets
+- Lists and Tasks
+- Habits and Routines
+- Calendar
 - Journal
 - Life Areas
-- Calendar
 - Integrations
 - AI Tooling
 

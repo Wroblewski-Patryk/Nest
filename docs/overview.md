@@ -20,6 +20,8 @@ Nest covers:
 - journal and life reflections
 - life areas and balance analysis
 - calendar planning and time blocking
+- planning hierarchy from top to bottom:
+  goals -> targets -> lists/tasks -> habits/routines -> calendar -> journal
 
 ## Platform Strategy
 
@@ -34,10 +36,18 @@ capture, review, and daily execution.
 ## Architectural Direction
 
 - SaaS-ready, multi-tenant from day one.
+- Initial operation model: single active user (founder) on top of
+  multi-tenant architecture.
 - API-first with explicit contracts.
 - AI-friendly data model and tool interface.
 - Online-first with caching and robust synchronization.
 - Security and observability by default.
+
+## Target Expansion
+
+- Primary audience in early phases: private users (B2C).
+- Next expansion: invite-based collaboration for family and friends.
+- Shared workflows: co-planning and co-management of selected plans/lists.
 
 ## Non-goals for MVP
 

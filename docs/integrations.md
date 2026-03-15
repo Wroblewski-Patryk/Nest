@@ -5,12 +5,19 @@
 Integrations synchronize external systems with Nest while Nest remains the
 source of truth for internal life structure.
 
-## Initial Providers
+## Provider Strategy
 
-- ClickUp: task/project synchronization.
-- Google Calendar: event sync and time blocking.
-- Microsoft To Do: simple list/task sync.
-- Obsidian: markdown note synchronization.
+Nest should support multiple providers per functional area over time
+(up to 3 major providers per area where practical).
+
+## Initial Sequence
+
+1. List/task integrations first:
+   - Trello
+   - Google Tasks (Google To Do)
+   - one additional provider selected by demand
+2. Google Calendar integration after list/task baseline.
+3. Obsidian integration at the end of the initial wave.
 
 ## Integration Data Model
 

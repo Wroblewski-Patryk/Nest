@@ -5,6 +5,11 @@
 Provide controlled AI capabilities that help users plan and execute life
 operations without compromising data integrity or security.
 
+## Product Decision
+
+- AI is not part of MVP delivery scope.
+- Once enabled in product phases after MVP, AI is default ON.
+
 ## Capability Areas
 
 - schedule analysis and optimization
@@ -30,8 +35,9 @@ operations without compromising data integrity or security.
 
 ## Delivery Phases
 
-- Phase 1: chat interface via Telegram + API tools.
-- Phase 2: in-app AI assistant for web and mobile clients.
+- Phase 1: no end-user AI surface in MVP.
+- Phase 2: first AI surface and tool-assisted operations.
+- Phase 3: in-app AI assistant for web and mobile clients.
 
 ## Observability
 
