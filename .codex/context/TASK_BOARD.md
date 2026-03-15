@@ -1,8 +1,147 @@
-﻿# TASK_BOARD
+# TASK_BOARD
 
 Last updated: 2026-03-15
 
 ## Backlog
+
+- [ ] NEST-007 Define API contract v1 for remaining MVP modules
+  - Status: BACKLOG
+  - Owner: Documentation Agent
+  - Depends on: NEST-005
+  - Done when: OpenAPI drafts cover habits/routines, goals/targets, journal,
+    life areas, and calendar entities.
+
+- [ ] NEST-008 Create shared API/domain types package
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-007
+  - Done when: web and mobile consume shared contracts/types package.
+
+- [ ] NEST-009 Design PostgreSQL schema for MVP domain
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-007
+  - Done when: schema with tenant-aware constraints/indexes is migrated.
+
+- [ ] NEST-010 Create migrations and baseline seed data
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-009
+  - Done when: migrations and baseline dictionaries/seeds run successfully.
+
+- [ ] NEST-011 Implement auth and user settings
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-010
+  - Done when: email/password auth and user settings are functional.
+
+- [ ] NEST-012 Implement tasks and lists module
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-011
+  - Done when: CRUD + filter/sort/pagination are delivered.
+
+- [ ] NEST-013 Implement habits and routines module
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-011
+  - Done when: habit tracking and routine sequences are available.
+
+- [ ] NEST-014 Implement goals and targets module
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-011
+  - Done when: goals and measurable targets are available.
+
+- [ ] NEST-015 Implement journal and life areas module
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-011
+  - Done when: journal and life area tagging/balance data are available.
+
+- [ ] NEST-016 Implement internal calendar module
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-011
+  - Done when: calendar planning/events work without external sync dependency.
+
+- [ ] NEST-017 Implement integration infrastructure
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-011
+  - Done when: adapters, mapping, idempotency, retry, and DLQ are in place.
+
+- [ ] NEST-018 Deliver list/task integration baseline (Trello + Google Tasks)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-012, NEST-017
+  - Done when: list/task sync baseline works for Trello and Google Tasks.
+
+- [ ] NEST-019 Enforce no end-user AI surface in MVP
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-011
+  - Done when: AI UI/public endpoints are disabled in MVP and documented.
+
+- [ ] NEST-020 Add observability baseline
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-012, NEST-017
+  - Done when: logs, trace IDs, and core API/queue/sync metrics are active.
+
+- [ ] NEST-021 Deliver web MVP screens
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-012, NEST-013, NEST-014, NEST-015, NEST-016
+  - Done when: MVP module screens work in web app.
+
+- [ ] NEST-022 Deliver mobile MVP screens
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-012, NEST-013, NEST-014, NEST-015, NEST-016
+  - Done when: MVP module screens work in mobile app.
+
+- [ ] NEST-023 Align shared UX states and telemetry naming
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-021, NEST-022
+  - Done when: loading/empty/error/success and telemetry naming are aligned.
+
+- [ ] NEST-024 Integrate clients with shared API client/types
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-008, NEST-021, NEST-022
+  - Done when: both clients use shared client/types end-to-end.
+
+- [ ] NEST-025 Add backend test suites
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-012, NEST-013, NEST-014, NEST-015, NEST-016, NEST-017
+  - Done when: unit/feature/integration tests cover core behavior.
+
+- [ ] NEST-026 Add frontend/mobile test suites
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-021, NEST-022, NEST-024
+  - Done when: client unit/smoke tests cover critical paths.
+
+- [ ] NEST-027 Implement security baseline controls
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-011, NEST-017
+  - Done when: credential protection and dependency security checks are active.
+
+- [ ] NEST-028 Run backup and restore drill with documentation
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-020
+  - Done when: backup/restore drill is executed and documented.
+
+- [ ] NEST-029 Finalize MVP release checklist and staging sign-off
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-018, NEST-019, NEST-025, NEST-026, NEST-027, NEST-028
+  - Done when: MVP sign-off is recorded for agreed scope.
 
 - [ ] NEST-030 Enforce quality gate before commit
   - Status: BACKLOG
@@ -32,8 +171,15 @@ Last updated: 2026-03-15
   - Status: BACKLOG
   - Owner: Planning Agent
   - Depends on: NEST-046
-  - Done when: all tasks `NEST-061` to `NEST-080` from
+  - Done when: all tasks `NEST-061` to `NEST-081` from
     `docs/implementation_plan_full.md` are delivered and signed off.
+
+- [ ] NEST-082 Resolve documentation phase sequencing inconsistencies
+  - Status: BACKLOG
+  - Owner: Documentation Agent
+  - Depends on: none
+  - Done when: AI and integration sequencing are consistent across roadmap,
+    MVP scope, AI layer, and implementation plans.
 
 ## In Progress
 

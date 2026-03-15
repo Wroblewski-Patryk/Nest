@@ -69,6 +69,15 @@ Last updated: 2026-03-15
 - Full-product execution backlog: `docs/implementation_plan_full.md`
 - Roadmap overview: `docs/roadmap.md`
 
+## Confirmed Decisions (2026-03-15)
+
+- MVP launch profile: single active user on top of multi-tenant architecture.
+- MVP auth: email + password only; OAuth providers are post-MVP.
+- MVP AI policy: no end-user AI surface in MVP.
+- Integration sequence: list/task providers first (Trello + Google Tasks),
+  Google Calendar after baseline, Obsidian as the last provider in initial
+  wave.
+
 ## Working Agreements
 
 - Every meaningful change must update at least one of:
