@@ -4,11 +4,19 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-015 Implement journal and life areas module
-  - Status: BACKLOG
+- [x] NEST-015 Implement journal and life areas module
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-011
   - Done when: journal and life area tagging/balance data are available.
+  - Done on: 2026-03-15
+  - Notes:
+    - Delivered life areas CRUD endpoints (`/api/v1/life-areas`) with archived
+      filtering support.
+    - Delivered journal entries CRUD endpoints (`/api/v1/journal-entries`) with
+      mood filtering and search.
+    - Delivered tenant-scoped journal life area tagging via pivot table and
+      feature tests for module behavior.
 
 - [ ] NEST-016 Implement internal calendar module
   - Status: BACKLOG

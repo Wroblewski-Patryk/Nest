@@ -64,8 +64,10 @@ Last updated: 2026-03-15
   sequences, covered by feature tests
 - `NEST-014` completed: goals/targets API with CRUD and measurable progress
   update support, covered by feature tests
+- `NEST-015` completed: journal/life areas API with CRUD, mood/search filtering,
+  archived life area support, and tenant-scoped journal tagging
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-015` journal and life areas module
+  `NEST-016` internal calendar module
 
 ## Auth, AI, Offline, Notifications
 

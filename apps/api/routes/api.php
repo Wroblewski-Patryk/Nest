@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\HabitController;
+use App\Http\Controllers\Api\JournalEntryController;
+use App\Http\Controllers\Api\LifeAreaController;
 use App\Http\Controllers\Api\RoutineController;
 use App\Http\Controllers\Api\TargetController;
 use App\Http\Controllers\Api\TaskController;
@@ -55,5 +57,17 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/targets/{targetId}', [TargetController::class, 'show']);
         Route::patch('/targets/{targetId}', [TargetController::class, 'update']);
         Route::delete('/targets/{targetId}', [TargetController::class, 'destroy']);
+
+        Route::get('/life-areas', [LifeAreaController::class, 'index']);
+        Route::post('/life-areas', [LifeAreaController::class, 'store']);
+        Route::get('/life-areas/{lifeAreaId}', [LifeAreaController::class, 'show']);
+        Route::patch('/life-areas/{lifeAreaId}', [LifeAreaController::class, 'update']);
+        Route::delete('/life-areas/{lifeAreaId}', [LifeAreaController::class, 'destroy']);
+
+        Route::get('/journal-entries', [JournalEntryController::class, 'index']);
+        Route::post('/journal-entries', [JournalEntryController::class, 'store']);
+        Route::get('/journal-entries/{journalEntryId}', [JournalEntryController::class, 'show']);
+        Route::patch('/journal-entries/{journalEntryId}', [JournalEntryController::class, 'update']);
+        Route::delete('/journal-entries/{journalEntryId}', [JournalEntryController::class, 'destroy']);
     });
 });
