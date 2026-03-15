@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CalendarEventController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\HabitController;
+use App\Http\Controllers\Api\IntegrationSyncController;
 use App\Http\Controllers\Api\JournalEntryController;
 use App\Http\Controllers\Api\LifeAreaController;
 use App\Http\Controllers\Api\RoutineController;
@@ -76,5 +77,7 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/calendar-events/{eventId}', [CalendarEventController::class, 'show']);
         Route::patch('/calendar-events/{eventId}', [CalendarEventController::class, 'update']);
         Route::delete('/calendar-events/{eventId}', [CalendarEventController::class, 'destroy']);
+
+        Route::post('/integrations/list-task-sync', [IntegrationSyncController::class, 'syncListsAndTasks']);
     });
 });

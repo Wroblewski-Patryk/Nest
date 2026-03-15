@@ -71,8 +71,10 @@ Last updated: 2026-03-15
 - `NEST-017` completed: integration infrastructure baseline with provider
   adapter registry, sync mapping/idempotency service, queued retries, and DLQ
   persistence
+- `NEST-018` completed: list/task integration baseline for `trello` and
+  `google_tasks` with authenticated sync trigger and idempotent re-sync
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-018` list/task integration baseline (Trello + Google Tasks)
+  `NEST-019` no end-user AI surface enforcement in MVP
 
 ## Auth, AI, Offline, Notifications
 

@@ -44,11 +44,19 @@ Last updated: 2026-03-15
     - Added queued sync job with retry/backoff and dead-letter persistence in
       `integration_sync_failures`.
 
-- [ ] NEST-018 Deliver list/task integration baseline (Trello + Google Tasks)
-  - Status: BACKLOG
+- [x] NEST-018 Deliver list/task integration baseline (Trello + Google Tasks)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-012, NEST-017
   - Done when: list/task sync baseline works for Trello and Google Tasks.
+  - Done on: 2026-03-15
+  - Notes:
+    - Added authenticated endpoint to trigger list/task sync baseline:
+      `POST /api/v1/integrations/list-task-sync`.
+    - Added list/task provider sync flow for `trello` and `google_tasks` on top
+      of integration job infrastructure and `sync_mappings`.
+    - Added idempotent re-sync behavior (unchanged payloads skipped) with
+      feature test coverage for provider sync and tenant scope.
 
 - [ ] NEST-019 Enforce no end-user AI surface in MVP
   - Status: BACKLOG

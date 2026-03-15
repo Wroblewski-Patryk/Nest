@@ -19,7 +19,7 @@ class GoogleTasksAdapter implements IntegrationAdapter
     public function sync(array $payload): IntegrationSyncResult
     {
         $externalId = (string) ($payload['external_id'] ?? 'gtasks-'.Str::ulid());
-        $syncHash = hash('sha256', json_encode($payload, JSON_THROW_ON_ERROR));
+        $syncHash = (string) ($payload['sync_hash'] ?? hash('sha256', json_encode($payload, JSON_THROW_ON_ERROR)));
 
         return new IntegrationSyncResult(
             externalId: $externalId,

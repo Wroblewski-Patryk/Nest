@@ -4,13 +4,16 @@ namespace App\Jobs;
 
 use App\Integrations\Services\IntegrationSyncService;
 use App\Models\IntegrationSyncFailure;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Throwable;
 
 class ProcessIntegrationSyncJob implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 5;
 
@@ -26,9 +29,12 @@ class ProcessIntegrationSyncJob implements ShouldQueue
         public readonly array $payload
     ) {}
 
-    public function handle(IntegrationSyncService $syncService): void
+    /**
+     * @return array<string, mixed>
+     */
+    public function handle(IntegrationSyncService $syncService): array
     {
-        $syncService->sync($this->payload);
+        return $syncService->sync($this->payload);
     }
 
     public function failed(Throwable $exception): void
