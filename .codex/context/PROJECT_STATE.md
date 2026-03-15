@@ -68,8 +68,11 @@ Last updated: 2026-03-15
   archived life area support, and tenant-scoped journal tagging
 - `NEST-016` completed: internal calendar events API with CRUD, planning window
   filters, and tenant-scoped linked entity validation
+- `NEST-017` completed: integration infrastructure baseline with provider
+  adapter registry, sync mapping/idempotency service, queued retries, and DLQ
+  persistence
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-017` integration infrastructure
+  `NEST-018` list/task integration baseline (Trello + Google Tasks)
 
 ## Auth, AI, Offline, Notifications
 

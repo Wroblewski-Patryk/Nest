@@ -30,11 +30,19 @@ Last updated: 2026-03-15
     - Added tenant-scoped validation for linked entities (`task`, `goal`,
       `routine`) and feature test coverage.
 
-- [ ] NEST-017 Implement integration infrastructure
-  - Status: BACKLOG
+- [x] NEST-017 Implement integration infrastructure
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-011
   - Done when: adapters, mapping, idempotency, retry, and DLQ are in place.
+  - Done on: 2026-03-15
+  - Notes:
+    - Added integration adapter registry baseline with `trello` and
+      `google_tasks` adapters.
+    - Added sync orchestration service with idempotency lock and `sync_mappings`
+      upsert flow.
+    - Added queued sync job with retry/backoff and dead-letter persistence in
+      `integration_sync_failures`.
 
 - [ ] NEST-018 Deliver list/task integration baseline (Trello + Google Tasks)
   - Status: BACKLOG
