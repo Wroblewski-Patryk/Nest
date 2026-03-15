@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@nest/shared-types':
+        specifier: file:../../packages/shared-types
+        version: file:../../packages/shared-types
       next:
         specifier: 16.1.6
         version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -334,6 +337,9 @@ packages:
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
+
+  '@nest/shared-types@file:../../packages/shared-types':
+    resolution: {directory: ../../packages/shared-types, type: directory}
 
   '@next/env@16.1.6':
     resolution: {integrity: sha512-N1ySLuZjnAtN3kFnwhAwPvZah8RJxKasD7x1f8shFqhncnWZn4JMfg37diLNuoHsLAlrDfM3g4mawVdtAG8XLQ==}
@@ -2218,6 +2224,8 @@ snapshots:
       '@emnapi/runtime': 1.9.0
       '@tybys/wasm-util': 0.10.1
     optional: true
+
+  '@nest/shared-types@file:../../packages/shared-types': {}
 
   '@next/env@16.1.6': {}
 

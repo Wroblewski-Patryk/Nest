@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-008 Create shared API/domain types package
-  - Status: BACKLOG
-  - Owner: Execution Agent
-  - Depends on: NEST-007
-  - Done when: web and mobile consume shared contracts/types package.
-
 - [ ] NEST-009 Design PostgreSQL schema for MVP domain
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -248,3 +242,12 @@ Last updated: 2026-03-15
     - OpenAPI draft created in `docs/openapi_core_modules_v1.yaml`.
     - Covers habits/routines, goals/targets, journal, life areas, and calendar.
     - Referenced from `docs/api_contracts.md` and `docs/backend_strategy.md`.
+
+- [x] NEST-008 Create shared API/domain types package
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - Shared package created in `packages/shared-types` as `@nest/shared-types`.
+    - Web and mobile apps consume shared types via local package dependency.
+    - Type/build checks pass for both apps with shared package usage.

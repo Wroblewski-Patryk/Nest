@@ -1,0 +1,10 @@
+{
+  "name": "@nest/shared-types",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared API and domain type contracts for Nest clients.",
+  "types": "src/index.d.ts",
+  "files": [
+    "src"
+  ]
+}

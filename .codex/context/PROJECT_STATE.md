@@ -48,8 +48,10 @@ Last updated: 2026-03-15
   `.github/workflows/ci.yml` (backend/web/mobile checks + security + OpenAPI validation)
 - `NEST-007` completed: OpenAPI v1 draft for remaining MVP modules created in
   `docs/openapi_core_modules_v1.yaml` and referenced from docs
+- `NEST-008` completed: shared API/domain package created in
+  `packages/shared-types` and consumed by both web and mobile clients
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-008` shared API/domain types package
+  `NEST-009` PostgreSQL schema for MVP domain
 
 ## Auth, AI, Offline, Notifications
 
