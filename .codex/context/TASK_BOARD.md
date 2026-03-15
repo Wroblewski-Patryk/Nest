@@ -91,3 +91,12 @@ Last updated: 2026-03-15
     - OpenAPI draft created in `docs/openapi_tasks_lists_v1.yaml`.
     - Contract is referenced from `docs/api_contracts.md` and
       `docs/backend_strategy.md`.
+
+- [x] NEST-006 Configure minimum CI pipeline
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - GitHub Actions workflow added: `.github/workflows/ci.yml`.
+    - Includes lint/test/build/security checks for backend, web, and mobile.
+    - Includes OpenAPI contract validation for `docs/openapi_tasks_lists_v1.yaml`.

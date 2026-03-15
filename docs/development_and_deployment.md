@@ -20,6 +20,14 @@
 - Dependency vulnerability scan.
 - Build artifacts for web and mobile.
 
+Current workflow implementation:
+
+- `.github/workflows/ci.yml`
+  - `api-contract`: OpenAPI lint for `docs/openapi_tasks_lists_v1.yaml`
+  - `backend`: Composer install + Pint + Laravel tests + Composer audit
+  - `web`: pnpm install + lint + typecheck + build + pnpm audit
+  - `mobile`: pnpm install + typecheck + Expo web export + pnpm audit
+
 ## CD and Release Workflow
 
 - Trunk-based development with short-lived branches.
