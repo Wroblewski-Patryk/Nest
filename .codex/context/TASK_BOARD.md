@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-013 Implement habits and routines module
-  - Status: BACKLOG
-  - Owner: Execution Agent
-  - Depends on: NEST-011
-  - Done when: habit tracking and routine sequences are available.
-
 - [ ] NEST-014 Implement goals and targets module
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -264,3 +258,12 @@ Last updated: 2026-03-15
     - Delivered list CRUD endpoints (`/api/v1/lists`).
     - Delivered task CRUD endpoints (`/api/v1/tasks`).
     - Added filter/sort/pagination for task listing and tenant-scoped access.
+
+- [x] NEST-013 Implement habits and routines module
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - Delivered habits CRUD + logging endpoints (`/api/v1/habits`, `/logs`).
+    - Delivered routines CRUD endpoints with ordered step sequences.
+    - Added tenant-scoped feature tests for habits/routines module.

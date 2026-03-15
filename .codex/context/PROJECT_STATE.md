@@ -60,8 +60,10 @@ Last updated: 2026-03-15
   with Sanctum token authentication
 - `NEST-012` completed: tasks/lists API with CRUD + filter/sort/pagination and
   tenant isolation checks
+- `NEST-013` completed: habits/routines API with habit logging and routine step
+  sequences, covered by feature tests
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-013` habits and routines module
+  `NEST-014` goals and targets module
 
 ## Auth, AI, Offline, Notifications
 
