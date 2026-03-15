@@ -21,6 +21,7 @@ export default function HomePage() {
               <div>
                 <strong>{module.label}</strong>
                 <p>{module.focus}</p>
+                <p className="mono-note">Telemetry: {module.telemetry}</p>
               </div>
               <Link href={module.href} className="pill-link">
                 Open

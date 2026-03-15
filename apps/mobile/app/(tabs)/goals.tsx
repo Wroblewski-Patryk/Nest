@@ -6,6 +6,8 @@ export default function GoalsScreen() {
     <ModuleScreen
       title="Goals + Targets"
       subtitle="Track progress against measurable checkpoints."
+      state={goalsData.state}
+      telemetry={goalsData.telemetry}
       metrics={goalsData.metrics}
       rows={goalsData.rows}
     />

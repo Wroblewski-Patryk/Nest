@@ -6,6 +6,8 @@ export default function HabitsScreen() {
     <ModuleScreen
       title="Habits + Routines"
       subtitle="Keep consistency visible with routine-driven momentum."
+      state={habitsData.state}
+      telemetry={habitsData.telemetry}
       metrics={habitsData.metrics}
       rows={habitsData.rows}
     />

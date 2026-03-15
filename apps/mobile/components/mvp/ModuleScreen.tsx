@@ -1,4 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import type { TelemetryEventName, UiAsyncState } from '@nest/shared-types';
 
 type Metric = {
   label: string;
@@ -14,17 +15,30 @@ type Row = {
 type ModuleScreenProps = {
   title: string;
   subtitle: string;
+  state: UiAsyncState;
+  telemetry: TelemetryEventName;
   metrics: Metric[];
   rows: Row[];
 };
 
-export function ModuleScreen({ title, subtitle, metrics, rows }: ModuleScreenProps) {
+const stateLabels: Record<UiAsyncState, string> = {
+  loading: 'Loading',
+  empty: 'Empty',
+  error: 'Error',
+  success: 'Success',
+};
+
+export function ModuleScreen({ title, subtitle, state, telemetry, metrics, rows }: ModuleScreenProps) {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={styles.hero}>
         <Text style={styles.kicker}>Nest MVP</Text>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subtitle}>{subtitle}</Text>
+        <View style={styles.metaRow}>
+          <Text style={styles.metaPill}>{stateLabels[state]}</Text>
+          <Text style={styles.metaCode}>{telemetry}</Text>
+        </View>
       </View>
 
       <View style={styles.metricRow}>
@@ -86,6 +100,26 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     color: '#475569',
+  },
+  metaRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  metaPill: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#0f172a',
+    backgroundColor: '#dbeafe',
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  metaCode: {
+    fontSize: 11,
+    color: '#334155',
   },
   metricRow: {
     flexDirection: 'row',

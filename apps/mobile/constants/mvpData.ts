@@ -1,4 +1,17 @@
-export const tasksData = {
+import type { ModuleKey, TelemetryEventName, UiAsyncState } from '@nest/shared-types';
+
+type ModuleSnapshot = {
+  state: UiAsyncState;
+  module: ModuleKey;
+  telemetry: TelemetryEventName;
+  metrics: Array<{ label: string; value: string }>;
+  rows: Array<{ title: string; detail: string; badge: string }>;
+};
+
+export const tasksData: ModuleSnapshot = {
+  state: 'success',
+  module: 'tasks',
+  telemetry: 'screen.tasks.view',
   metrics: [
     { label: 'Open tasks', value: '9' },
     { label: 'Urgent', value: '1' },
@@ -11,7 +24,10 @@ export const tasksData = {
   ],
 };
 
-export const habitsData = {
+export const habitsData: ModuleSnapshot = {
+  state: 'success',
+  module: 'habits',
+  telemetry: 'screen.habits.view',
   metrics: [
     { label: 'Habits', value: '3' },
     { label: 'Routines', value: '2' },
@@ -24,7 +40,10 @@ export const habitsData = {
   ],
 };
 
-export const goalsData = {
+export const goalsData: ModuleSnapshot = {
+  state: 'success',
+  module: 'goals',
+  telemetry: 'screen.goals.view',
   metrics: [
     { label: 'Goals', value: '2' },
     { label: 'Targets', value: '2' },
@@ -37,7 +56,10 @@ export const goalsData = {
   ],
 };
 
-export const journalData = {
+export const journalData: ModuleSnapshot = {
+  state: 'success',
+  module: 'journal',
+  telemetry: 'screen.journal.view',
   metrics: [
     { label: 'Entries', value: '2' },
     { label: 'Life Areas', value: '4' },
@@ -50,7 +72,10 @@ export const journalData = {
   ],
 };
 
-export const calendarData = {
+export const calendarData: ModuleSnapshot = {
+  state: 'success',
+  module: 'calendar',
+  telemetry: 'screen.calendar.view',
   metrics: [
     { label: 'Events', value: '3' },
     { label: 'Linked', value: '3' },

@@ -179,6 +179,13 @@ body {
   font-size: 0.8rem;
 }
 
+.mono-note {
+  margin-top: 0.35rem !important;
+  font-family: var(--font-mono);
+  font-size: 0.72rem !important;
+  color: #475569 !important;
+}
+
 .pill,
 .pill-link {
   border-radius: 999px;

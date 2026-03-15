@@ -6,6 +6,8 @@ export default function JournalScreen() {
     <ModuleScreen
       title="Journal + Life Areas"
       subtitle="Reflect daily and balance what matters most."
+      state={journalData.state}
+      telemetry={journalData.telemetry}
       metrics={journalData.metrics}
       rows={journalData.rows}
     />

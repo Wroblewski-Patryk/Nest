@@ -81,8 +81,10 @@ Last updated: 2026-03-15
   habits/routines, goals/targets, journal/life areas, and calendar
 - `NEST-022` completed: mobile MVP module screens delivered in Expo tabs for
   tasks/lists, habits/routines, goals/targets, journal/life areas, and calendar
+- `NEST-023` completed: shared UX states and telemetry naming aligned across
+  web/mobile clients through common type contracts
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-023` shared UX states and telemetry naming alignment
+  `NEST-024` clients integration with shared API client/types
 
 ## Auth, AI, Offline, Notifications
 

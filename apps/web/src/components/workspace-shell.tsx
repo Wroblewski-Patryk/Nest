@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { moduleReadiness } from "@/lib/mvp-snapshot";
+import { STATE_LABELS } from "@/lib/ux-contract";
 
 type WorkspaceShellProps = {
   title: string;
@@ -22,7 +23,7 @@ export function WorkspaceShell({ title, subtitle, children }: WorkspaceShellProp
           {moduleReadiness.map((module) => (
             <Link key={module.href} href={module.href} className="workspace-tab">
               <span>{module.label}</span>
-              <small>{module.status}</small>
+              <small>{STATE_LABELS[module.state]}</small>
             </Link>
           ))}
         </nav>

@@ -1,46 +1,52 @@
-import type { ModuleKey } from "@nest/shared-types";
+import type { ModuleKey, TelemetryEventName, UiAsyncState } from "@nest/shared-types";
 
 export const moduleReadiness: Array<{
   href: string;
   label: string;
   key: ModuleKey;
   focus: string;
-  status: "Ready" | "In Progress";
+  state: UiAsyncState;
+  telemetry: TelemetryEventName;
 }> = [
   {
     href: "/tasks",
     label: "Tasks + Lists",
     key: "tasks",
     focus: "Capture and execute daily plan.",
-    status: "Ready",
+    state: "success",
+    telemetry: "screen.tasks.view",
   },
   {
     href: "/habits",
     label: "Habits + Routines",
     key: "habits",
     focus: "Track consistency and routine blocks.",
-    status: "Ready",
+    state: "success",
+    telemetry: "screen.habits.view",
   },
   {
     href: "/goals",
     label: "Goals + Targets",
     key: "goals",
     focus: "Connect long-term goals with measurable targets.",
-    status: "Ready",
+    state: "success",
+    telemetry: "screen.goals.view",
   },
   {
     href: "/journal",
     label: "Journal + Life Areas",
     key: "journal",
     focus: "Reflect on mood and life-area balance.",
-    status: "Ready",
+    state: "success",
+    telemetry: "screen.journal.view",
   },
   {
     href: "/calendar",
     label: "Calendar",
     key: "calendar",
     focus: "Schedule events linked to planning entities.",
-    status: "Ready",
+    state: "success",
+    telemetry: "screen.calendar.view",
   },
 ];
 

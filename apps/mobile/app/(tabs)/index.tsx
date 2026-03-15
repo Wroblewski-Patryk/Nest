@@ -6,6 +6,8 @@ export default function TasksScreen() {
     <ModuleScreen
       title="Tasks + Lists"
       subtitle="Capture commitments and execute daily priorities."
+      state={tasksData.state}
+      telemetry={tasksData.telemetry}
       metrics={tasksData.metrics}
       rows={tasksData.rows}
     />

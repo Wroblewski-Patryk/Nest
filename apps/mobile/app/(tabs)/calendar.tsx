@@ -6,6 +6,8 @@ export default function CalendarScreen() {
     <ModuleScreen
       title="Calendar"
       subtitle="Plan events linked to tasks, goals, and routines."
+      state={calendarData.state}
+      telemetry={calendarData.telemetry}
       metrics={calendarData.metrics}
       rows={calendarData.rows}
     />

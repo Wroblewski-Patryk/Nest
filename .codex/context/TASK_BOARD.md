@@ -110,11 +110,18 @@ Last updated: 2026-03-15
     - Verified mobile web export build with
       `pnpm exec expo export --platform web`.
 
-- [ ] NEST-023 Align shared UX states and telemetry naming
-  - Status: BACKLOG
+- [x] NEST-023 Align shared UX states and telemetry naming
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-021, NEST-022
   - Done when: loading/empty/error/success and telemetry naming are aligned.
+  - Done on: 2026-03-16
+  - Notes:
+    - Extended shared types with aligned `UiAsyncState` and
+      `TelemetryEventName` contracts.
+    - Applied the same state labels and screen telemetry naming in both web and
+      mobile clients.
+    - Verified web and mobile build checks after alignment changes.
 
 - [ ] NEST-024 Integrate clients with shared API client/types
   - Status: BACKLOG

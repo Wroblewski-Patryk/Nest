@@ -37,3 +37,19 @@ export interface ApiCollectionMeta {
   perPage: number;
   total: number;
 }
+
+export type UiAsyncState = "loading" | "empty" | "error" | "success";
+
+export type TelemetryEventName =
+  | "screen.tasks.view"
+  | "screen.habits.view"
+  | "screen.goals.view"
+  | "screen.journal.view"
+  | "screen.calendar.view";
+
+export interface ClientTelemetryEvent {
+  name: TelemetryEventName;
+  module: ModuleKey;
+  state: UiAsyncState;
+  platform: "web" | "mobile";
+}
