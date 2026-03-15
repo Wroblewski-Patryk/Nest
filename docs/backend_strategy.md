@@ -17,6 +17,8 @@
 - API contract index: `docs/api_contracts.md`
 - Current draft for tasks/lists (NEST-005):
   `docs/openapi_tasks_lists_v1.yaml`
+- Current draft for remaining core modules (NEST-007):
+  `docs/openapi_core_modules_v1.yaml`
 
 ## Authentication and Authorization
 

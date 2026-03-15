@@ -1,0 +1,932 @@
+openapi: 3.1.0
+info:
+  title: Nest API - Core Modules Contract
+  version: 1.0.0-draft
+  summary: Draft API contract for remaining MVP core modules.
+  description: >
+    OpenAPI draft for NEST-007. This contract covers habits, routines, goals,
+    targets, journal entries, life areas, and internal calendar events.
+  license:
+    name: Proprietary
+    url: https://nest.local/license
+servers:
+  - url: /api
+    description: Relative API base path
+tags:
+  - name: Habits
+    description: Habit definitions and log events.
+  - name: Routines
+    description: Routine definitions and ordered routine steps.
+  - name: Goals
+    description: Goals and progress summaries.
+  - name: Targets
+    description: Measurable goal targets and status updates.
+  - name: Journal
+    description: Journal entry CRUD.
+  - name: LifeAreas
+    description: Life area taxonomy and balance weights.
+  - name: Calendar
+    description: Internal calendar events and links to planning entities.
+security:
+  - bearerAuth: []
+
+paths:
+  /v1/habits:
+    get:
+      tags: [Habits]
+      summary: List habits
+      operationId: listHabits
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Paginated habits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Habits]
+      summary: Create habit
+      operationId: createHabit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHabitRequest'
+      responses:
+        '201':
+          description: Habit created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/habits/{habitId}:
+    parameters:
+      - $ref: '#/components/parameters/HabitId'
+    get:
+      tags: [Habits]
+      summary: Get habit
+      operationId: getHabit
+      responses:
+        '200':
+          description: Habit details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Habits]
+      summary: Update habit
+      operationId: updateHabit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateHabitRequest'
+      responses:
+        '200':
+          description: Habit updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Habits]
+      summary: Archive habit
+      operationId: deleteHabit
+      responses:
+        '204':
+          description: Habit archived
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/habits/{habitId}/logs:
+    parameters:
+      - $ref: '#/components/parameters/HabitId'
+    post:
+      tags: [Habits]
+      summary: Add habit log entry
+      operationId: logHabit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHabitLogRequest'
+      responses:
+        '201':
+          description: Habit log created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitLogResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/routines:
+    get:
+      tags: [Routines]
+      summary: List routines
+      operationId: listRoutines
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Paginated routines
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutineCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Routines]
+      summary: Create routine
+      operationId: createRoutine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoutineRequest'
+      responses:
+        '201':
+          description: Routine created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutineResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/routines/{routineId}:
+    parameters:
+      - $ref: '#/components/parameters/RoutineId'
+    patch:
+      tags: [Routines]
+      summary: Update routine
+      operationId: updateRoutine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoutineRequest'
+      responses:
+        '200':
+          description: Routine updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutineResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Routines]
+      summary: Archive routine
+      operationId: deleteRoutine
+      responses:
+        '204':
+          description: Routine archived
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /v1/goals:
+    get:
+      tags: [Goals]
+      summary: List goals
+      operationId: listGoals
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Paginated goals
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Goals]
+      summary: Create goal
+      operationId: createGoal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGoalRequest'
+      responses:
+        '201':
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/goals/{goalId}:
+    parameters:
+      - $ref: '#/components/parameters/GoalId'
+    patch:
+      tags: [Goals]
+      summary: Update goal
+      operationId: updateGoal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGoalRequest'
+      responses:
+        '200':
+          description: Goal updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Goals]
+      summary: Archive goal
+      operationId: deleteGoal
+      responses:
+        '204':
+          description: Goal archived
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /v1/targets:
+    get:
+      tags: [Targets]
+      summary: List targets
+      operationId: listTargets
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/GoalIdQuery'
+      responses:
+        '200':
+          description: Paginated targets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Targets]
+      summary: Create target
+      operationId: createTarget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTargetRequest'
+      responses:
+        '201':
+          description: Target created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/targets/{targetId}:
+    parameters:
+      - $ref: '#/components/parameters/TargetId'
+    patch:
+      tags: [Targets]
+      summary: Update target
+      operationId: updateTarget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTargetRequest'
+      responses:
+        '200':
+          description: Target updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Targets]
+      summary: Archive target
+      operationId: deleteTarget
+      responses:
+        '204':
+          description: Target archived
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /v1/journal-entries:
+    get:
+      tags: [Journal]
+      summary: List journal entries
+      operationId: listJournalEntries
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Paginated journal entries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntryCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Journal]
+      summary: Create journal entry
+      operationId: createJournalEntry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJournalEntryRequest'
+      responses:
+        '201':
+          description: Journal entry created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/life-areas:
+    get:
+      tags: [LifeAreas]
+      summary: List life areas
+      operationId: listLifeAreas
+      responses:
+        '200':
+          description: Life areas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifeAreaCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [LifeAreas]
+      summary: Create life area
+      operationId: createLifeArea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLifeAreaRequest'
+      responses:
+        '201':
+          description: Life area created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifeAreaResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/calendar-events:
+    get:
+      tags: [Calendar]
+      summary: List calendar events
+      operationId: listCalendarEvents
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/StartFrom'
+        - $ref: '#/components/parameters/StartTo'
+      responses:
+        '200':
+          description: Paginated calendar events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Calendar]
+      summary: Create calendar event
+      operationId: createCalendarEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCalendarEventRequest'
+      responses:
+        '201':
+          description: Calendar event created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: SanctumToken
+
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PerPage:
+      name: per_page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    HabitId:
+      name: habitId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    RoutineId:
+      name: routineId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    GoalId:
+      name: goalId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    GoalIdQuery:
+      name: goal_id
+      in: query
+      schema:
+        type: string
+        format: uuid
+    TargetId:
+      name: targetId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    StartFrom:
+      name: start_from
+      in: query
+      schema:
+        type: string
+        format: date-time
+    StartTo:
+      name: start_to
+      in: query
+      schema:
+        type: string
+        format: date-time
+
+  responses:
+    Unauthorized:
+      description: Authentication required or token invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+
+  schemas:
+    Habit:
+      type: object
+      required: [id, title, cadence, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string, maxLength: 255 }
+        cadence: { type: string, enum: [daily, weekly, custom] }
+        life_area_id: { type: [string, 'null'], format: uuid }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    HabitLog:
+      type: object
+      required: [id, habit_id, logged_at, value]
+      properties:
+        id: { type: string, format: uuid }
+        habit_id: { type: string, format: uuid }
+        logged_at: { type: string, format: date-time }
+        value: { type: number }
+        note: { type: [string, 'null'], maxLength: 1000 }
+
+    Routine:
+      type: object
+      required: [id, title, steps, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string, maxLength: 255 }
+        description: { type: [string, 'null'], maxLength: 2000 }
+        steps:
+          type: array
+          items:
+            type: object
+            required: [order, title]
+            properties:
+              order: { type: integer, minimum: 1 }
+              title: { type: string, maxLength: 255 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Goal:
+      type: object
+      required: [id, title, status, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string, maxLength: 255 }
+        description: { type: [string, 'null'], maxLength: 3000 }
+        status: { type: string, enum: [active, paused, completed, archived] }
+        life_area_id: { type: [string, 'null'], format: uuid }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Target:
+      type: object
+      required: [id, goal_id, metric, target_value, current_value, due_date]
+      properties:
+        id: { type: string, format: uuid }
+        goal_id: { type: string, format: uuid }
+        metric: { type: string, maxLength: 120 }
+        target_value: { type: number }
+        current_value: { type: number }
+        unit: { type: [string, 'null'], maxLength: 32 }
+        due_date: { type: [string, 'null'], format: date }
+
+    JournalEntry:
+      type: object
+      required: [id, title, body, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string, maxLength: 255 }
+        body: { type: string, maxLength: 10000 }
+        mood: { type: [string, 'null'], enum: [low, neutral, good, great, null] }
+        life_area_ids:
+          type: array
+          items: { type: string, format: uuid }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    LifeArea:
+      type: object
+      required: [id, name, color, weight]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string, maxLength: 120 }
+        color: { type: string, pattern: '^#[0-9A-Fa-f]{6}$' }
+        weight: { type: integer, minimum: 0, maximum: 100 }
+
+    CalendarEvent:
+      type: object
+      required: [id, title, start_at, end_at, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string, maxLength: 255 }
+        description: { type: [string, 'null'], maxLength: 5000 }
+        start_at: { type: string, format: date-time }
+        end_at: { type: string, format: date-time }
+        linked_entity_type:
+          type: [string, 'null']
+          enum: [task, goal, routine, null]
+        linked_entity_id: { type: [string, 'null'], format: uuid }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    CreateHabitRequest:
+      type: object
+      required: [title, cadence]
+      properties:
+        title: { type: string, maxLength: 255 }
+        cadence: { type: string, enum: [daily, weekly, custom] }
+        life_area_id: { type: [string, 'null'], format: uuid }
+    UpdateHabitRequest:
+      type: object
+      minProperties: 1
+      properties:
+        title: { type: string, maxLength: 255 }
+        cadence: { type: string, enum: [daily, weekly, custom] }
+        life_area_id: { type: [string, 'null'], format: uuid }
+    CreateHabitLogRequest:
+      type: object
+      required: [logged_at, value]
+      properties:
+        logged_at: { type: string, format: date-time }
+        value: { type: number }
+        note: { type: [string, 'null'], maxLength: 1000 }
+
+    CreateRoutineRequest:
+      type: object
+      required: [title, steps]
+      properties:
+        title: { type: string, maxLength: 255 }
+        description: { type: [string, 'null'], maxLength: 2000 }
+        steps:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [order, title]
+            properties:
+              order: { type: integer, minimum: 1 }
+              title: { type: string, maxLength: 255 }
+    UpdateRoutineRequest:
+      type: object
+      minProperties: 1
+      properties:
+        title: { type: string, maxLength: 255 }
+        description: { type: [string, 'null'], maxLength: 2000 }
+        steps:
+          type: array
+          items:
+            type: object
+            required: [order, title]
+            properties:
+              order: { type: integer, minimum: 1 }
+              title: { type: string, maxLength: 255 }
+
+    CreateGoalRequest:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string, maxLength: 255 }
+        description: { type: [string, 'null'], maxLength: 3000 }
+        life_area_id: { type: [string, 'null'], format: uuid }
+    UpdateGoalRequest:
+      type: object
+      minProperties: 1
+      properties:
+        title: { type: string, maxLength: 255 }
+        description: { type: [string, 'null'], maxLength: 3000 }
+        status: { type: string, enum: [active, paused, completed, archived] }
+        life_area_id: { type: [string, 'null'], format: uuid }
+
+    CreateTargetRequest:
+      type: object
+      required: [goal_id, metric, target_value]
+      properties:
+        goal_id: { type: string, format: uuid }
+        metric: { type: string, maxLength: 120 }
+        target_value: { type: number }
+        current_value: { type: number, default: 0 }
+        unit: { type: [string, 'null'], maxLength: 32 }
+        due_date: { type: [string, 'null'], format: date }
+    UpdateTargetRequest:
+      type: object
+      minProperties: 1
+      properties:
+        metric: { type: string, maxLength: 120 }
+        target_value: { type: number }
+        current_value: { type: number }
+        unit: { type: [string, 'null'], maxLength: 32 }
+        due_date: { type: [string, 'null'], format: date }
+
+    CreateJournalEntryRequest:
+      type: object
+      required: [title, body]
+      properties:
+        title: { type: string, maxLength: 255 }
+        body: { type: string, maxLength: 10000 }
+        mood: { type: [string, 'null'], enum: [low, neutral, good, great, null] }
+        life_area_ids:
+          type: array
+          items: { type: string, format: uuid }
+
+    CreateLifeAreaRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, maxLength: 120 }
+        color: { type: string, pattern: '^#[0-9A-Fa-f]{6}$' }
+        weight: { type: integer, minimum: 0, maximum: 100, default: 50 }
+
+    CreateCalendarEventRequest:
+      type: object
+      required: [title, start_at, end_at]
+      properties:
+        title: { type: string, maxLength: 255 }
+        description: { type: [string, 'null'], maxLength: 5000 }
+        start_at: { type: string, format: date-time }
+        end_at: { type: string, format: date-time }
+        linked_entity_type:
+          type: [string, 'null']
+          enum: [task, goal, routine, null]
+        linked_entity_id: { type: [string, 'null'], format: uuid }
+
+    PaginationMeta:
+      type: object
+      required: [page, per_page, total]
+      properties:
+        page: { type: integer }
+        per_page: { type: integer }
+        total: { type: integer }
+
+    HabitResponse:
+      type: object
+      properties:
+        data: { $ref: '#/components/schemas/Habit' }
+      required: [data]
+    HabitLogResponse:
+      type: object
+      properties:
+        data: { $ref: '#/components/schemas/HabitLog' }
+      required: [data]
+    HabitCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Habit' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    RoutineResponse:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/Routine' }
+    RoutineCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Routine' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    GoalResponse:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/Goal' }
+    GoalCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Goal' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    TargetResponse:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/Target' }
+    TargetCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Target' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    JournalEntryResponse:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/JournalEntry' }
+    JournalEntryCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/JournalEntry' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    LifeAreaResponse:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/LifeArea' }
+    LifeAreaCollectionResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/LifeArea' }
+
+    CalendarEventResponse:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/CalendarEvent' }
+    CalendarEventCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/CalendarEvent' }
+        meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message: { type: string }
+    ValidationErrorResponse:
+      type: object
+      required: [message, errors]
+      properties:
+        message: { type: string }
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }

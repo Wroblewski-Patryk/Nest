@@ -4,13 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-007 Define API contract v1 for remaining MVP modules
-  - Status: BACKLOG
-  - Owner: Documentation Agent
-  - Depends on: NEST-005
-  - Done when: OpenAPI drafts cover habits/routines, goals/targets, journal,
-    life areas, and calendar entities.
-
 - [ ] NEST-008 Create shared API/domain types package
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -246,3 +239,12 @@ Last updated: 2026-03-15
     - GitHub Actions workflow added: `.github/workflows/ci.yml`.
     - Includes lint/test/build/security checks for backend, web, and mobile.
     - Includes OpenAPI contract validation for `docs/openapi_tasks_lists_v1.yaml`.
+
+- [x] NEST-007 Define API contract v1 for remaining MVP modules
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - OpenAPI draft created in `docs/openapi_core_modules_v1.yaml`.
+    - Covers habits/routines, goals/targets, journal, life areas, and calendar.
+    - Referenced from `docs/api_contracts.md` and `docs/backend_strategy.md`.

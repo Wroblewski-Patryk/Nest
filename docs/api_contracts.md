@@ -11,9 +11,13 @@ for backend and client integration.
 
 - Tasks and Lists v1 (NEST-005):
   `docs/openapi_tasks_lists_v1.yaml`
+- Core Modules v1 (NEST-007):
+  `docs/openapi_core_modules_v1.yaml`
 
 ## Notes
 
 - Contract format: OpenAPI 3.1.
-- Scope in this draft: lists and tasks only.
-- Contract expansion for remaining MVP modules is planned in `NEST-007`.
+- Draft coverage:
+  - `openapi_tasks_lists_v1.yaml`: tasks and lists
+  - `openapi_core_modules_v1.yaml`: habits, routines, goals, targets, journal,
+    life areas, and calendar events

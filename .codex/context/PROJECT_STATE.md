@@ -46,8 +46,10 @@ Last updated: 2026-03-15
   `docs/openapi_tasks_lists_v1.yaml` and referenced from docs
 - `NEST-006` completed: minimum CI pipeline configured in
   `.github/workflows/ci.yml` (backend/web/mobile checks + security + OpenAPI validation)
+- `NEST-007` completed: OpenAPI v1 draft for remaining MVP modules created in
+  `docs/openapi_core_modules_v1.yaml` and referenced from docs
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-007` extend API contract for core modules
+  `NEST-008` shared API/domain types package
 
 ## Auth, AI, Offline, Notifications
 
@@ -103,3 +105,4 @@ Last updated: 2026-03-15
 - `docs/monorepo_structure.md`
 - `docs/api_contracts.md`
 - `docs/development_and_deployment.md`
+- `docs/openapi_core_modules_v1.yaml`
