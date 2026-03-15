@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-010 Create migrations and baseline seed data
-  - Status: BACKLOG
-  - Owner: Execution Agent
-  - Depends on: NEST-009
-  - Done when: migrations and baseline dictionaries/seeds run successfully.
-
 - [ ] NEST-011 Implement auth and user settings
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -254,3 +248,13 @@ Last updated: 2026-03-15
     - Tenant-ready MVP schema migrated with FK constraints and composite indexes.
     - Includes sync mapping entity baseline (`sync_mappings`).
     - Schema documented in `docs/mvp_database_schema.md`.
+
+- [x] NEST-010 Create migrations and baseline seed data
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - Added reference dictionary migration (`task_statuses`, `task_priorities`,
+      `life_area_templates`).
+    - Added baseline dictionary seeder (`ReferenceDictionarySeeder`).
+    - `migrate:fresh --seed` passes with baseline tenant/user and life areas.

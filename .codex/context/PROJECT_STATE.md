@@ -52,8 +52,11 @@ Last updated: 2026-03-15
   `packages/shared-types` and consumed by both web and mobile clients
 - `NEST-009` completed: tenant-ready MVP PostgreSQL schema migrated with FK and
   index baseline (`apps/api/database/migrations/2026_03_15_230000_create_mvp_domain_tables.php`)
+- `NEST-010` completed: baseline dictionary migration and seed data added
+  (`task_statuses`, `task_priorities`, `life_area_templates`) with successful
+  `migrate:fresh --seed` verification
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-010` migrations and baseline seed data
+  `NEST-011` auth and user settings
 
 ## Auth, AI, Offline, Notifications
 

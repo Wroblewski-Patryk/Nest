@@ -11,6 +11,7 @@ baseline for implementation.
 
 - Base auth + tenancy: `apps/api/database/migrations/0001_01_01_000000_create_users_table.php`
 - MVP domain schema: `apps/api/database/migrations/2026_03_15_230000_create_mvp_domain_tables.php`
+- Reference dictionaries: `apps/api/database/migrations/2026_03_15_231000_create_reference_dictionary_tables.php`
 
 ## Tenant Model
 
@@ -35,6 +36,12 @@ baseline for implementation.
 - `calendar_events`
 - `sync_mappings` (internal<->external provider mapping baseline)
 
+## Reference Dictionary Tables
+
+- `task_statuses`
+- `task_priorities`
+- `life_area_templates`
+
 ## Constraint and Index Strategy
 
 - UUID primary keys across tenant and domain entities.
@@ -50,3 +57,4 @@ baseline for implementation.
 
 - `php artisan migrate:fresh --seed` passes.
 - `php artisan test` passes.
+- Baseline dictionary seeding runs via `Database\Seeders\ReferenceDictionarySeeder`.
