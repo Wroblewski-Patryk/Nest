@@ -18,11 +18,17 @@ Last updated: 2026-03-15
     - Delivered tenant-scoped journal life area tagging via pivot table and
       feature tests for module behavior.
 
-- [ ] NEST-016 Implement internal calendar module
-  - Status: BACKLOG
+- [x] NEST-016 Implement internal calendar module
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-011
   - Done when: calendar planning/events work without external sync dependency.
+  - Done on: 2026-03-15
+  - Notes:
+    - Delivered calendar event CRUD endpoints (`/api/v1/calendar-events`).
+    - Added range/all-day/linked-entity filtering for event listing.
+    - Added tenant-scoped validation for linked entities (`task`, `goal`,
+      `routine`) and feature test coverage.
 
 - [ ] NEST-017 Implement integration infrastructure
   - Status: BACKLOG

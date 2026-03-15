@@ -66,8 +66,10 @@ Last updated: 2026-03-15
   update support, covered by feature tests
 - `NEST-015` completed: journal/life areas API with CRUD, mood/search filtering,
   archived life area support, and tenant-scoped journal tagging
+- `NEST-016` completed: internal calendar events API with CRUD, planning window
+  filters, and tenant-scoped linked entity validation
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-016` internal calendar module
+  `NEST-017` integration infrastructure
 
 ## Auth, AI, Offline, Notifications
 

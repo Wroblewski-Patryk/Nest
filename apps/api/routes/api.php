@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CalendarEventController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\HabitController;
 use App\Http\Controllers\Api\JournalEntryController;
@@ -69,5 +70,11 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/journal-entries/{journalEntryId}', [JournalEntryController::class, 'show']);
         Route::patch('/journal-entries/{journalEntryId}', [JournalEntryController::class, 'update']);
         Route::delete('/journal-entries/{journalEntryId}', [JournalEntryController::class, 'destroy']);
+
+        Route::get('/calendar-events', [CalendarEventController::class, 'index']);
+        Route::post('/calendar-events', [CalendarEventController::class, 'store']);
+        Route::get('/calendar-events/{eventId}', [CalendarEventController::class, 'show']);
+        Route::patch('/calendar-events/{eventId}', [CalendarEventController::class, 'update']);
+        Route::delete('/calendar-events/{eventId}', [CalendarEventController::class, 'destroy']);
     });
 });
