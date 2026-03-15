@@ -27,8 +27,10 @@ Last updated: 2026-03-15
 - Planning baseline complete for MVP and full-product roadmap
 - `NEST-001` completed: monorepo structure approved and documented in
   `docs/monorepo_structure.md`
-- Current execution focus: implementation bootstrap (Phase 1), starting with
-  `NEST-002` backend skeleton
+- `NEST-002` completed: Laravel backend skeleton bootstrapped in `apps/api`
+  with health endpoint (`GET /health`) and passing baseline tests
+- Current execution focus: implementation bootstrap (Phase 1), next task
+  `NEST-003` web app shell
 
 ## Planning Baseline
 

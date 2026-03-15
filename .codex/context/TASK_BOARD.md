@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-002 Bootstrap backend Laravel app skeleton
-  - Status: BACKLOG
-  - Owner: Execution Agent
-  - Depends on: NEST-001
-  - Done when: app boots locally with health endpoint
-
 - [ ] NEST-003 Bootstrap web app shell (Next.js)
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -79,3 +73,12 @@ Last updated: 2026-03-15
   - Owner: Planning Agent
   - Done on: 2026-03-15
   - Notes: approved structure documented in `docs/monorepo_structure.md`.
+
+- [x] NEST-002 Bootstrap backend Laravel app skeleton
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - Laravel app bootstrapped in `apps/api`.
+    - Health endpoint available at `GET /health`.
+    - Baseline tests pass (`php artisan test`).
