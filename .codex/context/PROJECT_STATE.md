@@ -1,0 +1,36 @@
+﻿# PROJECT_STATE
+
+Last updated: 2026-03-15
+
+## Product
+
+- Name: Nest (LifeOS)
+- Goal: unified life orchestration platform with AI support
+
+## Platform Strategy
+
+- Web app: desktop/tablet/mobile browser
+- Mobile app: tablet/phone native
+- Feature parity required for core modules
+
+## Technical Baseline
+
+- Backend: Laravel 12 + PHP 8.4
+- Database: PostgreSQL 17 default (18 where stable in provider)
+- Cache/Queue: Redis
+- Web: Next.js 16 + React 19.2 + TypeScript 5.x
+- Mobile: Expo SDK 55 + React Native + TypeScript 5.x
+
+## Current Phase
+
+- Architecture and documentation foundation complete
+- Next phase: planning and implementation bootstrap
+
+## Canonical Docs
+
+- `docs/readme.md`
+- `docs/system_architecture.md`
+- `docs/tech_stack.md`
+- `docs/database_decision.md`
+- `docs/frontend_strategy.md`
+- `docs/backend_strategy.md`
