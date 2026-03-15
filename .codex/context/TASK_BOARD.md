@@ -58,11 +58,18 @@ Last updated: 2026-03-15
     - Added idempotent re-sync behavior (unchanged payloads skipped) with
       feature test coverage for provider sync and tenant scope.
 
-- [ ] NEST-019 Enforce no end-user AI surface in MVP
-  - Status: BACKLOG
+- [x] NEST-019 Enforce no end-user AI surface in MVP
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-011
   - Done when: AI UI/public endpoints are disabled in MVP and documented.
+  - Done on: 2026-03-15
+  - Notes:
+    - Added explicit MVP feature flag config with `AI_SURFACE_ENABLED=false`
+      default in backend.
+    - Added guard tests that enforce absence of public `/api/v1/ai/*` routes
+      and verify AI endpoint pattern returns `404`.
+    - Updated `docs/ai_layer.md` with MVP enforcement policy.
 
 - [ ] NEST-020 Add observability baseline
   - Status: BACKLOG

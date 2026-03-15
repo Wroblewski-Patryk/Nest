@@ -39,6 +39,12 @@ operations without compromising data integrity or security.
 - Phase 2: first AI surface and tool-assisted operations.
 - Phase 3: in-app AI assistant for web and mobile clients.
 
+## MVP Enforcement
+
+- Backend feature flag `AI_SURFACE_ENABLED=false` by default.
+- MVP regression tests enforce absence of public `/api/v1/ai/*` routes.
+- Any future AI routes must be introduced only after post-MVP scope approval.
+
 ## Observability
 
 - track tool success/error rates

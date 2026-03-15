@@ -73,8 +73,10 @@ Last updated: 2026-03-15
   persistence
 - `NEST-018` completed: list/task integration baseline for `trello` and
   `google_tasks` with authenticated sync trigger and idempotent re-sync
+- `NEST-019` completed: MVP AI surface guard enforced with default-off feature
+  flag, route-level absence checks, and documented policy
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-019` no end-user AI surface enforcement in MVP
+  `NEST-020` observability baseline
 
 ## Auth, AI, Offline, Notifications
 
