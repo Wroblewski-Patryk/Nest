@@ -34,6 +34,16 @@ Last updated: 2026-03-15
   - Depends on: NEST-002
   - Done when: OpenAPI draft exists and is referenced from docs
 
+- [ ] NEST-030 Enforce quality gate before commit
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: none
+  - Done when:
+    - automated checks are defined and executed before commits,
+    - manual regression checklist (feature + UI) is applied before commits,
+    - unintended change detection (`git diff --name-only` + diff review) is
+      part of commit workflow.
+
 ## In Progress
 
 - [ ] (none)

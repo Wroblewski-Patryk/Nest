@@ -26,6 +26,20 @@ Last updated: 2026-03-15
 - Architecture and documentation foundation complete
 - Next phase: planning and implementation bootstrap
 
+## Working Agreements
+
+- Every meaningful change must update at least one of:
+  `docs/`, `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md`.
+- Before each commit, run available automated checks for changed areas
+  (tests/lint/typecheck/build where applicable).
+- Before each commit, run manual regression checks for changed behavior and UI
+  (desktop/mobile where applicable).
+- Validate no unintended file changes before commit (`git diff --name-only` and
+  diff review).
+- Use Conventional Commits and keep commits small, single-purpose, and scoped.
+- Do not mark tasks as DONE unless Definition of Done is fully satisfied
+  (output + acceptance criteria + board status + updated project state).
+
 ## Canonical Docs
 
 - `docs/readme.md`
