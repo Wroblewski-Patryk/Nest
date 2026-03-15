@@ -13,7 +13,7 @@ plan aligned with `docs/roadmap.md` phases 1-4.
   `docs/implementation_plan_mvp.md`).
 - Phase 2 (Integration Expansion): `NEST-031` to `NEST-045`.
 - Phase 3 (Intelligence and Insights): `NEST-046` to `NEST-060`.
-- Phase 4 (SaaS Hardening): `NEST-061` to `NEST-080`.
+- Phase 4 (SaaS Hardening): `NEST-061` to `NEST-081`.
 
 ## Phase 2 - Integration Expansion (`NEST-031` to `NEST-045`)
 
@@ -24,35 +24,35 @@ plan aligned with `docs/roadmap.md` phases 1-4.
   - Done when: provider contract/version policy and migration rules are
     documented and linked from integration docs.
 
-- [ ] NEST-032 Deliver ClickUp two-way sync
+- [ ] NEST-032 Deliver Trello synchronization
   - Depends on: NEST-031
-  - Done when: create/update/delete synchronization works in both directions
-    with idempotency and audit trail.
+  - Done when: list/task synchronization with Trello works with idempotency,
+    mapping integrity, and audit trail.
 
-- [ ] NEST-033 Add ClickUp webhook ingestion and replay protection
-  - Depends on: NEST-032
-  - Done when: webhook signatures are validated, duplicates are ignored, and
-    replay attempts are logged.
-
-- [ ] NEST-034 Deliver Microsoft To Do synchronization
+- [ ] NEST-033 Deliver Google Tasks synchronization
   - Depends on: NEST-031
-  - Done when: tasks/lists sync in supported MVP-compatible fields with
-    retry/backoff and mapping integrity checks.
+  - Done when: list/task synchronization with Google Tasks works with retry/
+    backoff and consistent field mappings.
 
-- [ ] NEST-035 Deliver Obsidian synchronization
+- [ ] NEST-034 Deliver third list/task provider (demand-driven)
   - Depends on: NEST-031
-  - Done when: markdown note import/export works with conflict handling and
-    user-visible sync status.
+  - Done when: one additional provider is selected by product demand and
+    delivered with the same sync quality bar.
 
-- [ ] NEST-036 Add integration health dashboard
-  - Depends on: NEST-032, NEST-034, NEST-035
-  - Done when: per-provider success rate, latency, and failure reasons are
-    visible in operations dashboards.
+- [ ] NEST-035 Deliver Google Calendar synchronization
+  - Depends on: NEST-032, NEST-033
+  - Done when: calendar sync is delivered after list/task baseline and follows
+    conflict/audit requirements.
+
+- [ ] NEST-036 Deliver Obsidian synchronization as final provider in wave 1
+  - Depends on: NEST-032, NEST-033, NEST-035
+  - Done when: markdown note sync is delivered as the last provider in initial
+    integration sequence.
 
 ### Conflict resolution and reliability
 
 - [ ] NEST-037 Implement conflict queue API + UI workflows
-  - Depends on: NEST-032, NEST-034, NEST-035
+  - Depends on: NEST-032, NEST-033, NEST-034, NEST-035, NEST-036
   - Done when: users can review, accept, or override high-value field conflicts.
 
 - [ ] NEST-038 Add deterministic conflict policy matrix by field/provider
@@ -64,14 +64,14 @@ plan aligned with `docs/roadmap.md` phases 1-4.
   - Done when: failed sync jobs can be replayed safely with idempotency guards.
 
 - [ ] NEST-040 Introduce sync SLOs and alert thresholds
-  - Depends on: NEST-036
+  - Depends on: NEST-037
   - Done when: SLO targets exist for success latency/error budget and alerting
     is configured.
 
 ### Product parity and rollout safety
 
 - [ ] NEST-041 Expose provider connection management in web and mobile
-  - Depends on: NEST-032, NEST-034, NEST-035
+  - Depends on: NEST-032, NEST-033, NEST-034, NEST-035, NEST-036
   - Done when: users can connect/reconnect/revoke providers from both clients.
 
 - [ ] NEST-042 Add provider permission scope review screens
@@ -79,16 +79,16 @@ plan aligned with `docs/roadmap.md` phases 1-4.
   - Done when: granted scopes are visible and least-privilege warnings are shown.
 
 - [ ] NEST-043 Add integration regression suite
-  - Depends on: NEST-032, NEST-034, NEST-035, NEST-037
+  - Depends on: NEST-032, NEST-033, NEST-034, NEST-035, NEST-036, NEST-037
   - Done when: end-to-end sync scenarios for each provider run in CI.
 
-- [ ] NEST-044 Execute staged rollout plan for new providers
-  - Depends on: NEST-043
-  - Done when: staged rollout checklist and fallback/rollback runbook are
-    documented and validated.
+- [ ] NEST-044 Deliver notifications first step (mobile push baseline)
+  - Depends on: NEST-035
+  - Done when: simple push notifications are available for key reminders, with
+    explicit scope and delivery monitoring.
 
 - [ ] NEST-045 Phase 2 release sign-off
-  - Depends on: NEST-040, NEST-044
+  - Depends on: NEST-040, NEST-043, NEST-044
   - Done when: operational and product sign-off for integration expansion is
     recorded.
 
@@ -164,7 +164,7 @@ plan aligned with `docs/roadmap.md` phases 1-4.
   - Depends on: NEST-050, NEST-055, NEST-058, NEST-059
   - Done when: intelligence and automation scope passes release criteria.
 
-## Phase 4 - SaaS Hardening (`NEST-061` to `NEST-080`)
+## Phase 4 - SaaS Hardening (`NEST-061` to `NEST-081`)
 
 ### Multi-tenant operations hardening
 
@@ -180,9 +180,10 @@ plan aligned with `docs/roadmap.md` phases 1-4.
   - Depends on: NEST-061
   - Done when: per-tenant limits are enforced with clear user-facing errors.
 
-- [ ] NEST-064 Add tenant-aware incident response runbooks
+- [ ] NEST-064 Implement invite-based family/friends collaboration spaces
   - Depends on: NEST-061
-  - Done when: operational playbooks include tenant-level impact triage.
+  - Done when: shared plans/lists, co-management flows, and private-vs-shared
+    permission boundaries are implemented and tested.
 
 ### Billing and subscriptions
 
@@ -216,43 +217,48 @@ plan aligned with `docs/roadmap.md` phases 1-4.
   - Depends on: NEST-070
   - Done when: role assignments and policy checks are enforced by API.
 
-- [ ] NEST-072 Implement SSO (OIDC/SAML) for organization plans
+- [ ] NEST-072 Implement OAuth providers for B2C auth expansion
+  - Depends on: NEST-071
+  - Done when: Google/Apple (or approved set) login works with tenant-safe
+    account linking and security controls.
+
+- [ ] NEST-073 Implement SSO (OIDC/SAML) for organization plans
   - Depends on: NEST-071
   - Done when: supported enterprise auth flows are production-ready.
 
-- [ ] NEST-073 Add audit export package for organization compliance
+- [ ] NEST-074 Add audit export package for organization compliance
   - Depends on: NEST-071
   - Done when: export includes security-sensitive events in documented formats.
 
-- [ ] NEST-074 Add advanced secrets and key rotation operations
+- [ ] NEST-075 Add advanced secrets and key rotation operations
   - Depends on: NEST-061
   - Done when: automated key rotation and credential revoke paths are tested.
 
-- [ ] NEST-075 Introduce security control verification suite
-  - Depends on: NEST-071, NEST-072, NEST-074
+- [ ] NEST-076 Introduce security control verification suite
+  - Depends on: NEST-071, NEST-072, NEST-073, NEST-075
   - Done when: recurring security control checks run in CI and staging.
 
 ### Scale, reliability, and launch readiness
 
-- [ ] NEST-076 Implement performance and load test harness
+- [ ] NEST-077 Implement performance and load test harness
   - Depends on: NEST-063, NEST-069
   - Done when: representative load scenarios and thresholds are defined.
 
-- [ ] NEST-077 Execute resilience tests (backup/restore/failover drills)
-  - Depends on: NEST-064, NEST-076
+- [ ] NEST-078 Execute resilience tests (backup/restore/failover drills)
+  - Depends on: NEST-062, NEST-077
   - Done when: drill outcomes and corrective actions are documented.
 
-- [ ] NEST-078 Introduce release train and change management workflow
-  - Depends on: NEST-076
+- [ ] NEST-079 Introduce release train and change management workflow
+  - Depends on: NEST-077
   - Done when: regular release cadence and quality gates are institutionalized.
 
-- [ ] NEST-079 Final readiness review for full-product launch
-  - Depends on: NEST-068, NEST-073, NEST-075, NEST-077, NEST-078
+- [ ] NEST-080 Final readiness review for full-product launch
+  - Depends on: NEST-068, NEST-074, NEST-076, NEST-078, NEST-079
   - Done when: launch checklist is approved by product, engineering, and
     operations.
 
-- [ ] NEST-080 Full-product launch milestone
-  - Depends on: NEST-079
+- [ ] NEST-081 Full-product launch milestone
+  - Depends on: NEST-080
   - Done when: full product scope is released and monitored in production.
 
 ## Global Rules

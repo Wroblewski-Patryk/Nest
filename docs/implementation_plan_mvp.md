@@ -95,15 +95,15 @@ For post-MVP phases (integration expansion, intelligence, SaaS hardening), see
   - Acceptance criteria: adapters, mapping tables, idempotency keys,
     retry/backoff, and dead-letter handling are operational.
 
-- [ ] NEST-018 Deliver Google Calendar MVP integration
-  - Depends on: NEST-016, NEST-017
-  - Acceptance criteria: pull/push sync works with conflict policy and audit
-    traceability.
+- [ ] NEST-018 Deliver list/task integration baseline (Trello + Google Tasks)
+  - Depends on: NEST-012, NEST-017
+  - Acceptance criteria: list/task integration baseline exists for Trello and
+    Google Tasks with provider mapping and idempotent sync jobs.
 
-- [ ] NEST-019 Deliver AI tool endpoints (auditable)
-  - Depends on: NEST-012, NEST-013, NEST-015, NEST-016
-  - Acceptance criteria: scoped tool endpoints are available, blocked actions are
-    rejected, and all writes are auditable.
+- [ ] NEST-019 Enforce no end-user AI surface in MVP
+  - Depends on: NEST-011
+  - Acceptance criteria: AI UI and public AI endpoints remain disabled in MVP
+    scope, with feature-flag policy and documentation in place.
 
 - [ ] NEST-020 Add observability baseline
   - Depends on: NEST-012, NEST-017
@@ -153,7 +153,8 @@ For post-MVP phases (integration expansion, intelligence, SaaS hardening), see
 - [ ] NEST-029 Finalize MVP release checklist and staging sign-off
   - Depends on: NEST-018, NEST-019, NEST-025, NEST-026, NEST-027, NEST-028
   - Acceptance criteria: release checklist is complete and staging sign-off is
-    recorded.
+    recorded for MVP scope (email/password auth, no end-user AI, internal
+    calendar module).
 
 ## Quality Gates Before Commit
 
