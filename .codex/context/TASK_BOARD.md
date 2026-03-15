@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-003 Bootstrap web app shell (Next.js)
-  - Status: BACKLOG
-  - Owner: Execution Agent
-  - Depends on: NEST-001
-  - Done when: app builds and has base layout
-
 - [ ] NEST-004 Bootstrap mobile app shell (Expo)
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -82,3 +76,12 @@ Last updated: 2026-03-15
     - Laravel app bootstrapped in `apps/api`.
     - Health endpoint available at `GET /health`.
     - Baseline tests pass (`php artisan test`).
+
+- [x] NEST-003 Bootstrap web app shell (Next.js)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - Next.js app shell bootstrapped in `apps/web` (TypeScript + App Router).
+    - Base layout present in `apps/web/app/layout.tsx`.
+    - Production build passes (`pnpm build` in `apps/web`).

@@ -29,8 +29,10 @@ Last updated: 2026-03-15
   `docs/monorepo_structure.md`
 - `NEST-002` completed: Laravel backend skeleton bootstrapped in `apps/api`
   with health endpoint (`GET /health`) and passing baseline tests
+- `NEST-003` completed: Next.js web shell bootstrapped in `apps/web` with
+  baseline layout and passing production build
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-003` web app shell
+  `NEST-004` mobile app shell
 
 ## Planning Baseline
 
