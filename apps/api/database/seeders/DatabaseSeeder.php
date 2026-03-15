@@ -22,17 +22,26 @@ class DatabaseSeeder extends Seeder
             ReferenceDictionarySeeder::class,
         ]);
 
-        $tenant = Tenant::query()->create([
-            'name' => 'Nest Personal Workspace',
-            'slug' => 'nest-personal-workspace',
-            'is_active' => true,
-        ]);
+        $tenant = Tenant::query()->firstOrCreate(
+            ['slug' => 'nest-personal-workspace'],
+            [
+                'name' => 'Nest Personal Workspace',
+                'is_active' => true,
+            ]
+        );
 
-        $user = User::factory()->create([
-            'tenant_id' => $tenant->id,
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $user = User::query()->firstOrCreate(
+            [
+                'tenant_id' => $tenant->id,
+                'email' => 'test@example.com',
+            ],
+            [
+                'name' => 'Test User',
+                'password' => 'password',
+                'timezone' => 'UTC',
+                'settings' => [],
+            ]
+        );
 
         $templates = DB::table('life_area_templates')
             ->where('is_active', true)
