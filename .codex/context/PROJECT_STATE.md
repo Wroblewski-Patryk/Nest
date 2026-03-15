@@ -57,8 +57,10 @@ Last updated: 2026-03-15
   `migrate:fresh --seed` verification
 - `NEST-011` completed: email/password auth and user settings API implemented
   with Sanctum token authentication
+- `NEST-012` completed: tasks/lists API with CRUD + filter/sort/pagination and
+  tenant isolation checks
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-012` tasks and lists module
+  `NEST-013` habits and routines module
 
 ## Auth, AI, Offline, Notifications
 

@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-012 Implement tasks and lists module
-  - Status: BACKLOG
-  - Owner: Execution Agent
-  - Depends on: NEST-011
-  - Done when: CRUD + filter/sort/pagination are delivered.
-
 - [ ] NEST-013 Implement habits and routines module
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -261,3 +255,12 @@ Last updated: 2026-03-15
     - Sanctum installed and token table migrated for UUID users.
     - API auth endpoints delivered (`register`, `login`, `logout`, `me`).
     - User settings update endpoint delivered (`PATCH /api/v1/auth/settings`).
+
+- [x] NEST-012 Implement tasks and lists module
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - Delivered list CRUD endpoints (`/api/v1/lists`).
+    - Delivered task CRUD endpoints (`/api/v1/tasks`).
+    - Added filter/sort/pagination for task listing and tenant-scoped access.
