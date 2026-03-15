@@ -55,8 +55,10 @@ Last updated: 2026-03-15
 - `NEST-010` completed: baseline dictionary migration and seed data added
   (`task_statuses`, `task_priorities`, `life_area_templates`) with successful
   `migrate:fresh --seed` verification
+- `NEST-011` completed: email/password auth and user settings API implemented
+  with Sanctum token authentication
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-011` auth and user settings
+  `NEST-012` tasks and lists module
 
 ## Auth, AI, Offline, Notifications
 

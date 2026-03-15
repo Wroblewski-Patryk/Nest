@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-011 Implement auth and user settings
-  - Status: BACKLOG
-  - Owner: Execution Agent
-  - Depends on: NEST-010
-  - Done when: email/password auth and user settings are functional.
-
 - [ ] NEST-012 Implement tasks and lists module
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -258,3 +252,12 @@ Last updated: 2026-03-15
       `life_area_templates`).
     - Added baseline dictionary seeder (`ReferenceDictionarySeeder`).
     - `migrate:fresh --seed` passes with baseline tenant/user and life areas.
+
+- [x] NEST-011 Implement auth and user settings
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - Sanctum installed and token table migrated for UUID users.
+    - API auth endpoints delivered (`register`, `login`, `logout`, `me`).
+    - User settings update endpoint delivered (`PATCH /api/v1/auth/settings`).
