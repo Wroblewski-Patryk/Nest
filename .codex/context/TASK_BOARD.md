@@ -163,11 +163,19 @@ Last updated: 2026-03-15
       (`pnpm test:unit`, `pnpm test:smoke`).
     - Verified all new frontend/mobile test scripts pass.
 
-- [ ] NEST-027 Implement security baseline controls
-  - Status: BACKLOG
+- [x] NEST-027 Implement security baseline controls
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-011, NEST-017
   - Done when: credential protection and dependency security checks are active.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added `integration_credentials` storage with encrypted token casts and
+      tenant/user/provider uniqueness.
+    - Added credential vault service supporting secure store, active lookup, and
+      revoke flow.
+    - Added feature tests validating encrypted-at-rest behavior and revoke
+      protection.
 
 - [ ] NEST-028 Run backup and restore drill with documentation
   - Status: BACKLOG

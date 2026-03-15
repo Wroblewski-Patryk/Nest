@@ -89,8 +89,10 @@ Last updated: 2026-03-15
   expanded with integration pipeline coverage
 - `NEST-026` completed: frontend/mobile client unit and smoke checks added for
   UX contract and MVP route coverage
+- `NEST-027` completed: integration credential security baseline added with
+  encrypted token vault and revoke coverage tests
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-027` security baseline controls
+  `NEST-028` backup and restore drill documentation
 
 ## Auth, AI, Offline, Notifications
 
