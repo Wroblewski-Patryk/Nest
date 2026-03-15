@@ -29,6 +29,7 @@ Last updated: 2026-03-15
 - Cache/Queue: Redis
 - Web: Next.js 16 + React 19.2 + TypeScript 5.x
 - Mobile: Expo SDK 55 + React Native + TypeScript 5.x
+- Local default ports: API `9000`, Web `9001`
 
 ## Current Phase
 
