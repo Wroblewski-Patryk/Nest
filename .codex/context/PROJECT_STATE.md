@@ -87,8 +87,10 @@ Last updated: 2026-03-15
   contract and shared domain response types
 - `NEST-025` completed: backend unit/feature/integration suite baseline
   expanded with integration pipeline coverage
+- `NEST-026` completed: frontend/mobile client unit and smoke checks added for
+  UX contract and MVP route coverage
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-026` frontend/mobile test suites
+  `NEST-027` security baseline controls
 
 ## Auth, AI, Offline, Notifications
 

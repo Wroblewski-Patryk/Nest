@@ -150,11 +150,18 @@ Last updated: 2026-03-15
     - Added end-to-end integration tests validating API task/list creation and
       provider sync pipeline idempotency.
 
-- [ ] NEST-026 Add frontend/mobile test suites
-  - Status: BACKLOG
+- [x] NEST-026 Add frontend/mobile test suites
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-021, NEST-022, NEST-024
   - Done when: client unit/smoke tests cover critical paths.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added web unit contract and smoke route checks (`pnpm test:unit`,
+      `pnpm test:smoke`).
+    - Added mobile unit contract and smoke export route checks
+      (`pnpm test:unit`, `pnpm test:smoke`).
+    - Verified all new frontend/mobile test scripts pass.
 
 - [ ] NEST-027 Implement security baseline controls
   - Status: BACKLOG

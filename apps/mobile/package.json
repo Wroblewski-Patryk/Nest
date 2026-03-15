@@ -6,7 +6,9 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test:unit": "node ./scripts/unit-contract.mjs",
+    "test:smoke": "pnpm exec expo export --platform web && node ./scripts/smoke-routes.mjs"
   },
   "dependencies": {
     "@nest/shared-types": "link:../../packages/shared-types",
