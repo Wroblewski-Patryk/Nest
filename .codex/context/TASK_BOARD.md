@@ -97,11 +97,18 @@ Last updated: 2026-03-15
     - Verified frontend quality gates: `pnpm lint` and `pnpm build` pass with
       static routes generated for all MVP module pages.
 
-- [ ] NEST-022 Deliver mobile MVP screens
-  - Status: BACKLOG
+- [x] NEST-022 Deliver mobile MVP screens
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-012, NEST-013, NEST-014, NEST-015, NEST-016
   - Done when: MVP module screens work in mobile app.
+  - Done on: 2026-03-16
+  - Notes:
+    - Replaced Expo template tabs with MVP module tab set.
+    - Delivered mobile screens for tasks/lists, habits/routines,
+      goals/targets, journal/life areas, and calendar.
+    - Verified mobile web export build with
+      `pnpm exec expo export --platform web`.
 
 - [ ] NEST-023 Align shared UX states and telemetry naming
   - Status: BACKLOG

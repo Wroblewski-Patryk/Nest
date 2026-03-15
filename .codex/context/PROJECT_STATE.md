@@ -79,8 +79,10 @@ Last updated: 2026-03-15
   counters, and middleware + queue event instrumentation
 - `NEST-021` completed: web MVP module screens delivered for tasks/lists,
   habits/routines, goals/targets, journal/life areas, and calendar
+- `NEST-022` completed: mobile MVP module screens delivered in Expo tabs for
+  tasks/lists, habits/routines, goals/targets, journal/life areas, and calendar
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-022` mobile MVP screens
+  `NEST-023` shared UX states and telemetry naming alignment
 
 ## Auth, AI, Offline, Notifications
 
