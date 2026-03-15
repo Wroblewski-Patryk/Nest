@@ -1,0 +1,57 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Node / frontend
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+.next/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Expo / React Native
+.expo/
+.expo-shared/
+web-build/
+android/
+ios/
+
+# Laravel / PHP
+vendor/
+bootstrap/cache/*.php
+storage/*.key
+storage/app/*
+storage/debugbar/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
+
+# Testing / tooling
+.phpunit.result.cache
+.eslintcache
+
