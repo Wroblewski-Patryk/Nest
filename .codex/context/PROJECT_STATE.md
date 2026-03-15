@@ -50,8 +50,10 @@ Last updated: 2026-03-15
   `docs/openapi_core_modules_v1.yaml` and referenced from docs
 - `NEST-008` completed: shared API/domain package created in
   `packages/shared-types` and consumed by both web and mobile clients
+- `NEST-009` completed: tenant-ready MVP PostgreSQL schema migrated with FK and
+  index baseline (`apps/api/database/migrations/2026_03_15_230000_create_mvp_domain_tables.php`)
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-009` PostgreSQL schema for MVP domain
+  `NEST-010` migrations and baseline seed data
 
 ## Auth, AI, Offline, Notifications
 
@@ -108,3 +110,4 @@ Last updated: 2026-03-15
 - `docs/api_contracts.md`
 - `docs/development_and_deployment.md`
 - `docs/openapi_core_modules_v1.yaml`
+- `docs/mvp_database_schema.md`

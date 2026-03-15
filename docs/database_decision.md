@@ -63,3 +63,7 @@ Conclusion: local development/testing only.
 - Audit timestamps and soft deletes only where domain-appropriate.
 - Composite indexes for tenant + status + due_date/time queries.
 - Explicit migration strategy for zero-downtime deploys.
+
+## MVP Schema Reference
+
+- `docs/mvp_database_schema.md`

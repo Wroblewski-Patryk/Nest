@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-009 Design PostgreSQL schema for MVP domain
-  - Status: BACKLOG
-  - Owner: Execution Agent
-  - Depends on: NEST-007
-  - Done when: schema with tenant-aware constraints/indexes is migrated.
-
 - [ ] NEST-010 Create migrations and baseline seed data
   - Status: BACKLOG
   - Owner: Execution Agent
@@ -251,3 +245,12 @@ Last updated: 2026-03-15
     - Shared package created in `packages/shared-types` as `@nest/shared-types`.
     - Web and mobile apps consume shared types via local package dependency.
     - Type/build checks pass for both apps with shared package usage.
+
+- [x] NEST-009 Design PostgreSQL schema for MVP domain
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - Tenant-ready MVP schema migrated with FK constraints and composite indexes.
+    - Includes sync mapping entity baseline (`sync_mappings`).
+    - Schema documented in `docs/mvp_database_schema.md`.
