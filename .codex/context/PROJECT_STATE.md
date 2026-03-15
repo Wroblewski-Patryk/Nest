@@ -33,8 +33,10 @@ Last updated: 2026-03-15
   baseline layout and passing production build
 - `NEST-004` completed: Expo mobile shell bootstrapped in `apps/mobile` with
   base tabs navigation and passing web export build
+- `NEST-005` completed: OpenAPI v1 draft for tasks/lists created in
+  `docs/openapi_tasks_lists_v1.yaml` and referenced from docs
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-005` API contract v1
+  `NEST-006` minimum CI pipeline
 
 ## Planning Baseline
 
@@ -65,3 +67,4 @@ Last updated: 2026-03-15
 - `docs/frontend_strategy.md`
 - `docs/backend_strategy.md`
 - `docs/monorepo_structure.md`
+- `docs/api_contracts.md`

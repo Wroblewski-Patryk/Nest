@@ -4,12 +4,6 @@ Last updated: 2026-03-15
 
 ## Backlog
 
-- [ ] NEST-005 Define API contract v1 for tasks and lists
-  - Status: BACKLOG
-  - Owner: Documentation Agent
-  - Depends on: NEST-002
-  - Done when: OpenAPI draft exists and is referenced from docs
-
 - [ ] NEST-030 Enforce quality gate before commit
   - Status: BACKLOG
   - Owner: Review Agent
@@ -88,3 +82,12 @@ Last updated: 2026-03-15
     - Expo app shell bootstrapped in `apps/mobile` (Expo Router tabs template).
     - Base navigation available via tabs routes.
     - Web export/build passes (`pnpm exec expo export --platform web`).
+
+- [x] NEST-005 Define API contract v1 for tasks and lists
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Done on: 2026-03-15
+  - Notes:
+    - OpenAPI draft created in `docs/openapi_tasks_lists_v1.yaml`.
+    - Contract is referenced from `docs/api_contracts.md` and
+      `docs/backend_strategy.md`.

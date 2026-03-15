@@ -1,0 +1,622 @@
+openapi: 3.1.0
+info:
+  title: Nest API - Tasks and Lists Contract
+  version: 1.0.0-draft
+  summary: Draft API contract for MVP tasks and lists module.
+  description: >
+    OpenAPI draft for NEST-005. This contract covers list and task resources
+    for the MVP baseline and is intended as the source contract for backend and
+    clients until expanded in NEST-007.
+  license:
+    name: Proprietary
+    url: https://nest.local/license
+servers:
+  - url: /api
+    description: Relative API base path
+tags:
+  - name: Lists
+    description: Task list management endpoints.
+  - name: Tasks
+    description: Task management endpoints.
+security:
+  - bearerAuth: []
+paths:
+  /v1/lists:
+    get:
+      tags: [Lists]
+      summary: List user lists
+      operationId: listLists
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Paginated lists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Lists]
+      summary: Create a list
+      operationId: createList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateListRequest'
+      responses:
+        '201':
+          description: List created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/lists/{listId}:
+    parameters:
+      - $ref: '#/components/parameters/ListId'
+    get:
+      tags: [Lists]
+      summary: Get list details
+      operationId: getList
+      responses:
+        '200':
+          description: List found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Lists]
+      summary: Update a list
+      operationId: updateList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateListRequest'
+      responses:
+        '200':
+          description: List updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Lists]
+      summary: Archive a list
+      description: Soft-delete/archival behavior for MVP.
+      operationId: deleteList
+      responses:
+        '204':
+          description: List archived
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/lists/{listId}/tasks:
+    parameters:
+      - $ref: '#/components/parameters/ListId'
+    get:
+      tags: [Tasks]
+      summary: List tasks in a list
+      operationId: listTasksByList
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/TaskStatus'
+        - $ref: '#/components/parameters/TaskPriority'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: Paginated tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Tasks]
+      summary: Create task in a list
+      operationId: createTaskInList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/CreateTaskRequest'
+                - type: object
+                  required: [list_id]
+                  properties:
+                    list_id:
+                      type: string
+                      format: uuid
+      responses:
+        '201':
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/tasks:
+    get:
+      tags: [Tasks]
+      summary: List tasks
+      operationId: listTasks
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - $ref: '#/components/parameters/ListIdQuery'
+        - $ref: '#/components/parameters/TaskStatus'
+        - $ref: '#/components/parameters/TaskPriority'
+        - $ref: '#/components/parameters/DueFrom'
+        - $ref: '#/components/parameters/DueTo'
+        - $ref: '#/components/parameters/Q'
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: Paginated tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Tasks]
+      summary: Create a task
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /v1/tasks/{taskId}:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    get:
+      tags: [Tasks]
+      summary: Get task details
+      operationId: getTask
+      responses:
+        '200':
+          description: Task found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Tasks]
+      summary: Update task
+      operationId: updateTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+      responses:
+        '200':
+          description: Task updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Tasks]
+      summary: Archive task
+      operationId: deleteTask
+      responses:
+        '204':
+          description: Task archived
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/tasks/{taskId}/complete:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    post:
+      tags: [Tasks]
+      summary: Mark task as done
+      operationId: completeTask
+      responses:
+        '200':
+          description: Task completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/tasks/{taskId}/reopen:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    post:
+      tags: [Tasks]
+      summary: Reopen completed task
+      operationId: reopenTask
+      responses:
+        '200':
+          description: Task reopened
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: SanctumToken
+
+  parameters:
+    ListId:
+      name: listId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    TaskId:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ListIdQuery:
+      name: list_id
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PerPage:
+      name: per_page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    TaskStatus:
+      name: status
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/TaskStatus'
+    TaskPriority:
+      name: priority
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/TaskPriority'
+    DueFrom:
+      name: due_from
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+    DueTo:
+      name: due_to
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+    Q:
+      name: q
+      in: query
+      required: false
+      schema:
+        type: string
+        maxLength: 255
+    Sort:
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - created_at
+          - -created_at
+          - due_date
+          - -due_date
+          - priority
+          - -priority
+
+  responses:
+    Unauthorized:
+      description: Authentication required or token invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+
+  schemas:
+    List:
+      type: object
+      required:
+        - id
+        - name
+        - color
+        - is_archived
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        color:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+          examples: ['#4F46E5']
+        is_archived:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Task:
+      type: object
+      required:
+        - id
+        - list_id
+        - title
+        - status
+        - priority
+        - due_date
+        - completed_at
+        - notes
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        list_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: [string, 'null']
+          maxLength: 5000
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
+        due_date:
+          type: [string, 'null']
+          format: date
+        completed_at:
+          type: [string, 'null']
+          format: date-time
+        notes:
+          type: [string, 'null']
+          maxLength: 5000
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TaskStatus:
+      type: string
+      enum: [todo, in_progress, done, canceled]
+
+    TaskPriority:
+      type: string
+      enum: [low, medium, high, urgent]
+
+    CreateListRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        color:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+          default: '#4F46E5'
+
+    UpdateListRequest:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        color:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+        is_archived:
+          type: boolean
+
+    CreateTaskRequest:
+      type: object
+      required: [title, list_id]
+      properties:
+        list_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: [string, 'null']
+          maxLength: 5000
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
+        due_date:
+          type: [string, 'null']
+          format: date
+        notes:
+          type: [string, 'null']
+          maxLength: 5000
+
+    UpdateTaskRequest:
+      type: object
+      minProperties: 1
+      properties:
+        list_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: [string, 'null']
+          maxLength: 5000
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
+        due_date:
+          type: [string, 'null']
+          format: date
+        notes:
+          type: [string, 'null']
+          maxLength: 5000
+
+    PaginationMeta:
+      type: object
+      required: [page, per_page, total]
+      properties:
+        page:
+          type: integer
+        per_page:
+          type: integer
+        total:
+          type: integer
+
+    ListResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/List'
+
+    TaskResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/Task'
+
+    ListCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/List'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    TaskCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+
+    ValidationErrorResponse:
+      type: object
+      required: [message, errors]
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string

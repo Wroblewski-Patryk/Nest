@@ -12,6 +12,12 @@
 - OpenAPI spec as contract source.
 - Consistent pagination, filtering, sorting, and error payloads.
 
+## Current Contract Artifacts
+
+- API contract index: `docs/api_contracts.md`
+- Current draft for tasks/lists (NEST-005):
+  `docs/openapi_tasks_lists_v1.yaml`
+
 ## Authentication and Authorization
 
 - Laravel Sanctum for first-party clients.
