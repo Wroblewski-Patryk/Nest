@@ -19,6 +19,10 @@ type ModuleScreenProps = {
   telemetry: TelemetryEventName;
   metrics: Metric[];
   rows: Row[];
+  connectivity?: {
+    state: UiAsyncState;
+    detail: string;
+  };
 };
 
 const stateLabels: Record<UiAsyncState, string> = {
@@ -28,7 +32,15 @@ const stateLabels: Record<UiAsyncState, string> = {
   success: 'Success',
 };
 
-export function ModuleScreen({ title, subtitle, state, telemetry, metrics, rows }: ModuleScreenProps) {
+export function ModuleScreen({
+  title,
+  subtitle,
+  state,
+  telemetry,
+  metrics,
+  rows,
+  connectivity,
+}: ModuleScreenProps) {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={styles.hero}>
@@ -64,6 +76,21 @@ export function ModuleScreen({ title, subtitle, state, telemetry, metrics, rows 
           </View>
         ))}
       </View>
+
+      {connectivity ? (
+        <View style={styles.panel}>
+          <Text style={styles.panelTitle}>API Client Status</Text>
+          <View style={styles.row}>
+            <View style={styles.rowTextWrap}>
+              <Text style={styles.rowTitle}>{stateLabels[connectivity.state]}</Text>
+              <Text style={styles.rowDetail}>{connectivity.detail}</Text>
+            </View>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>shared client</Text>
+            </View>
+          </View>
+        </View>
+      ) : null}
     </ScrollView>
   );
 }

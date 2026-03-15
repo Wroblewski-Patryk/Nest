@@ -1,4 +1,5 @@
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
+import { ApiConnectCard } from "@/components/api-connect-card";
 import { tasksSnapshot } from "@/lib/mvp-snapshot";
 
 export default function TasksPage() {
@@ -40,6 +41,8 @@ export default function TasksPage() {
           ))}
         </ul>
       </Panel>
+
+      <ApiConnectCard />
     </WorkspaceShell>
   );
 }

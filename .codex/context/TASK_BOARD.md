@@ -123,11 +123,19 @@ Last updated: 2026-03-15
       mobile clients.
     - Verified web and mobile build checks after alignment changes.
 
-- [ ] NEST-024 Integrate clients with shared API client/types
-  - Status: BACKLOG
+- [x] NEST-024 Integrate clients with shared API client/types
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-008, NEST-021, NEST-022
   - Done when: both clients use shared client/types end-to-end.
+  - Done on: 2026-03-16
+  - Notes:
+    - Extended `@nest/shared-types` with typed API client contract and
+      collection response types.
+    - Integrated shared API client contract in both web and mobile apps with
+      live `/lists` connectivity checks on tasks screens.
+    - Verified client build checks (`pnpm lint`, `pnpm build`, Expo web export)
+      after integration.
 
 - [ ] NEST-025 Add backend test suites
   - Status: BACKLOG

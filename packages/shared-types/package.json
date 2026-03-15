@@ -1,9 +1,16 @@
 {
   "name": "@nest/shared-types",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Shared API and domain type contracts for Nest clients.",
+  "main": "src/client.js",
   "types": "src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/client.js"
+    }
+  },
   "files": [
     "src"
   ]

@@ -83,8 +83,10 @@ Last updated: 2026-03-15
   tasks/lists, habits/routines, goals/targets, journal/life areas, and calendar
 - `NEST-023` completed: shared UX states and telemetry naming aligned across
   web/mobile clients through common type contracts
+- `NEST-024` completed: web/mobile clients integrated with shared API client
+  contract and shared domain response types
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-024` clients integration with shared API client/types
+  `NEST-025` backend test suites expansion
 
 ## Auth, AI, Offline, Notifications
 
