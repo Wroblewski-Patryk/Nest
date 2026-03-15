@@ -84,11 +84,18 @@ Last updated: 2026-03-15
       sync flows.
     - Added queue processed/failed hooks and observability feature tests.
 
-- [ ] NEST-021 Deliver web MVP screens
-  - Status: BACKLOG
+- [x] NEST-021 Deliver web MVP screens
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-012, NEST-013, NEST-014, NEST-015, NEST-016
   - Done when: MVP module screens work in web app.
+  - Done on: 2026-03-16
+  - Notes:
+    - Replaced web shell with complete MVP navigation and screen set.
+    - Delivered module screens for tasks/lists, habits/routines,
+      goals/targets, journal/life areas, and calendar.
+    - Verified frontend quality gates: `pnpm lint` and `pnpm build` pass with
+      static routes generated for all MVP module pages.
 
 - [ ] NEST-022 Deliver mobile MVP screens
   - Status: BACKLOG

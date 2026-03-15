@@ -77,8 +77,10 @@ Last updated: 2026-03-15
   flag, route-level absence checks, and documented policy
 - `NEST-020` completed: observability baseline with API trace IDs, queue/sync
   counters, and middleware + queue event instrumentation
+- `NEST-021` completed: web MVP module screens delivered for tasks/lists,
+  habits/routines, goals/targets, journal/life areas, and calendar
 - Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-021` web MVP screens
+  `NEST-022` mobile MVP screens
 
 ## Auth, AI, Offline, Notifications
 
