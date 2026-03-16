@@ -148,7 +148,10 @@ Last updated: 2026-03-16
 - `NEST-083` completed: post-MVP hardening plan translated from audit into
   sequenced P0/P1/P2 implementation backlog with dependencies and acceptance
   criteria (`docs/post_mvp_hardening_plan.md`)
-- Current execution focus: Phase 3 program kickoff (`NEST-046`)
+- `NEST-046` completed: analytics event taxonomy documented with canonical
+  envelope, naming rules, and v1 cross-module event dictionary
+  (`docs/analytics_event_taxonomy.md`)
+- Current execution focus: Phase 3 analytics pipeline baseline (`NEST-047`)
 
 ## Auth, AI, Offline, Notifications
 

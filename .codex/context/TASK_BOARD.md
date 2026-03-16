@@ -448,12 +448,18 @@ Last updated: 2026-03-16
     - Documented operational checks, CI coverage, and product validation scope
       for integration expansion baseline.
 
-- [ ] NEST-046 Phase 3 intelligence and insights release program
-  - Status: BACKLOG
-  - Owner: Planning Agent
-  - Depends on: NEST-031
-  - Done when: all tasks `NEST-046` to `NEST-060` from
-    `docs/implementation_plan_full.md` are delivered and signed off.
+- [x] NEST-046 Define analytics event taxonomy across modules
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Depends on: NEST-029
+  - Done when: canonical event dictionary is documented and adopted in clients.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added canonical analytics taxonomy in `docs/analytics_event_taxonomy.md`.
+    - Defined event envelope fields, naming rules, and module-level v1 event
+      set.
+    - Added rollout constraints for ingestion contracts and downstream
+      insights/AI consumers.
 
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
