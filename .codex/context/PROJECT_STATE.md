@@ -113,8 +113,10 @@ Last updated: 2026-03-16
 - `NEST-035` completed: Google Calendar sync baseline added with dedicated
   calendar sync endpoint, audit metadata, and conflict-candidate detection for
   high-value event fields
+- `NEST-036` completed: Obsidian sync baseline added for journal markdown note
+  export with dedicated journal sync endpoint and audit-backed idempotent flow
 - Current execution focus: Phase 2 integration expansion delivery, next task
-  `NEST-036` Deliver Obsidian synchronization as final provider in wave 1
+  `NEST-037` Implement conflict queue API + UI workflows
 
 ## Auth, AI, Offline, Notifications
 

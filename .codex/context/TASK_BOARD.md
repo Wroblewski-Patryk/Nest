@@ -293,6 +293,21 @@ Last updated: 2026-03-16
     - Persisted sync audit metadata for conflict detection and added dedicated
       unit/feature test coverage for calendar sync flows.
 
+- [x] NEST-036 Deliver Obsidian synchronization as final provider in wave 1
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-032, NEST-033, NEST-035
+  - Done when: markdown note sync is delivered as the last provider in initial
+    integration sequence.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added Obsidian adapter (`obsidian.v1`) with journal entry to markdown note
+      mapping and deterministic sync hashing.
+    - Delivered authenticated journal sync API endpoint:
+      `POST /api/v1/integrations/journal-sync` (`provider=obsidian`).
+    - Added tenant/user-scoped journal sync service with idempotent re-sync
+      behavior and audit metadata test coverage.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

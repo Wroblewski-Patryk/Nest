@@ -25,6 +25,9 @@ Current status:
   `POST /api/v1/integrations/calendar-sync` (`provider=google_calendar`).
 - Calendar sync writes audit trail records and flags high-value field changes as
   conflict candidates (`title`, `start_at`, `end_at`, `timezone`, `all_day`).
+- Obsidian sync baseline is active via
+  `POST /api/v1/integrations/journal-sync` (`provider=obsidian`) for journal
+  markdown note export with audit trail metadata.
 
 ## Integration Data Model
 

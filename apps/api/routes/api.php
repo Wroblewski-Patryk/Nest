@@ -80,5 +80,6 @@ Route::prefix('v1')->group(function (): void {
 
         Route::post('/integrations/list-task-sync', [IntegrationSyncController::class, 'syncListsAndTasks']);
         Route::post('/integrations/calendar-sync', [IntegrationSyncController::class, 'syncCalendar']);
+        Route::post('/integrations/journal-sync', [IntegrationSyncController::class, 'syncJournal']);
     });
 });
