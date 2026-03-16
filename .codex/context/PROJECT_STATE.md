@@ -118,8 +118,10 @@ Last updated: 2026-03-16
 - `NEST-037` completed: conflict queue API and UI workflows added for review
   and resolution (`accept`/`override`) of high-value sync conflicts across web
   and mobile calendar surfaces
+- `NEST-038` completed: deterministic provider/field conflict policy matrix
+  documented and enforced in queue logic with dedicated unit/feature coverage
 - Current execution focus: Phase 2 integration expansion delivery, next task
-  `NEST-038` Add deterministic conflict policy matrix by field/provider
+  `NEST-039` Add sync replay tooling for failed jobs
 
 ## Auth, AI, Offline, Notifications
 

@@ -8,6 +8,10 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class IntegrationConflictQueueService
 {
+    public function __construct(
+        private readonly IntegrationConflictPolicyMatrixService $policy,
+    ) {}
+
     /**
      * @param  array<string, mixed>  $payload
      * @param  array<string, mixed>  $metadata
@@ -16,8 +20,11 @@ class IntegrationConflictQueueService
     {
         $conflictDetected = (bool) ($metadata['conflict_detected'] ?? false);
         $conflictFields = is_array($metadata['conflict_fields'] ?? null) ? $metadata['conflict_fields'] : [];
+        $provider = (string) ($payload['provider'] ?? '');
+        $entityType = (string) ($payload['internal_entity_type'] ?? '');
+        $queueFields = $this->policy->manualQueueFields($provider, $entityType, $conflictFields);
 
-        if (! $conflictDetected || $conflictFields === []) {
+        if (! $conflictDetected || $queueFields === []) {
             return;
         }
 
@@ -34,7 +41,7 @@ class IntegrationConflictQueueService
             $conflict->update([
                 'conflict_fields' => array_values(array_unique([
                     ...$existingFields,
-                    ...$conflictFields,
+                    ...$queueFields,
                 ])),
                 'last_seen_at' => now(),
                 'external_id' => $externalId ?? $conflict->external_id,
@@ -46,12 +53,12 @@ class IntegrationConflictQueueService
         IntegrationSyncConflict::query()->create([
             'tenant_id' => $payload['tenant_id'],
             'user_id' => $payload['user_id'],
-            'provider' => $payload['provider'],
-            'internal_entity_type' => $payload['internal_entity_type'],
+            'provider' => $provider,
+            'internal_entity_type' => $entityType,
             'internal_entity_id' => $payload['internal_entity_id'],
             'external_id' => $externalId,
             'status' => 'open',
-            'conflict_fields' => array_values(array_unique($conflictFields)),
+            'conflict_fields' => array_values(array_unique($queueFields)),
             'detected_at' => now(),
             'last_seen_at' => now(),
         ]);

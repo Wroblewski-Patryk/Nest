@@ -323,6 +323,20 @@ Last updated: 2026-03-16
     - Delivered web/mobile UI workflows on calendar screens to review open
       conflicts and execute `accept` or `override` actions.
 
+- [x] NEST-038 Add deterministic conflict policy matrix by field/provider
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-037
+  - Done when: documented policy is enforced in code and covered by tests.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added deterministic provider/field conflict matrix documentation in
+      `docs/integration_conflict_policy_matrix.md`.
+    - Implemented policy enforcement service used by conflict queue to persist
+      only `manual_queue` fields.
+    - Added unit and feature tests validating policy matrix output and queue
+      filtering behavior for non-manual fields.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

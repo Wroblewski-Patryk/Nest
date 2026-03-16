@@ -58,6 +58,8 @@ Each synchronized object stores:
 - Manual resolution queue for high-value fields (title, due date,
   recurrence pattern).
 - Sync actions are traceable in audit logs.
+- Deterministic provider/field matrix:
+  - `docs/integration_conflict_policy_matrix.md`
 
 ## Security
 
