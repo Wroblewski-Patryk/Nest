@@ -23,6 +23,8 @@ Both editions keep the same core functionality and a consistent visual language.
   interaction priorities.
 - UX/UI MCP workflow: follow `docs/ux_ui_mcp_collaboration.md` for
   design-source validation and implementation evidence.
+- Insights UI baseline: see `docs/insights_ui_baseline.md` for Phase 3 web +
+  mobile coverage.
 
 ## UX Responsibility Split
 

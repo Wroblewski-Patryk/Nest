@@ -7,7 +7,8 @@ export type ModuleKey =
   | "targets"
   | "journal"
   | "life_areas"
-  | "calendar";
+  | "calendar"
+  | "insights";
 
 export type Priority = "low" | "medium" | "high" | "urgent";
 
@@ -45,7 +46,8 @@ export type TelemetryEventName =
   | "screen.habits.view"
   | "screen.goals.view"
   | "screen.journal.view"
-  | "screen.calendar.view";
+  | "screen.calendar.view"
+  | "screen.insights.view";
 
 export interface ClientTelemetryEvent {
   name: TelemetryEventName;
@@ -120,6 +122,50 @@ export type IntegrationConnectionItem = {
   updated_at: string | null;
 };
 
+export type LifeAreaBalanceItem = {
+  life_area_id: string;
+  name: string;
+  weight: number;
+  target_share: number;
+  actual_share: number;
+  journal_entries: number;
+  completed_tasks: number;
+  habit_logs: number;
+  activity_count: number;
+  alignment_score: number;
+  journal_score: number;
+  task_score: number;
+  balance_score: number;
+};
+
+export type LifeAreaBalanceResponse = {
+  data: LifeAreaBalanceItem[];
+  meta: {
+    window_days: number;
+    window_start: string;
+    window_end: string;
+    global_balance_score: number;
+  };
+};
+
+export type InsightsTrendBucket = {
+  bucket_start: string;
+  bucket_end: string;
+  value: number;
+};
+
+export type InsightsTrendResponse = {
+  data: InsightsTrendBucket[];
+  meta: {
+    module: "tasks" | "habits" | "goals";
+    period: "weekly" | "monthly";
+    points: number;
+    window_start: string;
+    window_end: string;
+    total: number;
+  };
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
@@ -128,6 +174,13 @@ export type NestApiClient = {
   getGoals(query?: Record<string, unknown>): Promise<ApiCollectionResponse<GoalItem>>;
   getJournalEntries(query?: Record<string, unknown>): Promise<ApiCollectionResponse<JournalEntryItem>>;
   getCalendarEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<CalendarEventItem>>;
+  getLifeAreaBalance(query?: {
+    window_days?: number;
+  }): Promise<LifeAreaBalanceResponse>;
+  getInsightsTrends(
+    module: "tasks" | "habits" | "goals",
+    query?: { period?: "weekly" | "monthly"; points?: number }
+  ): Promise<InsightsTrendResponse>;
   syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;

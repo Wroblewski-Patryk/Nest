@@ -87,3 +87,19 @@ export const calendarData: ModuleSnapshot = {
     { title: 'Goal review', detail: '18:00', badge: 'goal' },
   ],
 };
+
+export const insightsData: ModuleSnapshot = {
+  state: 'success',
+  module: 'insights',
+  telemetry: 'screen.insights.view',
+  metrics: [
+    { label: 'Balance', value: '67.0' },
+    { label: 'Window', value: '30d' },
+    { label: 'Trends', value: '23' },
+  ],
+  rows: [
+    { title: 'Health', detail: 'target 70% vs actual 50%', badge: '70.0' },
+    { title: 'Career', detail: 'target 30% vs actual 50%', badge: '60.0' },
+    { title: 'Tasks/Habits/Goals', detail: 'weekly trend totals', badge: '8/11/4' },
+  ],
+};

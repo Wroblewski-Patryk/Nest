@@ -57,6 +57,10 @@ function createClient(baseUrl: string): NestApiClient {
       request('/journal-entries', { query }) as ReturnType<NestApiClient['getJournalEntries']>,
     getCalendarEvents: (query = {}) =>
       request('/calendar-events', { query }) as ReturnType<NestApiClient['getCalendarEvents']>,
+    getLifeAreaBalance: (query = {}) =>
+      request('/insights/life-area-balance', { query }) as ReturnType<NestApiClient['getLifeAreaBalance']>,
+    getInsightsTrends: (module, query = {}) =>
+      request(`/insights/trends/${module}`, { query }) as ReturnType<NestApiClient['getInsightsTrends']>,
     syncListTasks: (provider) =>
       request('/integrations/list-task-sync', {
         method: 'POST',

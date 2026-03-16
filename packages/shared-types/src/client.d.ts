@@ -1,4 +1,8 @@
-import type { ApiCollectionMeta } from "./index";
+import type {
+  ApiCollectionMeta,
+  InsightsTrendResponse,
+  LifeAreaBalanceResponse,
+} from "./index";
 
 export type ApiCollectionResponse<TItem> = {
   data: TItem[];
@@ -74,6 +78,13 @@ export type NestApiClient = {
   getGoals(query?: Record<string, unknown>): Promise<ApiCollectionResponse<GoalItem>>;
   getJournalEntries(query?: Record<string, unknown>): Promise<ApiCollectionResponse<JournalEntryItem>>;
   getCalendarEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<CalendarEventItem>>;
+  getLifeAreaBalance(query?: {
+    window_days?: number;
+  }): Promise<LifeAreaBalanceResponse>;
+  getInsightsTrends(
+    module: "tasks" | "habits" | "goals",
+    query?: { period?: "weekly" | "monthly"; points?: number }
+  ): Promise<InsightsTrendResponse>;
   syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;

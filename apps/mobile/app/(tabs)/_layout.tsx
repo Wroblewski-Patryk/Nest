@@ -83,6 +83,19 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="insights"
+        options={{
+          title: 'Insights',
+          tabBarIcon: ({ color }) => (
+            <SymbolView
+              name={{ ios: 'chart.line.uptrend.xyaxis', android: 'insights', web: 'insights' }}
+              tintColor={color}
+              size={22}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

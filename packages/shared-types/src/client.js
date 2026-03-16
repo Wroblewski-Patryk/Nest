@@ -73,6 +73,8 @@ export function createNestApiClient(options) {
     getGoals: (query = {}) => request("/goals", { query }),
     getJournalEntries: (query = {}) => request("/journal-entries", { query }),
     getCalendarEvents: (query = {}) => request("/calendar-events", { query }),
+    getLifeAreaBalance: (query = {}) => request("/insights/life-area-balance", { query }),
+    getInsightsTrends: (module, query = {}) => request(`/insights/trends/${module}`, { query }),
     syncListTasks: (provider) =>
       request("/integrations/list-task-sync", {
         method: "POST",

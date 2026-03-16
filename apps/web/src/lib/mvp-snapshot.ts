@@ -48,6 +48,14 @@ export const moduleReadiness: Array<{
     state: "success",
     telemetry: "screen.calendar.view",
   },
+  {
+    href: "/insights",
+    label: "Insights",
+    key: "insights",
+    focus: "Track life-area balance and behavioral trends.",
+    state: "success",
+    telemetry: "screen.insights.view",
+  },
 ];
 
 export const tasksSnapshot = {
@@ -116,3 +124,19 @@ export const calendarSnapshot = [
     type: "goal",
   },
 ];
+
+export const insightsSnapshot = {
+  balance: {
+    globalScore: 67,
+    windowDays: 30,
+    rows: [
+      { name: "Health", score: 70, target: 70, actual: 50 },
+      { name: "Career", score: 60, target: 30, actual: 50 },
+    ],
+  },
+  trends: [
+    { module: "tasks", period: "weekly", total: 8 },
+    { module: "habits", period: "weekly", total: 11 },
+    { module: "goals", period: "weekly", total: 4 },
+  ],
+};

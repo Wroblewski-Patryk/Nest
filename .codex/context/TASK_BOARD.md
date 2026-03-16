@@ -508,6 +508,21 @@ Last updated: 2026-03-16
     - Added feature tests for bucket outputs, tenant/user scoping, validation,
       and auth plus baseline documentation in `docs/insights_trends_api.md`.
 
+- [x] NEST-050 Deliver insights UI (web and mobile)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-049
+  - Done when: users can view trends and life-area balance reports in both
+    clients.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added web insights screen (`/insights`) with API-backed life-area
+      balance and trend summaries plus failure-safe fallback snapshot.
+    - Added mobile insights tab screen with the same insight payloads and
+      shared telemetry naming (`screen.insights.view`).
+    - Extended shared API client/types to include insights endpoints and
+      documented UI baseline in `docs/insights_ui_baseline.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

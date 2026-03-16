@@ -159,7 +159,9 @@ Last updated: 2026-03-16
 - `NEST-049` completed: trends API delivered for tasks/habits/goals with
   weekly/monthly bucket aggregation, tenant/user scope controls, and feature
   coverage
-- Current execution focus: insights UI delivery (`NEST-050`)
+- `NEST-050` completed: insights UI delivered in web and mobile clients with
+  life-area balance/trend API integration and fallback snapshots
+- Current execution focus: AI weekly planning tools (`NEST-051`)
 
 ## Auth, AI, Offline, Notifications
 
