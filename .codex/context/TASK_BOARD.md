@@ -233,6 +233,21 @@ Last updated: 2026-03-16
     - Established migration, compatibility, deprecation, rollback, and
       validation rules for provider contract evolution.
 
+- [x] NEST-032 Deliver Trello synchronization
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-031
+  - Done when: list/task synchronization with Trello works with idempotency,
+    mapping integrity, and audit trail.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added durable sync audit trail table/model (`integration_sync_audits`)
+      for `success`, `duplicate_skipped`, and `failed` outcomes.
+    - Enforced sync mapping integrity with conflict checks in integration sync
+      service and unique internal mapping constraint in DB migrations.
+    - Extended Trello integration coverage with tests validating idempotency,
+      mapping integrity conflict protection, and audit persistence.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

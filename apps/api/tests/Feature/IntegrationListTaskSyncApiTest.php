@@ -59,6 +59,19 @@ class IntegrationListTaskSyncApiTest extends TestCase
             'provider' => 'trello',
             'internal_entity_type' => 'task',
         ]);
+        $this->assertDatabaseCount('integration_sync_audits', 2);
+        $this->assertDatabaseHas('integration_sync_audits', [
+            'tenant_id' => $tenant->id,
+            'provider' => 'trello',
+            'status' => 'success',
+            'internal_entity_type' => 'task_list',
+        ]);
+        $this->assertDatabaseHas('integration_sync_audits', [
+            'tenant_id' => $tenant->id,
+            'provider' => 'trello',
+            'status' => 'success',
+            'internal_entity_type' => 'task',
+        ]);
 
         $second = $this->postJson('/api/v1/integrations/list-task-sync', [
             'provider' => 'trello',
@@ -67,6 +80,8 @@ class IntegrationListTaskSyncApiTest extends TestCase
         $second->assertJsonPath('data.processed', 2)
             ->assertJsonPath('data.synced', 0)
             ->assertJsonPath('data.skipped', 2);
+
+        $this->assertDatabaseCount('integration_sync_audits', 2);
     }
 
     public function test_user_can_sync_lists_and_tasks_to_google_tasks(): void

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Integrations\Services\IntegrationSyncService;
+use App\Models\IntegrationSyncAudit;
 use App\Models\IntegrationSyncFailure;
 use App\Observability\MetricCounter;
 use Illuminate\Bus\Queueable;
@@ -41,6 +42,26 @@ class ProcessIntegrationSyncJob implements ShouldQueue
     public function failed(Throwable $exception): void
     {
         app(MetricCounter::class)->increment('integration.sync.failed');
+        $auditPayload = [
+            'tenant_id' => $this->payload['tenant_id'] ?? null,
+            'user_id' => $this->payload['user_id'] ?? null,
+            'provider' => (string) ($this->payload['provider'] ?? 'unknown'),
+            'idempotency_key' => (string) ($this->payload['idempotency_key'] ?? 'missing'),
+            'internal_entity_type' => $this->payload['internal_entity_type'] ?? null,
+            'internal_entity_id' => $this->payload['internal_entity_id'] ?? null,
+            'trace_id' => $this->payload['trace_id'] ?? null,
+        ];
+
+        IntegrationSyncAudit::query()->create([
+            ...$auditPayload,
+            'status' => 'failed',
+            'sync_hash' => $this->payload['sync_hash'] ?? null,
+            'metadata' => [
+                'error_message' => $exception->getMessage(),
+                'attempts' => $this->attempts(),
+            ],
+            'occurred_at' => now(),
+        ]);
 
         IntegrationSyncFailure::query()->updateOrCreate(
             [

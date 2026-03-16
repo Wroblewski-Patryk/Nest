@@ -102,8 +102,11 @@ Last updated: 2026-03-16
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
+- `NEST-032` completed: Trello sync reliability hardened with durable audit
+  trail (`integration_sync_audits`) and strict sync mapping integrity checks
+  with dedicated test coverage
 - Current execution focus: Phase 2 integration expansion delivery, next task
-  `NEST-032` Deliver Trello synchronization
+  `NEST-033` Deliver Google Tasks synchronization
 
 ## Auth, AI, Offline, Notifications
 

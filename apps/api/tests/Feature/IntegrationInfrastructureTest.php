@@ -85,6 +85,18 @@ class IntegrationInfrastructureTest extends TestCase
             'last_sync_status' => 'success',
             'sync_hash' => 'hash-123',
         ]);
+        $this->assertDatabaseHas('integration_sync_audits', [
+            'tenant_id' => $tenant->id,
+            'provider' => 'fake_provider',
+            'idempotency_key' => 'idem-001',
+            'status' => 'success',
+        ]);
+        $this->assertDatabaseHas('integration_sync_audits', [
+            'tenant_id' => $tenant->id,
+            'provider' => 'fake_provider',
+            'idempotency_key' => 'idem-001',
+            'status' => 'duplicate_skipped',
+        ]);
     }
 
     public function test_failed_sync_job_is_persisted_in_dead_letter_table(): void
@@ -134,6 +146,63 @@ class IntegrationInfrastructureTest extends TestCase
             'provider' => 'broken_provider',
             'idempotency_key' => 'idem-002',
             'error_message' => 'Provider API unavailable',
+        ]);
+        $this->assertDatabaseHas('integration_sync_audits', [
+            'tenant_id' => $tenant->id,
+            'provider' => 'broken_provider',
+            'idempotency_key' => 'idem-002',
+            'status' => 'failed',
+        ]);
+    }
+
+    public function test_sync_service_blocks_external_mapping_reassignment(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+
+        $adapter = new class implements IntegrationAdapter
+        {
+            public function provider(): string
+            {
+                return 'fake_provider_conflict';
+            }
+
+            public function sync(array $payload): IntegrationSyncResult
+            {
+                return new IntegrationSyncResult(
+                    externalId: 'ext-shared-1',
+                    status: 'success',
+                    syncHash: 'hash-abc'
+                );
+            }
+        };
+
+        $this->app->instance(
+            IntegrationAdapterRegistry::class,
+            new IntegrationAdapterRegistry([$adapter])
+        );
+
+        $service = $this->app->make(IntegrationSyncService::class);
+
+        $service->sync([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'provider' => 'fake_provider_conflict',
+            'internal_entity_type' => 'task',
+            'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58e',
+            'idempotency_key' => 'idem-conflict-1',
+        ]);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Sync mapping integrity violation for external entity.');
+
+        $service->sync([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'provider' => 'fake_provider_conflict',
+            'internal_entity_type' => 'task',
+            'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58f',
+            'idempotency_key' => 'idem-conflict-2',
         ]);
     }
 }
