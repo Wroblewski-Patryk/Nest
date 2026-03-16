@@ -248,6 +248,21 @@ Last updated: 2026-03-16
     - Extended Trello integration coverage with tests validating idempotency,
       mapping integrity conflict protection, and audit persistence.
 
+- [x] NEST-033 Deliver Google Tasks synchronization
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-031
+  - Done when: list/task synchronization with Google Tasks works with retry/
+    backoff and consistent field mappings.
+  - Done on: 2026-03-16
+  - Notes:
+    - Hardened `GoogleTasksAdapter` with deterministic field mapping for
+      `task_list` and `task` payloads and canonical `sync_hash` generation.
+    - Extended sync metadata with mapping version and retry profile details
+      persisted in integration audit trail.
+    - Added tests for Google Tasks mapping consistency and retry/backoff
+      profile coverage.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

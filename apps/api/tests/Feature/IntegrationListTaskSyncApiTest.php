@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\IntegrationSyncAudit;
 use App\Models\Task;
 use App\Models\TaskList;
 use App\Models\Tenant;
@@ -113,6 +114,19 @@ class IntegrationListTaskSyncApiTest extends TestCase
             'provider' => 'google_tasks',
             'internal_entity_type' => 'task',
         ]);
+        $this->assertDatabaseCount('integration_sync_audits', 2);
+
+        $googleTaskAudit = IntegrationSyncAudit::query()
+            ->where('tenant_id', $tenant->id)
+            ->where('provider', 'google_tasks')
+            ->where('internal_entity_type', 'task')
+            ->first();
+
+        $this->assertNotNull($googleTaskAudit);
+        $this->assertSame('success', $googleTaskAudit->status);
+        $this->assertIsArray($googleTaskAudit->metadata);
+        $this->assertSame('google_tasks.v1', $googleTaskAudit->metadata['mapping_version'] ?? null);
+        $this->assertSame([15, 60, 300, 900], $googleTaskAudit->metadata['retry_profile'] ?? null);
     }
 
     public function test_sync_scope_is_limited_to_authenticated_user_tenant_data(): void

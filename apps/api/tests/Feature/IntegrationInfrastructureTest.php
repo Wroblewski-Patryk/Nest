@@ -205,4 +205,19 @@ class IntegrationInfrastructureTest extends TestCase
             'idempotency_key' => 'idem-conflict-2',
         ]);
     }
+
+    public function test_google_tasks_sync_job_uses_retry_backoff_profile(): void
+    {
+        $job = new ProcessIntegrationSyncJob([
+            'provider' => 'google_tasks',
+            'tenant_id' => 'tenant-1',
+            'user_id' => 'user-1',
+            'internal_entity_type' => 'task',
+            'internal_entity_id' => 'task-1',
+            'idempotency_key' => 'idem-google-1',
+        ]);
+
+        $this->assertSame(5, $job->tries);
+        $this->assertSame([15, 60, 300, 900], $job->backoff);
+    }
 }

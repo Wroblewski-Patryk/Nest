@@ -105,8 +105,11 @@ Last updated: 2026-03-16
 - `NEST-032` completed: Trello sync reliability hardened with durable audit
   trail (`integration_sync_audits`) and strict sync mapping integrity checks
   with dedicated test coverage
+- `NEST-033` completed: Google Tasks sync hardened with deterministic payload
+  mapping, canonical sync hashing, and audit metadata for mapping version and
+  retry profile
 - Current execution focus: Phase 2 integration expansion delivery, next task
-  `NEST-033` Deliver Google Tasks synchronization
+  `NEST-034` Deliver third list/task provider (demand-driven)
 
 ## Auth, AI, Offline, Notifications
 
