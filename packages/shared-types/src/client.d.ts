@@ -55,6 +55,17 @@ export type IntegrationConflictItem = {
   last_seen_at: string;
 };
 
+export type IntegrationConnectionItem = {
+  provider: string;
+  status: "not_connected" | "connected" | "revoked";
+  is_connected: boolean;
+  scopes: string[];
+  expires_at: string | null;
+  revoked_at: string | null;
+  connected_at: string | null;
+  updated_at: string | null;
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
@@ -65,6 +76,19 @@ export type NestApiClient = {
   getCalendarEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<CalendarEventItem>>;
   syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
+  getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;
+  upsertIntegrationConnection(
+    provider: "trello" | "google_tasks" | "todoist" | "google_calendar" | "obsidian",
+    payload: {
+      access_token: string;
+      refresh_token?: string | null;
+      scopes?: string[];
+      expires_at?: string | null;
+    }
+  ): Promise<{ data: IntegrationConnectionItem }>;
+  revokeIntegrationConnection(
+    provider: "trello" | "google_tasks" | "todoist" | "google_calendar" | "obsidian"
+  ): Promise<{ data: IntegrationConnectionItem }>;
   resolveIntegrationConflict(
     conflictId: string,
     action: "accept" | "override",

@@ -367,6 +367,23 @@ Last updated: 2026-03-16
     - Added latency metric bucketing in sync flow plus unit/feature tests for
       SLO evaluation and command exit behavior.
 
+- [x] NEST-041 Expose provider connection management in web and mobile
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-032, NEST-033, NEST-034, NEST-035, NEST-036
+  - Done when: users can connect/reconnect/revoke providers from both clients.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added provider connection management API:
+      `GET /api/v1/integrations/connections`,
+      `PUT /api/v1/integrations/connections/{provider}`,
+      `DELETE /api/v1/integrations/connections/{provider}`.
+    - Added tenant/user-scoped connection service on top of credential vault
+      with explicit provider allowlist and reconnect/revoke behavior.
+    - Added web and mobile calendar workflows to list providers and execute
+      connect/reconnect/revoke actions, plus API/client contract updates and
+      feature tests.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

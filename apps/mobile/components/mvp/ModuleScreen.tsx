@@ -1,5 +1,9 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import type { TelemetryEventName, UiAsyncState } from '@nest/shared-types';
+import type {
+  IntegrationConnectionItem,
+  TelemetryEventName,
+  UiAsyncState,
+} from '@nest/shared-types';
 
 type Metric = {
   label: string;
@@ -33,6 +37,12 @@ type ModuleScreenProps = {
     onResolve: (conflictId: string, action: 'accept' | 'override') => void;
     resolvingId?: string | null;
   };
+  connections?: {
+    items: IntegrationConnectionItem[];
+    onConnect: (provider: string) => void;
+    onRevoke: (provider: string) => void;
+    busyProvider?: string | null;
+  };
 };
 
 const stateLabels: Record<UiAsyncState, string> = {
@@ -51,6 +61,7 @@ export function ModuleScreen({
   rows,
   connectivity,
   conflicts,
+  connections,
 }: ModuleScreenProps) {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
@@ -155,6 +166,51 @@ export function ModuleScreen({
               </View>
             ))
           )}
+        </View>
+      ) : null}
+
+      {connections ? (
+        <View style={styles.panel}>
+          <Text style={styles.panelTitle}>Provider Connections</Text>
+          {connections.items.map((connection) => (
+            <View key={connection.provider} style={styles.rowStack}>
+              <View style={styles.row}>
+                <View style={styles.rowTextWrap}>
+                  <Text style={styles.rowTitle}>{connection.provider}</Text>
+                  <Text style={styles.rowDetail}>Status: {connection.status}</Text>
+                </View>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>
+                    {connection.is_connected ? 'connected' : 'inactive'}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.actionRow}>
+                <Pressable
+                  style={[
+                    styles.actionButton,
+                    connections.busyProvider === connection.provider && styles.actionButtonDisabled,
+                  ]}
+                  onPress={() => connections.onConnect(connection.provider)}
+                  disabled={connections.busyProvider === connection.provider}
+                >
+                  <Text style={styles.actionButtonText}>
+                    {connection.status === 'connected' ? 'Reconnect' : 'Connect'}
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={[
+                    styles.actionButton,
+                    connections.busyProvider === connection.provider && styles.actionButtonDisabled,
+                  ]}
+                  onPress={() => connections.onRevoke(connection.provider)}
+                  disabled={connections.busyProvider === connection.provider}
+                >
+                  <Text style={styles.actionButtonText}>Revoke</Text>
+                </Pressable>
+              </View>
+            </View>
+          ))}
         </View>
       ) : null}
     </ScrollView>

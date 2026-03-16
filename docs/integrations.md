@@ -36,6 +36,11 @@ Current status:
   - `GET /api/v1/integrations/failures`
   - `POST /api/v1/integrations/failures/{failureId}/replay`
   with tenant/user scoping and replay idempotency key rotation.
+- Provider connection management is active via:
+  - `GET /api/v1/integrations/connections`
+  - `PUT /api/v1/integrations/connections/{provider}`
+  - `DELETE /api/v1/integrations/connections/{provider}`
+  with tenant/user-scoped connect, reconnect, and revoke flows.
 
 ## Integration Data Model
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CalendarEventController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\HabitController;
 use App\Http\Controllers\Api\IntegrationConflictController;
+use App\Http\Controllers\Api\IntegrationConnectionController;
 use App\Http\Controllers\Api\IntegrationSyncController;
 use App\Http\Controllers\Api\IntegrationSyncReplayController;
 use App\Http\Controllers\Api\JournalEntryController;
@@ -83,6 +84,9 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/integrations/list-task-sync', [IntegrationSyncController::class, 'syncListsAndTasks']);
         Route::post('/integrations/calendar-sync', [IntegrationSyncController::class, 'syncCalendar']);
         Route::post('/integrations/journal-sync', [IntegrationSyncController::class, 'syncJournal']);
+        Route::get('/integrations/connections', [IntegrationConnectionController::class, 'index']);
+        Route::put('/integrations/connections/{provider}', [IntegrationConnectionController::class, 'upsert']);
+        Route::delete('/integrations/connections/{provider}', [IntegrationConnectionController::class, 'revoke']);
         Route::get('/integrations/conflicts', [IntegrationConflictController::class, 'index']);
         Route::post('/integrations/conflicts/{conflictId}/resolve', [IntegrationConflictController::class, 'resolve']);
         Route::get('/integrations/failures', [IntegrationSyncReplayController::class, 'index']);

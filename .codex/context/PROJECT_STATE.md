@@ -129,10 +129,13 @@ Last updated: 2026-03-16
 - `NEST-040` completed: integration sync SLO baseline added with success
   rate/p95 latency targets, error budget burn evaluation, warning/critical
   thresholds, and runtime check command (`integrations:sync-slo-check`)
+- `NEST-041` completed: provider connection management delivered across API,
+  web, and mobile with tenant/user-scoped connect, reconnect, and revoke flows
+  plus shared client contract coverage
 - `NEST-084` completed: strict architecture/programming/scalability/AI-readiness
   audit delivered with prioritized hardening recommendations and implementation
   sequencing (`docs/architecture_programming_scalability_ai_audit_2026-03-16.md`)
-- Current execution focus: Phase 2 integration expansion delivery (`NEST-041`)
+- Current execution focus: Phase 2 integration expansion delivery (`NEST-042`)
   plus planning of hardening backlog from audit findings (`NEST-083`)
 
 ## Auth, AI, Offline, Notifications

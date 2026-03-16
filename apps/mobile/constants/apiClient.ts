@@ -62,6 +62,17 @@ function createClient(baseUrl: string): NestApiClient {
         method: 'POST',
         body: { provider },
       }) as ReturnType<NestApiClient['syncListTasks']>,
+    getIntegrationConnections: () =>
+      request('/integrations/connections') as ReturnType<NestApiClient['getIntegrationConnections']>,
+    upsertIntegrationConnection: (provider, payload) =>
+      request(`/integrations/connections/${provider}`, {
+        method: 'PUT',
+        body: payload,
+      }) as ReturnType<NestApiClient['upsertIntegrationConnection']>,
+    revokeIntegrationConnection: (provider) =>
+      request(`/integrations/connections/${provider}`, {
+        method: 'DELETE',
+      }) as ReturnType<NestApiClient['revokeIntegrationConnection']>,
     getIntegrationConflicts: (query = {}) =>
       request('/integrations/conflicts', { query }) as ReturnType<NestApiClient['getIntegrationConflicts']>,
     resolveIntegrationConflict: (conflictId, action, resolutionPayload) =>
