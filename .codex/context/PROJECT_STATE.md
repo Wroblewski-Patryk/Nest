@@ -145,8 +145,10 @@ Last updated: 2026-03-16
 - `NEST-084` completed: strict architecture/programming/scalability/AI-readiness
   audit delivered with prioritized hardening recommendations and implementation
   sequencing (`docs/architecture_programming_scalability_ai_audit_2026-03-16.md`)
-- Current execution focus: Phase 3 program kickoff (`NEST-046`) plus planning
-  of hardening backlog from audit findings (`NEST-083`)
+- `NEST-083` completed: post-MVP hardening plan translated from audit into
+  sequenced P0/P1/P2 implementation backlog with dependencies and acceptance
+  criteria (`docs/post_mvp_hardening_plan.md`)
+- Current execution focus: Phase 3 program kickoff (`NEST-046`)
 
 ## Auth, AI, Offline, Notifications
 

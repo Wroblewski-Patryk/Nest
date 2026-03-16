@@ -462,17 +462,20 @@ Last updated: 2026-03-16
   - Done when: all tasks `NEST-061` to `NEST-081` from
     `docs/implementation_plan_full.md` are delivered and signed off.
 
-- [ ] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
-  - Status: BACKLOG
+- [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
+  - Status: DONE
   - Owner: Planning Agent
   - Depends on: NEST-040
   - Done when:
     - audit findings are translated into sequenced implementation tasks,
     - each task has acceptance criteria and dependency mapping,
     - execution order is defined with P0/P1/P2 priorities.
+  - Done on: 2026-03-16
   - Notes:
     - Source audit: `docs/architecture_programming_scalability_ai_audit_2026-03-16.md`
-    - Priority starts with sync idempotency correctness and async scalability.
+    - Hardening plan delivered in `docs/post_mvp_hardening_plan.md`.
+    - Includes sequenced P0/P1/P2 tasks with dependencies, acceptance criteria,
+      and execution order.
 
 - [x] NEST-082 Resolve documentation phase sequencing inconsistencies
   - Status: DONE
