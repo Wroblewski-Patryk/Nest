@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-03-15
+Last updated: 2026-03-16
 
 ## Backlog
 
@@ -218,12 +218,20 @@ Last updated: 2026-03-15
     - Added untracked/staged/unstaged diff aggregation for unintended change
       review and documented workflow in `docs/quality_gate_workflow.md`.
 
-- [ ] NEST-031 Phase 2 integration expansion release program
-  - Status: BACKLOG
+- [x] NEST-031 Define post-MVP integration contract versioning strategy
+  - Status: DONE
   - Owner: Planning Agent
   - Depends on: NEST-029
-  - Done when: all tasks `NEST-031` to `NEST-045` from
-    `docs/implementation_plan_full.md` are delivered and signed off.
+  - Done when: provider contract/version policy and migration rules are
+    documented and linked from integration docs.
+  - Done on: 2026-03-16
+  - Notes:
+    - Defined post-MVP integration contract versioning strategy in
+      `docs/integration_contract_versioning.md`.
+    - Added explicit integration docs link to versioning strategy from
+      `docs/integrations.md`.
+    - Established migration, compatibility, deprecation, rollback, and
+      validation rules for provider contract evolution.
 
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG

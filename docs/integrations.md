@@ -50,3 +50,9 @@ Each synchronized object stores:
 - Encrypted provider tokens.
 - Least-privilege provider scopes.
 - Credential rotation and revoke support.
+
+## Contract Versioning
+
+Post-MVP provider contracts follow a dedicated versioning and migration policy:
+
+- `docs/integration_contract_versioning.md`

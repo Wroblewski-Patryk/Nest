@@ -1,6 +1,6 @@
 ﻿# PROJECT_STATE
 
-Last updated: 2026-03-15
+Last updated: 2026-03-16
 
 ## Product
 
@@ -99,8 +99,11 @@ Last updated: 2026-03-15
   manual checklist acknowledgement, and diff review support
 - `NEST-082` completed: documentation sequencing aligned so Phase 2 remains
   integration-focused and first end-user AI surface starts in Phase 3
-- Current execution focus: implementation bootstrap (Phase 1), next task
-  `NEST-031` Phase 2 integration expansion release program
+- `NEST-031` completed: post-MVP integration contract versioning strategy
+  documented with compatibility, migration, rollback, and deprecation rules and
+  linked from integration docs
+- Current execution focus: Phase 2 integration expansion delivery, next task
+  `NEST-032` Deliver Trello synchronization
 
 ## Auth, AI, Offline, Notifications
 
