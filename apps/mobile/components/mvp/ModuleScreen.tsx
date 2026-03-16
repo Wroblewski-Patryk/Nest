@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { TelemetryEventName, UiAsyncState } from '@nest/shared-types';
 
 type Metric = {
@@ -23,6 +23,16 @@ type ModuleScreenProps = {
     state: UiAsyncState;
     detail: string;
   };
+  conflicts?: {
+    items: Array<{
+      id: string;
+      provider: string;
+      entityType: string;
+      fields: string[];
+    }>;
+    onResolve: (conflictId: string, action: 'accept' | 'override') => void;
+    resolvingId?: string | null;
+  };
 };
 
 const stateLabels: Record<UiAsyncState, string> = {
@@ -40,6 +50,7 @@ export function ModuleScreen({
   metrics,
   rows,
   connectivity,
+  conflicts,
 }: ModuleScreenProps) {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
@@ -89,6 +100,61 @@ export function ModuleScreen({
               <Text style={styles.badgeText}>shared client</Text>
             </View>
           </View>
+        </View>
+      ) : null}
+
+      {conflicts ? (
+        <View style={styles.panel}>
+          <Text style={styles.panelTitle}>Conflict Queue</Text>
+          {conflicts.items.length === 0 ? (
+            <View style={styles.row}>
+              <View style={styles.rowTextWrap}>
+                <Text style={styles.rowTitle}>No open conflicts</Text>
+                <Text style={styles.rowDetail}>Queue is clear for this module.</Text>
+              </View>
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>clear</Text>
+              </View>
+            </View>
+          ) : (
+            conflicts.items.map((conflict) => (
+              <View key={conflict.id} style={styles.rowStack}>
+                <View style={styles.row}>
+                  <View style={styles.rowTextWrap}>
+                    <Text style={styles.rowTitle}>{conflict.provider}</Text>
+                    <Text style={styles.rowDetail}>
+                      {conflict.entityType} • {conflict.fields.join(', ')}
+                    </Text>
+                  </View>
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>open</Text>
+                  </View>
+                </View>
+                <View style={styles.actionRow}>
+                  <Pressable
+                    style={[
+                      styles.actionButton,
+                      conflicts.resolvingId === conflict.id && styles.actionButtonDisabled,
+                    ]}
+                    onPress={() => conflicts.onResolve(conflict.id, 'accept')}
+                    disabled={conflicts.resolvingId === conflict.id}
+                  >
+                    <Text style={styles.actionButtonText}>Accept</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[
+                      styles.actionButton,
+                      conflicts.resolvingId === conflict.id && styles.actionButtonDisabled,
+                    ]}
+                    onPress={() => conflicts.onResolve(conflict.id, 'override')}
+                    disabled={conflicts.resolvingId === conflict.id}
+                  >
+                    <Text style={styles.actionButtonText}>Override</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ))
+          )}
         </View>
       ) : null}
     </ScrollView>
@@ -194,6 +260,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: '#ffffff',
   },
+  rowStack: {
+    gap: 8,
+  },
   rowTextWrap: {
     flexShrink: 1,
     gap: 2,
@@ -219,5 +288,25 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     color: '#166534',
+  },
+  actionRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  actionButton: {
+    borderWidth: 1,
+    borderColor: '#99f6e4',
+    borderRadius: 8,
+    backgroundColor: '#ccfbf1',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  actionButtonDisabled: {
+    opacity: 0.6,
+  },
+  actionButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#115e59',
   },
 });

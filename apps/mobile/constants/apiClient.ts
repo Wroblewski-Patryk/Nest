@@ -62,6 +62,16 @@ function createClient(baseUrl: string): NestApiClient {
         method: 'POST',
         body: { provider },
       }) as ReturnType<NestApiClient['syncListTasks']>,
+    getIntegrationConflicts: (query = {}) =>
+      request('/integrations/conflicts', { query }) as ReturnType<NestApiClient['getIntegrationConflicts']>,
+    resolveIntegrationConflict: (conflictId, action, resolutionPayload) =>
+      request(`/integrations/conflicts/${conflictId}/resolve`, {
+        method: 'POST',
+        body: {
+          action,
+          ...(resolutionPayload ? { resolution_payload: resolutionPayload } : {}),
+        },
+      }) as ReturnType<NestApiClient['resolveIntegrationConflict']>,
   };
 }
 

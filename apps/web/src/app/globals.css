@@ -223,6 +223,12 @@ body {
 
 .pill-link {
   text-decoration: none;
+  cursor: pointer;
+}
+
+.pill-link:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .row-inline {

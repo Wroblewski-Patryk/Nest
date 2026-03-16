@@ -115,8 +115,11 @@ Last updated: 2026-03-16
   high-value event fields
 - `NEST-036` completed: Obsidian sync baseline added for journal markdown note
   export with dedicated journal sync endpoint and audit-backed idempotent flow
+- `NEST-037` completed: conflict queue API and UI workflows added for review
+  and resolution (`accept`/`override`) of high-value sync conflicts across web
+  and mobile calendar surfaces
 - Current execution focus: Phase 2 integration expansion delivery, next task
-  `NEST-037` Implement conflict queue API + UI workflows
+  `NEST-038` Add deterministic conflict policy matrix by field/provider
 
 ## Auth, AI, Offline, Notifications
 

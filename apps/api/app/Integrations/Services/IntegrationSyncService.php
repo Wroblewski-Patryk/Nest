@@ -16,6 +16,7 @@ class IntegrationSyncService
     public function __construct(
         private readonly IntegrationAdapterRegistry $registry,
         private readonly MetricCounter $metrics,
+        private readonly IntegrationConflictQueueService $conflicts,
     ) {}
 
     /**
@@ -173,7 +174,7 @@ class IntegrationSyncService
         ?string $syncHash = null,
         array $metadata = []
     ): void {
-        IntegrationSyncAudit::query()->create([
+        $audit = IntegrationSyncAudit::query()->create([
             'tenant_id' => $payload['tenant_id'] ?? null,
             'user_id' => $payload['user_id'] ?? null,
             'provider' => (string) ($payload['provider'] ?? 'unknown'),
@@ -187,5 +188,11 @@ class IntegrationSyncService
             'metadata' => $metadata,
             'occurred_at' => now(),
         ]);
+
+        $this->conflicts->upsertFromSyncMetadata(
+            payload: $payload,
+            metadata: $metadata,
+            externalId: $externalId ?? $audit->external_id
+        );
     }
 }

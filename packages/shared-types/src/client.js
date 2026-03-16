@@ -78,5 +78,14 @@ export function createNestApiClient(options) {
         method: "POST",
         body: { provider },
       }),
+    getIntegrationConflicts: (query = {}) => request("/integrations/conflicts", { query }),
+    resolveIntegrationConflict: (conflictId, action, resolutionPayload = undefined) =>
+      request(`/integrations/conflicts/${conflictId}/resolve`, {
+        method: "POST",
+        body: {
+          action,
+          ...(resolutionPayload ? { resolution_payload: resolutionPayload } : {}),
+        },
+      }),
   };
 }

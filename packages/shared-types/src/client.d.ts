@@ -43,6 +43,18 @@ export type CalendarEventItem = {
   end_at: string;
 };
 
+export type IntegrationConflictItem = {
+  id: string;
+  provider: string;
+  internal_entity_type: string;
+  internal_entity_id: string;
+  external_id: string | null;
+  status: "open" | "resolved";
+  conflict_fields: string[];
+  detected_at: string;
+  last_seen_at: string;
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
@@ -51,7 +63,13 @@ export type NestApiClient = {
   getGoals(query?: Record<string, unknown>): Promise<ApiCollectionResponse<GoalItem>>;
   getJournalEntries(query?: Record<string, unknown>): Promise<ApiCollectionResponse<JournalEntryItem>>;
   getCalendarEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<CalendarEventItem>>;
-  syncListTasks(provider: "trello" | "google_tasks"): Promise<{ data: Record<string, unknown> }>;
+  syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
+  getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
+  resolveIntegrationConflict(
+    conflictId: string,
+    action: "accept" | "override",
+    resolutionPayload?: Record<string, unknown>
+  ): Promise<{ data: Record<string, unknown> }>;
 };
 
 export function createNestApiClient(options: {

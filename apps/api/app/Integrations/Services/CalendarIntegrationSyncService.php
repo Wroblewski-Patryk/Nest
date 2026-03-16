@@ -104,7 +104,7 @@ class CalendarIntegrationSyncService
             'internal_entity_type' => 'calendar_event',
             'internal_entity_id' => $entityId,
             'external_id' => $mapping?->external_id ?? "{$provider}:calendar_event:{$entityId}",
-            'idempotency_key' => "{$provider}:calendar_event:{$entityId}",
+            'idempotency_key' => "{$provider}:calendar_event:{$entityId}:{$syncHash}",
             'entity_payload' => $entityData,
             'sync_hash' => $syncHash,
             'trace_id' => (string) Str::uuid(),

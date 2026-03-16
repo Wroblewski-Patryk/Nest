@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CalendarEventController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\HabitController;
+use App\Http\Controllers\Api\IntegrationConflictController;
 use App\Http\Controllers\Api\IntegrationSyncController;
 use App\Http\Controllers\Api\JournalEntryController;
 use App\Http\Controllers\Api\LifeAreaController;
@@ -81,5 +82,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/integrations/list-task-sync', [IntegrationSyncController::class, 'syncListsAndTasks']);
         Route::post('/integrations/calendar-sync', [IntegrationSyncController::class, 'syncCalendar']);
         Route::post('/integrations/journal-sync', [IntegrationSyncController::class, 'syncJournal']);
+        Route::get('/integrations/conflicts', [IntegrationConflictController::class, 'index']);
+        Route::post('/integrations/conflicts/{conflictId}/resolve', [IntegrationConflictController::class, 'resolve']);
     });
 });

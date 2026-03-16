@@ -28,6 +28,10 @@ Current status:
 - Obsidian sync baseline is active via
   `POST /api/v1/integrations/journal-sync` (`provider=obsidian`) for journal
   markdown note export with audit trail metadata.
+- Conflict queue workflows are active via:
+  - `GET /api/v1/integrations/conflicts`
+  - `POST /api/v1/integrations/conflicts/{conflictId}/resolve`
+  supporting `accept` and `override` resolution actions.
 
 ## Integration Data Model
 

@@ -308,6 +308,21 @@ Last updated: 2026-03-16
     - Added tenant/user-scoped journal sync service with idempotent re-sync
       behavior and audit metadata test coverage.
 
+- [x] NEST-037 Implement conflict queue API + UI workflows
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-032, NEST-033, NEST-034, NEST-035, NEST-036
+  - Done when: users can review, accept, or override high-value field conflicts.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added persistent conflict queue domain (`integration_sync_conflicts`) with
+      open/resolved lifecycle and resolution payload support.
+    - Added conflict queue API routes for listing and resolving conflicts:
+      `GET /api/v1/integrations/conflicts` and
+      `POST /api/v1/integrations/conflicts/{conflictId}/resolve`.
+    - Delivered web/mobile UI workflows on calendar screens to review open
+      conflicts and execute `accept` or `override` actions.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent
