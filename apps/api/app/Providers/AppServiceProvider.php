@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Integrations\Adapters\GoogleCalendarAdapter;
 use App\Integrations\Adapters\GoogleTasksAdapter;
 use App\Integrations\Adapters\TodoistAdapter;
 use App\Integrations\Adapters\TrelloAdapter;
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
                 new TrelloAdapter,
                 new GoogleTasksAdapter,
                 new TodoistAdapter,
+                new GoogleCalendarAdapter,
             ]);
         });
 

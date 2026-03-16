@@ -79,5 +79,6 @@ Route::prefix('v1')->group(function (): void {
         Route::delete('/calendar-events/{eventId}', [CalendarEventController::class, 'destroy']);
 
         Route::post('/integrations/list-task-sync', [IntegrationSyncController::class, 'syncListsAndTasks']);
+        Route::post('/integrations/calendar-sync', [IntegrationSyncController::class, 'syncCalendar']);
     });
 });

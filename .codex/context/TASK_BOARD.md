@@ -278,6 +278,21 @@ Last updated: 2026-03-16
     - Added unit and feature tests for Todoist sync behavior, mapping metadata,
       and end-to-end list/task synchronization.
 
+- [x] NEST-035 Deliver Google Calendar synchronization
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-032, NEST-033
+  - Done when: calendar sync is delivered after list/task baseline and follows
+    conflict/audit requirements.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added Google Calendar adapter (`google_calendar.v1`) and calendar sync
+      API endpoint `POST /api/v1/integrations/calendar-sync`.
+    - Delivered tenant/user-scoped calendar sync service with idempotent skip
+      behavior and conflict-candidate detection for high-value event fields.
+    - Persisted sync audit metadata for conflict detection and added dedicated
+      unit/feature test coverage for calendar sync flows.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

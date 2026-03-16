@@ -19,6 +19,13 @@ Nest should support multiple providers per functional area over time
 2. Google Calendar integration after list/task baseline.
 3. Obsidian integration at the end of the initial wave.
 
+Current status:
+
+- Google Calendar sync baseline is active via
+  `POST /api/v1/integrations/calendar-sync` (`provider=google_calendar`).
+- Calendar sync writes audit trail records and flags high-value field changes as
+  conflict candidates (`title`, `start_at`, `end_at`, `timezone`, `all_day`).
+
 ## Integration Data Model
 
 Each synchronized object stores:

@@ -110,8 +110,11 @@ Last updated: 2026-03-16
   retry profile
 - `NEST-034` completed: demand-driven third list/task provider selected as
   Todoist with adapter registration, API support, and sync quality parity tests
+- `NEST-035` completed: Google Calendar sync baseline added with dedicated
+  calendar sync endpoint, audit metadata, and conflict-candidate detection for
+  high-value event fields
 - Current execution focus: Phase 2 integration expansion delivery, next task
-  `NEST-035` Deliver Google Calendar synchronization
+  `NEST-036` Deliver Obsidian synchronization as final provider in wave 1
 
 ## Auth, AI, Offline, Notifications
 
