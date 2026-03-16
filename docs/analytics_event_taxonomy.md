@@ -98,3 +98,5 @@ Every event must include:
   - `docs/analytics_ingestion_pipeline.md`
 - Life-area scoring baseline:
   - `docs/life_area_balance_score_model.md`
+- Trends API baseline:
+  - `docs/insights_trends_api.md`

@@ -492,6 +492,22 @@ Last updated: 2026-03-16
       input validation plus model documentation in
       `docs/life_area_balance_score_model.md`.
 
+- [x] NEST-049 Implement trends and insights API
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-047, NEST-048
+  - Done when: weekly/monthly trend endpoints exist for tasks/habits/goals.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added trend endpoints:
+      `GET /api/v1/insights/trends/tasks`,
+      `GET /api/v1/insights/trends/habits`,
+      `GET /api/v1/insights/trends/goals`.
+    - Added bucketed trend aggregation service supporting `weekly`/`monthly`
+      periods and configurable bucket count (`points`).
+    - Added feature tests for bucket outputs, tenant/user scoping, validation,
+      and auth plus baseline documentation in `docs/insights_trends_api.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

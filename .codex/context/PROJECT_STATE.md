@@ -156,7 +156,10 @@ Last updated: 2026-03-16
 - `NEST-048` completed: life-area balance scoring baseline delivered with
   formula-driven API endpoint, tenant/user scoped aggregation, and feature
   coverage
-- Current execution focus: trends and insights API (`NEST-049`)
+- `NEST-049` completed: trends API delivered for tasks/habits/goals with
+  weekly/monthly bucket aggregation, tenant/user scope controls, and feature
+  coverage
+- Current execution focus: insights UI delivery (`NEST-050`)
 
 ## Auth, AI, Offline, Notifications
 

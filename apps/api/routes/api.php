@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CalendarEventController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\HabitController;
+use App\Http\Controllers\Api\InsightsTrendController;
 use App\Http\Controllers\Api\IntegrationConflictController;
 use App\Http\Controllers\Api\IntegrationConnectionController;
 use App\Http\Controllers\Api\IntegrationSyncController;
@@ -30,6 +31,9 @@ Route::prefix('v1')->group(function (): void {
         Route::patch('/auth/settings', [UserSettingsController::class, 'update']);
         Route::post('/analytics/events', [AnalyticsIngestionController::class, 'ingest']);
         Route::get('/insights/life-area-balance', [LifeAreaBalanceScoreController::class, 'show']);
+        Route::get('/insights/trends/tasks', [InsightsTrendController::class, 'tasks']);
+        Route::get('/insights/trends/habits', [InsightsTrendController::class, 'habits']);
+        Route::get('/insights/trends/goals', [InsightsTrendController::class, 'goals']);
 
         Route::get('/lists', [TaskListController::class, 'index']);
         Route::post('/lists', [TaskListController::class, 'store']);
