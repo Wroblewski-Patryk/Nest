@@ -1,5 +1,6 @@
 <?php
 
+use App\Notifications\Services\MobilePushReminderService;
 use App\Observability\IntegrationSyncSloService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -37,3 +38,21 @@ Artisan::command('integrations:sync-slo-check {--json}', function (): int {
 
     return $severity === 'critical' ? self::FAILURE : self::SUCCESS;
 })->purpose('Evaluate current integration sync SLO window and emit alert signal');
+
+Artisan::command('notifications:send-mobile-reminders {--tenant=} {--json}', function (): int {
+    $tenantId = $this->option('tenant');
+    $summary = app(MobilePushReminderService::class)->sendKeyReminders(
+        is_string($tenantId) && $tenantId !== '' ? $tenantId : null
+    );
+
+    if ($this->option('json')) {
+        $this->line((string) json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    } else {
+        $this->info('Mobile push reminders processed.');
+        $this->line('Devices: '.$summary['processed_devices']);
+        $this->line('Sent: '.$summary['notifications_sent']);
+        $this->line('Failed: '.$summary['notifications_failed']);
+    }
+
+    return self::SUCCESS;
+})->purpose('Send baseline mobile push reminders for due tasks and upcoming calendar events');

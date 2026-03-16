@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\IntegrationSyncController;
 use App\Http\Controllers\Api\IntegrationSyncReplayController;
 use App\Http\Controllers\Api\JournalEntryController;
 use App\Http\Controllers\Api\LifeAreaController;
+use App\Http\Controllers\Api\MobilePushDeviceController;
 use App\Http\Controllers\Api\RoutineController;
 use App\Http\Controllers\Api\TargetController;
 use App\Http\Controllers\Api\TaskController;
@@ -91,5 +92,9 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/integrations/conflicts/{conflictId}/resolve', [IntegrationConflictController::class, 'resolve']);
         Route::get('/integrations/failures', [IntegrationSyncReplayController::class, 'index']);
         Route::post('/integrations/failures/{failureId}/replay', [IntegrationSyncReplayController::class, 'replay']);
+
+        Route::get('/notifications/mobile/devices', [MobilePushDeviceController::class, 'index']);
+        Route::post('/notifications/mobile/devices', [MobilePushDeviceController::class, 'store']);
+        Route::delete('/notifications/mobile/devices/{deviceId}', [MobilePushDeviceController::class, 'destroy']);
     });
 });

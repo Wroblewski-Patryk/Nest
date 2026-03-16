@@ -59,6 +59,19 @@ Current workflow implementation:
   - queue and integration counters are emitted (`api.requests.*`,
     `queue.jobs.*`, `integration.sync.*`).
 
+## Mobile Push Baseline Operations
+
+- Device registration API:
+  - `GET /api/v1/notifications/mobile/devices`
+  - `POST /api/v1/notifications/mobile/devices`
+  - `DELETE /api/v1/notifications/mobile/devices/{deviceId}`
+- Reminder dispatch command:
+  - `php artisan notifications:send-mobile-reminders`
+  - `php artisan notifications:send-mobile-reminders --tenant=<tenant-id>`
+  - `php artisan notifications:send-mobile-reminders --json`
+- Detailed baseline scope and monitoring:
+  - `docs/mobile_push_notifications_baseline.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

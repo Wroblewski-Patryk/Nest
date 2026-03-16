@@ -137,10 +137,13 @@ Last updated: 2026-03-16
   extra or missing permissions
 - `NEST-043` completed: provider end-to-end integration regression suite added
   and enforced in CI with explicit Integration/Unit/Feature suite execution
+- `NEST-044` completed: mobile push notification baseline delivered with
+  device registration API, reminder dispatch command, explicit reminder scope,
+  and delivery monitoring metrics/logging
 - `NEST-084` completed: strict architecture/programming/scalability/AI-readiness
   audit delivered with prioritized hardening recommendations and implementation
   sequencing (`docs/architecture_programming_scalability_ai_audit_2026-03-16.md`)
-- Current execution focus: Phase 2 integration expansion delivery (`NEST-044`)
+- Current execution focus: Phase 2 integration expansion delivery (`NEST-045`)
   plus planning of hardening backlog from audit findings (`NEST-083`)
 
 ## Auth, AI, Offline, Notifications

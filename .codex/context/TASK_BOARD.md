@@ -416,6 +416,23 @@ Last updated: 2026-03-16
       `docs/integration_regression_suite.md` and linked it from
       `docs/integrations.md`.
 
+- [x] NEST-044 Deliver notifications first step (mobile push baseline)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-035
+  - Done when: simple push notifications are available for key reminders, with
+    explicit scope and delivery monitoring.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added mobile push device registration API with encrypted token storage
+      and tenant/user-scoped revoke flow.
+    - Added baseline reminder dispatch command
+      (`notifications:send-mobile-reminders`) for task-due-today and
+      calendar-upcoming reminders.
+    - Added push delivery ledger + monitoring metrics
+      (`notifications.push.sent`, `notifications.push.failed`) and feature
+      tests for device management and dispatch behavior.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

@@ -8,6 +8,8 @@ use App\Integrations\Adapters\ObsidianAdapter;
 use App\Integrations\Adapters\TodoistAdapter;
 use App\Integrations\Adapters\TrelloAdapter;
 use App\Integrations\IntegrationAdapterRegistry;
+use App\Notifications\MobilePush\LogMobilePushGateway;
+use App\Notifications\MobilePush\MobilePushGateway;
 use App\Observability\MetricCounter;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
@@ -32,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(MetricCounter::class, fn (): MetricCounter => new MetricCounter);
+        $this->app->singleton(MobilePushGateway::class, fn (): MobilePushGateway => new LogMobilePushGateway);
     }
 
     /**
