@@ -99,6 +99,9 @@ Last updated: 2026-03-16
   manual checklist acknowledgement, and diff review support
 - `NEST-082` completed: documentation sequencing aligned so Phase 2 remains
   integration-focused and first end-user AI surface starts in Phase 3
+- `NEST-083` completed: UX/UI MCP collaboration standard added with
+  Figma-first design-source policy, optional Stitch ideation role, and
+  evidence-gated UX implementation/review workflow
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -126,8 +129,11 @@ Last updated: 2026-03-16
 - `NEST-040` completed: integration sync SLO baseline added with success
   rate/p95 latency targets, error budget burn evaluation, warning/critical
   thresholds, and runtime check command (`integrations:sync-slo-check`)
-- Current execution focus: Phase 2 integration expansion delivery, next task
-  `NEST-041` Expose provider connection management in web and mobile
+- `NEST-084` completed: strict architecture/programming/scalability/AI-readiness
+  audit delivered with prioritized hardening recommendations and implementation
+  sequencing (`docs/architecture_programming_scalability_ai_audit_2026-03-16.md`)
+- Current execution focus: Phase 2 integration expansion delivery (`NEST-041`)
+  plus planning of hardening backlog from audit findings (`NEST-083`)
 
 ## Auth, AI, Offline, Notifications
 
@@ -180,6 +186,7 @@ Last updated: 2026-03-16
 - `docs/tech_stack.md`
 - `docs/database_decision.md`
 - `docs/frontend_strategy.md`
+- `docs/ux_ui_mcp_collaboration.md`
 - `docs/backend_strategy.md`
 - `docs/monorepo_structure.md`
 - `docs/api_contracts.md`

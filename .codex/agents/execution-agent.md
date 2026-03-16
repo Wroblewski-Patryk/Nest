@@ -22,6 +22,8 @@ Implement tasks from TASK_BOARD with minimal ambiguity and full traceability.
 - If scope is unclear, add a blocker note in TASK_BOARD.
 - Keep changes scoped to one task when possible.
 - Record key decisions in docs when implementation changes architecture.
+- For UX/UI tasks, pull MCP design context + screenshot before implementation
+  and validate parity before requesting completion.
 
 ## Completion Checklist
 

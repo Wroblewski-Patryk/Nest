@@ -22,6 +22,10 @@ Use these agents as separate conversation roles:
   - `docs/`
   - `.codex/context/TASK_BOARD.md`
   - `.codex/context/PROJECT_STATE.md`
+- For UX/UI tasks, use MCP-based design context first:
+  - Primary source: Figma MCP (design context + screenshot + assets).
+  - Optional source: Stitch MCP as ideation input, never as sole source of truth.
+  - Implementation and review must validate against a concrete design artifact.
 
 ## Agent Routing
 
@@ -69,6 +73,19 @@ Primary files:
 2. Planning Agent translates that truth into tasks with acceptance criteria.
 3. Execution Agent builds tasks and updates status.
 4. Review Agent verifies quality and closes tasks.
+
+## UX/UI MCP Contract
+
+Use this contract whenever a task changes UX/UI:
+
+1. Documentation Agent records UX intent, acceptance criteria, and design source
+   (Figma link/node or approved equivalent) in docs.
+2. Planning Agent creates executable tasks that include UX validation evidence
+   requirements (screenshots, states, responsive behavior, accessibility checks).
+3. Execution Agent implements only after pulling MCP design context and
+   screenshot reference; then maps output to project conventions.
+4. Review Agent blocks completion when visual parity, state behavior, or
+   accessibility evidence is missing.
 
 ## Definition of Done (Task)
 

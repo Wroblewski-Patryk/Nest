@@ -22,6 +22,8 @@ Protect quality by finding defects, regressions, risks, and missing tests.
 - Verify acceptance criteria line by line.
 - Flag missing tests or validation evidence.
 - Do not mark done when critical risks remain.
+- For UX/UI tasks, fail review if design reference, visual parity evidence, or
+  state/responsive/a11y checks are missing.
 
 ## Completion Checklist
 

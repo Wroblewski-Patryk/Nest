@@ -21,6 +21,8 @@ Both editions keep the same core functionality and a consistent visual language.
 - Shared domain vocabulary: same naming and status models across platforms.
 - Shared UX rules: same states (loading, empty, error, success) and same
   interaction priorities.
+- UX/UI MCP workflow: follow `docs/ux_ui_mcp_collaboration.md` for
+  design-source validation and implementation evidence.
 
 ## UX Responsibility Split
 

@@ -381,6 +381,18 @@ Last updated: 2026-03-16
   - Done when: all tasks `NEST-061` to `NEST-081` from
     `docs/implementation_plan_full.md` are delivered and signed off.
 
+- [ ] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
+  - Status: BACKLOG
+  - Owner: Planning Agent
+  - Depends on: NEST-040
+  - Done when:
+    - audit findings are translated into sequenced implementation tasks,
+    - each task has acceptance criteria and dependency mapping,
+    - execution order is defined with P0/P1/P2 priorities.
+  - Notes:
+    - Source audit: `docs/architecture_programming_scalability_ai_audit_2026-03-16.md`
+    - Priority starts with sync idempotency correctness and async scalability.
+
 - [x] NEST-082 Resolve documentation phase sequencing inconsistencies
   - Status: DONE
   - Owner: Documentation Agent
@@ -393,6 +405,33 @@ Last updated: 2026-03-16
     - Clarified that Phase 2 remains integration-only and AI surface stays
       disabled there.
     - Clarified MVP vs post-MVP integration scope wording in `docs/mvp_scope.md`.
+
+- [x] NEST-084 Run strict architecture/programming/scalability/AI-readiness audit
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-040
+  - Done when:
+    - architecture and implementation are reviewed against documentation,
+    - high-impact risks are prioritized by severity,
+    - follow-up split is prepared for planning chat and execution chat.
+  - Done on: 2026-03-16
+  - Notes:
+    - Audit delivered in
+      `docs/architecture_programming_scalability_ai_audit_2026-03-16.md`.
+    - Includes prioritized findings and recommended sequencing for next phases.
+
+- [x] NEST-083 Establish UX/UI MCP collaboration standard
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Depends on: NEST-021, NEST-023
+  - Done when: AI-to-AI UX workflow is documented, linked from frontend
+    strategy, and embedded in agent operating contract.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added UX/UI MCP operating standard in
+      `docs/ux_ui_mcp_collaboration.md`.
+    - Linked UX/UI MCP standard from `docs/frontend_strategy.md`.
+    - Updated `AGENTS.md` with mandatory UX/UI MCP contract for all agents.
 
 ## In Progress
 

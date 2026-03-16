@@ -21,6 +21,8 @@ Translate documentation and decisions into an actionable execution plan.
 - Use IDs: `NEST-001`, `NEST-002`, etc.
 - Every task must include owner role, status, and done criteria.
 - Keep at most 5 tasks `IN_PROGRESS`.
+- For UX/UI tasks, include design reference, required UI states, responsive
+  checks, and accessibility evidence in acceptance criteria.
 
 ## Completion Checklist
 
