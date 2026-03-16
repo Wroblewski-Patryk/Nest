@@ -108,8 +108,10 @@ Last updated: 2026-03-16
 - `NEST-033` completed: Google Tasks sync hardened with deterministic payload
   mapping, canonical sync hashing, and audit metadata for mapping version and
   retry profile
+- `NEST-034` completed: demand-driven third list/task provider selected as
+  Todoist with adapter registration, API support, and sync quality parity tests
 - Current execution focus: Phase 2 integration expansion delivery, next task
-  `NEST-034` Deliver third list/task provider (demand-driven)
+  `NEST-035` Deliver Google Calendar synchronization
 
 ## Auth, AI, Offline, Notifications
 
@@ -121,7 +123,7 @@ Last updated: 2026-03-16
 
 ## Integrations Direction
 
-- Sequence: list/task providers first (Trello + Google Tasks + one by demand),
+- Sequence: list/task providers first (Trello + Google Tasks + Todoist),
   then Google Calendar, Obsidian last
 - Long-term: up to 3 major providers per functional area where practical
 
@@ -136,7 +138,8 @@ Last updated: 2026-03-16
 - MVP launch profile: single active user on top of multi-tenant architecture.
 - MVP auth: email + password only; OAuth providers are post-MVP.
 - MVP AI policy: no end-user AI surface in MVP.
-- Integration sequence: list/task providers first (Trello + Google Tasks),
+- Integration sequence: list/task providers first (Trello + Google Tasks +
+  Todoist),
   Google Calendar after baseline, Obsidian as the last provider in initial
   wave.
 

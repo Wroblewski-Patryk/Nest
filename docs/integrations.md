@@ -15,7 +15,7 @@ Nest should support multiple providers per functional area over time
 1. List/task integrations first:
    - Trello
    - Google Tasks (Google To Do)
-   - one additional provider selected by demand
+   - Todoist (selected as current demand-driven third provider)
 2. Google Calendar integration after list/task baseline.
 3. Obsidian integration at the end of the initial wave.
 

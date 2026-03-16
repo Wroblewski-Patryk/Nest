@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Integrations\Adapters\GoogleTasksAdapter;
+use App\Integrations\Adapters\TodoistAdapter;
 use App\Integrations\Adapters\TrelloAdapter;
 use App\Integrations\IntegrationAdapterRegistry;
 use App\Observability\MetricCounter;
@@ -22,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
             return new IntegrationAdapterRegistry([
                 new TrelloAdapter,
                 new GoogleTasksAdapter,
+                new TodoistAdapter,
             ]);
         });
 

@@ -263,6 +263,21 @@ Last updated: 2026-03-16
     - Added tests for Google Tasks mapping consistency and retry/backoff
       profile coverage.
 
+- [x] NEST-034 Deliver third list/task provider (demand-driven)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-031
+  - Done when: one additional provider is selected by product demand and
+    delivered with the same sync quality bar.
+  - Done on: 2026-03-16
+  - Notes:
+    - Selected `todoist` as the demand-driven third list/task provider and
+      integrated it into adapter registry and sync API validation.
+    - Added deterministic Todoist mapping profile (`todoist.v1`) with canonical
+      sync hash behavior and retry profile metadata.
+    - Added unit and feature tests for Todoist sync behavior, mapping metadata,
+      and end-to-end list/task synchronization.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

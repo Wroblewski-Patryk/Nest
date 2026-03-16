@@ -129,6 +129,47 @@ class IntegrationListTaskSyncApiTest extends TestCase
         $this->assertSame([15, 60, 300, 900], $googleTaskAudit->metadata['retry_profile'] ?? null);
     }
 
+    public function test_user_can_sync_lists_and_tasks_to_todoist(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $list = TaskList::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        Task::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'list_id' => $list->id,
+        ]);
+
+        $this->postJson('/api/v1/integrations/list-task-sync', [
+            'provider' => 'todoist',
+        ])->assertOk()
+            ->assertJsonPath('data.provider', 'todoist')
+            ->assertJsonPath('data.processed', 2)
+            ->assertJsonPath('data.synced', 2);
+
+        $this->assertDatabaseHas('sync_mappings', [
+            'tenant_id' => $tenant->id,
+            'provider' => 'todoist',
+            'internal_entity_type' => 'task',
+        ]);
+
+        $todoistAudit = IntegrationSyncAudit::query()
+            ->where('tenant_id', $tenant->id)
+            ->where('provider', 'todoist')
+            ->where('internal_entity_type', 'task')
+            ->first();
+
+        $this->assertNotNull($todoistAudit);
+        $this->assertSame('todoist.v1', $todoistAudit->metadata['mapping_version'] ?? null);
+        $this->assertSame([15, 60, 300, 900], $todoistAudit->metadata['retry_profile'] ?? null);
+    }
+
     public function test_sync_scope_is_limited_to_authenticated_user_tenant_data(): void
     {
         $tenantA = Tenant::factory()->create();
