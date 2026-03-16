@@ -99,7 +99,7 @@ Last updated: 2026-03-16
   manual checklist acknowledgement, and diff review support
 - `NEST-082` completed: documentation sequencing aligned so Phase 2 remains
   integration-focused and first end-user AI surface starts in Phase 3
-- `NEST-083` completed: UX/UI MCP collaboration standard added with
+- `NEST-085` completed: UX/UI MCP collaboration standard added with
   Figma-first design-source policy, optional Stitch ideation role, and
   evidence-gated UX implementation/review workflow
 - `NEST-031` completed: post-MVP integration contract versioning strategy

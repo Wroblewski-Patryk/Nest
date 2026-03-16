@@ -420,7 +420,7 @@ Last updated: 2026-03-16
       `docs/architecture_programming_scalability_ai_audit_2026-03-16.md`.
     - Includes prioritized findings and recommended sequencing for next phases.
 
-- [x] NEST-083 Establish UX/UI MCP collaboration standard
+- [x] NEST-085 Establish UX/UI MCP collaboration standard
   - Status: DONE
   - Owner: Documentation Agent
   - Depends on: NEST-021, NEST-023
