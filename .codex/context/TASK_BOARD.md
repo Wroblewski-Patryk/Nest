@@ -433,6 +433,21 @@ Last updated: 2026-03-16
       (`notifications.push.sent`, `notifications.push.failed`) and feature
       tests for device management and dispatch behavior.
 
+- [x] NEST-045 Phase 2 release sign-off
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-040, NEST-043, NEST-044
+  - Done when: operational and product sign-off for integration expansion is
+    recorded.
+  - Done on: 2026-03-16
+  - Notes:
+    - Recorded formal Phase 2 release sign-off in
+      `docs/phase2_release_signoff.md`.
+    - Confirmed dependency gates (`NEST-040`, `NEST-043`, `NEST-044`) as
+      complete and validated.
+    - Documented operational checks, CI coverage, and product validation scope
+      for integration expansion baseline.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent
