@@ -68,8 +68,14 @@ jobs:
       - name: Code style check
         run: php vendor/bin/pint --test
 
-      - name: Run tests
-        run: php artisan test --env=testing
+      - name: Run integration regression suite
+        run: php artisan test --testsuite=Integration --env=testing
+
+      - name: Run unit suite
+        run: php artisan test --testsuite=Unit --env=testing
+
+      - name: Run feature suite
+        run: php artisan test --testsuite=Feature --env=testing
 
       - name: Security audit (Composer)
         run: composer audit --no-interaction

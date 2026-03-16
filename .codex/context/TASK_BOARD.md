@@ -398,6 +398,24 @@ Last updated: 2026-03-16
     - Added shared visual status treatment for scope review results
       (`scope-ok`/`scope-warn`) and validated web/mobile quality checks.
 
+- [x] NEST-043 Add integration regression suite
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-032, NEST-033, NEST-034, NEST-035, NEST-036, NEST-037
+  - Done when: end-to-end sync scenarios for each provider run in CI.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added dedicated provider regression integration tests in
+      `tests/Integration/IntegrationProviderRegressionTest.php` for Trello,
+      Google Tasks, Todoist, Google Calendar (with conflict queue), and
+      Obsidian.
+    - Updated CI backend workflow to run `Integration`, `Unit`, and `Feature`
+      suites explicitly, making provider regression execution visible and
+      mandatory.
+    - Added regression suite documentation in
+      `docs/integration_regression_suite.md` and linked it from
+      `docs/integrations.md`.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

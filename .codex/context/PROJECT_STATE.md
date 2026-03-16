@@ -135,10 +135,12 @@ Last updated: 2026-03-16
 - `NEST-042` completed: provider permission scope review screens added in web
   and mobile with granted scope visibility and least-privilege warnings for
   extra or missing permissions
+- `NEST-043` completed: provider end-to-end integration regression suite added
+  and enforced in CI with explicit Integration/Unit/Feature suite execution
 - `NEST-084` completed: strict architecture/programming/scalability/AI-readiness
   audit delivered with prioritized hardening recommendations and implementation
   sequencing (`docs/architecture_programming_scalability_ai_audit_2026-03-16.md`)
-- Current execution focus: Phase 2 integration expansion delivery (`NEST-043`)
+- Current execution focus: Phase 2 integration expansion delivery (`NEST-044`)
   plus planning of hardening backlog from audit findings (`NEST-083`)
 
 ## Auth, AI, Offline, Notifications

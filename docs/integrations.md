@@ -91,6 +91,11 @@ Post-MVP provider contracts follow a dedicated versioning and migration policy:
 
 - `docs/integration_contract_versioning.md`
 
+## Regression Suite
+
+- Provider end-to-end regression coverage and CI execution are defined in:
+  - `docs/integration_regression_suite.md`
+
 ## Failed Sync Replay
 
 - Failed queue jobs are persisted in `integration_sync_failures` as replayable
