@@ -120,8 +120,11 @@ Last updated: 2026-03-16
   and mobile calendar surfaces
 - `NEST-038` completed: deterministic provider/field conflict policy matrix
   documented and enforced in queue logic with dedicated unit/feature coverage
+- `NEST-039` completed: failed sync replay tooling added with tenant/user
+  scoped failure listing, safe replay API, replay metadata tracking, and
+  idempotency key rotation for deterministic reprocessing
 - Current execution focus: Phase 2 integration expansion delivery, next task
-  `NEST-039` Add sync replay tooling for failed jobs
+  `NEST-040` Introduce sync SLOs and alert thresholds
 
 ## Auth, AI, Offline, Notifications
 

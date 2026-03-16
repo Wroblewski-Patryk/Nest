@@ -32,6 +32,10 @@ Current status:
   - `GET /api/v1/integrations/conflicts`
   - `POST /api/v1/integrations/conflicts/{conflictId}/resolve`
   supporting `accept` and `override` resolution actions.
+- Failed sync replay tooling is active via:
+  - `GET /api/v1/integrations/failures`
+  - `POST /api/v1/integrations/failures/{failureId}/replay`
+  with tenant/user scoping and replay idempotency key rotation.
 
 ## Integration Data Model
 
@@ -72,3 +76,12 @@ Each synchronized object stores:
 Post-MVP provider contracts follow a dedicated versioning and migration policy:
 
 - `docs/integration_contract_versioning.md`
+
+## Failed Sync Replay
+
+- Failed queue jobs are persisted in `integration_sync_failures` as replayable
+  records.
+- Replays execute through the same sync service path with a derived
+  idempotency key (`{original}:replay:{n}`) to keep retries deterministic.
+- Replay metadata (`replay_count`, last replay status/error/time, last replay
+  idempotency key) is stored for operational traceability.

@@ -337,6 +337,21 @@ Last updated: 2026-03-16
     - Added unit and feature tests validating policy matrix output and queue
       filtering behavior for non-manual fields.
 
+- [x] NEST-039 Add sync replay tooling for failed jobs
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-037
+  - Done when: failed sync jobs can be replayed safely with idempotency guards.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added replay tracking metadata for failed sync records
+      (`replay_count`, replay status/error/time, replay idempotency key).
+    - Added replay tooling API routes:
+      `GET /api/v1/integrations/failures` and
+      `POST /api/v1/integrations/failures/{failureId}/replay`.
+    - Added tenant/user-scoped replay service and feature tests covering list,
+      replay success path, scope protection, and guest authorization.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

@@ -25,6 +25,11 @@ class IntegrationSyncFailure extends Model
         'payload',
         'error_message',
         'attempts',
+        'replay_count',
+        'last_replay_status',
+        'last_replay_error',
+        'last_replay_idempotency_key',
+        'last_replayed_at',
         'failed_at',
     ];
 
@@ -37,6 +42,8 @@ class IntegrationSyncFailure extends Model
             'payload' => 'array',
             'failed_at' => 'datetime',
             'attempts' => 'integer',
+            'replay_count' => 'integer',
+            'last_replayed_at' => 'datetime',
         ];
     }
 }
