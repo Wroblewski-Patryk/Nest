@@ -132,10 +132,13 @@ Last updated: 2026-03-16
 - `NEST-041` completed: provider connection management delivered across API,
   web, and mobile with tenant/user-scoped connect, reconnect, and revoke flows
   plus shared client contract coverage
+- `NEST-042` completed: provider permission scope review screens added in web
+  and mobile with granted scope visibility and least-privilege warnings for
+  extra or missing permissions
 - `NEST-084` completed: strict architecture/programming/scalability/AI-readiness
   audit delivered with prioritized hardening recommendations and implementation
   sequencing (`docs/architecture_programming_scalability_ai_audit_2026-03-16.md`)
-- Current execution focus: Phase 2 integration expansion delivery (`NEST-042`)
+- Current execution focus: Phase 2 integration expansion delivery (`NEST-043`)
   plus planning of hardening backlog from audit findings (`NEST-083`)
 
 ## Auth, AI, Offline, Notifications

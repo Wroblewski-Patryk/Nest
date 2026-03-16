@@ -31,12 +31,50 @@ const providerScopes: Record<string, string[]> = {
   obsidian: ["vault:read_write"],
 };
 
+type ScopeReview = {
+  level: "ok" | "warn";
+  message: string;
+};
+
 function asProvider(provider: string): SupportedProvider | null {
   if ((supportedProviders as readonly string[]).includes(provider)) {
     return provider as SupportedProvider;
   }
 
   return null;
+}
+
+function reviewScopes(provider: string, grantedScopes: string[]): ScopeReview {
+  const required = providerScopes[provider] ?? [];
+  const granted = Array.from(new Set(grantedScopes));
+  const extras = granted.filter((scope) => !required.includes(scope));
+  const missing = required.filter((scope) => !granted.includes(scope));
+
+  if (granted.length === 0) {
+    return {
+      level: "warn",
+      message: "No granted scopes found. Connection may not work as expected.",
+    };
+  }
+
+  if (extras.length > 0) {
+    return {
+      level: "warn",
+      message: `Least-privilege warning: extra scopes detected (${extras.join(", ")}).`,
+    };
+  }
+
+  if (missing.length > 0) {
+    return {
+      level: "warn",
+      message: `Missing required scopes: ${missing.join(", ")}.`,
+    };
+  }
+
+  return {
+    level: "ok",
+    message: "Scope set matches least-privilege baseline.",
+  };
 }
 
 export function ProviderConnectionsCard() {
@@ -121,32 +159,44 @@ export function ProviderConnectionsCard() {
         <p className="callout">{detail}</p>
         {connections.length > 0 ? (
           <ul className="list">
-            {connections.map((connection) => (
-              <li className="list-row" key={connection.provider}>
-                <div>
-                  <strong>{providerLabels[connection.provider] ?? connection.provider}</strong>
-                  <p>Status: {connection.status}</p>
-                </div>
-                <div className="row-inline">
-                  <button
-                    type="button"
-                    className="pill-link"
-                    onClick={() => void connectProvider(connection.provider)}
-                    disabled={busyProvider === connection.provider}
-                  >
-                    {connection.status === "connected" ? "Reconnect" : "Connect"}
-                  </button>
-                  <button
-                    type="button"
-                    className="pill-link"
-                    onClick={() => void revokeProvider(connection.provider)}
-                    disabled={busyProvider === connection.provider}
-                  >
-                    Revoke
-                  </button>
-                </div>
-              </li>
-            ))}
+            {connections.map((connection) => {
+              const scopeReview = reviewScopes(connection.provider, connection.scopes);
+
+              return (
+                <li className="list-row" key={connection.provider}>
+                  <div>
+                    <strong>{providerLabels[connection.provider] ?? connection.provider}</strong>
+                    <p>Status: {connection.status}</p>
+                    <p className="mono-note">
+                      Granted: {connection.scopes.length > 0 ? connection.scopes.join(", ") : "none"}
+                    </p>
+                    {connection.status === "connected" ? (
+                      <p className={`mono-note ${scopeReview.level === "warn" ? "scope-warn" : "scope-ok"}`}>
+                        {scopeReview.message}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="row-inline">
+                    <button
+                      type="button"
+                      className="pill-link"
+                      onClick={() => void connectProvider(connection.provider)}
+                      disabled={busyProvider === connection.provider}
+                    >
+                      {connection.status === "connected" ? "Reconnect" : "Connect"}
+                    </button>
+                    <button
+                      type="button"
+                      className="pill-link"
+                      onClick={() => void revokeProvider(connection.provider)}
+                      disabled={busyProvider === connection.provider}
+                    >
+                      Revoke
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         ) : null}
       </div>

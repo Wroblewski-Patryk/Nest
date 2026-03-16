@@ -41,6 +41,8 @@ Current status:
   - `PUT /api/v1/integrations/connections/{provider}`
   - `DELETE /api/v1/integrations/connections/{provider}`
   with tenant/user-scoped connect, reconnect, and revoke flows.
+  - Web and mobile screens show granted scopes and least-privilege warnings
+    when extra or missing permissions are detected.
 
 ## Integration Data Model
 

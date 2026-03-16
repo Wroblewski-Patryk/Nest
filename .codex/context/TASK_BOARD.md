@@ -384,6 +384,20 @@ Last updated: 2026-03-16
       connect/reconnect/revoke actions, plus API/client contract updates and
       feature tests.
 
+- [x] NEST-042 Add provider permission scope review screens
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-041
+  - Done when: granted scopes are visible and least-privilege warnings are shown.
+  - Done on: 2026-03-16
+  - Notes:
+    - Extended web provider connection UI with granted scope visibility per
+      provider and least-privilege scope review messaging.
+    - Extended mobile provider permissions UI with granted scope display and
+      warning status for extra or missing scopes.
+    - Added shared visual status treatment for scope review results
+      (`scope-ok`/`scope-warn`) and validated web/mobile quality checks.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

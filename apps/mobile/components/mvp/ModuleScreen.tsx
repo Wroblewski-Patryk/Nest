@@ -52,6 +52,50 @@ const stateLabels: Record<UiAsyncState, string> = {
   success: 'Success',
 };
 
+const providerLeastPrivilegeScopes: Record<string, string[]> = {
+  trello: ['read', 'write'],
+  google_tasks: ['tasks.readonly'],
+  todoist: ['data:read_write'],
+  google_calendar: ['calendar.events'],
+  obsidian: ['vault:read_write'],
+};
+
+function reviewConnectionScopes(connection: IntegrationConnectionItem): {
+  level: 'ok' | 'warn';
+  message: string;
+} {
+  const required = providerLeastPrivilegeScopes[connection.provider] ?? [];
+  const granted = Array.from(new Set(connection.scopes ?? []));
+  const extras = granted.filter((scope) => !required.includes(scope));
+  const missing = required.filter((scope) => !granted.includes(scope));
+
+  if (granted.length === 0) {
+    return {
+      level: 'warn',
+      message: 'No granted scopes detected.',
+    };
+  }
+
+  if (extras.length > 0) {
+    return {
+      level: 'warn',
+      message: `Least-privilege warning: extra scopes (${extras.join(', ')})`,
+    };
+  }
+
+  if (missing.length > 0) {
+    return {
+      level: 'warn',
+      message: `Missing required scopes: ${missing.join(', ')}`,
+    };
+  }
+
+  return {
+    level: 'ok',
+    message: 'Scope set matches least-privilege baseline.',
+  };
+}
+
 export function ModuleScreen({
   title,
   subtitle,
@@ -171,46 +215,58 @@ export function ModuleScreen({
 
       {connections ? (
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Provider Connections</Text>
-          {connections.items.map((connection) => (
-            <View key={connection.provider} style={styles.rowStack}>
-              <View style={styles.row}>
-                <View style={styles.rowTextWrap}>
-                  <Text style={styles.rowTitle}>{connection.provider}</Text>
-                  <Text style={styles.rowDetail}>Status: {connection.status}</Text>
+          <Text style={styles.panelTitle}>Provider Permissions</Text>
+          {connections.items.map((connection) => {
+            const review = reviewConnectionScopes(connection);
+
+            return (
+              <View key={connection.provider} style={styles.rowStack}>
+                <View style={styles.row}>
+                  <View style={styles.rowTextWrap}>
+                    <Text style={styles.rowTitle}>{connection.provider}</Text>
+                    <Text style={styles.rowDetail}>Status: {connection.status}</Text>
+                    <Text style={styles.rowDetail}>
+                      Granted: {connection.scopes.length > 0 ? connection.scopes.join(', ') : 'none'}
+                    </Text>
+                    {connection.status === 'connected' ? (
+                      <Text style={review.level === 'warn' ? styles.scopeWarnText : styles.scopeOkText}>
+                        {review.message}
+                      </Text>
+                    ) : null}
+                  </View>
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>
+                      {connection.is_connected ? 'connected' : 'inactive'}
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>
-                    {connection.is_connected ? 'connected' : 'inactive'}
-                  </Text>
+                <View style={styles.actionRow}>
+                  <Pressable
+                    style={[
+                      styles.actionButton,
+                      connections.busyProvider === connection.provider && styles.actionButtonDisabled,
+                    ]}
+                    onPress={() => connections.onConnect(connection.provider)}
+                    disabled={connections.busyProvider === connection.provider}
+                  >
+                    <Text style={styles.actionButtonText}>
+                      {connection.status === 'connected' ? 'Reconnect' : 'Connect'}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={[
+                      styles.actionButton,
+                      connections.busyProvider === connection.provider && styles.actionButtonDisabled,
+                    ]}
+                    onPress={() => connections.onRevoke(connection.provider)}
+                    disabled={connections.busyProvider === connection.provider}
+                  >
+                    <Text style={styles.actionButtonText}>Revoke</Text>
+                  </Pressable>
                 </View>
               </View>
-              <View style={styles.actionRow}>
-                <Pressable
-                  style={[
-                    styles.actionButton,
-                    connections.busyProvider === connection.provider && styles.actionButtonDisabled,
-                  ]}
-                  onPress={() => connections.onConnect(connection.provider)}
-                  disabled={connections.busyProvider === connection.provider}
-                >
-                  <Text style={styles.actionButtonText}>
-                    {connection.status === 'connected' ? 'Reconnect' : 'Connect'}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  style={[
-                    styles.actionButton,
-                    connections.busyProvider === connection.provider && styles.actionButtonDisabled,
-                  ]}
-                  onPress={() => connections.onRevoke(connection.provider)}
-                  disabled={connections.busyProvider === connection.provider}
-                >
-                  <Text style={styles.actionButtonText}>Revoke</Text>
-                </Pressable>
-              </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
       ) : null}
     </ScrollView>
@@ -364,5 +420,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#115e59',
+  },
+  scopeWarnText: {
+    fontSize: 12,
+    color: '#9a3412',
+  },
+  scopeOkText: {
+    fontSize: 12,
+    color: '#166534',
   },
 });

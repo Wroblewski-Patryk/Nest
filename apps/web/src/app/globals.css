@@ -186,6 +186,14 @@ body {
   color: #475569 !important;
 }
 
+.scope-ok {
+  color: #166534 !important;
+}
+
+.scope-warn {
+  color: #9a3412 !important;
+}
+
 .pill,
 .pill-link {
   border-radius: 999px;
