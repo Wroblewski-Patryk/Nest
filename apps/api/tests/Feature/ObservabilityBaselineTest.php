@@ -90,5 +90,6 @@ class ObservabilityBaselineTest extends TestCase
 
         $this->assertSame(1, $metrics->getCurrentCount('integration.sync.processed'));
         $this->assertSame(1, $metrics->getCurrentCount('integration.sync.duplicate'));
+        $this->assertSame(2, $metrics->getCurrentCount('integration.sync.latency.count'));
     }
 }

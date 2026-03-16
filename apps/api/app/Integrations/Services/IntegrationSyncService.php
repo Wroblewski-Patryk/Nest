@@ -25,49 +25,54 @@ class IntegrationSyncService
      */
     public function sync(array $payload): array
     {
+        $startedAt = microtime(true);
         $validated = $this->validatePayload($payload);
         $idempotencyKey = (string) $validated['idempotency_key'];
 
-        if (! $this->acquireIdempotencyLock($validated['tenant_id'], $validated['provider'], $idempotencyKey)) {
-            $this->metrics->increment('integration.sync.duplicate');
+        try {
+            if (! $this->acquireIdempotencyLock($validated['tenant_id'], $validated['provider'], $idempotencyKey)) {
+                $this->metrics->increment('integration.sync.duplicate');
+                $this->recordAudit(
+                    payload: $validated,
+                    status: 'duplicate_skipped',
+                    metadata: ['reason' => 'idempotency_lock_exists']
+                );
+
+                return [
+                    'status' => 'duplicate_skipped',
+                    'idempotency_key' => $idempotencyKey,
+                ];
+            }
+
+            $adapter = $this->registry->resolve($validated['provider']);
+            $result = $adapter->sync($validated);
+
+            $syncHash = $result->syncHash ?? $this->payloadHash($validated);
+            $this->upsertSyncMappingWithIntegrity(
+                payload: $validated,
+                externalId: $result->externalId,
+                status: $result->status,
+                syncHash: $syncHash
+            );
             $this->recordAudit(
                 payload: $validated,
-                status: 'duplicate_skipped',
-                metadata: ['reason' => 'idempotency_lock_exists']
+                status: $result->status,
+                externalId: $result->externalId,
+                syncHash: $syncHash,
+                metadata: $result->metadata
             );
 
+            $this->metrics->increment('integration.sync.processed');
+
             return [
-                'status' => 'duplicate_skipped',
+                'status' => $result->status,
+                'provider' => $validated['provider'],
+                'external_id' => $result->externalId,
                 'idempotency_key' => $idempotencyKey,
             ];
+        } finally {
+            $this->recordLatencyMetric($startedAt);
         }
-
-        $adapter = $this->registry->resolve($validated['provider']);
-        $result = $adapter->sync($validated);
-
-        $syncHash = $result->syncHash ?? $this->payloadHash($validated);
-        $this->upsertSyncMappingWithIntegrity(
-            payload: $validated,
-            externalId: $result->externalId,
-            status: $result->status,
-            syncHash: $syncHash
-        );
-        $this->recordAudit(
-            payload: $validated,
-            status: $result->status,
-            externalId: $result->externalId,
-            syncHash: $syncHash,
-            metadata: $result->metadata
-        );
-
-        $this->metrics->increment('integration.sync.processed');
-
-        return [
-            'status' => $result->status,
-            'provider' => $validated['provider'],
-            'external_id' => $result->externalId,
-            'idempotency_key' => $idempotencyKey,
-        ];
     }
 
     private function acquireIdempotencyLock(string $tenantId, string $provider, string $idempotencyKey): bool
@@ -194,5 +199,25 @@ class IntegrationSyncService
             metadata: $metadata,
             externalId: $externalId ?? $audit->external_id
         );
+    }
+
+    private function recordLatencyMetric(float $startedAt): void
+    {
+        $latencyMs = (int) max(0, round((microtime(true) - $startedAt) * 1000));
+
+        $this->metrics->increment('integration.sync.latency.count');
+        $this->metrics->increment('integration.sync.latency.sum_ms', $latencyMs);
+
+        $buckets = [100, 250, 500, 1000, 2000, 5000];
+
+        foreach ($buckets as $bucket) {
+            if ($latencyMs <= $bucket) {
+                $this->metrics->increment("integration.sync.latency.bucket_{$bucket}");
+
+                return;
+            }
+        }
+
+        $this->metrics->increment('integration.sync.latency.bucket_overflow');
     }
 }

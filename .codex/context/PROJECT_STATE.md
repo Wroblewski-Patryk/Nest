@@ -123,8 +123,11 @@ Last updated: 2026-03-16
 - `NEST-039` completed: failed sync replay tooling added with tenant/user
   scoped failure listing, safe replay API, replay metadata tracking, and
   idempotency key rotation for deterministic reprocessing
+- `NEST-040` completed: integration sync SLO baseline added with success
+  rate/p95 latency targets, error budget burn evaluation, warning/critical
+  thresholds, and runtime check command (`integrations:sync-slo-check`)
 - Current execution focus: Phase 2 integration expansion delivery, next task
-  `NEST-040` Introduce sync SLOs and alert thresholds
+  `NEST-041` Expose provider connection management in web and mobile
 
 ## Auth, AI, Offline, Notifications
 

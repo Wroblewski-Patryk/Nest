@@ -352,6 +352,21 @@ Last updated: 2026-03-16
     - Added tenant/user-scoped replay service and feature tests covering list,
       replay success path, scope protection, and guest authorization.
 
+- [x] NEST-040 Introduce sync SLOs and alert thresholds
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-037
+  - Done when: SLO targets exist for success latency/error budget and alerting
+    is configured.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added integration sync SLO config with success rate, p95 latency targets,
+      and warning/critical alert thresholds.
+    - Added integration sync SLO evaluation service and operational command
+      `php artisan integrations:sync-slo-check` with severity-based signaling.
+    - Added latency metric bucketing in sync flow plus unit/feature tests for
+      SLO evaluation and command exit behavior.
+
 - [ ] NEST-046 Phase 3 intelligence and insights release program
   - Status: BACKLOG
   - Owner: Planning Agent

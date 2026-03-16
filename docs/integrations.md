@@ -65,6 +65,13 @@ Each synchronized object stores:
 - Deterministic provider/field matrix:
   - `docs/integration_conflict_policy_matrix.md`
 
+## Sync SLOs and Alerts
+
+- Sync reliability targets and alert thresholds are defined in:
+  - `docs/integration_sync_slos.md`
+- Runtime SLO evaluation command:
+  - `php artisan integrations:sync-slo-check`
+
 ## Security
 
 - Encrypted provider tokens.
