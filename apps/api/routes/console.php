@@ -4,6 +4,7 @@ use App\Notifications\Services\MobilePushReminderService;
 use App\Observability\IntegrationSyncSloService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 Artisan::command('inspire', function () {
@@ -56,3 +57,19 @@ Artisan::command('notifications:send-mobile-reminders {--tenant=} {--json}', fun
 
     return self::SUCCESS;
 })->purpose('Send baseline mobile push reminders for due tasks and upcoming calendar events');
+
+Artisan::command('analytics:prune-events {--days=}', function (): int {
+    $configured = (int) config('analytics.retention_days', 180);
+    $days = (int) ($this->option('days') ?: $configured);
+    $cutoff = now()->subDays($days);
+
+    $deleted = DB::table('analytics_events')
+        ->where('occurred_at', '<', $cutoff)
+        ->delete();
+
+    $this->info('Analytics retention prune completed.');
+    $this->line("Retention days: {$days}");
+    $this->line("Deleted events: {$deleted}");
+
+    return self::SUCCESS;
+})->purpose('Prune analytics events older than configured retention window');

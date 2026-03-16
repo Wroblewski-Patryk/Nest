@@ -461,6 +461,21 @@ Last updated: 2026-03-16
     - Added rollout constraints for ingestion contracts and downstream
       insights/AI consumers.
 
+- [x] NEST-047 Build analytics ingestion pipeline
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-046
+  - Done when: validated event ingestion, storage, and retention policy are in
+    place.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added validated analytics ingestion endpoint:
+      `POST /api/v1/analytics/events` with taxonomy allowlist checks.
+    - Added durable analytics storage (`analytics_events`) with tenant/module/
+      event indexes and ingestion metrics (`analytics.events.*`).
+    - Added retention command `analytics:prune-events` and documented baseline
+      in `docs/analytics_ingestion_pipeline.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

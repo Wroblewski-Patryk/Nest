@@ -93,3 +93,5 @@ Every event must include:
   - ingestion contracts (`NEST-047`),
   - trends/insights APIs (`NEST-049`),
   - AI planning signal inputs (`NEST-051+`).
+- Ingestion/storage/retention baseline:
+  - `docs/analytics_ingestion_pipeline.md`

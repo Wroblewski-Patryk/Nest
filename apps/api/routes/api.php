@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AnalyticsIngestionController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CalendarEventController;
 use App\Http\Controllers\Api\GoalController;
@@ -26,6 +27,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::get('/auth/me', [UserSettingsController::class, 'me']);
         Route::patch('/auth/settings', [UserSettingsController::class, 'update']);
+        Route::post('/analytics/events', [AnalyticsIngestionController::class, 'ingest']);
 
         Route::get('/lists', [TaskListController::class, 'index']);
         Route::post('/lists', [TaskListController::class, 'store']);

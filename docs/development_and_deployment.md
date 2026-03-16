@@ -72,6 +72,16 @@ Current workflow implementation:
 - Detailed baseline scope and monitoring:
   - `docs/mobile_push_notifications_baseline.md`
 
+## Analytics Baseline Operations
+
+- Ingestion endpoint:
+  - `POST /api/v1/analytics/events`
+- Retention command:
+  - `php artisan analytics:prune-events`
+  - `php artisan analytics:prune-events --days=<n>`
+- Reference:
+  - `docs/analytics_ingestion_pipeline.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

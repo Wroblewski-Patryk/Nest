@@ -151,7 +151,9 @@ Last updated: 2026-03-16
 - `NEST-046` completed: analytics event taxonomy documented with canonical
   envelope, naming rules, and v1 cross-module event dictionary
   (`docs/analytics_event_taxonomy.md`)
-- Current execution focus: Phase 3 analytics pipeline baseline (`NEST-047`)
+- `NEST-047` completed: analytics ingestion pipeline delivered with validated
+  ingest API, durable event storage, and retention command baseline
+- Current execution focus: Phase 3 scoring baseline (`NEST-048`)
 
 ## Auth, AI, Offline, Notifications
 
