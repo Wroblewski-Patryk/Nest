@@ -153,7 +153,10 @@ Last updated: 2026-03-16
   (`docs/analytics_event_taxonomy.md`)
 - `NEST-047` completed: analytics ingestion pipeline delivered with validated
   ingest API, durable event storage, and retention command baseline
-- Current execution focus: Phase 3 scoring baseline (`NEST-048`)
+- `NEST-048` completed: life-area balance scoring baseline delivered with
+  formula-driven API endpoint, tenant/user scoped aggregation, and feature
+  coverage
+- Current execution focus: trends and insights API (`NEST-049`)
 
 ## Auth, AI, Offline, Notifications
 

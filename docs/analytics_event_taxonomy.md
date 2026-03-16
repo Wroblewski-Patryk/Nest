@@ -91,7 +91,10 @@ Every event must include:
 
 - This taxonomy is the source for:
   - ingestion contracts (`NEST-047`),
+  - life-area balance scoring model (`NEST-048`),
   - trends/insights APIs (`NEST-049`),
   - AI planning signal inputs (`NEST-051+`).
 - Ingestion/storage/retention baseline:
   - `docs/analytics_ingestion_pipeline.md`
+- Life-area scoring baseline:
+  - `docs/life_area_balance_score_model.md`

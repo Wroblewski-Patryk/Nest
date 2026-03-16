@@ -476,6 +476,22 @@ Last updated: 2026-03-16
     - Added retention command `analytics:prune-events` and documented baseline
       in `docs/analytics_ingestion_pipeline.md`.
 
+- [x] NEST-048 Create life-area balance score model (v1)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-047
+  - Done when: scoring formula is documented, computed, and visible via API.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added insights endpoint
+      `GET /api/v1/insights/life-area-balance` with configurable `window_days`
+      (`1..180`) and tenant/user-scoped output.
+    - Added `LifeAreaBalanceScoreService` to compute per-life-area balance
+      rows and `global_balance_score` from journal/task/habit activity shares.
+    - Added feature tests for formula baseline, tenant scoping, auth, and
+      input validation plus model documentation in
+      `docs/life_area_balance_score_model.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

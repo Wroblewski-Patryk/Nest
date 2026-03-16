@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\IntegrationConnectionController;
 use App\Http\Controllers\Api\IntegrationSyncController;
 use App\Http\Controllers\Api\IntegrationSyncReplayController;
 use App\Http\Controllers\Api\JournalEntryController;
+use App\Http\Controllers\Api\LifeAreaBalanceScoreController;
 use App\Http\Controllers\Api\LifeAreaController;
 use App\Http\Controllers\Api\MobilePushDeviceController;
 use App\Http\Controllers\Api\RoutineController;
@@ -28,6 +29,7 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/auth/me', [UserSettingsController::class, 'me']);
         Route::patch('/auth/settings', [UserSettingsController::class, 'update']);
         Route::post('/analytics/events', [AnalyticsIngestionController::class, 'ingest']);
+        Route::get('/insights/life-area-balance', [LifeAreaBalanceScoreController::class, 'show']);
 
         Route::get('/lists', [TaskListController::class, 'index']);
         Route::post('/lists', [TaskListController::class, 'store']);

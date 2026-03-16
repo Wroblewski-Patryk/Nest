@@ -7,6 +7,10 @@ Last updated: 2026-03-16
 Provide validated analytics event ingestion, durable storage, and retention
 operations for Phase 3 insights work.
 
+Life-area scoring baseline that consumes this pipeline is defined in:
+
+- `docs/life_area_balance_score_model.md`
+
 ## Ingestion API
 
 - Endpoint: `POST /api/v1/analytics/events`
