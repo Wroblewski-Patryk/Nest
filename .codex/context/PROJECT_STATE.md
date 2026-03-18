@@ -183,7 +183,9 @@ Last updated: 2026-03-16
   active/paused toggles, manual execution, and recent run visibility
 - `NEST-059` completed: automation execution history and debugging view
   delivered with run filtering, detail inspection, and replay flow
-- Current execution focus: Phase 3 release sign-off (`NEST-060`)
+- `NEST-060` completed: Phase 3 release sign-off approved for intelligence and
+  automation scope with quality/policy gates confirmed
+- Current execution focus: tenant isolation verification suite (`NEST-061`)
 
 ## Auth, AI, Offline, Notifications
 

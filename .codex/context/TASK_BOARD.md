@@ -653,6 +653,19 @@ Last updated: 2026-03-16
     - Extended shared/web/mobile API clients with run detail/replay methods and
       documented debugging baseline in `docs/automation_execution_debugging_view.md`.
 
+- [x] NEST-060 Phase 3 release sign-off
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-050, NEST-055, NEST-058, NEST-059
+  - Done when: intelligence and automation scope passes release criteria.
+  - Done on: 2026-03-19
+  - Notes:
+    - Recorded formal Phase 3 release sign-off in
+      `docs/phase3_release_signoff.md`.
+    - Confirmed quality gates for backend/web/mobile checks and test coverage.
+    - Confirmed policy guardrails, AI feedback loop, and automation audit
+      readiness for transition to Phase 4 hardening.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent
