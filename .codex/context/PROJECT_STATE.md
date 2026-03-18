@@ -102,6 +102,9 @@ Last updated: 2026-03-16
 - `NEST-085` completed: UX/UI MCP collaboration standard added with
   Figma-first design-source policy, optional Stitch ideation role, and
   evidence-gated UX implementation/review workflow
+- `NEST-086` in progress: unified Stitch UX/UI approval baseline is being
+  prepared before implementation, with design-system and acceptance spec in
+  `docs/ux_ui_stitch_unified_spec_v1.md`
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -161,7 +164,10 @@ Last updated: 2026-03-16
   coverage
 - `NEST-050` completed: insights UI delivered in web and mobile clients with
   life-area balance/trend API integration and fallback snapshots
-- Current execution focus: AI weekly planning tools (`NEST-051`)
+- `NEST-051` completed: AI weekly planning baseline delivered with
+  feature-gated API endpoint, explicit constraints, and rationale-backed
+  proposal items
+- Current execution focus: AI explainability payloads (`NEST-052`)
 
 ## Auth, AI, Offline, Notifications
 

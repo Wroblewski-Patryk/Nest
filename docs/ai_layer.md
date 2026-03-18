@@ -8,7 +8,7 @@ operations without compromising data integrity or security.
 ## Product Decision
 
 - AI is not part of MVP delivery scope.
-- Once enabled in product phases after MVP, AI is default ON.
+- AI weekly planning surface starts in Phase 3 (`NEST-051`).
 
 ## Capability Areas
 
@@ -26,6 +26,14 @@ operations without compromising data integrity or security.
 - create_journal_entry
 - suggest_week_plan
 
+## Phase 3 Baseline API
+
+- `POST /api/v1/ai/weekly-plan/propose`
+  - tenant/user scoped,
+  - accepts explicit planning constraints,
+  - returns scheduled proposal items with rationale.
+- Detailed contract: `docs/ai_weekly_planning_api.md`.
+
 ## Safety and Control
 
 - AI can only execute documented tool actions.
@@ -42,8 +50,8 @@ operations without compromising data integrity or security.
 ## MVP Enforcement
 
 - Backend feature flag `AI_SURFACE_ENABLED=false` by default.
-- MVP regression tests enforce absence of public `/api/v1/ai/*` routes.
-- Any future AI routes must be introduced only after post-MVP scope approval.
+- AI routes are protected by feature middleware and return `404` while the flag
+  is disabled.
 
 ## Observability
 

@@ -523,6 +523,22 @@ Last updated: 2026-03-16
     - Extended shared API client/types to include insights endpoints and
       documented UI baseline in `docs/insights_ui_baseline.md`.
 
+- [x] NEST-051 Expand AI tools for weekly planning
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-019, NEST-049
+  - Done when: AI can propose weekly plans with explicit constraints and
+    explainable rationale.
+  - Done on: 2026-03-16
+  - Notes:
+    - Added first AI planning endpoint:
+      `POST /api/v1/ai/weekly-plan/propose`.
+    - Added feature-gated AI middleware (`ai.surface`) and deterministic weekly
+      planning service using tenant/user scoped task, habit, and goal signals.
+    - Added feature tests for feature-flag gate, constraint-aware proposals,
+      rationale payload, tenant scoping, and auth plus API documentation in
+      `docs/ai_weekly_planning_api.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent
@@ -585,9 +601,21 @@ Last updated: 2026-03-16
     - Linked UX/UI MCP standard from `docs/frontend_strategy.md`.
     - Updated `AGENTS.md` with mandatory UX/UI MCP contract for all agents.
 
+- [ ] NEST-086 Build unified Stitch UX/UI approval baseline before implementation
+  - Status: IN_PROGRESS
+  - Owner: Documentation Agent
+  - Depends on: NEST-085
+  - Done when:
+    - one coherent Stitch design system and full screen set are generated,
+    - UX/UI spec and acceptance criteria are documented in `docs/`,
+    - user explicitly approves Stitch baseline before any implementation starts.
+  - Notes:
+    - Design-only phase; no web/mobile code changes allowed.
+    - Baseline spec documented in `docs/ux_ui_stitch_unified_spec_v1.md`.
+
 ## In Progress
 
-- [ ] (none)
+- [ ] NEST-086 Build unified Stitch UX/UI approval baseline before implementation
 
 ## Blocked
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AiWeeklyPlanController;
 use App\Http\Controllers\Api\AnalyticsIngestionController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CalendarEventController;
@@ -30,6 +31,9 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/auth/me', [UserSettingsController::class, 'me']);
         Route::patch('/auth/settings', [UserSettingsController::class, 'update']);
         Route::post('/analytics/events', [AnalyticsIngestionController::class, 'ingest']);
+        Route::middleware('ai.surface')->group(function (): void {
+            Route::post('/ai/weekly-plan/propose', [AiWeeklyPlanController::class, 'propose']);
+        });
         Route::get('/insights/life-area-balance', [LifeAreaBalanceScoreController::class, 'show']);
         Route::get('/insights/trends/tasks', [InsightsTrendController::class, 'tasks']);
         Route::get('/insights/trends/habits', [InsightsTrendController::class, 'habits']);
