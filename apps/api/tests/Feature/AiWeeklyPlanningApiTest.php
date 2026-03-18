@@ -82,7 +82,8 @@ class AiWeeklyPlanningApiTest extends TestCase
             ->assertJsonPath('data.summary.needs_review_items', 0)
             ->assertJsonPath('data.explainability.model_version', 'weekly-plan.v2')
             ->assertJsonPath('data.explainability.guardrails.min_confidence_applied', 0.55)
-            ->assertJsonPath('data.explainability.guardrails.low_confidence_policy', 'needs_review');
+            ->assertJsonPath('data.explainability.guardrails.low_confidence_policy', 'needs_review')
+            ->assertJsonPath('data.policy.allowed', true);
 
         $items = $response->json('data.items');
         $this->assertCount(3, $items);

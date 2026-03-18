@@ -63,3 +63,10 @@ operations without compromising data integrity or security.
 - track tool success/error rates
 - monitor latency and retries
 - monitor hallucination-prone intents via guardrail metrics
+
+## Policy Regression
+
+- AI weekly planning context is evaluated by policy guardrails before
+  recommendation generation.
+- Regression suite coverage and CI expectations:
+  `docs/ai_policy_testing_suite.md`.

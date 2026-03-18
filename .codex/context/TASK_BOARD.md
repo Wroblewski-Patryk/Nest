@@ -583,6 +583,20 @@ Last updated: 2026-03-16
       validation, auth, and storage scope plus docs in
       `docs/ai_feedback_loop.md`.
 
+- [x] NEST-055 Add assistant policy testing suite
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-053, NEST-054
+  - Done when: policy, safety, and prompt regression tests run in CI.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added AI planning policy service with deterministic allow/block rules for
+      privacy-boundary and wellbeing guardrails.
+    - Added unit + feature regression tests for safe/blocked planning contexts
+      and integrated policy assertions into weekly planning API tests.
+    - Documented policy test suite baseline and CI execution scope in
+      `docs/ai_policy_testing_suite.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

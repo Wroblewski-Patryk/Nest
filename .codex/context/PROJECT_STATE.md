@@ -173,7 +173,9 @@ Last updated: 2026-03-16
   and low-confidence guardrail routing to review queue
 - `NEST-054` completed: AI feedback loop delivered with persistent
   accept/reject/edit recommendation tracking under tenant/user scope
-- Current execution focus: assistant policy test suite (`NEST-055`)
+- `NEST-055` completed: assistant policy regression suite delivered for AI
+  planning context safety/guardrail rules with CI-backed coverage
+- Current execution focus: automation rule model (`NEST-056`)
 
 ## Auth, AI, Offline, Notifications
 
