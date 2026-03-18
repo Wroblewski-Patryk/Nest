@@ -177,7 +177,9 @@ Last updated: 2026-03-16
   planning context safety/guardrail rules with CI-backed coverage
 - `NEST-056` completed: automation trigger/condition/action model and API
   contract draft documented for upcoming engine implementation
-- Current execution focus: automation engine implementation (`NEST-057`)
+- `NEST-057` completed: automation engine delivered with rule CRUD, manual
+  execution, and persisted execution run audits
+- Current execution focus: automation builder UI (web) (`NEST-058`)
 
 ## Auth, AI, Offline, Notifications
 

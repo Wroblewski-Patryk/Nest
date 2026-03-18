@@ -76,6 +76,29 @@ paths:
       responses:
         '204':
           description: Deleted
+  /automations/rules/{ruleId}/execute:
+    post:
+      summary: Execute automation rule manually
+      tags: [Automations]
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                trigger_payload:
+                  type: object
+                  additionalProperties: true
+      responses:
+        '200':
+          description: Execution run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationRunSingleResponse'
   /automations/runs:
     get:
       summary: List automation execution runs
@@ -285,3 +308,8 @@ components:
               type: integer
             total:
               type: integer
+    AutomationRunSingleResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/AutomationRun'

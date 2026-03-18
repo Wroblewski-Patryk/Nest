@@ -610,6 +610,21 @@ Last updated: 2026-03-16
       `docs/openapi_automation_rules_v1.yaml` for rule CRUD and run listing.
     - Linked automation contract draft in `docs/api_contracts.md`.
 
+- [x] NEST-057 Implement automation engine (v1)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-056
+  - Done when: rules can execute against allowed module actions with audit logs.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added automation runtime tables/models (`automation_rules`,
+      `automation_runs`) with tenant/user scope and action audit payloads.
+    - Added automation API for rule CRUD, manual execution endpoint, and run
+      listing under authenticated scope.
+    - Added execution service with deterministic condition evaluation, allowed
+      action dispatch, and persisted run outcomes plus feature tests and docs
+      in `docs/automation_engine_v1.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

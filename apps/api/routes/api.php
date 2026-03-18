@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\AiRecommendationFeedbackController;
 use App\Http\Controllers\Api\AiWeeklyPlanController;
 use App\Http\Controllers\Api\AnalyticsIngestionController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\AutomationRuleController;
+use App\Http\Controllers\Api\AutomationRunController;
 use App\Http\Controllers\Api\CalendarEventController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\HabitController;
@@ -40,6 +42,13 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/insights/trends/tasks', [InsightsTrendController::class, 'tasks']);
         Route::get('/insights/trends/habits', [InsightsTrendController::class, 'habits']);
         Route::get('/insights/trends/goals', [InsightsTrendController::class, 'goals']);
+        Route::get('/automations/rules', [AutomationRuleController::class, 'index']);
+        Route::post('/automations/rules', [AutomationRuleController::class, 'store']);
+        Route::get('/automations/rules/{ruleId}', [AutomationRuleController::class, 'show']);
+        Route::patch('/automations/rules/{ruleId}', [AutomationRuleController::class, 'update']);
+        Route::delete('/automations/rules/{ruleId}', [AutomationRuleController::class, 'destroy']);
+        Route::post('/automations/rules/{ruleId}/execute', [AutomationRuleController::class, 'execute']);
+        Route::get('/automations/runs', [AutomationRunController::class, 'index']);
 
         Route::get('/lists', [TaskListController::class, 'index']);
         Route::post('/lists', [TaskListController::class, 'store']);

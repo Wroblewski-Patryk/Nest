@@ -92,3 +92,4 @@ Example:
 ## API Contract Source
 
 - OpenAPI draft: `docs/openapi_automation_rules_v1.yaml`
+- Runtime implementation baseline: `docs/automation_engine_v1.md`
