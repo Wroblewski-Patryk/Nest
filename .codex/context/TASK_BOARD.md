@@ -684,6 +684,29 @@ Last updated: 2026-03-16
     - Documented verification matrix in
       `docs/tenant_isolation_verification_suite.md`.
 
+- [x] NEST-062 Add tenant-scoped data retention and deletion workflows
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-061
+  - Done when: retention policies and deletion jobs are implemented and audited.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added tenant lifecycle policy config in
+      `apps/api/config/tenant_data_lifecycle.php`.
+    - Added audited retention and deletion services:
+      `TenantDataRetentionService` and `TenantDataDeletionService`.
+    - Added queued tenant deletion job:
+      `apps/api/app/Jobs/DeleteTenantDataJob.php`.
+    - Added lifecycle audit storage:
+      `tenant_data_lifecycle_audits` migration and model.
+    - Added operational commands:
+      `tenants:retention-prune` and `tenants:delete-data` with
+      `--dry-run`/`--json` and optional `--queue` deletion execution.
+    - Added feature coverage in
+      `apps/api/tests/Feature/TenantDataLifecycleCommandTest.php`.
+    - Documented runbooks in
+      `docs/tenant_data_lifecycle_workflows.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

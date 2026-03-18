@@ -1,7 +1,10 @@
 <?php
 
+use App\Jobs\DeleteTenantDataJob;
 use App\Notifications\Services\MobilePushReminderService;
 use App\Observability\IntegrationSyncSloService;
+use App\Tenancy\Services\TenantDataDeletionService;
+use App\Tenancy\Services\TenantDataRetentionService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -73,3 +76,53 @@ Artisan::command('analytics:prune-events {--days=}', function (): int {
 
     return self::SUCCESS;
 })->purpose('Prune analytics events older than configured retention window');
+
+Artisan::command('tenants:retention-prune {--tenant=} {--dry-run} {--json}', function (): int {
+    $tenantId = $this->option('tenant');
+    $summary = app(TenantDataRetentionService::class)->run(
+        is_string($tenantId) && $tenantId !== '' ? $tenantId : null,
+        (bool) $this->option('dry-run')
+    );
+
+    if ($this->option('json')) {
+        $this->line((string) json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    } else {
+        $this->info('Tenant retention workflow completed.');
+        $this->line('Rows affected: '.$summary['rows_affected']);
+        $this->line('Dry run: '.($summary['dry_run'] ? 'yes' : 'no'));
+    }
+
+    return self::SUCCESS;
+})->purpose('Run tenant-scoped retention policies with audit output');
+
+Artisan::command('tenants:delete-data {tenant} {--dry-run} {--queue} {--json}', function (string $tenant): int {
+    $dryRun = (bool) $this->option('dry-run');
+    $queue = (bool) $this->option('queue');
+
+    if ($queue) {
+        DeleteTenantDataJob::dispatch($tenant, $dryRun);
+        $summary = [
+            'workflow' => 'deletion',
+            'tenant_id' => $tenant,
+            'queued' => true,
+            'dry_run' => $dryRun,
+        ];
+    } else {
+        $summary = app(TenantDataDeletionService::class)->run($tenant, $dryRun);
+        $summary['queued'] = false;
+    }
+
+    if ($this->option('json')) {
+        $this->line((string) json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    } else {
+        $this->info('Tenant deletion workflow processed.');
+        $this->line('Tenant: '.$tenant);
+        $this->line('Queued: '.($summary['queued'] ? 'yes' : 'no'));
+        $this->line('Dry run: '.($summary['dry_run'] ? 'yes' : 'no'));
+        if (array_key_exists('rows_affected', $summary)) {
+            $this->line('Rows affected: '.$summary['rows_affected']);
+        }
+    }
+
+    return self::SUCCESS;
+})->purpose('Run or queue tenant-scoped data deletion workflow with audit output');

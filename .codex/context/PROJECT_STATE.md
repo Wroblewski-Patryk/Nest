@@ -188,8 +188,10 @@ Last updated: 2026-03-19
 - `NEST-061` completed: tenant isolation verification suite delivered with API,
   integration, and queue path coverage plus strict sync entity ownership checks
   (`docs/tenant_isolation_verification_suite.md`)
-- Current execution focus: tenant-scoped data retention and deletion workflows
-  (`NEST-062`)
+- `NEST-062` completed: tenant-scoped retention and deletion workflows
+  delivered with audited lifecycle logs, queue-backed tenant deletion, and
+  command-line operations (`docs/tenant_data_lifecycle_workflows.md`)
+- Current execution focus: tenant-level usage limits and quotas (`NEST-063`)
 
 ## Auth, AI, Offline, Notifications
 

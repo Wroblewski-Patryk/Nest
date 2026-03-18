@@ -174,7 +174,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-029
   - Done when: test matrix covers API, queue, and integration isolation paths.
 
-- [ ] NEST-062 Add tenant-scoped data retention and deletion workflows
+- [x] NEST-062 Add tenant-scoped data retention and deletion workflows
   - Depends on: NEST-061
   - Done when: retention policies and deletion jobs are implemented and audited.
 

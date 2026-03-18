@@ -82,6 +82,21 @@ Current workflow implementation:
 - Reference:
   - `docs/analytics_ingestion_pipeline.md`
 
+## Tenant Data Lifecycle Operations
+
+- Retention workflow:
+  - `php artisan tenants:retention-prune`
+  - `php artisan tenants:retention-prune --tenant=<tenant-id>`
+  - `php artisan tenants:retention-prune --dry-run`
+  - `php artisan tenants:retention-prune --json`
+- Deletion workflow:
+  - `php artisan tenants:delete-data <tenant-id>`
+  - `php artisan tenants:delete-data <tenant-id> --dry-run`
+  - `php artisan tenants:delete-data <tenant-id> --queue`
+  - `php artisan tenants:delete-data <tenant-id> --json`
+- Reference:
+  - `docs/tenant_data_lifecycle_workflows.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.
