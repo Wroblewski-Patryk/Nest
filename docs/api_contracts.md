@@ -13,6 +13,8 @@ for backend and client integration.
   `docs/openapi_tasks_lists_v1.yaml`
 - Core Modules v1 (NEST-007):
   `docs/openapi_core_modules_v1.yaml`
+- Automation Rules v1 draft (NEST-056):
+  `docs/openapi_automation_rules_v1.yaml`
 
 ## Notes
 
@@ -21,3 +23,4 @@ for backend and client integration.
   - `openapi_tasks_lists_v1.yaml`: tasks and lists
   - `openapi_core_modules_v1.yaml`: habits, routines, goals, targets, journal,
     life areas, and calendar events
+  - `openapi_automation_rules_v1.yaml`: automation rules and run records

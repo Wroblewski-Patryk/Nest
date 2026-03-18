@@ -175,7 +175,9 @@ Last updated: 2026-03-16
   accept/reject/edit recommendation tracking under tenant/user scope
 - `NEST-055` completed: assistant policy regression suite delivered for AI
   planning context safety/guardrail rules with CI-backed coverage
-- Current execution focus: automation rule model (`NEST-056`)
+- `NEST-056` completed: automation trigger/condition/action model and API
+  contract draft documented for upcoming engine implementation
+- Current execution focus: automation engine implementation (`NEST-057`)
 
 ## Auth, AI, Offline, Notifications
 

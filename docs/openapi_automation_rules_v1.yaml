@@ -1,0 +1,287 @@
+openapi: 3.1.0
+info:
+  title: Nest Automation Rules API v1 (Draft)
+  version: 0.1.0
+  description: >
+    Draft contract for automation rule model covering trigger, condition, and
+    action definitions.
+servers:
+  - url: https://api.nest.local/api/v1
+paths:
+  /automations/rules:
+    get:
+      summary: List automation rules
+      tags: [Automations]
+      responses:
+        '200':
+          description: Rule collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationRuleCollectionResponse'
+    post:
+      summary: Create automation rule
+      tags: [Automations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AutomationRuleCreateRequest'
+      responses:
+        '201':
+          description: Created rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationRuleSingleResponse'
+  /automations/rules/{ruleId}:
+    get:
+      summary: Get automation rule details
+      tags: [Automations]
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      responses:
+        '200':
+          description: Rule details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationRuleSingleResponse'
+        '404':
+          description: Not found
+    patch:
+      summary: Update automation rule
+      tags: [Automations]
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AutomationRuleUpdateRequest'
+      responses:
+        '200':
+          description: Updated rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationRuleSingleResponse'
+    delete:
+      summary: Delete automation rule
+      tags: [Automations]
+      parameters:
+        - $ref: '#/components/parameters/RuleId'
+      responses:
+        '204':
+          description: Deleted
+  /automations/runs:
+    get:
+      summary: List automation execution runs
+      tags: [Automations]
+      responses:
+        '200':
+          description: Run collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationRunCollectionResponse'
+components:
+  parameters:
+    RuleId:
+      name: ruleId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    AutomationRule:
+      type: object
+      required:
+        - id
+        - name
+        - status
+        - trigger
+        - conditions
+        - actions
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 120
+        status:
+          type: string
+          enum: [active, paused]
+        trigger:
+          $ref: '#/components/schemas/AutomationTrigger'
+        conditions:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/AutomationCondition'
+        actions:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/AutomationAction'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AutomationTrigger:
+      type: object
+      required: [type]
+      properties:
+        type:
+          type: string
+          enum: [event, schedule, metric_threshold]
+        event_name:
+          type: string
+        schedule:
+          type: string
+        metric_name:
+          type: string
+        threshold:
+          type: number
+        debounce_seconds:
+          type: integer
+          minimum: 0
+    AutomationCondition:
+      type: object
+      required: [field, operator, value]
+      properties:
+        field:
+          type: string
+        operator:
+          type: string
+          enum: [equals, not_equals, contains, greater_than, less_than, in]
+        value: {}
+    AutomationAction:
+      type: object
+      required: [type, payload]
+      properties:
+        type:
+          type: string
+          enum:
+            - create_task
+            - update_task
+            - schedule_event
+            - log_habit
+            - create_journal_entry
+            - send_notification
+        payload:
+          type: object
+          additionalProperties: true
+    AutomationRuleCreateRequest:
+      type: object
+      required: [name, trigger, conditions, actions]
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        status:
+          type: string
+          enum: [active, paused]
+        trigger:
+          $ref: '#/components/schemas/AutomationTrigger'
+        conditions:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/AutomationCondition'
+        actions:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/AutomationAction'
+    AutomationRuleUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        status:
+          type: string
+          enum: [active, paused]
+        trigger:
+          $ref: '#/components/schemas/AutomationTrigger'
+        conditions:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/AutomationCondition'
+        actions:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/AutomationAction'
+    AutomationRuleSingleResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/AutomationRule'
+    AutomationRuleCollectionResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationRule'
+        meta:
+          type: object
+          properties:
+            page:
+              type: integer
+            per_page:
+              type: integer
+            total:
+              type: integer
+    AutomationRun:
+      type: object
+      required:
+        - id
+        - rule_id
+        - status
+        - started_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        rule_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [success, failed, skipped]
+        started_at:
+          type: string
+          format: date-time
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+        error_code:
+          type: string
+          nullable: true
+    AutomationRunCollectionResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AutomationRun'
+        meta:
+          type: object
+          properties:
+            page:
+              type: integer
+            per_page:
+              type: integer
+            total:
+              type: integer

@@ -597,6 +597,19 @@ Last updated: 2026-03-16
     - Documented policy test suite baseline and CI execution scope in
       `docs/ai_policy_testing_suite.md`.
 
+- [x] NEST-056 Define automation rule model (trigger/condition/action)
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Depends on: NEST-049
+  - Done when: automation domain model and API contracts are documented.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added automation domain model spec in `docs/automation_rule_model.md`
+      with trigger/condition/action entities and execution constraints.
+    - Added OpenAPI draft contract
+      `docs/openapi_automation_rules_v1.yaml` for rule CRUD and run listing.
+    - Linked automation contract draft in `docs/api_contracts.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent
