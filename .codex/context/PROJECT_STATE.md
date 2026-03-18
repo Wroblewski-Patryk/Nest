@@ -169,7 +169,9 @@ Last updated: 2026-03-16
   proposal items
 - `NEST-052` completed: AI recommendation responses now include reason codes
   and source-entity provenance payloads with explainability metadata
-- Current execution focus: AI confidence scoring + guardrails (`NEST-053`)
+- `NEST-053` completed: AI planning suggestions now include confidence scoring
+  and low-confidence guardrail routing to review queue
+- Current execution focus: AI feedback loop for recommendations (`NEST-054`)
 
 ## Auth, AI, Offline, Notifications
 

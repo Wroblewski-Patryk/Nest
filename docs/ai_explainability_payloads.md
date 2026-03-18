@@ -13,11 +13,16 @@ For `POST /api/v1/ai/weekly-plan/propose`:
 - `data.explainability.model_version`: deterministic planner version id
 - `data.explainability.reason_code_counts`: aggregated reason code histogram
 - `data.explainability.generated_at`: ISO-8601 generation timestamp
+- `data.explainability.guardrails`:
+  - `min_confidence_applied`
+  - `low_confidence_policy` (`needs_review`)
 
 Per recommendation item:
 
 - `reason_codes[]`: compact machine-readable reason tags
 - `source_entities[]`: provenance entities used to build recommendation
+- `confidence_score`: normalized score (`0..1`)
+- `guardrail_status`: `accepted` or `needs_review`
   - `entity_type`
   - `entity_id`
   - `signals` (non-PII decision attributes)
@@ -34,4 +39,6 @@ Per recommendation item:
 ## Notes
 
 - Payload is deterministic and rule-based for Phase 3 baseline.
-- Next step (`NEST-053`) will add confidence scoring and guardrail status.
+- Confidence guardrail in v1:
+  - low-confidence items are returned in `review_items` and excluded from
+    scheduled plan until explicit user review.

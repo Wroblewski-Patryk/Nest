@@ -20,6 +20,7 @@ class AiWeeklyPlanController extends Controller
             'constraints.available_hours' => ['sometimes', 'integer', 'min:1', 'max:80'],
             'constraints.max_items' => ['sometimes', 'integer', 'min:1', 'max:25'],
             'constraints.include_weekend' => ['sometimes', 'boolean'],
+            'constraints.min_confidence' => ['sometimes', 'numeric', 'min:0.1', 'max:0.95'],
             'constraints.prioritize' => ['sometimes', 'array', 'min:1'],
             'constraints.prioritize.*' => ['string', 'in:tasks,habits,goals'],
         ]);

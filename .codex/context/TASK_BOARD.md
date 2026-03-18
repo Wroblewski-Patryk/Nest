@@ -553,6 +553,20 @@ Last updated: 2026-03-16
     - Added/updated feature tests and explainability contract docs in
       `docs/ai_explainability_payloads.md`.
 
+- [x] NEST-053 Add confidence scoring and guardrails for AI suggestions
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-052
+  - Done when: low-confidence suggestions are gated and flagged for review.
+  - Done on: 2026-03-19
+  - Notes:
+    - Extended weekly plan recommendations with per-item `confidence_score`
+      and `guardrail_status`.
+    - Added planner guardrail constraint (`min_confidence`) and review queue
+      output (`review_items`) for low-confidence candidates.
+    - Added feature tests and updated explainability/API docs to cover
+      confidence guardrail behavior.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

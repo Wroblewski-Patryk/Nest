@@ -76,9 +76,13 @@ class AiWeeklyPlanningApiTest extends TestCase
             ->assertJsonPath('data.constraints.available_hours', 4)
             ->assertJsonPath('data.constraints.max_items', 5)
             ->assertJsonPath('data.constraints.include_weekend', false)
+            ->assertJsonPath('data.constraints.min_confidence', 0.55)
             ->assertJsonPath('data.summary.used_minutes', 165)
             ->assertJsonPath('data.summary.planned_items', 3)
-            ->assertJsonPath('data.explainability.model_version', 'weekly-plan.v2');
+            ->assertJsonPath('data.summary.needs_review_items', 0)
+            ->assertJsonPath('data.explainability.model_version', 'weekly-plan.v2')
+            ->assertJsonPath('data.explainability.guardrails.min_confidence_applied', 0.55)
+            ->assertJsonPath('data.explainability.guardrails.low_confidence_policy', 'needs_review');
 
         $items = $response->json('data.items');
         $this->assertCount(3, $items);
@@ -87,10 +91,47 @@ class AiWeeklyPlanningApiTest extends TestCase
             $this->assertNotEmpty($item['rationale']);
             $this->assertNotEmpty($item['reason_codes']);
             $this->assertNotEmpty($item['source_entities']);
+            $this->assertGreaterThanOrEqual(0.55, (float) $item['confidence_score']);
+            $this->assertSame('accepted', $item['guardrail_status']);
             $this->assertArrayHasKey('scheduled_for', $item);
             $this->assertArrayHasKey('estimated_minutes', $item);
             $this->assertLessThan(6, Carbon::parse($item['scheduled_for'])->dayOfWeekIso);
         }
+    }
+
+    public function test_low_confidence_candidates_are_gated_to_review_queue(): void
+    {
+        config()->set('features.ai_surface_enabled', true);
+
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        $list = TaskList::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id]);
+
+        Task::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'list_id' => $list->id,
+            'title' => 'Long-tail backlog cleanup',
+            'status' => 'todo',
+            'priority' => 'low',
+            'due_date' => null,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->postJson('/api/v1/ai/weekly-plan/propose', [
+            'constraints' => [
+                'available_hours' => 4,
+                'max_items' => 5,
+                'min_confidence' => 0.7,
+                'prioritize' => ['tasks'],
+            ],
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.summary.planned_items', 0)
+            ->assertJsonPath('data.summary.needs_review_items', 1)
+            ->assertJsonPath('data.review_items.0.title', 'Long-tail backlog cleanup')
+            ->assertJsonPath('data.review_items.0.guardrail_status', 'needs_review');
     }
 
     public function test_weekly_plan_is_tenant_scoped(): void

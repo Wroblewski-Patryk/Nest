@@ -21,6 +21,7 @@ real tenant/user data with explicit constraints and explainable rationale.
     "available_hours": 10,
     "max_items": 10,
     "include_weekend": false,
+    "min_confidence": 0.55,
     "prioritize": ["tasks", "habits", "goals"]
   }
 }
@@ -31,16 +32,19 @@ Validation:
 - `available_hours`: `1..80`
 - `max_items`: `1..25`
 - `include_weekend`: boolean
+- `min_confidence`: `0.1..0.95`
 - `prioritize[]`: `tasks|habits|goals`
 
 ## Response
 
 - `data.constraints`: resolved constraints used by the planner
 - `data.summary`: planned item count + used/remaining minutes
+- `data.summary.needs_review_items`: low-confidence items held from schedule
 - `data.explainability`:
   - `model_version`
   - `reason_code_counts`
   - `generated_at`
+  - `guardrails` (`min_confidence_applied`, `low_confidence_policy`)
 - `data.items[]`:
   - `type` (`task|habit|goal`)
   - `source_id`
@@ -48,8 +52,14 @@ Validation:
   - `estimated_minutes`
   - `scheduled_for`
   - `rationale`
+  - `confidence_score`
+  - `guardrail_status` (`accepted`)
   - `reason_codes[]`
   - `source_entities[]` (`entity_type`, `entity_id`, `signals`)
+- `data.review_items[]`:
+  - same shape as `items[]`,
+  - `guardrail_status=needs_review`,
+  - excluded from scheduled output until manual review.
 
 ## Planning Logic (v1)
 

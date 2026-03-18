@@ -20,6 +20,7 @@ class WeeklyPlanningAssistantService
         $availableHours = (int) ($constraints['available_hours'] ?? 10);
         $maxItems = (int) ($constraints['max_items'] ?? 10);
         $includeWeekend = (bool) ($constraints['include_weekend'] ?? false);
+        $minConfidence = (float) ($constraints['min_confidence'] ?? 0.55);
         /** @var list<string> $prioritize */
         $prioritize = $constraints['prioritize'] ?? ['tasks', 'habits', 'goals'];
 
@@ -28,12 +29,22 @@ class WeeklyPlanningAssistantService
         $candidates = $this->candidateItems($user, $prioritize);
 
         $scheduled = [];
+        $needsReview = [];
         $usedMinutes = 0;
         $dayIndex = 0;
 
         foreach ($candidates as $candidate) {
             if (count($scheduled) >= $maxItems) {
                 break;
+            }
+
+            if ((float) $candidate['confidence_score'] < $minConfidence) {
+                $needsReview[] = [
+                    ...$candidate,
+                    'guardrail_status' => 'needs_review',
+                ];
+
+                continue;
             }
 
             if (($usedMinutes + $candidate['estimated_minutes']) > $availableMinutes) {
@@ -47,6 +58,7 @@ class WeeklyPlanningAssistantService
             $scheduled[] = [
                 ...$candidate,
                 'scheduled_for' => $assignedDay->toDateString(),
+                'guardrail_status' => 'accepted',
             ];
         }
 
@@ -62,10 +74,12 @@ class WeeklyPlanningAssistantService
                     'available_hours' => $availableHours,
                     'max_items' => $maxItems,
                     'include_weekend' => $includeWeekend,
+                    'min_confidence' => $minConfidence,
                     'prioritize' => $prioritize,
                 ],
                 'summary' => [
                     'planned_items' => count($scheduled),
+                    'needs_review_items' => count($needsReview),
                     'used_minutes' => $usedMinutes,
                     'remaining_minutes' => max(0, $availableMinutes - $usedMinutes),
                 ],
@@ -73,8 +87,13 @@ class WeeklyPlanningAssistantService
                     'model_version' => 'weekly-plan.v2',
                     'reason_code_counts' => $reasonCodeCounts,
                     'generated_at' => Carbon::now()->toISOString(),
+                    'guardrails' => [
+                        'min_confidence_applied' => $minConfidence,
+                        'low_confidence_policy' => 'needs_review',
+                    ],
                 ],
                 'items' => $scheduled,
+                'review_items' => $needsReview,
             ],
         ];
     }
@@ -133,6 +152,7 @@ class WeeklyPlanningAssistantService
                     'title' => (string) $task->title,
                     'estimated_minutes' => 90,
                     'rationale' => "Prioritized {$priority} task with due {$dueLabel}.",
+                    'confidence_score' => $this->taskConfidenceScore($priority, $task->due_date?->toDateString()),
                     'reason_codes' => [
                         "task_priority_{$priority}",
                         $task->due_date ? 'task_due_scheduled' : 'task_due_unspecified',
@@ -170,6 +190,7 @@ class WeeklyPlanningAssistantService
                     'title' => (string) $habit->title,
                     'estimated_minutes' => 30,
                     'rationale' => "Active {$cadenceType} habit to preserve consistency.",
+                    'confidence_score' => $this->habitConfidenceScore($cadenceType),
                     'reason_codes' => ['habit_consistency', "habit_cadence_{$cadenceType}"],
                     'source_entities' => [
                         [
@@ -204,6 +225,7 @@ class WeeklyPlanningAssistantService
                     'title' => (string) $goal->title,
                     'estimated_minutes' => 45,
                     'rationale' => "Active goal milestone with target {$targetDate}.",
+                    'confidence_score' => $this->goalConfidenceScore($goal->target_date?->toDateString()),
                     'reason_codes' => [
                         'goal_active_milestone',
                         $goal->target_date ? 'goal_target_scheduled' : 'goal_target_unspecified',
@@ -226,5 +248,41 @@ class WeeklyPlanningAssistantService
         return $items
             ->sortByDesc('priority_weight')
             ->values();
+    }
+
+    private function taskConfidenceScore(string $priority, ?string $dueDate): float
+    {
+        $base = match ($priority) {
+            'urgent' => 0.92,
+            'high' => 0.84,
+            'medium' => 0.68,
+            default => 0.46,
+        };
+
+        if ($dueDate === null) {
+            $base -= 0.10;
+        }
+
+        return round(max(0.10, min($base, 0.99)), 2);
+    }
+
+    private function habitConfidenceScore(string $cadenceType): float
+    {
+        $base = match ($cadenceType) {
+            'daily' => 0.72,
+            'weekly' => 0.65,
+            default => 0.58,
+        };
+
+        return round($base, 2);
+    }
+
+    private function goalConfidenceScore(?string $targetDate): float
+    {
+        if ($targetDate === null) {
+            return 0.55;
+        }
+
+        return 0.74;
     }
 }
