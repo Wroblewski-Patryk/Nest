@@ -7,6 +7,8 @@ use App\Integrations\IntegrationAdapterRegistry;
 use App\Integrations\Services\IntegrationSyncService;
 use App\Integrations\Support\IntegrationSyncResult;
 use App\Jobs\ProcessIntegrationSyncJob;
+use App\Models\Task;
+use App\Models\TaskList;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -29,6 +31,8 @@ class IntegrationInfrastructureTest extends TestCase
     {
         $tenant = Tenant::factory()->create();
         $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        $list = TaskList::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id]);
+        $task = Task::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id, 'list_id' => $list->id]);
 
         $adapter = new class implements IntegrationAdapter
         {
@@ -63,7 +67,7 @@ class IntegrationInfrastructureTest extends TestCase
             'user_id' => $user->id,
             'provider' => 'fake_provider',
             'internal_entity_type' => 'task',
-            'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58e',
+            'internal_entity_id' => $task->id,
             'external_id' => 'ext-task-1',
             'idempotency_key' => 'idem-001',
         ];
@@ -81,7 +85,7 @@ class IntegrationInfrastructureTest extends TestCase
             'provider' => 'fake_provider',
             'external_id' => 'ext-task-1',
             'internal_entity_type' => 'task',
-            'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58e',
+            'internal_entity_id' => $task->id,
             'last_sync_status' => 'success',
             'sync_hash' => 'hash-123',
         ]);
@@ -103,6 +107,8 @@ class IntegrationInfrastructureTest extends TestCase
     {
         $tenant = Tenant::factory()->create();
         $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        $list = TaskList::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id]);
+        $task = Task::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id, 'list_id' => $list->id]);
 
         $failingAdapter = new class implements IntegrationAdapter
         {
@@ -127,7 +133,7 @@ class IntegrationInfrastructureTest extends TestCase
             'user_id' => $user->id,
             'provider' => 'broken_provider',
             'internal_entity_type' => 'task',
-            'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58e',
+            'internal_entity_id' => $task->id,
             'idempotency_key' => 'idem-002',
         ]);
 
@@ -159,6 +165,9 @@ class IntegrationInfrastructureTest extends TestCase
     {
         $tenant = Tenant::factory()->create();
         $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        $list = TaskList::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id]);
+        $taskA = Task::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id, 'list_id' => $list->id]);
+        $taskB = Task::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id, 'list_id' => $list->id]);
 
         $adapter = new class implements IntegrationAdapter
         {
@@ -189,7 +198,7 @@ class IntegrationInfrastructureTest extends TestCase
             'user_id' => $user->id,
             'provider' => 'fake_provider_conflict',
             'internal_entity_type' => 'task',
-            'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58e',
+            'internal_entity_id' => $taskA->id,
             'idempotency_key' => 'idem-conflict-1',
         ]);
 
@@ -201,7 +210,7 @@ class IntegrationInfrastructureTest extends TestCase
             'user_id' => $user->id,
             'provider' => 'fake_provider_conflict',
             'internal_entity_type' => 'task',
-            'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58f',
+            'internal_entity_id' => $taskB->id,
             'idempotency_key' => 'idem-conflict-2',
         ]);
     }

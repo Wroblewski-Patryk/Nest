@@ -1,6 +1,6 @@
 ﻿# PROJECT_STATE
 
-Last updated: 2026-03-16
+Last updated: 2026-03-19
 
 ## Product
 
@@ -185,7 +185,11 @@ Last updated: 2026-03-16
   delivered with run filtering, detail inspection, and replay flow
 - `NEST-060` completed: Phase 3 release sign-off approved for intelligence and
   automation scope with quality/policy gates confirmed
-- Current execution focus: tenant isolation verification suite (`NEST-061`)
+- `NEST-061` completed: tenant isolation verification suite delivered with API,
+  integration, and queue path coverage plus strict sync entity ownership checks
+  (`docs/tenant_isolation_verification_suite.md`)
+- Current execution focus: tenant-scoped data retention and deletion workflows
+  (`NEST-062`)
 
 ## Auth, AI, Offline, Notifications
 

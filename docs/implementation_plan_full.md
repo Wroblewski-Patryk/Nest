@@ -170,7 +170,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
 
 ### Multi-tenant operations hardening
 
-- [ ] NEST-061 Implement strict tenant isolation verification suite
+- [x] NEST-061 Implement strict tenant isolation verification suite
   - Depends on: NEST-029
   - Done when: test matrix covers API, queue, and integration isolation paths.
 

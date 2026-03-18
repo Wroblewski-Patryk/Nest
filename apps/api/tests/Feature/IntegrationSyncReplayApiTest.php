@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\IntegrationSyncFailure;
+use App\Models\Task;
+use App\Models\TaskList;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,6 +26,8 @@ class IntegrationSyncReplayApiTest extends TestCase
     {
         $tenant = Tenant::factory()->create();
         $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        $list = TaskList::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id]);
+        $task = Task::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id, 'list_id' => $list->id]);
         Sanctum::actingAs($user);
 
         $failure = IntegrationSyncFailure::query()->create([
@@ -36,7 +40,7 @@ class IntegrationSyncReplayApiTest extends TestCase
                 'user_id' => $user->id,
                 'provider' => 'trello',
                 'internal_entity_type' => 'task',
-                'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58e',
+                'internal_entity_id' => $task->id,
                 'external_id' => 'trello-task-1',
                 'sync_hash' => 'hash-1',
                 'idempotency_key' => 'trello:task:task-1',
@@ -68,7 +72,7 @@ class IntegrationSyncReplayApiTest extends TestCase
             'tenant_id' => $tenant->id,
             'provider' => 'trello',
             'internal_entity_type' => 'task',
-            'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58e',
+            'internal_entity_id' => $task->id,
         ]);
     }
 
@@ -76,6 +80,8 @@ class IntegrationSyncReplayApiTest extends TestCase
     {
         $tenantA = Tenant::factory()->create();
         $userA = User::factory()->create(['tenant_id' => $tenantA->id]);
+        $listA = TaskList::factory()->create(['tenant_id' => $tenantA->id, 'user_id' => $userA->id]);
+        $taskA = Task::factory()->create(['tenant_id' => $tenantA->id, 'user_id' => $userA->id, 'list_id' => $listA->id]);
         $tenantB = Tenant::factory()->create();
         $userB = User::factory()->create(['tenant_id' => $tenantB->id]);
 
@@ -89,7 +95,7 @@ class IntegrationSyncReplayApiTest extends TestCase
                 'user_id' => $userA->id,
                 'provider' => 'trello',
                 'internal_entity_type' => 'task',
-                'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58f',
+                'internal_entity_id' => $taskA->id,
                 'external_id' => 'trello-task-2',
                 'sync_hash' => 'hash-2',
                 'idempotency_key' => 'trello:task:task-2',

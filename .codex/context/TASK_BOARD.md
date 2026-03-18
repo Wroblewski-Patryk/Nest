@@ -666,12 +666,23 @@ Last updated: 2026-03-16
     - Confirmed policy guardrails, AI feedback loop, and automation audit
       readiness for transition to Phase 4 hardening.
 
-- [ ] NEST-061 Phase 4 SaaS hardening release program
-  - Status: BACKLOG
-  - Owner: Planning Agent
-  - Depends on: NEST-046
-  - Done when: all tasks `NEST-061` to `NEST-081` from
-    `docs/implementation_plan_full.md` are delivered and signed off.
+- [x] NEST-061 Implement strict tenant isolation verification suite
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-029
+  - Done when: test matrix covers API, queue, and integration isolation paths.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added hard ownership verification in integration sync service for
+      tenant/user-scoped internal entities (`task_list`, `task`,
+      `calendar_event`, `journal_entry`).
+    - Added `TenantIsolationVerificationTest` coverage for API access scope,
+      integration sync payload rejection, and queue-path rejection for
+      cross-tenant entity access.
+    - Aligned integration/observability regression tests to use
+      tenant-owned internal entities before sync execution.
+    - Documented verification matrix in
+      `docs/tenant_isolation_verification_suite.md`.
 
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE

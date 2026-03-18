@@ -3,8 +3,12 @@
 namespace App\Integrations\Services;
 
 use App\Integrations\IntegrationAdapterRegistry;
+use App\Models\CalendarEvent;
 use App\Models\IntegrationSyncAudit;
+use App\Models\JournalEntry;
 use App\Models\SyncMapping;
+use App\Models\Task;
+use App\Models\TaskList;
 use App\Observability\MetricCounter;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -27,6 +31,7 @@ class IntegrationSyncService
     {
         $startedAt = microtime(true);
         $validated = $this->validatePayload($payload);
+        $this->assertInternalEntityOwnership($validated);
         $idempotencyKey = (string) $validated['idempotency_key'];
 
         try {
@@ -72,6 +77,45 @@ class IntegrationSyncService
             ];
         } finally {
             $this->recordLatencyMetric($startedAt);
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function assertInternalEntityOwnership(array $payload): void
+    {
+        $entityType = (string) $payload['internal_entity_type'];
+        $entityId = (string) $payload['internal_entity_id'];
+        $tenantId = (string) $payload['tenant_id'];
+        $userId = (string) $payload['user_id'];
+
+        $isOwned = match ($entityType) {
+            'task_list' => TaskList::query()
+                ->where('id', $entityId)
+                ->where('tenant_id', $tenantId)
+                ->where('user_id', $userId)
+                ->exists(),
+            'task' => Task::query()
+                ->where('id', $entityId)
+                ->where('tenant_id', $tenantId)
+                ->where('user_id', $userId)
+                ->exists(),
+            'calendar_event' => CalendarEvent::query()
+                ->where('id', $entityId)
+                ->where('tenant_id', $tenantId)
+                ->where('user_id', $userId)
+                ->exists(),
+            'journal_entry' => JournalEntry::query()
+                ->where('id', $entityId)
+                ->where('tenant_id', $tenantId)
+                ->where('user_id', $userId)
+                ->exists(),
+            default => true,
+        };
+
+        if (! $isOwned) {
+            throw new InvalidArgumentException('Internal entity ownership verification failed.');
         }
     }
 

@@ -6,6 +6,8 @@ use App\Integrations\Contracts\IntegrationAdapter;
 use App\Integrations\IntegrationAdapterRegistry;
 use App\Integrations\Services\IntegrationSyncService;
 use App\Integrations\Support\IntegrationSyncResult;
+use App\Models\Task;
+use App\Models\TaskList;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Observability\MetricCounter;
@@ -50,6 +52,8 @@ class ObservabilityBaselineTest extends TestCase
     {
         $tenant = Tenant::factory()->create();
         $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        $list = TaskList::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id]);
+        $task = Task::factory()->create(['tenant_id' => $tenant->id, 'user_id' => $user->id, 'list_id' => $list->id]);
 
         $adapter = new class implements IntegrationAdapter
         {
@@ -81,7 +85,7 @@ class ObservabilityBaselineTest extends TestCase
             'user_id' => $user->id,
             'provider' => 'metrics_provider',
             'internal_entity_type' => 'task',
-            'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58e',
+            'internal_entity_id' => $task->id,
             'idempotency_key' => 'metrics-idem-1',
         ];
 
