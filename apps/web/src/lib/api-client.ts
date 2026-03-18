@@ -85,6 +85,12 @@ function createClient(baseUrl: string): NestApiClient {
       }) as ReturnType<NestApiClient["executeAutomationRule"]>,
     getAutomationRuns: (query = {}) =>
       request("/automations/runs", { query }) as ReturnType<NestApiClient["getAutomationRuns"]>,
+    getAutomationRun: (runId) =>
+      request(`/automations/runs/${runId}`) as ReturnType<NestApiClient["getAutomationRun"]>,
+    replayAutomationRun: (runId) =>
+      request(`/automations/runs/${runId}/replay`, {
+        method: "POST",
+      }) as ReturnType<NestApiClient["replayAutomationRun"]>,
     syncListTasks: (provider) =>
       request("/integrations/list-task-sync", {
         method: "POST",

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Automation\Services\AutomationEngineService;
 use App\Http\Controllers\Controller;
 use App\Models\AutomationRun;
 use App\Models\User;
@@ -35,5 +36,43 @@ class AutomationRunController extends Controller
                 'total' => $runs->total(),
             ],
         ]);
+    }
+
+    public function show(Request $request, string $runId): JsonResponse
+    {
+        $run = $this->resolveRun($request, $runId);
+
+        return response()->json(['data' => $run]);
+    }
+
+    public function replay(
+        Request $request,
+        string $runId,
+        AutomationEngineService $engineService
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $request->user();
+        $run = $this->resolveRun($request, $runId);
+        $rule = $run->rule;
+        if ($rule === null) {
+            abort(404);
+        }
+
+        $replayedRun = $engineService->executeRule($rule, $user, $run->trigger_payload ?? []);
+
+        return response()->json([
+            'data' => $replayedRun,
+        ]);
+    }
+
+    private function resolveRun(Request $request, string $runId): AutomationRun
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        return AutomationRun::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('user_id', $user->id)
+            ->findOrFail($runId);
     }
 }

@@ -638,6 +638,21 @@ Last updated: 2026-03-16
     - Extended shared/web/mobile API clients for automation endpoints and
       documented UI baseline in `docs/automation_builder_ui_web.md`.
 
+- [x] NEST-059 Deliver automation execution history and debugging view
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-057
+  - Done when: users can inspect runs, errors, and retries.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added automation run detail and replay API:
+      `GET /automations/runs/{runId}`,
+      `POST /automations/runs/{runId}/replay`.
+    - Added web automation debugging view with run status filters, per-run
+      action trace inspection, and replay controls.
+    - Extended shared/web/mobile API clients with run detail/replay methods and
+      documented debugging baseline in `docs/automation_execution_debugging_view.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

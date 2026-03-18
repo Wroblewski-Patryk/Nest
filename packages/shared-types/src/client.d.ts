@@ -111,6 +111,8 @@ export type NestApiClient = {
     payload?: { trigger_payload?: Record<string, unknown> }
   ): Promise<{ data: Record<string, unknown> }>;
   getAutomationRuns(query?: Record<string, unknown>): Promise<ApiCollectionResponse<AutomationRunItem>>;
+  getAutomationRun(runId: string): Promise<{ data: AutomationRunItem }>;
+  replayAutomationRun(runId: string): Promise<{ data: AutomationRunItem }>;
   syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;

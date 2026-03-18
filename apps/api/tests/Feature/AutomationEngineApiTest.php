@@ -70,10 +70,21 @@ class AutomationEngineApiTest extends TestCase
             'status' => 'success',
         ]);
 
-        $this->getJson('/api/v1/automations/runs')
+        $this->getJson("/api/v1/automations/runs/{$runId}")
             ->assertOk()
-            ->assertJsonPath('meta.total', 1)
-            ->assertJsonPath('data.0.id', $runId);
+            ->assertJsonPath('data.id', $runId)
+            ->assertJsonPath('data.status', 'success');
+
+        $replay = $this->postJson("/api/v1/automations/runs/{$runId}/replay")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'success');
+
+        $runsResponse = $this->getJson('/api/v1/automations/runs')
+            ->assertOk()
+            ->assertJsonPath('meta.total', 2);
+
+        $runIds = collect($runsResponse->json('data'))->pluck('id')->all();
+        $this->assertContains($replay->json('data.id'), $runIds);
     }
 
     public function test_rule_execution_is_skipped_when_conditions_do_not_match(): void
@@ -229,5 +240,6 @@ class AutomationEngineApiTest extends TestCase
         $this->getJson('/api/v1/automations/rules')->assertUnauthorized();
         $this->postJson('/api/v1/automations/rules', [])->assertUnauthorized();
         $this->getJson('/api/v1/automations/runs')->assertUnauthorized();
+        $this->postJson('/api/v1/automations/runs/test/replay')->assertUnauthorized();
     }
 }

@@ -17,24 +17,30 @@ export default function AutomationsPage() {
   const [detail, setDetail] = useState("Loading automation rules...");
   const [rules, setRules] = useState<AutomationRuleItem[]>([]);
   const [runs, setRuns] = useState<AutomationRunItem[]>([]);
+  const [selectedRun, setSelectedRun] = useState<AutomationRunItem | null>(null);
   const [name, setName] = useState("Weekly reflection automation");
   const [actionType, setActionType] = useState<ActionOption>("create_journal_entry");
+  const [runStatusFilter, setRunStatusFilter] = useState<"all" | "success" | "failed" | "skipped">("all");
   const [busyRuleId, setBusyRuleId] = useState<string | null>(null);
+  const [busyRunId, setBusyRunId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (statusFilter: "all" | "success" | "failed" | "skipped" = runStatusFilter) => {
     const [rulesResponse, runsResponse] = await Promise.all([
       nestApiClient.getAutomationRules({ per_page: 20 }),
-      nestApiClient.getAutomationRuns({ per_page: 10 }),
+      nestApiClient.getAutomationRuns({
+        per_page: 10,
+        ...(statusFilter === "all" ? {} : { status: statusFilter }),
+      }),
     ]);
     setRules(rulesResponse.data ?? []);
     setRuns(runsResponse.data ?? []);
-  }, []);
+  }, [runStatusFilter]);
 
   useEffect(() => {
     let mounted = true;
 
-    loadData()
+    loadData(runStatusFilter)
       .then(() => {
         if (!mounted) return;
         setState("success");
@@ -58,7 +64,7 @@ export default function AutomationsPage() {
     return () => {
       mounted = false;
     };
-  }, [loadData]);
+  }, [loadData, runStatusFilter]);
 
   const createRule = useCallback(async () => {
     setIsCreating(true);
@@ -154,6 +160,29 @@ export default function AutomationsPage() {
     [loadData]
   );
 
+  const inspectRun = useCallback(async (runId: string) => {
+    setBusyRunId(runId);
+    try {
+      const response = await nestApiClient.getAutomationRun(runId);
+      setSelectedRun(response.data);
+    } finally {
+      setBusyRunId(null);
+    }
+  }, []);
+
+  const replayRun = useCallback(
+    async (runId: string) => {
+      setBusyRunId(runId);
+      try {
+        await nestApiClient.replayAutomationRun(runId);
+        await loadData();
+      } finally {
+        setBusyRunId(null);
+      }
+    },
+    [loadData]
+  );
+
   const metrics = useMemo(
     () => [
       { label: "Rules", value: String(rules.length) },
@@ -229,17 +258,63 @@ export default function AutomationsPage() {
       </Panel>
 
       <Panel title="Recent Runs">
+        <div className="panel-content">
+          <label className="mono-note" htmlFor="run-filter">
+            Run status filter
+          </label>
+          <select
+            id="run-filter"
+            className="list-row"
+            value={runStatusFilter}
+            onChange={(event) => {
+              const value = event.target.value as "all" | "success" | "failed" | "skipped";
+              setRunStatusFilter(value);
+              loadData(value).catch(() => {
+                setState("error");
+                setDetail("Failed to refresh run list with selected filter.");
+              });
+            }}
+          >
+            <option value="all">all</option>
+            <option value="success">success</option>
+            <option value="failed">failed</option>
+            <option value="skipped">skipped</option>
+          </select>
+        </div>
         <ul className="list">
           {runs.map((run) => (
             <li className="list-row" key={run.id}>
               <div>
                 <strong>{run.status}</strong>
                 <p>Rule: {run.rule_id}</p>
+                {run.error_code ? <p>Error: {run.error_code}</p> : null}
               </div>
-              <span className="pill">{new Date(run.started_at).toLocaleTimeString("pl-PL")}</span>
+              <div className="row-inline">
+                <span className="pill">{new Date(run.started_at).toLocaleTimeString("pl-PL")}</span>
+                <button className="pill-link" onClick={() => inspectRun(run.id)} disabled={busyRunId === run.id}>
+                  Inspect
+                </button>
+                <button className="pill-link" onClick={() => replayRun(run.id)} disabled={busyRunId === run.id}>
+                  Replay
+                </button>
+              </div>
             </li>
           ))}
         </ul>
+      </Panel>
+
+      <Panel title="Run Debug">
+        {selectedRun ? (
+          <div className="panel-content">
+            <p className="callout">
+              Selected run: {selectedRun.id} ({selectedRun.status})
+            </p>
+            <pre className="mono-note">{JSON.stringify(selectedRun.action_results ?? [], null, 2)}</pre>
+            {selectedRun.error_message ? <pre className="mono-note">{selectedRun.error_message}</pre> : null}
+          </div>
+        ) : (
+          <p className="callout">Choose a run with Inspect to view action trace and errors.</p>
+        )}
       </Panel>
 
       <Panel title="Automation API Status">

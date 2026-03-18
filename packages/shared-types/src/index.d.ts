@@ -183,9 +183,12 @@ export type AutomationRunItem = {
   id: string;
   rule_id: string;
   status: "success" | "failed" | "skipped" | "running";
+  trigger_payload?: Record<string, unknown> | null;
+  action_results?: Array<Record<string, unknown>> | null;
   started_at: string;
   finished_at: string | null;
   error_code: string | null;
+  error_message?: string | null;
 };
 
 export type NestApiClient = {
@@ -227,6 +230,8 @@ export type NestApiClient = {
     payload?: { trigger_payload?: Record<string, unknown> }
   ): Promise<{ data: Record<string, unknown> }>;
   getAutomationRuns(query?: Record<string, unknown>): Promise<ApiCollectionResponse<AutomationRunItem>>;
+  getAutomationRun(runId: string): Promise<{ data: AutomationRunItem }>;
+  replayAutomationRun(runId: string): Promise<{ data: AutomationRunItem }>;
   syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;

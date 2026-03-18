@@ -181,7 +181,9 @@ Last updated: 2026-03-16
   execution, and persisted execution run audits
 - `NEST-058` completed: web automation builder delivered with rule creation,
   active/paused toggles, manual execution, and recent run visibility
-- Current execution focus: automation execution history/debugging UI (`NEST-059`)
+- `NEST-059` completed: automation execution history and debugging view
+  delivered with run filtering, detail inspection, and replay flow
+- Current execution focus: Phase 3 release sign-off (`NEST-060`)
 
 ## Auth, AI, Offline, Notifications
 

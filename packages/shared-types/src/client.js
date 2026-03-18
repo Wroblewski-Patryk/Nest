@@ -96,6 +96,11 @@ export function createNestApiClient(options) {
         ...(payload ? { body: payload } : {}),
       }),
     getAutomationRuns: (query = {}) => request("/automations/runs", { query }),
+    getAutomationRun: (runId) => request(`/automations/runs/${runId}`),
+    replayAutomationRun: (runId) =>
+      request(`/automations/runs/${runId}/replay`, {
+        method: "POST",
+      }),
     syncListTasks: (provider) =>
       request("/integrations/list-task-sync", {
         method: "POST",

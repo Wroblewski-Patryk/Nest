@@ -110,6 +110,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AutomationRunCollectionResponse'
+  /automations/runs/{runId}:
+    get:
+      summary: Get automation run details
+      tags: [Automations]
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Run details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationRunSingleResponse'
+  /automations/runs/{runId}/replay:
+    post:
+      summary: Replay automation run using original trigger payload
+      tags: [Automations]
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: New replay run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AutomationRunSingleResponse'
 components:
   parameters:
     RuleId:

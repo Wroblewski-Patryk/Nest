@@ -18,6 +18,8 @@ execution audits.
   - `POST /api/v1/automations/rules/{ruleId}/execute`
 - Runs:
   - `GET /api/v1/automations/runs`
+  - `GET /api/v1/automations/runs/{runId}`
+  - `POST /api/v1/automations/runs/{runId}/replay`
 
 ## Execution Flow
 
@@ -25,6 +27,11 @@ execution audits.
 2. Validate rule state (`active`) and evaluate all conditions.
 3. Execute actions sequentially (deterministic order).
 4. Persist action results + final status (`success|skipped|failed`) in run log.
+
+Replay flow:
+
+- Reuses original `trigger_payload` from selected run.
+- Produces a new run record with full audit trail.
 
 ## Allowed Action Set (v1)
 

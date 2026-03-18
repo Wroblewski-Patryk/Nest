@@ -49,6 +49,8 @@ Route::prefix('v1')->group(function (): void {
         Route::delete('/automations/rules/{ruleId}', [AutomationRuleController::class, 'destroy']);
         Route::post('/automations/rules/{ruleId}/execute', [AutomationRuleController::class, 'execute']);
         Route::get('/automations/runs', [AutomationRunController::class, 'index']);
+        Route::get('/automations/runs/{runId}', [AutomationRunController::class, 'show']);
+        Route::post('/automations/runs/{runId}/replay', [AutomationRunController::class, 'replay']);
 
         Route::get('/lists', [TaskListController::class, 'index']);
         Route::post('/lists', [TaskListController::class, 'store']);
