@@ -567,6 +567,22 @@ Last updated: 2026-03-16
     - Added feature tests and updated explainability/API docs to cover
       confidence guardrail behavior.
 
+- [x] NEST-054 Introduce user feedback loop for AI outputs
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-051
+  - Done when: users can rate accept/reject/edit suggestions and feedback is
+    stored for quality tracking.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added AI feedback API endpoint `POST /api/v1/ai/feedback` under AI
+      feature gate.
+    - Added persistent feedback table/model (`ai_recommendation_feedback`) with
+      tenant/user scope, decision type, reason codes, and optional edit payload.
+    - Added feature tests for enabled/disabled gate, accept/edit/reject flows,
+      validation, auth, and storage scope plus docs in
+      `docs/ai_feedback_loop.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

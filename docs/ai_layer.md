@@ -33,7 +33,11 @@ operations without compromising data integrity or security.
   - accepts explicit planning constraints,
   - returns scheduled proposal items with rationale, reason codes, source
     entity references, and confidence guardrail status.
+- `POST /api/v1/ai/feedback`
+  - captures user decision (`accept`, `reject`, `edit`) for recommendation
+    quality tracking.
 - Detailed contract: `docs/ai_weekly_planning_api.md`.
+- Feedback contract: `docs/ai_feedback_loop.md`.
 
 ## Safety and Control
 

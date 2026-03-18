@@ -171,7 +171,9 @@ Last updated: 2026-03-16
   and source-entity provenance payloads with explainability metadata
 - `NEST-053` completed: AI planning suggestions now include confidence scoring
   and low-confidence guardrail routing to review queue
-- Current execution focus: AI feedback loop for recommendations (`NEST-054`)
+- `NEST-054` completed: AI feedback loop delivered with persistent
+  accept/reject/edit recommendation tracking under tenant/user scope
+- Current execution focus: assistant policy test suite (`NEST-055`)
 
 ## Auth, AI, Offline, Notifications
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AiRecommendationFeedbackController;
 use App\Http\Controllers\Api\AiWeeklyPlanController;
 use App\Http\Controllers\Api\AnalyticsIngestionController;
 use App\Http\Controllers\Api\AuthController;
@@ -33,6 +34,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/analytics/events', [AnalyticsIngestionController::class, 'ingest']);
         Route::middleware('ai.surface')->group(function (): void {
             Route::post('/ai/weekly-plan/propose', [AiWeeklyPlanController::class, 'propose']);
+            Route::post('/ai/feedback', [AiRecommendationFeedbackController::class, 'store']);
         });
         Route::get('/insights/life-area-balance', [LifeAreaBalanceScoreController::class, 'show']);
         Route::get('/insights/trends/tasks', [InsightsTrendController::class, 'tasks']);
