@@ -77,13 +77,16 @@ class AiWeeklyPlanningApiTest extends TestCase
             ->assertJsonPath('data.constraints.max_items', 5)
             ->assertJsonPath('data.constraints.include_weekend', false)
             ->assertJsonPath('data.summary.used_minutes', 165)
-            ->assertJsonPath('data.summary.planned_items', 3);
+            ->assertJsonPath('data.summary.planned_items', 3)
+            ->assertJsonPath('data.explainability.model_version', 'weekly-plan.v2');
 
         $items = $response->json('data.items');
         $this->assertCount(3, $items);
 
         foreach ($items as $item) {
             $this->assertNotEmpty($item['rationale']);
+            $this->assertNotEmpty($item['reason_codes']);
+            $this->assertNotEmpty($item['source_entities']);
             $this->assertArrayHasKey('scheduled_for', $item);
             $this->assertArrayHasKey('estimated_minutes', $item);
             $this->assertLessThan(6, Carbon::parse($item['scheduled_for'])->dayOfWeekIso);

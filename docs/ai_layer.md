@@ -31,7 +31,8 @@ operations without compromising data integrity or security.
 - `POST /api/v1/ai/weekly-plan/propose`
   - tenant/user scoped,
   - accepts explicit planning constraints,
-  - returns scheduled proposal items with rationale.
+  - returns scheduled proposal items with rationale, reason codes, and source
+    entity references.
 - Detailed contract: `docs/ai_weekly_planning_api.md`.
 
 ## Safety and Control

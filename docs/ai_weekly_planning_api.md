@@ -37,6 +37,10 @@ Validation:
 
 - `data.constraints`: resolved constraints used by the planner
 - `data.summary`: planned item count + used/remaining minutes
+- `data.explainability`:
+  - `model_version`
+  - `reason_code_counts`
+  - `generated_at`
 - `data.items[]`:
   - `type` (`task|habit|goal`)
   - `source_id`
@@ -44,6 +48,8 @@ Validation:
   - `estimated_minutes`
   - `scheduled_for`
   - `rationale`
+  - `reason_codes[]`
+  - `source_entities[]` (`entity_type`, `entity_id`, `signals`)
 
 ## Planning Logic (v1)
 

@@ -167,7 +167,9 @@ Last updated: 2026-03-16
 - `NEST-051` completed: AI weekly planning baseline delivered with
   feature-gated API endpoint, explicit constraints, and rationale-backed
   proposal items
-- Current execution focus: AI explainability payloads (`NEST-052`)
+- `NEST-052` completed: AI recommendation responses now include reason codes
+  and source-entity provenance payloads with explainability metadata
+- Current execution focus: AI confidence scoring + guardrails (`NEST-053`)
 
 ## Auth, AI, Offline, Notifications
 

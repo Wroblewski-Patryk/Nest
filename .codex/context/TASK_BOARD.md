@@ -539,6 +539,20 @@ Last updated: 2026-03-16
       rationale payload, tenant scoping, and auth plus API documentation in
       `docs/ai_weekly_planning_api.md`.
 
+- [x] NEST-052 Add explainability payloads for AI recommendations
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-051
+  - Done when: AI responses include reason codes and source entities.
+  - Done on: 2026-03-19
+  - Notes:
+    - Extended weekly planning response with explicit explainability envelope
+      (`model_version`, `reason_code_counts`, `generated_at`).
+    - Added per-item `reason_codes` and `source_entities` payloads for
+      recommendation provenance.
+    - Added/updated feature tests and explainability contract docs in
+      `docs/ai_explainability_payloads.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

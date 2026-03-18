@@ -50,6 +50,12 @@ class WeeklyPlanningAssistantService
             ];
         }
 
+        $reasonCodeCounts = collect($scheduled)
+            ->flatMap(fn (array $item): array => $item['reason_codes'])
+            ->countBy()
+            ->sortDesc()
+            ->all();
+
         return [
             'data' => [
                 'constraints' => [
@@ -62,6 +68,11 @@ class WeeklyPlanningAssistantService
                     'planned_items' => count($scheduled),
                     'used_minutes' => $usedMinutes,
                     'remaining_minutes' => max(0, $availableMinutes - $usedMinutes),
+                ],
+                'explainability' => [
+                    'model_version' => 'weekly-plan.v2',
+                    'reason_code_counts' => $reasonCodeCounts,
+                    'generated_at' => Carbon::now()->toISOString(),
                 ],
                 'items' => $scheduled,
             ],
@@ -122,6 +133,20 @@ class WeeklyPlanningAssistantService
                     'title' => (string) $task->title,
                     'estimated_minutes' => 90,
                     'rationale' => "Prioritized {$priority} task with due {$dueLabel}.",
+                    'reason_codes' => [
+                        "task_priority_{$priority}",
+                        $task->due_date ? 'task_due_scheduled' : 'task_due_unspecified',
+                    ],
+                    'source_entities' => [
+                        [
+                            'entity_type' => 'task',
+                            'entity_id' => (string) $task->id,
+                            'signals' => [
+                                'priority' => $priority,
+                                'due_date' => $task->due_date?->toDateString(),
+                            ],
+                        ],
+                    ],
                     'priority_weight' => 100 + ($weight * 10),
                 ];
             }));
@@ -145,6 +170,17 @@ class WeeklyPlanningAssistantService
                     'title' => (string) $habit->title,
                     'estimated_minutes' => 30,
                     'rationale' => "Active {$cadenceType} habit to preserve consistency.",
+                    'reason_codes' => ['habit_consistency', "habit_cadence_{$cadenceType}"],
+                    'source_entities' => [
+                        [
+                            'entity_type' => 'habit',
+                            'entity_id' => (string) $habit->id,
+                            'signals' => [
+                                'cadence_type' => $cadenceType,
+                                'is_active' => true,
+                            ],
+                        ],
+                    ],
                     'priority_weight' => 70,
                 ];
             }));
@@ -168,6 +204,20 @@ class WeeklyPlanningAssistantService
                     'title' => (string) $goal->title,
                     'estimated_minutes' => 45,
                     'rationale' => "Active goal milestone with target {$targetDate}.",
+                    'reason_codes' => [
+                        'goal_active_milestone',
+                        $goal->target_date ? 'goal_target_scheduled' : 'goal_target_unspecified',
+                    ],
+                    'source_entities' => [
+                        [
+                            'entity_type' => 'goal',
+                            'entity_id' => (string) $goal->id,
+                            'signals' => [
+                                'status' => (string) $goal->status,
+                                'target_date' => $goal->target_date?->toDateString(),
+                            ],
+                        ],
+                    ],
                     'priority_weight' => 80,
                 ];
             }));
