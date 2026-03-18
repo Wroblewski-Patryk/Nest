@@ -1,5 +1,7 @@
 import type {
   ApiCollectionMeta,
+  AutomationRuleItem,
+  AutomationRunItem,
   InsightsTrendResponse,
   LifeAreaBalanceResponse,
 } from "./index";
@@ -85,6 +87,30 @@ export type NestApiClient = {
     module: "tasks" | "habits" | "goals",
     query?: { period?: "weekly" | "monthly"; points?: number }
   ): Promise<InsightsTrendResponse>;
+  getAutomationRules(query?: Record<string, unknown>): Promise<ApiCollectionResponse<AutomationRuleItem>>;
+  createAutomationRule(payload: {
+    name: string;
+    status?: "active" | "paused";
+    trigger: Record<string, unknown>;
+    conditions: Array<Record<string, unknown>>;
+    actions: Array<Record<string, unknown>>;
+  }): Promise<{ data: AutomationRuleItem }>;
+  updateAutomationRule(
+    ruleId: string,
+    payload: {
+      name?: string;
+      status?: "active" | "paused";
+      trigger?: Record<string, unknown>;
+      conditions?: Array<Record<string, unknown>>;
+      actions?: Array<Record<string, unknown>>;
+    }
+  ): Promise<{ data: AutomationRuleItem }>;
+  deleteAutomationRule(ruleId: string): Promise<void>;
+  executeAutomationRule(
+    ruleId: string,
+    payload?: { trigger_payload?: Record<string, unknown> }
+  ): Promise<{ data: Record<string, unknown> }>;
+  getAutomationRuns(query?: Record<string, unknown>): Promise<ApiCollectionResponse<AutomationRunItem>>;
   syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;

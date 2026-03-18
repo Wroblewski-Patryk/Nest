@@ -56,6 +56,14 @@ export const moduleReadiness: Array<{
     state: "success",
     telemetry: "screen.insights.view",
   },
+  {
+    href: "/automations",
+    label: "Automations",
+    key: "automations",
+    focus: "Create and run trigger/condition/action workflows.",
+    state: "success",
+    telemetry: "screen.automations.view",
+  },
 ];
 
 export const tasksSnapshot = {

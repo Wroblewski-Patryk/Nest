@@ -625,6 +625,19 @@ Last updated: 2026-03-16
       action dispatch, and persisted run outcomes plus feature tests and docs
       in `docs/automation_engine_v1.md`.
 
+- [x] NEST-058 Deliver automation builder UI (web)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-057
+  - Done when: users can create/activate/pause basic automations from web app.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added web route `/automations` with basic automation builder controls.
+    - Added rule control actions (`create`, `activate/pause`, manual execute)
+      and recent run visibility.
+    - Extended shared/web/mobile API clients for automation endpoints and
+      documented UI baseline in `docs/automation_builder_ui_web.md`.
+
 - [ ] NEST-061 Phase 4 SaaS hardening release program
   - Status: BACKLOG
   - Owner: Planning Agent

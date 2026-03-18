@@ -8,7 +8,8 @@ export type ModuleKey =
   | "journal"
   | "life_areas"
   | "calendar"
-  | "insights";
+  | "insights"
+  | "automations";
 
 export type Priority = "low" | "medium" | "high" | "urgent";
 
@@ -47,7 +48,8 @@ export type TelemetryEventName =
   | "screen.goals.view"
   | "screen.journal.view"
   | "screen.calendar.view"
-  | "screen.insights.view";
+  | "screen.insights.view"
+  | "screen.automations.view";
 
 export interface ClientTelemetryEvent {
   name: TelemetryEventName;
@@ -166,6 +168,26 @@ export type InsightsTrendResponse = {
   };
 };
 
+export type AutomationRuleItem = {
+  id: string;
+  name: string;
+  status: "active" | "paused";
+  trigger: Record<string, unknown>;
+  conditions: Array<Record<string, unknown>>;
+  actions: Array<Record<string, unknown>>;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AutomationRunItem = {
+  id: string;
+  rule_id: string;
+  status: "success" | "failed" | "skipped" | "running";
+  started_at: string;
+  finished_at: string | null;
+  error_code: string | null;
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
@@ -181,6 +203,30 @@ export type NestApiClient = {
     module: "tasks" | "habits" | "goals",
     query?: { period?: "weekly" | "monthly"; points?: number }
   ): Promise<InsightsTrendResponse>;
+  getAutomationRules(query?: Record<string, unknown>): Promise<ApiCollectionResponse<AutomationRuleItem>>;
+  createAutomationRule(payload: {
+    name: string;
+    status?: "active" | "paused";
+    trigger: Record<string, unknown>;
+    conditions: Array<Record<string, unknown>>;
+    actions: Array<Record<string, unknown>>;
+  }): Promise<{ data: AutomationRuleItem }>;
+  updateAutomationRule(
+    ruleId: string,
+    payload: {
+      name?: string;
+      status?: "active" | "paused";
+      trigger?: Record<string, unknown>;
+      conditions?: Array<Record<string, unknown>>;
+      actions?: Array<Record<string, unknown>>;
+    }
+  ): Promise<{ data: AutomationRuleItem }>;
+  deleteAutomationRule(ruleId: string): Promise<void>;
+  executeAutomationRule(
+    ruleId: string,
+    payload?: { trigger_payload?: Record<string, unknown> }
+  ): Promise<{ data: Record<string, unknown> }>;
+  getAutomationRuns(query?: Record<string, unknown>): Promise<ApiCollectionResponse<AutomationRunItem>>;
   syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;

@@ -179,7 +179,9 @@ Last updated: 2026-03-16
   contract draft documented for upcoming engine implementation
 - `NEST-057` completed: automation engine delivered with rule CRUD, manual
   execution, and persisted execution run audits
-- Current execution focus: automation builder UI (web) (`NEST-058`)
+- `NEST-058` completed: web automation builder delivered with rule creation,
+  active/paused toggles, manual execution, and recent run visibility
+- Current execution focus: automation execution history/debugging UI (`NEST-059`)
 
 ## Auth, AI, Offline, Notifications
 

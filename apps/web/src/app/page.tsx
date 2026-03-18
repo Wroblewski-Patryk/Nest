@@ -9,9 +9,9 @@ export default function HomePage() {
       subtitle="Desktop and mobile web shell for all core planning modules."
     >
       <div className="stack">
-        <MetricCard label="Modules online" value="6 / 6" />
+        <MetricCard label="Modules online" value="7 / 7" />
         <MetricCard label="API baseline" value="Stable" />
-        <MetricCard label="Current phase" value="Insights Delivery" />
+        <MetricCard label="Current phase" value="Automation Builder" />
       </div>
 
       <Panel title="Module Coverage">

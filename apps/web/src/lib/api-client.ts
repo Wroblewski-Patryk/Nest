@@ -62,6 +62,29 @@ function createClient(baseUrl: string): NestApiClient {
       request("/insights/life-area-balance", { query }) as ReturnType<NestApiClient["getLifeAreaBalance"]>,
     getInsightsTrends: (module, query = {}) =>
       request(`/insights/trends/${module}`, { query }) as ReturnType<NestApiClient["getInsightsTrends"]>,
+    getAutomationRules: (query = {}) =>
+      request("/automations/rules", { query }) as ReturnType<NestApiClient["getAutomationRules"]>,
+    createAutomationRule: (payload) =>
+      request("/automations/rules", {
+        method: "POST",
+        body: payload,
+      }) as ReturnType<NestApiClient["createAutomationRule"]>,
+    updateAutomationRule: (ruleId, payload) =>
+      request(`/automations/rules/${ruleId}`, {
+        method: "PATCH",
+        body: payload,
+      }) as ReturnType<NestApiClient["updateAutomationRule"]>,
+    deleteAutomationRule: (ruleId) =>
+      request(`/automations/rules/${ruleId}`, {
+        method: "DELETE",
+      }) as ReturnType<NestApiClient["deleteAutomationRule"]>,
+    executeAutomationRule: (ruleId, payload) =>
+      request(`/automations/rules/${ruleId}/execute`, {
+        method: "POST",
+        ...(payload ? { body: payload } : {}),
+      }) as ReturnType<NestApiClient["executeAutomationRule"]>,
+    getAutomationRuns: (query = {}) =>
+      request("/automations/runs", { query }) as ReturnType<NestApiClient["getAutomationRuns"]>,
     syncListTasks: (provider) =>
       request("/integrations/list-task-sync", {
         method: "POST",

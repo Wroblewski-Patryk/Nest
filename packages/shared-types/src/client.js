@@ -75,6 +75,27 @@ export function createNestApiClient(options) {
     getCalendarEvents: (query = {}) => request("/calendar-events", { query }),
     getLifeAreaBalance: (query = {}) => request("/insights/life-area-balance", { query }),
     getInsightsTrends: (module, query = {}) => request(`/insights/trends/${module}`, { query }),
+    getAutomationRules: (query = {}) => request("/automations/rules", { query }),
+    createAutomationRule: (payload) =>
+      request("/automations/rules", {
+        method: "POST",
+        body: payload,
+      }),
+    updateAutomationRule: (ruleId, payload) =>
+      request(`/automations/rules/${ruleId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
+    deleteAutomationRule: (ruleId) =>
+      request(`/automations/rules/${ruleId}`, {
+        method: "DELETE",
+      }),
+    executeAutomationRule: (ruleId, payload = undefined) =>
+      request(`/automations/rules/${ruleId}/execute`, {
+        method: "POST",
+        ...(payload ? { body: payload } : {}),
+      }),
+    getAutomationRuns: (query = {}) => request("/automations/runs", { query }),
     syncListTasks: (provider) =>
       request("/integrations/list-task-sync", {
         method: "POST",
