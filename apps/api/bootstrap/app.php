@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Middleware\AttachTraceId;
+use App\Http\Middleware\EnforceTenantUsageQuota;
 use App\Http\Middleware\EnsureAiSurfaceEnabled;
+use App\Tenancy\Exceptions\TenantQuotaExceededException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,8 +22,23 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'ai.surface' => EnsureAiSurfaceEnabled::class,
+            'tenant.usage' => EnforceTenantUsageQuota::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (TenantQuotaExceededException $exception, Request $request) {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'error' => [
+                    'code' => 'tenant_quota_exceeded',
+                    'resource' => $exception->resource(),
+                    'limit' => $exception->limit(),
+                    'current' => $exception->current(),
+                ],
+            ], 429);
+        });
     })->create();

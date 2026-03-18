@@ -97,6 +97,16 @@ Current workflow implementation:
 - Reference:
   - `docs/tenant_data_lifecycle_workflows.md`
 
+## Tenant Usage Quota Operations
+
+- Quota configuration source:
+  - `apps/api/config/tenant_usage_limits.php`
+- Runtime behavior:
+  - create endpoints enforce per-tenant limits,
+  - quota overflow returns clear API error payload (`tenant_quota_exceeded`).
+- Reference:
+  - `docs/tenant_usage_limits_and_quotas.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

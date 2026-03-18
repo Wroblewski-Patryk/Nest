@@ -707,6 +707,27 @@ Last updated: 2026-03-16
     - Documented runbooks in
       `docs/tenant_data_lifecycle_workflows.md`.
 
+- [x] NEST-063 Implement tenant-level usage limits and quotas
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-061
+  - Done when: per-tenant limits are enforced with clear user-facing errors.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added tenant quota config in
+      `apps/api/config/tenant_usage_limits.php`.
+    - Added `TenantUsageQuotaService` and API middleware
+      `EnforceTenantUsageQuota` for `POST` create endpoint enforcement.
+    - Added structured quota error handling with
+      `tenant_quota_exceeded` payload and HTTP `429`.
+    - Enforced limits for lists, tasks, habits/logs, routines, goals,
+      targets, life areas, journal entries, calendar events, and automation
+      rules.
+    - Added coverage in
+      `apps/api/tests/Feature/TenantUsageLimitApiTest.php`.
+    - Documented baseline in
+      `docs/tenant_usage_limits_and_quotas.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

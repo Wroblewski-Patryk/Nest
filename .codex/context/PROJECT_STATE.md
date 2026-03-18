@@ -191,7 +191,11 @@ Last updated: 2026-03-19
 - `NEST-062` completed: tenant-scoped retention and deletion workflows
   delivered with audited lifecycle logs, queue-backed tenant deletion, and
   command-line operations (`docs/tenant_data_lifecycle_workflows.md`)
-- Current execution focus: tenant-level usage limits and quotas (`NEST-063`)
+- `NEST-063` completed: tenant-level usage limits and quotas delivered with
+  middleware-based create-path enforcement, structured quota errors, and
+  tenant-scoped API coverage (`docs/tenant_usage_limits_and_quotas.md`)
+- Current execution focus: invite-based family/friends collaboration spaces
+  (`NEST-064`)
 
 ## Auth, AI, Offline, Notifications
 

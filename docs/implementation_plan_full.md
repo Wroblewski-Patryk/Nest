@@ -178,7 +178,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-061
   - Done when: retention policies and deletion jobs are implemented and audited.
 
-- [ ] NEST-063 Implement tenant-level usage limits and quotas
+- [x] NEST-063 Implement tenant-level usage limits and quotas
   - Depends on: NEST-061
   - Done when: per-tenant limits are enforced with clear user-facing errors.
 
