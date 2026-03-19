@@ -106,7 +106,7 @@ class IntegrationSyncReplayApiTest extends TestCase
         ]);
 
         Sanctum::actingAs($userB);
-        $this->postJson("/api/v1/integrations/failures/{$failure->id}/replay")->assertNotFound();
+        $this->postJson("/api/v1/integrations/failures/{$failure->id}/replay")->assertForbidden();
     }
 
     public function test_guest_cannot_access_replay_tooling_routes(): void

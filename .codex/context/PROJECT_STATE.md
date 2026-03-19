@@ -124,6 +124,8 @@ Last updated: 2026-03-19
 - `NEST-094` completed: soft-delete uniqueness policy implemented so list and
   life-area names can be recreated after archival with schema + validation
   alignment
+- `NEST-095` completed: explicit policy-layer authorization added for life
+  areas, integration conflict resolution, and failed-sync replay paths
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -272,8 +274,8 @@ Last updated: 2026-03-19
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute remediation wave `NEST-095` to `NEST-096`
-  (soft-delete uniqueness policy completed through `NEST-094`)
+- Current execution focus: execute remediation wave `NEST-096`
+  (policy-layer authorization consolidation completed through `NEST-095`)
 
 ## Auth, AI, Offline, Notifications
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Integrations\Services\IntegrationSyncReplayService;
+use App\Models\IntegrationSyncFailure;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ class IntegrationSyncReplayController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $this->authorize('viewAny', IntegrationSyncFailure::class);
 
         $payload = $request->validate([
             'page' => ['sometimes', 'integer', 'min:1'],
@@ -45,6 +47,8 @@ class IntegrationSyncReplayController extends Controller
     ): JsonResponse {
         /** @var User $user */
         $user = $request->user();
+        $failure = IntegrationSyncFailure::query()->findOrFail($failureId);
+        $this->authorize('replay', $failure);
 
         $result = $service->replayFailureForUser($user, $failureId);
 

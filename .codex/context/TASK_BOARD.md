@@ -1254,13 +1254,26 @@ Last updated: 2026-03-19
       `TasksAndListsApiTest` and `JournalAndLifeAreasApiTest`.
     - Documented policy in `docs/mvp_database_schema.md`.
 
-- [ ] NEST-095 Consolidate policy-layer authorization (P2)
-  - Status: BACKLOG
+- [x] NEST-095 Consolidate policy-layer authorization (P2)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-088
   - Done when:
     - key route groups use explicit authorization policies,
     - policy behavior is covered by tests with tenant isolation checks.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added explicit policy classes:
+      `LifeAreaPolicy`,
+      `IntegrationSyncConflictPolicy`,
+      `IntegrationSyncFailurePolicy`.
+    - Registered policies in `AppServiceProvider` via `Gate::policy(...)`.
+    - Added explicit `authorize(...)` checks in
+      `LifeAreaController`, `IntegrationConflictController`, and
+      `IntegrationSyncReplayController`.
+    - Added policy-enforcement tenant isolation regressions in:
+      `IntegrationConflictQueueApiTest` and `IntegrationSyncReplayApiTest`.
+    - Documented policy-layer baseline in `docs/system_architecture.md`.
 
 - [ ] NEST-096 Harden AI-readiness response/error contracts (P2)
   - Status: BACKLOG

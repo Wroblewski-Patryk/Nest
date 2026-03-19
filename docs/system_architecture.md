@@ -62,3 +62,12 @@ All clients and automations operate through the same API contracts.
 - Application default DB connection: PostgreSQL (`DB_CONNECTION=pgsql`).
 - Application default queue connection: Redis (`QUEUE_CONNECTION=redis`).
 - Application default cache/session backing: Redis.
+
+## Authorization Baseline
+
+- Tenant and user isolation is enforced by both query scoping and explicit
+  policy-layer checks for sensitive record actions.
+- Current policy-layer coverage includes:
+  - `LifeAreaPolicy` for life area read/update/delete operations
+  - `IntegrationSyncConflictPolicy` for conflict queue resolution actions
+  - `IntegrationSyncFailurePolicy` for failed sync replay actions

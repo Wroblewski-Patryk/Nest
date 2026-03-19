@@ -8,11 +8,18 @@ use App\Integrations\Adapters\ObsidianAdapter;
 use App\Integrations\Adapters\TodoistAdapter;
 use App\Integrations\Adapters\TrelloAdapter;
 use App\Integrations\IntegrationAdapterRegistry;
+use App\Models\IntegrationSyncConflict;
+use App\Models\IntegrationSyncFailure;
+use App\Models\LifeArea;
 use App\Notifications\MobilePush\LogMobilePushGateway;
 use App\Notifications\MobilePush\MobilePushGateway;
 use App\Observability\MetricCounter;
+use App\Policies\IntegrationSyncConflictPolicy;
+use App\Policies\IntegrationSyncFailurePolicy;
+use App\Policies\LifeAreaPolicy;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
 
@@ -42,6 +49,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::policy(LifeArea::class, LifeAreaPolicy::class);
+        Gate::policy(IntegrationSyncConflict::class, IntegrationSyncConflictPolicy::class);
+        Gate::policy(IntegrationSyncFailure::class, IntegrationSyncFailurePolicy::class);
+
         Queue::after(function (JobProcessed $event): void {
             app(MetricCounter::class)->increment('queue.jobs.processed');
         });

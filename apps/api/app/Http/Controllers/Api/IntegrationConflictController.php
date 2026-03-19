@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Integrations\Services\IntegrationConflictQueueService;
+use App\Models\IntegrationSyncConflict;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ class IntegrationConflictController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $this->authorize('viewAny', IntegrationSyncConflict::class);
 
         $payload = $request->validate([
             'page' => ['sometimes', 'integer', 'min:1'],
@@ -50,6 +52,9 @@ class IntegrationConflictController extends Controller
             'action' => ['required', Rule::in(['accept', 'override'])],
             'resolution_payload' => ['sometimes', 'array'],
         ]);
+
+        $conflict = IntegrationSyncConflict::query()->findOrFail($conflictId);
+        $this->authorize('resolve', $conflict);
 
         $conflict = $service->resolveForUser(
             user: $user,

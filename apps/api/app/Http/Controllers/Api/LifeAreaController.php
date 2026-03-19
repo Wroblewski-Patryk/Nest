@@ -16,6 +16,7 @@ class LifeAreaController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $this->authorize('viewAny', LifeArea::class);
 
         $request->validate([
             'include_archived' => ['sometimes', 'boolean'],
@@ -76,6 +77,7 @@ class LifeAreaController extends Controller
             ->where('tenant_id', $user->tenant_id)
             ->where('user_id', $user->id)
             ->findOrFail($lifeAreaId);
+        $this->authorize('view', $lifeArea);
 
         return response()->json(['data' => $lifeArea]);
     }
@@ -104,6 +106,7 @@ class LifeAreaController extends Controller
             ->where('tenant_id', $user->tenant_id)
             ->where('user_id', $user->id)
             ->findOrFail($lifeAreaId);
+        $this->authorize('update', $lifeArea);
 
         $lifeArea->fill($payload);
         $lifeArea->save();
@@ -120,6 +123,7 @@ class LifeAreaController extends Controller
             ->where('tenant_id', $user->tenant_id)
             ->where('user_id', $user->id)
             ->findOrFail($lifeAreaId);
+        $this->authorize('delete', $lifeArea);
 
         $lifeArea->is_archived = true;
         $lifeArea->save();

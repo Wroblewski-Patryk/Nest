@@ -82,6 +82,21 @@ class IntegrationConflictQueueApiTest extends TestCase
         $this->getJson('/api/v1/integrations/conflicts')->assertOk()->assertJsonPath('meta.total', 0);
     }
 
+    public function test_conflict_resolution_is_enforced_by_policy_for_other_tenant_user(): void
+    {
+        [, $userA] = $this->seedCalendarConflict();
+        /** @var IntegrationSyncConflict $conflict */
+        $conflict = IntegrationSyncConflict::query()->where('status', 'open')->firstOrFail();
+
+        $tenantB = Tenant::factory()->create();
+        $userB = User::factory()->create(['tenant_id' => $tenantB->id]);
+        Sanctum::actingAs($userB);
+
+        $this->postJson("/api/v1/integrations/conflicts/{$conflict->id}/resolve", [
+            'action' => 'accept',
+        ])->assertForbidden();
+    }
+
     public function test_guest_cannot_access_conflict_queue_routes(): void
     {
         $this->getJson('/api/v1/integrations/conflicts')->assertUnauthorized();
