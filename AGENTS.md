@@ -25,6 +25,8 @@ Use these agents as separate conversation roles:
 - For UX/UI tasks, use MCP-based design context first:
   - Primary source: Figma MCP (design context + screenshot + assets).
   - Optional source: Stitch MCP as ideation input, never as sole source of truth.
+  - Stitch source-of-truth exception path:
+    `docs/ux_stitch_source_of_truth_exception_workflow.md`.
   - Implementation and review must validate against a concrete design artifact.
 
 ## Agent Routing
@@ -82,6 +84,7 @@ Use this contract whenever a task changes UX/UI:
    (Figma link/node or approved equivalent) in docs.
 2. Planning Agent creates executable tasks that include UX validation evidence
    requirements (screenshots, states, responsive behavior, accessibility checks).
+   For Stitch source-of-truth usage, approved exception record is mandatory.
 3. Execution Agent implements only after pulling MCP design context and
    screenshot reference; then maps output to project conventions.
 4. Review Agent blocks completion when visual parity, state behavior, or

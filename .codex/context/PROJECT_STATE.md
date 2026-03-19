@@ -128,6 +128,9 @@ Last updated: 2026-03-19
   areas, integration conflict resolution, and failed-sync replay paths
 - `NEST-096` completed: versioned machine-readable API error envelope and
   retry taxonomy added for AI/tool client compatibility
+- `NEST-098` completed: Stitch source-of-truth exception workflow formalized
+  with mandatory approval evidence, snapshot reference, and implementation
+  blocking rules
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -276,7 +279,7 @@ Last updated: 2026-03-19
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: remediation wave `NEST-087` to `NEST-096` complete
+- Current execution focus: execute UX governance tasks `NEST-099` to `NEST-100`
 
 ## Auth, AI, Offline, Notifications
 

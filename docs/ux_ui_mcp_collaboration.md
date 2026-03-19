@@ -18,6 +18,8 @@ quality consistent.
     baseline.
 - Final implementation must always be validated against a concrete design
   artifact (Figma screenshot or approved design snapshot).
+- Mandatory exception workflow reference:
+  `docs/ux_stitch_source_of_truth_exception_workflow.md`.
 
 ## Required Execution Flow (UX/UI Changes)
 
@@ -45,6 +47,8 @@ quality consistent.
   - desktop/tablet/mobile behavior,
   - accessibility verification expectations.
 - Do not mark task `READY` if design source is undefined.
+- Do not mark task `READY` for Stitch-as-source execution unless approved
+  exception record is complete and linked.
 
 ### Execution Agent
 
@@ -52,6 +56,8 @@ quality consistent.
 - Treat generated output as reference, not final code style.
 - Map implementation to Nest conventions and shared design vocabulary.
 - Capture validation proof in task notes.
+- Block implementation if Stitch exception record is missing, incomplete, or
+  expired.
 
 ### Review Agent
 

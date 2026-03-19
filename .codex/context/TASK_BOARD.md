@@ -4,14 +4,22 @@ Last updated: 2026-03-19
 
 ## Backlog
 
-- [ ] NEST-098 Operationalize Stitch source-of-truth exception workflow
-  - Status: BACKLOG
+- [x] NEST-098 Operationalize Stitch source-of-truth exception workflow
+  - Status: DONE
   - Owner: Planning Agent
   - Depends on: NEST-085, NEST-086
   - Done when:
     - task workflow explicitly supports Stitch-as-source exception path,
     - required approval evidence and project snapshot reference are mandatory,
     - implementation tasks cannot start without approved exception record.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added formal exception workflow contract in
+      `docs/ux_stitch_source_of_truth_exception_workflow.md`.
+    - Linked exception workflow from `docs/ux_ui_mcp_collaboration.md` and
+      `AGENTS.md`.
+    - Added explicit READY/blocking gates for Stitch source-of-truth exception
+      records in UX planning/execution flow.
 
 - [ ] NEST-099 Add UX task template fields for MCP evidence and artifact source
   - Status: BACKLOG
