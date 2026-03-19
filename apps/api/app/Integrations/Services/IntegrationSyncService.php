@@ -33,9 +33,10 @@ class IntegrationSyncService
         $validated = $this->validatePayload($payload);
         $this->assertInternalEntityOwnership($validated);
         $idempotencyKey = (string) $validated['idempotency_key'];
+        $idempotencyFingerprint = $this->resolveIdempotencyFingerprint($validated);
 
         try {
-            if (! $this->acquireIdempotencyLock($validated['tenant_id'], $validated['provider'], $idempotencyKey)) {
+            if (! $this->acquireIdempotencyLock($validated['tenant_id'], $validated['provider'], $idempotencyFingerprint)) {
                 $this->metrics->increment('integration.sync.duplicate');
                 $this->recordAudit(
                     payload: $validated,
@@ -119,9 +120,9 @@ class IntegrationSyncService
         }
     }
 
-    private function acquireIdempotencyLock(string $tenantId, string $provider, string $idempotencyKey): bool
+    private function acquireIdempotencyLock(string $tenantId, string $provider, string $idempotencyFingerprint): bool
     {
-        $lockKey = "integrations:idempotency:{$tenantId}:{$provider}:{$idempotencyKey}";
+        $lockKey = "integrations:idempotency:{$tenantId}:{$provider}:{$idempotencyFingerprint}";
 
         return Cache::add($lockKey, true, now()->addHours(24));
     }
@@ -157,6 +158,19 @@ class IntegrationSyncService
     private function payloadHash(array $payload): string
     {
         return hash('sha256', json_encode($payload, JSON_THROW_ON_ERROR));
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function resolveIdempotencyFingerprint(array $payload): string
+    {
+        $syncHash = $payload['sync_hash'] ?? null;
+        if (! is_string($syncHash) || $syncHash === '') {
+            $syncHash = $this->payloadHash($payload['entity_payload'] ?? $payload);
+        }
+
+        return hash('sha256', "{$payload['idempotency_key']}|{$syncHash}");
     }
 
     /**

@@ -1114,6 +1114,112 @@ Last updated: 2026-03-19
       `f81dbf00a9b5489cb72377a2ad454ec0` (Weekly Report).
     - User approval for baseline captured in thread on `2026-03-19`.
 
+- [x] NEST-087 Fix integration sync idempotency correctness (P0)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-084, NEST-083
+  - Done when:
+    - changed list/task/journal payloads are not skipped by stale lock state,
+    - exact replay duplicates remain safely deduplicated,
+    - regression tests cover changed-vs-unchanged payload behavior.
+  - Done on: 2026-03-19
+  - Notes:
+    - Source audit finding: P0 idempotency correctness.
+    - Execution handoff:
+      `docs/audit_remediation_execution_handoff_2026-03-19.md`.
+    - Updated idempotency lock fingerprint to include payload-level hash while
+      preserving replay deduplication semantics for exact payload replays.
+    - Added feature regressions for changed-vs-unchanged sync payload behavior:
+      `IntegrationListTaskSyncApiTest` and `IntegrationJournalSyncApiTest`.
+    - Validation: `php artisan test --testsuite=Feature --env=testing` passed.
+
+- [ ] NEST-088 Convert sync endpoints to enqueue-first execution (P1)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-087
+  - Done when:
+    - sync endpoints enqueue work and return quickly,
+    - provider execution runs in workers (not request thread),
+    - queue retry/failure/audit behavior remains verifiable.
+
+- [ ] NEST-089 Implement chunked tenant sync processing (P1)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-088
+  - Done when:
+    - sync services avoid full-table `get()` fetches,
+    - chunk/cursor processing is bounded and tested,
+    - integration tests cover chunk boundary behavior.
+
+- [ ] NEST-090 Align runtime baseline with PostgreSQL/Redis docs (P1)
+  - Status: BACKLOG
+  - Owner: Documentation Agent
+  - Depends on: NEST-083
+  - Done when:
+    - env/config defaults and setup guidance match documented architecture,
+    - doc/runtime drift for DB+queue+cache baseline is removed.
+
+- [ ] NEST-091 Complete OpenAPI coverage and CI enforcement (P2)
+  - Status: BACKLOG
+  - Owner: Documentation Agent
+  - Depends on: NEST-088
+  - Done when:
+    - all public route groups are represented in maintained OpenAPI specs,
+    - CI validates all maintained specs (not only one contract).
+
+- [ ] NEST-092 Converge web/mobile on shared runtime API client (P2)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-091
+  - Done when:
+    - duplicated app-local request client logic is removed,
+    - both clients use shared runtime client implementation only.
+
+- [ ] NEST-093 Normalize pagination meta contract shape (P2)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-091
+  - Done when:
+    - `perPage` vs `per_page` mismatch is resolved with documented policy,
+    - contract + implementation + tests are aligned.
+
+- [ ] NEST-094 Define and implement soft-delete uniqueness policy (P2)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-083
+  - Done when:
+    - recreate-after-delete behavior is deterministic and documented,
+    - schema/index + tests reflect the selected policy.
+
+- [ ] NEST-095 Consolidate policy-layer authorization (P2)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-088
+  - Done when:
+    - key route groups use explicit authorization policies,
+    - policy behavior is covered by tests with tenant isolation checks.
+
+- [ ] NEST-096 Harden AI-readiness response/error contracts (P2)
+  - Status: BACKLOG
+  - Owner: Documentation Agent
+  - Depends on: NEST-091, NEST-093
+  - Done when:
+    - machine-readable envelope and error taxonomy are documented + versioned,
+    - deterministic retry/error guidance is testable for tool/agent clients.
+
+- [x] NEST-097 Prepare execution handoff for audit remediation wave
+  - Status: DONE
+  - Owner: Planning Agent
+  - Depends on: NEST-083, NEST-084
+  - Done when:
+    - remediation tasks are sequenced for direct execution by another agent,
+    - each task includes scope, dependencies, and done conditions.
+  - Done on: 2026-03-19
+  - Notes:
+    - Handoff prepared in
+      `docs/audit_remediation_execution_handoff_2026-03-19.md`.
+    - Wave defined as `NEST-087` to `NEST-096` (P0->P2 order).
+
 ## In Progress
 
 - [ ] (none)

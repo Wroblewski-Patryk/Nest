@@ -105,6 +105,9 @@ Last updated: 2026-03-19
 - `NEST-086` completed: unified Stitch UX/UI approval baseline finalized in
   Stitch with documented evidence and user approval before implementation
   (`docs/ux_ui_stitch_unified_spec_v1.md`)
+- `NEST-087` completed: integration sync idempotency now distinguishes changed
+  payloads while safely deduplicating exact replays, with feature regressions
+  for list/task and journal sync flows
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -250,7 +253,11 @@ Last updated: 2026-03-19
   (`docs/final_readiness_review_2026-03-19.md`)
 - `NEST-081` completed: full-product launch milestone declared with post-launch
   monitoring baseline (`docs/full_product_launch_milestone_2026-03-19.md`)
-- Current execution focus: full roadmap backlog completed through `NEST-086`
+- `NEST-097` completed: audit remediation execution handoff prepared with
+  strict task order, ownership, and DoD for implementation agents
+  (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
+- Current execution focus: execute remediation wave `NEST-088` to `NEST-096`
+  (P0 `NEST-087` completed; continuing strict order)
 
 ## Auth, AI, Offline, Notifications
 

@@ -86,4 +86,40 @@ class IntegrationJournalSyncApiTest extends TestCase
             'provider' => 'obsidian',
         ])->assertUnauthorized();
     }
+
+    public function test_changed_journal_payload_is_synced_while_exact_replay_is_skipped(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $entry = JournalEntry::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'title' => 'Initial entry',
+        ]);
+
+        $this->postJson('/api/v1/integrations/journal-sync', [
+            'provider' => 'obsidian',
+        ])->assertOk()
+            ->assertJsonPath('data.processed', 1)
+            ->assertJsonPath('data.synced', 1)
+            ->assertJsonPath('data.skipped', 0);
+
+        $this->postJson('/api/v1/integrations/journal-sync', [
+            'provider' => 'obsidian',
+        ])->assertOk()
+            ->assertJsonPath('data.processed', 1)
+            ->assertJsonPath('data.synced', 0)
+            ->assertJsonPath('data.skipped', 1);
+
+        $entry->forceFill(['body' => 'Changed body'])->save();
+
+        $this->postJson('/api/v1/integrations/journal-sync', [
+            'provider' => 'obsidian',
+        ])->assertOk()
+            ->assertJsonPath('data.processed', 1)
+            ->assertJsonPath('data.synced', 1)
+            ->assertJsonPath('data.skipped', 0);
+    }
 }

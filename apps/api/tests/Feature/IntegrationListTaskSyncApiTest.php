@@ -215,4 +215,46 @@ class IntegrationListTaskSyncApiTest extends TestCase
             'provider' => 'trello',
         ])->assertUnauthorized();
     }
+
+    public function test_changed_task_payload_is_synced_while_exact_replay_is_skipped(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $list = TaskList::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        $task = Task::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'list_id' => $list->id,
+            'title' => 'Original title',
+        ]);
+
+        $this->postJson('/api/v1/integrations/list-task-sync', [
+            'provider' => 'trello',
+        ])->assertOk()
+            ->assertJsonPath('data.processed', 2)
+            ->assertJsonPath('data.synced', 2)
+            ->assertJsonPath('data.skipped', 0);
+
+        $this->postJson('/api/v1/integrations/list-task-sync', [
+            'provider' => 'trello',
+        ])->assertOk()
+            ->assertJsonPath('data.processed', 2)
+            ->assertJsonPath('data.synced', 0)
+            ->assertJsonPath('data.skipped', 2);
+
+        $task->forceFill(['title' => 'Updated title'])->save();
+
+        $this->postJson('/api/v1/integrations/list-task-sync', [
+            'provider' => 'trello',
+        ])->assertOk()
+            ->assertJsonPath('data.processed', 2)
+            ->assertJsonPath('data.synced', 1)
+            ->assertJsonPath('data.skipped', 1);
+    }
 }
