@@ -142,6 +142,8 @@ Last updated: 2026-03-19
 - `NEST-102` completed: remediated legacy UX-heavy tasks re-reviewed against
   approved baseline (`PASS: 0`, `FAIL: 8`), with explicit execution follow-up
   tasks defined for parity, responsive, accessibility, and fix cycle closure
+- `NEST-104` completed: legacy UX-heavy accessibility verification outputs are
+  now documented per task (keyboard/focus, semantic labels, contrast checks)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -290,8 +292,8 @@ Last updated: 2026-03-19
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute UX remediation execution tasks
-  `NEST-103`, `NEST-104`, `NEST-105`, and `NEST-106`
+- Current execution focus: execute remaining UX remediation execution tasks
+  `NEST-103`, `NEST-105`, and `NEST-106`
 
 ## Auth, AI, Offline, Notifications
 

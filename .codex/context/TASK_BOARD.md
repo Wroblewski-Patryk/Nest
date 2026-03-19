@@ -105,14 +105,21 @@ Last updated: 2026-03-19
     - parity captures are linked from task notes and review artifacts,
     - unresolved visual diffs are explicitly listed for implementation.
 
-- [ ] NEST-104 Add explicit accessibility verification outputs for legacy UX-heavy screens
-  - Status: BACKLOG
+- [x] NEST-104 Add explicit accessibility verification outputs for legacy UX-heavy screens
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-102
   - Done when:
     - keyboard/focus order verification is recorded for web flows,
     - semantic roles/labels checks are recorded for web and mobile screens,
     - contrast checks for key UI states are documented and linked in task notes.
+  - Done on: 2026-03-19
+  - Notes:
+    - Accessibility verification artifact delivered in
+      `docs/legacy_ux_accessibility_verification_2026-03-19.md`.
+    - Recorded per-task keyboard/focus, semantic-label, and contrast outcomes
+      for all 8 legacy UX-heavy tasks.
+    - Captured explicit a11y follow-up inputs for `NEST-106`.
 
 - [ ] NEST-105 Add responsive verification outputs for legacy UX-heavy screens
   - Status: BACKLOG
