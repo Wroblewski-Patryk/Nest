@@ -999,6 +999,24 @@ Last updated: 2026-03-19
     - Documented outcomes and corrective actions in
       `docs/resilience_drills_2026-03-19.md`.
 
+- [x] NEST-079 Introduce release train and change management workflow
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-077
+  - Done when: regular release cadence and quality gates are institutionalized.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added release-train GitHub workflow:
+      `.github/workflows/release-train.yml`.
+    - Added release gating sequence with backend tests and security controls
+      verification.
+    - Added optional staging-oriented readiness gates (SLO, retention dry-run,
+      secrets rotation dry-run).
+    - Added local change-management checklist helper:
+      `scripts/release/release-train-checklist.ps1`.
+    - Documented workflow in
+      `docs/release_train_change_management.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

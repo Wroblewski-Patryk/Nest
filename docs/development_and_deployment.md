@@ -248,6 +248,15 @@ Current workflow implementation:
 - Latest drill report:
   - `docs/resilience_drills_2026-03-19.md`
 
+## Release Train Operations
+
+- Release workflow:
+  - `.github/workflows/release-train.yml`
+- Local release checklist helper:
+  - `pwsh ./scripts/release/release-train-checklist.ps1 -ReleaseTag "<tag>" -ReleaseNotes "<notes>"`
+- Reference:
+  - `docs/release_train_change_management.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

@@ -250,7 +250,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-062, NEST-077
   - Done when: drill outcomes and corrective actions are documented.
 
-- [ ] NEST-079 Introduce release train and change management workflow
+- [x] NEST-079 Introduce release train and change management workflow
   - Depends on: NEST-077
   - Done when: regular release cadence and quality gates are institutionalized.
 

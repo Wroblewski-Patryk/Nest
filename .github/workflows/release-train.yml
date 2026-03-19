@@ -1,0 +1,82 @@
+name: Release Train
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Release tag (example: v0.9.0)"
+        required: true
+        type: string
+      release_notes:
+        description: "Short release summary"
+        required: true
+        type: string
+      run_staging_checks:
+        description: "Run staging verification gates"
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  release-gates:
+    name: Release Gates
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Prepare app env
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+          touch database/database.sqlite
+
+      - name: Run quality gates
+        run: |
+          php vendor/bin/pint --test
+          php artisan test --testsuite=Integration --env=testing
+          php artisan test --testsuite=Unit --env=testing
+          php artisan test --testsuite=Feature --env=testing
+          php artisan security:controls:verify --json --env=testing
+
+      - name: Run staging-oriented checks
+        if: ${{ inputs.run_staging_checks }}
+        run: |
+          php artisan integrations:sync-slo-check --json
+          php artisan tenants:retention-prune --dry-run --json
+          php artisan secrets:rotate --dry-run --json
+
+  release-manifest:
+    name: Release Manifest
+    runs-on: ubuntu-latest
+    needs: release-gates
+    steps:
+      - name: Build release manifest
+        run: |
+          mkdir -p release
+          cat > release/manifest.txt <<EOF
+          release_tag=${{ inputs.release_tag }}
+          release_notes=${{ inputs.release_notes }}
+          released_at=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          commit_sha=${{ github.sha }}
+          workflow=${{ github.workflow }}
+          EOF
+
+      - name: Upload manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-manifest
+          path: release/manifest.txt

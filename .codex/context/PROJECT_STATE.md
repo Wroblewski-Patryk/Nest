@@ -242,7 +242,10 @@ Last updated: 2026-03-19
 - `NEST-078` completed: resilience drills executed and documented with backup
   integrity checks, queue recovery validation, and corrective actions for
   local schema drift (`docs/resilience_drills_2026-03-19.md`)
-- Current execution focus: release train workflow (`NEST-079`)
+- `NEST-079` completed: release train and change-management workflow
+  delivered with gated release pipeline, checklist baseline, and release
+  manifest traceability (`docs/release_train_change_management.md`)
+- Current execution focus: final readiness review (`NEST-080`)
 
 ## Auth, AI, Offline, Notifications
 
