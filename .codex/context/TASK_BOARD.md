@@ -984,6 +984,21 @@ Last updated: 2026-03-19
     - Added runbook and baseline guidance in
       `docs/performance_load_test_harness.md`.
 
+- [x] NEST-078 Execute resilience tests (backup/restore/failover drills)
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-062, NEST-077
+  - Done when: drill outcomes and corrective actions are documented.
+  - Done on: 2026-03-19
+  - Notes:
+    - Executed local backup integrity drill with SHA256 verification.
+    - Executed retention workflow dry-run and queue recovery drill for tenant
+      deletion dry-run path.
+    - Identified local schema drift during drill and applied corrective action
+      (`php artisan migrate --force`) before rerun.
+    - Documented outcomes and corrective actions in
+      `docs/resilience_drills_2026-03-19.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

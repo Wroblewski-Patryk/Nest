@@ -239,7 +239,10 @@ Last updated: 2026-03-19
 - `NEST-077` completed: performance/load harness delivered with k6 scenario
   baseline, thresholded read/write profiles, and operational run script
   (`docs/performance_load_test_harness.md`)
-- Current execution focus: resilience drills (`NEST-078`)
+- `NEST-078` completed: resilience drills executed and documented with backup
+  integrity checks, queue recovery validation, and corrective actions for
+  local schema drift (`docs/resilience_drills_2026-03-19.md`)
+- Current execution focus: release train workflow (`NEST-079`)
 
 ## Auth, AI, Offline, Notifications
 

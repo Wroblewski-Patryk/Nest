@@ -238,6 +238,16 @@ Current workflow implementation:
 - Reference:
   - `docs/performance_load_test_harness.md`
 
+## Resilience Drill Operations
+
+- Run retention dry-run:
+  - `php artisan tenants:retention-prune --dry-run --json`
+- Run queued deletion dry-run:
+  - `php artisan tenants:delete-data <tenant-id> --queue --dry-run --json`
+  - `php artisan queue:work --once --queue=default --json`
+- Latest drill report:
+  - `docs/resilience_drills_2026-03-19.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.
