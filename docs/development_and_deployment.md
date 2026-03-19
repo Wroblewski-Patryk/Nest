@@ -146,6 +146,16 @@ Current workflow implementation:
 - Reference:
   - `docs/billing_provider_webhook_integration.md`
 
+## Entitlement Enforcement Operations
+
+- Runtime policy:
+  - subscription entitlements are enforced in authenticated API middleware.
+- Current gated surfaces:
+  - automation rule creation limit,
+  - AI weekly planning and AI feedback feature access.
+- Reference:
+  - `docs/entitlement_enforcement_api_tools.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

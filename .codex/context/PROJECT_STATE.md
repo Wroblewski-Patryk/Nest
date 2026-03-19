@@ -210,7 +210,10 @@ Last updated: 2026-03-19
 - `NEST-068` completed: billing and plan management UI delivered across web
   and mobile with subscription actions and billing event history surfaces
   (`docs/billing_ui_management.md`)
-- Current execution focus: entitlement enforcement across API/tools (`NEST-069`)
+- `NEST-069` completed: entitlement enforcement delivered for API/tooling
+  feature gates and plan limits with structured denial payloads
+  (`docs/entitlement_enforcement_api_tools.md`)
+- Current execution focus: organization/workspace domain model (`NEST-070`)
 
 ## Auth, AI, Offline, Notifications
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AttachTraceId;
+use App\Http\Middleware\EnforceBillingEntitlements;
 use App\Http\Middleware\EnforceTenantUsageQuota;
 use App\Http\Middleware\EnsureAiSurfaceEnabled;
 use App\Tenancy\Exceptions\TenantQuotaExceededException;
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'ai.surface' => EnsureAiSurfaceEnabled::class,
+            'entitlements' => EnforceBillingEntitlements::class,
             'tenant.usage' => EnforceTenantUsageQuota::class,
         ]);
     })

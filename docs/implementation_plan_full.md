@@ -205,7 +205,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-066, NEST-067
   - Done when: users can manage plan, billing details, and invoices.
 
-- [ ] NEST-069 Implement entitlement enforcement across API/tools
+- [x] NEST-069 Implement entitlement enforcement across API/tools
   - Depends on: NEST-066
   - Done when: gated features respect plan limits in all clients and APIs.
 

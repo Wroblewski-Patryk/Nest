@@ -821,6 +821,24 @@ Last updated: 2026-03-16
     - Added billing module navigation/snapshot updates for web and mobile.
     - Documented UI baseline in `docs/billing_ui_management.md`.
 
+- [x] NEST-069 Implement entitlement enforcement across API/tools
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-066
+  - Done when: gated features respect plan limits in all clients and APIs.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added entitlement service and middleware:
+      `EntitlementService`, `EnforceBillingEntitlements`.
+    - Enforced plan gate/limit rules for:
+      AI weekly planning, AI feedback, and automation rule creation limit.
+    - Added explicit entitlement error payloads for denied or limit-exceeded
+      requests.
+    - Added feature tests in
+      `apps/api/tests/Feature/EntitlementEnforcementApiTest.php`.
+    - Documented enforcement baseline in
+      `docs/entitlement_enforcement_api_tools.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent
