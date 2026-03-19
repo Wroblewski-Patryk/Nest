@@ -27,6 +27,8 @@ class Goal extends Model
         'title',
         'description',
         'status',
+        'visibility',
+        'collaboration_space_id',
         'target_date',
     ];
 
@@ -54,6 +56,14 @@ class Goal extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return BelongsTo<CollaborationSpace, $this>
+     */
+    public function collaborationSpace(): BelongsTo
+    {
+        return $this->belongsTo(CollaborationSpace::class, 'collaboration_space_id');
     }
 
     /**

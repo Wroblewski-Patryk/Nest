@@ -194,8 +194,11 @@ Last updated: 2026-03-19
 - `NEST-063` completed: tenant-level usage limits and quotas delivered with
   middleware-based create-path enforcement, structured quota errors, and
   tenant-scoped API coverage (`docs/tenant_usage_limits_and_quotas.md`)
-- Current execution focus: invite-based family/friends collaboration spaces
-  (`NEST-064`)
+- `NEST-064` completed: invite-based collaboration spaces delivered with
+  shared list/goal co-management, invite acceptance flow, and private-vs-shared
+  access boundaries (`docs/collaboration_spaces_v1.md`)
+- Current execution focus: plans, entitlements, and billing events model
+  (`NEST-065`)
 
 ## Auth, AI, Offline, Notifications
 

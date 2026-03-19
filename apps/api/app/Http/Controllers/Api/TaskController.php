@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Collaboration\Services\CollaborationAccessService;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use App\Models\TaskList;
@@ -17,6 +18,7 @@ class TaskController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $request->validate([
             'page' => ['sometimes', 'integer', 'min:1'],
@@ -35,7 +37,15 @@ class TaskController extends Controller
 
         $query = Task::query()
             ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id);
+            ->where(function (Builder $builder) use ($user, $spaceIds): void {
+                $builder->where('user_id', $user->id);
+                if ($spaceIds !== []) {
+                    $builder->orWhereHas('list', function (Builder $listQuery) use ($spaceIds): void {
+                        $listQuery->where('visibility', 'shared')
+                            ->whereIn('collaboration_space_id', $spaceIds);
+                    });
+                }
+            });
 
         $query
             ->when($request->filled('status'), fn (Builder $builder) => $builder->where('status', $request->string('status')))
@@ -71,6 +81,7 @@ class TaskController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $payload = $request->validate([
             'list_id' => ['required', 'uuid'],
@@ -84,7 +95,15 @@ class TaskController extends Controller
 
         $list = TaskList::query()
             ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
+            ->where(function (Builder $query) use ($user, $spaceIds): void {
+                $query->where('user_id', $user->id);
+                if ($spaceIds !== []) {
+                    $query->orWhere(function (Builder $shared) use ($spaceIds): void {
+                        $shared->where('visibility', 'shared')
+                            ->whereIn('collaboration_space_id', $spaceIds);
+                    });
+                }
+            })
             ->findOrFail($payload['list_id']);
 
         $task = Task::query()->create([
@@ -108,10 +127,19 @@ class TaskController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $task = Task::query()
             ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
+            ->where(function (Builder $query) use ($user, $spaceIds): void {
+                $query->where('user_id', $user->id);
+                if ($spaceIds !== []) {
+                    $query->orWhereHas('list', function (Builder $listQuery) use ($spaceIds): void {
+                        $listQuery->where('visibility', 'shared')
+                            ->whereIn('collaboration_space_id', $spaceIds);
+                    });
+                }
+            })
             ->findOrFail($taskId);
 
         return response()->json(['data' => $task]);
@@ -121,6 +149,7 @@ class TaskController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $payload = $request->validate([
             'list_id' => ['sometimes', 'uuid'],
@@ -135,13 +164,29 @@ class TaskController extends Controller
 
         $task = Task::query()
             ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
+            ->where(function (Builder $query) use ($user, $spaceIds): void {
+                $query->where('user_id', $user->id);
+                if ($spaceIds !== []) {
+                    $query->orWhereHas('list', function (Builder $listQuery) use ($spaceIds): void {
+                        $listQuery->where('visibility', 'shared')
+                            ->whereIn('collaboration_space_id', $spaceIds);
+                    });
+                }
+            })
             ->findOrFail($taskId);
 
         if (array_key_exists('list_id', $payload)) {
             $list = TaskList::query()
                 ->where('tenant_id', $user->tenant_id)
-                ->where('user_id', $user->id)
+                ->where(function (Builder $query) use ($user, $spaceIds): void {
+                    $query->where('user_id', $user->id);
+                    if ($spaceIds !== []) {
+                        $query->orWhere(function (Builder $shared) use ($spaceIds): void {
+                            $shared->where('visibility', 'shared')
+                                ->whereIn('collaboration_space_id', $spaceIds);
+                        });
+                    }
+                })
                 ->findOrFail($payload['list_id']);
 
             $payload['list_id'] = $list->id;
@@ -157,10 +202,19 @@ class TaskController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $task = Task::query()
             ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
+            ->where(function (Builder $query) use ($user, $spaceIds): void {
+                $query->where('user_id', $user->id);
+                if ($spaceIds !== []) {
+                    $query->orWhereHas('list', function (Builder $listQuery) use ($spaceIds): void {
+                        $listQuery->where('visibility', 'shared')
+                            ->whereIn('collaboration_space_id', $spaceIds);
+                    });
+                }
+            })
             ->findOrFail($taskId);
 
         $task->delete();

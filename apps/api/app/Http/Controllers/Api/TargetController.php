@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Collaboration\Services\CollaborationAccessService;
 use App\Http\Controllers\Controller;
 use App\Models\Goal;
 use App\Models\Target;
@@ -17,6 +18,7 @@ class TargetController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $request->validate([
             'page' => ['sometimes', 'integer', 'min:1'],
@@ -30,8 +32,17 @@ class TargetController extends Controller
 
         $targets = Target::query()
             ->where('tenant_id', $user->tenant_id)
-            ->whereHas('goal', function (Builder $query) use ($user): void {
-                $query->where('tenant_id', $user->tenant_id)->where('user_id', $user->id);
+            ->whereHas('goal', function (Builder $query) use ($user, $spaceIds): void {
+                $query->where('tenant_id', $user->tenant_id)
+                    ->where(function (Builder $goalQuery) use ($user, $spaceIds): void {
+                        $goalQuery->where('user_id', $user->id);
+                        if ($spaceIds !== []) {
+                            $goalQuery->orWhere(function (Builder $shared) use ($spaceIds): void {
+                                $shared->where('visibility', 'shared')
+                                    ->whereIn('collaboration_space_id', $spaceIds);
+                            });
+                        }
+                    });
             })
             ->when($request->filled('goal_id'), fn (Builder $query) => $query->where('goal_id', $request->string('goal_id')))
             ->when($request->filled('status'), fn (Builder $query) => $query->where('status', $request->string('status')))
@@ -52,6 +63,7 @@ class TargetController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $payload = $request->validate([
             'goal_id' => ['required', 'uuid'],
@@ -66,7 +78,15 @@ class TargetController extends Controller
 
         $goal = Goal::query()
             ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
+            ->where(function (Builder $query) use ($user, $spaceIds): void {
+                $query->where('user_id', $user->id);
+                if ($spaceIds !== []) {
+                    $query->orWhere(function (Builder $shared) use ($spaceIds): void {
+                        $shared->where('visibility', 'shared')
+                            ->whereIn('collaboration_space_id', $spaceIds);
+                    });
+                }
+            })
             ->findOrFail($payload['goal_id']);
 
         $target = Target::query()->create([
@@ -88,11 +108,21 @@ class TargetController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $target = Target::query()
             ->where('tenant_id', $user->tenant_id)
-            ->whereHas('goal', function (Builder $query) use ($user): void {
-                $query->where('tenant_id', $user->tenant_id)->where('user_id', $user->id);
+            ->whereHas('goal', function (Builder $query) use ($user, $spaceIds): void {
+                $query->where('tenant_id', $user->tenant_id)
+                    ->where(function (Builder $goalQuery) use ($user, $spaceIds): void {
+                        $goalQuery->where('user_id', $user->id);
+                        if ($spaceIds !== []) {
+                            $goalQuery->orWhere(function (Builder $shared) use ($spaceIds): void {
+                                $shared->where('visibility', 'shared')
+                                    ->whereIn('collaboration_space_id', $spaceIds);
+                            });
+                        }
+                    });
             })
             ->findOrFail($targetId);
 
@@ -103,6 +133,7 @@ class TargetController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $payload = $request->validate([
             'title' => ['sometimes', 'string', 'max:255'],
@@ -116,8 +147,17 @@ class TargetController extends Controller
 
         $target = Target::query()
             ->where('tenant_id', $user->tenant_id)
-            ->whereHas('goal', function (Builder $query) use ($user): void {
-                $query->where('tenant_id', $user->tenant_id)->where('user_id', $user->id);
+            ->whereHas('goal', function (Builder $query) use ($user, $spaceIds): void {
+                $query->where('tenant_id', $user->tenant_id)
+                    ->where(function (Builder $goalQuery) use ($user, $spaceIds): void {
+                        $goalQuery->where('user_id', $user->id);
+                        if ($spaceIds !== []) {
+                            $goalQuery->orWhere(function (Builder $shared) use ($spaceIds): void {
+                                $shared->where('visibility', 'shared')
+                                    ->whereIn('collaboration_space_id', $spaceIds);
+                            });
+                        }
+                    });
             })
             ->findOrFail($targetId);
 
@@ -131,11 +171,21 @@ class TargetController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $target = Target::query()
             ->where('tenant_id', $user->tenant_id)
-            ->whereHas('goal', function (Builder $query) use ($user): void {
-                $query->where('tenant_id', $user->tenant_id)->where('user_id', $user->id);
+            ->whereHas('goal', function (Builder $query) use ($user, $spaceIds): void {
+                $query->where('tenant_id', $user->tenant_id)
+                    ->where(function (Builder $goalQuery) use ($user, $spaceIds): void {
+                        $goalQuery->where('user_id', $user->id);
+                        if ($spaceIds !== []) {
+                            $goalQuery->orWhere(function (Builder $shared) use ($spaceIds): void {
+                                $shared->where('visibility', 'shared')
+                                    ->whereIn('collaboration_space_id', $spaceIds);
+                            });
+                        }
+                    });
             })
             ->findOrFail($targetId);
 

@@ -728,6 +728,27 @@ Last updated: 2026-03-16
     - Documented baseline in
       `docs/tenant_usage_limits_and_quotas.md`.
 
+- [x] NEST-064 Implement invite-based family/friends collaboration spaces
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-061
+  - Done when: shared plans/lists, co-management flows, and private-vs-shared
+    permission boundaries are implemented and tested.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added collaboration domain model:
+      `collaboration_spaces`, `collaboration_space_members`,
+      `collaboration_invites`.
+    - Added collaboration APIs for space creation, invite issuance/acceptance,
+      and sharing lists/goals into spaces.
+    - Added shared visibility controls for `task_lists` and `goals` via
+      `visibility` + `collaboration_space_id`.
+    - Added co-management access for shared resources across list/task and
+      goal/target API flows while preserving private-vs-shared boundaries.
+    - Added feature coverage in
+      `apps/api/tests/Feature/CollaborationSpacesApiTest.php`.
+    - Documented baseline in `docs/collaboration_spaces_v1.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

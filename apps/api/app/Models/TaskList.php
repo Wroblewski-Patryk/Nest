@@ -28,6 +28,8 @@ class TaskList extends Model
         'color',
         'position',
         'is_archived',
+        'visibility',
+        'collaboration_space_id',
     ];
 
     /**
@@ -55,6 +57,14 @@ class TaskList extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return BelongsTo<CollaborationSpace, $this>
+     */
+    public function collaborationSpace(): BelongsTo
+    {
+        return $this->belongsTo(CollaborationSpace::class, 'collaboration_space_id');
     }
 
     /**

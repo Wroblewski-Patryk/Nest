@@ -107,6 +107,18 @@ Current workflow implementation:
 - Reference:
   - `docs/tenant_usage_limits_and_quotas.md`
 
+## Collaboration Operations
+
+- Collaboration spaces API:
+  - `GET /api/v1/collaboration/spaces`
+  - `POST /api/v1/collaboration/spaces`
+  - `POST /api/v1/collaboration/spaces/{spaceId}/invites`
+  - `POST /api/v1/collaboration/invites/{token}/accept`
+  - `POST /api/v1/collaboration/spaces/{spaceId}/share/lists/{listId}`
+  - `POST /api/v1/collaboration/spaces/{spaceId}/share/goals/{goalId}`
+- Reference:
+  - `docs/collaboration_spaces_v1.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

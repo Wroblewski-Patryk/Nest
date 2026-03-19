@@ -182,7 +182,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-061
   - Done when: per-tenant limits are enforced with clear user-facing errors.
 
-- [ ] NEST-064 Implement invite-based family/friends collaboration spaces
+- [x] NEST-064 Implement invite-based family/friends collaboration spaces
   - Depends on: NEST-061
   - Done when: shared plans/lists, co-management flows, and private-vs-shared
     permission boundaries are implemented and tested.
