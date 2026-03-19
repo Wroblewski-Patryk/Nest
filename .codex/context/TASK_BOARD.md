@@ -121,14 +121,21 @@ Last updated: 2026-03-19
       for all 8 legacy UX-heavy tasks.
     - Captured explicit a11y follow-up inputs for `NEST-106`.
 
-- [ ] NEST-105 Add responsive verification outputs for legacy UX-heavy screens
-  - Status: BACKLOG
+- [x] NEST-105 Add responsive verification outputs for legacy UX-heavy screens
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-102
   - Done when:
     - desktop/tablet/mobile captures are recorded for each legacy UX-heavy task,
     - responsive behavior differences are reviewed against approved baseline,
     - evidence links are attached in task notes.
+  - Done on: 2026-03-19
+  - Notes:
+    - Responsive verification artifact delivered in
+      `docs/legacy_ux_responsive_verification_2026-03-19.md`.
+    - Recorded desktop/tablet/mobile outcomes for all 8 legacy UX-heavy tasks
+      with code-evidence references.
+    - Captured responsive follow-up inputs for `NEST-106`.
 
 - [ ] NEST-106 Execute legacy UX visual parity fixes and re-run UX evidence gate
   - Status: BACKLOG

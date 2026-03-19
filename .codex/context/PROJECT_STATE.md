@@ -144,6 +144,8 @@ Last updated: 2026-03-19
   tasks defined for parity, responsive, accessibility, and fix cycle closure
 - `NEST-104` completed: legacy UX-heavy accessibility verification outputs are
   now documented per task (keyboard/focus, semantic labels, contrast checks)
+- `NEST-105` completed: legacy UX-heavy responsive verification outputs are now
+  documented per task (desktop/tablet/mobile outcomes)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
