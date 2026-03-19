@@ -193,7 +193,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-029
   - Done when: pricing/entitlement schema and lifecycle states are documented.
 
-- [ ] NEST-066 Implement subscription lifecycle backend
+- [x] NEST-066 Implement subscription lifecycle backend
   - Depends on: NEST-065
   - Done when: trial/active/past-due/canceled lifecycle is fully supported.
 

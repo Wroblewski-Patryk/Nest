@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AnalyticsIngestionController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AutomationRuleController;
 use App\Http\Controllers\Api\AutomationRunController;
+use App\Http\Controllers\Api\BillingSubscriptionController;
 use App\Http\Controllers\Api\CalendarEventController;
 use App\Http\Controllers\Api\CollaborationInviteController;
 use App\Http\Controllers\Api\CollaborationSpaceController;
@@ -35,6 +36,11 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::get('/auth/me', [UserSettingsController::class, 'me']);
         Route::patch('/auth/settings', [UserSettingsController::class, 'update']);
+        Route::get('/billing/subscription', [BillingSubscriptionController::class, 'show']);
+        Route::post('/billing/subscription/start-trial', [BillingSubscriptionController::class, 'startTrial']);
+        Route::post('/billing/subscription/activate', [BillingSubscriptionController::class, 'activate']);
+        Route::post('/billing/subscription/past-due', [BillingSubscriptionController::class, 'markPastDue']);
+        Route::post('/billing/subscription/cancel', [BillingSubscriptionController::class, 'cancel']);
         Route::post('/analytics/events', [AnalyticsIngestionController::class, 'ingest']);
         Route::middleware('ai.surface')->group(function (): void {
             Route::post('/ai/weekly-plan/propose', [AiWeeklyPlanController::class, 'propose']);

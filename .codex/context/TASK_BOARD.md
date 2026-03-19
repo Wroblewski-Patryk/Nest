@@ -764,6 +764,26 @@ Last updated: 2026-03-16
       `docs/openapi_billing_events_v1.yaml`.
     - Linked new contract from `docs/api_contracts.md`.
 
+- [x] NEST-066 Implement subscription lifecycle backend
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-065
+  - Done when: trial/active/past-due/canceled lifecycle is fully supported.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added billing persistence model and migration:
+      `billing_plans`, `billing_plan_entitlements`, `tenant_subscriptions`,
+      `tenant_billing_events`.
+    - Added lifecycle service
+      `App\Billing\Services\SubscriptionLifecycleService` with guarded state
+      transitions and normalized billing event recording.
+    - Added billing subscription API controller and lifecycle endpoints:
+      show/start-trial/activate/past-due/cancel.
+    - Added feature coverage in
+      `apps/api/tests/Feature/BillingSubscriptionLifecycleApiTest.php`.
+    - Documented implementation in
+      `docs/billing_subscription_lifecycle_backend.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

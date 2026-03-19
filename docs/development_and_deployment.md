@@ -126,6 +126,17 @@ Current workflow implementation:
 - Contract draft:
   - `docs/openapi_billing_events_v1.yaml`
 
+## Billing Lifecycle Operations
+
+- Subscription endpoints:
+  - `GET /api/v1/billing/subscription`
+  - `POST /api/v1/billing/subscription/start-trial`
+  - `POST /api/v1/billing/subscription/activate`
+  - `POST /api/v1/billing/subscription/past-due`
+  - `POST /api/v1/billing/subscription/cancel`
+- Reference:
+  - `docs/billing_subscription_lifecycle_backend.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

@@ -200,7 +200,11 @@ Last updated: 2026-03-19
 - `NEST-065` completed: plans, entitlements, and billing event model
   documented with lifecycle states and draft billing event contract
   (`docs/billing_entitlements_model.md`, `docs/openapi_billing_events_v1.yaml`)
-- Current execution focus: subscription lifecycle backend (`NEST-066`)
+- `NEST-066` completed: subscription lifecycle backend delivered for
+  trialing/active/past_due/canceled flows with tenant billing event audit
+  logging (`docs/billing_subscription_lifecycle_backend.md`)
+- Current execution focus: billing provider integration and webhook handling
+  (`NEST-067`)
 
 ## Auth, AI, Offline, Notifications
 
