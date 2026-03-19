@@ -1169,13 +1169,22 @@ Last updated: 2026-03-19
       `IntegrationCalendarSyncApiTest`.
     - Validation: `php artisan test --testsuite=Feature --env=testing` passed.
 
-- [ ] NEST-090 Align runtime baseline with PostgreSQL/Redis docs (P1)
-  - Status: BACKLOG
+- [x] NEST-090 Align runtime baseline with PostgreSQL/Redis docs (P1)
+  - Status: DONE
   - Owner: Documentation Agent
   - Depends on: NEST-083
   - Done when:
     - env/config defaults and setup guidance match documented architecture,
     - doc/runtime drift for DB+queue+cache baseline is removed.
+  - Done on: 2026-03-19
+  - Notes:
+    - Updated `apps/api/.env.example` to PostgreSQL + Redis defaults.
+    - Updated config defaults:
+      `apps/api/config/database.php`, `apps/api/config/queue.php`.
+    - Added explicit PostgreSQL/Redis local bring-up guidance in
+      `docs/development_and_deployment.md`.
+    - Added runtime default summary in `docs/system_architecture.md`.
+    - Validation: `php artisan test --testsuite=Feature --env=testing` passed.
 
 - [ ] NEST-091 Complete OpenAPI coverage and CI enforcement (P2)
   - Status: BACKLOG

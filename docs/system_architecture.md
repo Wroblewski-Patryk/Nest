@@ -56,3 +56,9 @@ All clients and automations operate through the same API contracts.
 - Retry with exponential backoff and idempotency keys.
 - Health checks for providers and background workers.
 - Structured logs and metrics for sync performance and failures.
+
+## Runtime Defaults
+
+- Application default DB connection: PostgreSQL (`DB_CONNECTION=pgsql`).
+- Application default queue connection: Redis (`QUEUE_CONNECTION=redis`).
+- Application default cache/session backing: Redis.

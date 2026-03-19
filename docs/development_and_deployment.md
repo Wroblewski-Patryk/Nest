@@ -11,6 +11,24 @@
 - Backend: PHP 8.4, Composer, PostgreSQL, Redis.
 - Frontend: Node.js 24 LTS, pnpm.
 - Use `.env.example` templates for backend and frontend apps.
+- Default local ports:
+  - API: `9000`
+  - Web: `9001`
+
+### Local Backend Bring-up (PostgreSQL + Redis)
+
+1. Copy env template:
+   - `cp apps/api/.env.example apps/api/.env`
+2. Ensure PostgreSQL database/user exists:
+   - database: `nest`
+   - user: `nest`
+3. Ensure Redis is reachable on `127.0.0.1:6379`.
+4. Run migrations/seed:
+   - `php artisan migrate --seed`
+5. Start API server:
+   - `php artisan serve --host=127.0.0.1 --port=9000`
+6. Start queue worker:
+   - `php artisan queue:work redis --queue=default,integrations`
 
 ## CI Pipeline (Minimum)
 
