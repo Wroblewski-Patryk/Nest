@@ -1275,13 +1275,27 @@ Last updated: 2026-03-19
       `IntegrationConflictQueueApiTest` and `IntegrationSyncReplayApiTest`.
     - Documented policy-layer baseline in `docs/system_architecture.md`.
 
-- [ ] NEST-096 Harden AI-readiness response/error contracts (P2)
-  - Status: BACKLOG
+- [x] NEST-096 Harden AI-readiness response/error contracts (P2)
+  - Status: DONE
   - Owner: Documentation Agent
   - Depends on: NEST-091, NEST-093
   - Done when:
     - machine-readable envelope and error taxonomy are documented + versioned,
     - deterministic retry/error guidance is testable for tool/agent clients.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added standardized API error envelope for `api/*` responses with:
+      `error.code`, `error.retryable`, `error.http_status`,
+      `error.details`, and `meta.contract_version`.
+    - Implemented deterministic taxonomy handlers for
+      `validation_failed`, `auth_required`, `forbidden`,
+      `resource_not_found`, `tenant_quota_exceeded`, and `rate_limited`.
+    - Added shared contract types `ApiErrorCode` and `ApiErrorEnvelope` in
+      `packages/shared-types/src/index.d.ts`.
+    - Added contract regression suite:
+      `apps/api/tests/Feature/ApiErrorEnvelopeContractTest.php`.
+    - Documented versioned AI/tool error contract and retry guidance in
+      `docs/ai_tool_api_error_contract_v1.md` and linked from `docs/ai_layer.md`.
 
 - [x] NEST-097 Prepare execution handoff for audit remediation wave
   - Status: DONE

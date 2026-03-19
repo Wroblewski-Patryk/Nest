@@ -240,6 +240,31 @@ export type BillingEventItem = {
   payload: Record<string, unknown> | null;
 };
 
+export type ApiErrorCode =
+  | "validation_failed"
+  | "auth_required"
+  | "forbidden"
+  | "resource_not_found"
+  | "rate_limited"
+  | "tenant_quota_exceeded"
+  | "entitlement_denied"
+  | "entitlement_limit_exceeded"
+  | "internal_error";
+
+export type ApiErrorEnvelope = {
+  message: string;
+  error: {
+    code: ApiErrorCode | string;
+    retryable: boolean;
+    http_status: number;
+    details: Record<string, unknown>;
+  };
+  errors?: Record<string, string[]>;
+  meta: {
+    contract_version: string;
+  };
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;

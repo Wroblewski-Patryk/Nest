@@ -38,6 +38,8 @@ operations without compromising data integrity or security.
     quality tracking.
 - Detailed contract: `docs/ai_weekly_planning_api.md`.
 - Feedback contract: `docs/ai_feedback_loop.md`.
+- Machine-readable API error envelope for tool/agent clients:
+  `docs/ai_tool_api_error_contract_v1.md`.
 
 ## Safety and Control
 
