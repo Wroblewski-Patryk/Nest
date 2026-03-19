@@ -49,6 +49,8 @@ quality consistent.
 - Do not mark task `READY` if design source is undefined.
 - Do not mark task `READY` for Stitch-as-source execution unless approved
   exception record is complete and linked.
+- Use `.codex/templates/task-template.md` UX sections to capture source type,
+  artifact reference, approval checkpoint, and review evidence gate checklist.
 
 ### Execution Agent
 

@@ -21,14 +21,22 @@ Last updated: 2026-03-19
     - Added explicit READY/blocking gates for Stitch source-of-truth exception
       records in UX planning/execution flow.
 
-- [ ] NEST-099 Add UX task template fields for MCP evidence and artifact source
-  - Status: BACKLOG
+- [x] NEST-099 Add UX task template fields for MCP evidence and artifact source
+  - Status: DONE
   - Owner: Documentation Agent
   - Depends on: NEST-098
   - Done when:
     - task template includes source-of-truth type (`figma|approved_snapshot`),
     - task template includes artifact reference and approval checkpoint fields,
     - review checklist enforces UX evidence gate from MCP collaboration standard.
+  - Done on: 2026-03-19
+  - Notes:
+    - Extended `.codex/templates/task-template.md` with mandatory UX source and
+      MCP evidence fields for UX/UI tasks.
+    - Added explicit review checklist section enforcing UX evidence gate
+      (artifact source, approval checkpoint, states, responsive, a11y, parity).
+    - Updated `docs/ux_ui_mcp_collaboration.md` to require usage of the
+      template UX evidence sections by Planning Agent.
 
 - [ ] NEST-100 Validate existing UX-heavy tasks against unified Stitch baseline
   - Status: BACKLOG
