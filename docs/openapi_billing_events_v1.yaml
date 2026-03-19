@@ -1,0 +1,126 @@
+openapi: 3.1.0
+info:
+  title: Nest Billing Events API (Draft)
+  version: 0.1.0
+  description: >
+    Draft API contract for billing subscription snapshots and tenant billing
+    events. This artifact defines normalized shapes for the lifecycle model
+    introduced in NEST-065.
+servers:
+  - url: /api/v1
+paths:
+  /billing/subscription:
+    get:
+      summary: Get current tenant subscription snapshot
+      tags: [Billing]
+      responses:
+        '200':
+          description: Tenant subscription snapshot
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/TenantSubscription'
+  /billing/events:
+    get:
+      summary: List normalized tenant billing events
+      tags: [Billing]
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1, default: 1 }
+        - in: query
+          name: per_page
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+        - in: query
+          name: event_name
+          schema: { type: string }
+      responses:
+        '200':
+          description: Paged billing events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BillingEvent'
+                  meta:
+                    type: object
+                    properties:
+                      page: { type: integer }
+                      per_page: { type: integer }
+                      total: { type: integer }
+components:
+  schemas:
+    TenantSubscription:
+      type: object
+      required:
+        - id
+        - tenant_id
+        - plan_code
+        - status
+      properties:
+        id: { type: string, format: uuid }
+        tenant_id: { type: string, format: uuid }
+        plan_code: { type: string, example: plus }
+        status:
+          type: string
+          enum: [trialing, active, past_due, paused, canceled, expired]
+        trial_ends_at: { type: string, format: date-time, nullable: true }
+        current_period_starts_at: { type: string, format: date-time, nullable: true }
+        current_period_ends_at: { type: string, format: date-time, nullable: true }
+        canceled_at: { type: string, format: date-time, nullable: true }
+        entitlements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entitlement'
+    Entitlement:
+      type: object
+      required: [key, type, value]
+      properties:
+        key: { type: string, example: automation.rules.max }
+        type: { type: string, enum: [boolean, limit] }
+        value:
+          oneOf:
+            - type: boolean
+            - type: integer
+    BillingEvent:
+      type: object
+      required:
+        - id
+        - tenant_id
+        - event_name
+        - event_version
+        - occurred_at
+      properties:
+        id: { type: string, format: uuid }
+        tenant_id: { type: string, format: uuid }
+        subscription_id: { type: string, format: uuid, nullable: true }
+        plan_code: { type: string, nullable: true }
+        event_name:
+          type: string
+          enum:
+            - billing.subscription.created
+            - billing.subscription.trial_started
+            - billing.subscription.activated
+            - billing.subscription.renewed
+            - billing.subscription.past_due
+            - billing.subscription.paused
+            - billing.subscription.canceled
+            - billing.subscription.expired
+            - billing.invoice.created
+            - billing.invoice.paid
+            - billing.invoice.payment_failed
+            - billing.entitlement.changed
+        event_version: { type: string, example: '1.0' }
+        provider: { type: string, example: stripe }
+        provider_event_id: { type: string, nullable: true }
+        occurred_at: { type: string, format: date-time }
+        payload:
+          type: object
+          additionalProperties: true

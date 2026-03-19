@@ -119,6 +119,13 @@ Current workflow implementation:
 - Reference:
   - `docs/collaboration_spaces_v1.md`
 
+## Billing Model Baseline
+
+- Reference model:
+  - `docs/billing_entitlements_model.md`
+- Contract draft:
+  - `docs/openapi_billing_events_v1.yaml`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

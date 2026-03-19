@@ -749,6 +749,21 @@ Last updated: 2026-03-16
       `apps/api/tests/Feature/CollaborationSpacesApiTest.php`.
     - Documented baseline in `docs/collaboration_spaces_v1.md`.
 
+- [x] NEST-065 Define plans, entitlements, and billing events model
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Depends on: NEST-029
+  - Done when: pricing/entitlement schema and lifecycle states are documented.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added billing model baseline in
+      `docs/billing_entitlements_model.md`.
+    - Documented plan structure, entitlement types, and lifecycle states.
+    - Added canonical billing event taxonomy and normalized event envelope.
+    - Added billing API contract draft in
+      `docs/openapi_billing_events_v1.yaml`.
+    - Linked new contract from `docs/api_contracts.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

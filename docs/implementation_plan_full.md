@@ -189,7 +189,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
 
 ### Billing and subscriptions
 
-- [ ] NEST-065 Define plans, entitlements, and billing events model
+- [x] NEST-065 Define plans, entitlements, and billing events model
   - Depends on: NEST-029
   - Done when: pricing/entitlement schema and lifecycle states are documented.
 

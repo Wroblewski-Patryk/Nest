@@ -197,8 +197,10 @@ Last updated: 2026-03-19
 - `NEST-064` completed: invite-based collaboration spaces delivered with
   shared list/goal co-management, invite acceptance flow, and private-vs-shared
   access boundaries (`docs/collaboration_spaces_v1.md`)
-- Current execution focus: plans, entitlements, and billing events model
-  (`NEST-065`)
+- `NEST-065` completed: plans, entitlements, and billing event model
+  documented with lifecycle states and draft billing event contract
+  (`docs/billing_entitlements_model.md`, `docs/openapi_billing_events_v1.yaml`)
+- Current execution focus: subscription lifecycle backend (`NEST-066`)
 
 ## Auth, AI, Offline, Notifications
 
