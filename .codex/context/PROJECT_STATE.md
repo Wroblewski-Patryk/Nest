@@ -229,7 +229,10 @@ Last updated: 2026-03-19
 - `NEST-074` completed: organization audit export package delivered with
   RBAC-gated JSON/CSV export endpoint and normalized security event schema
   for compliance workflows (`docs/organization_audit_export_package.md`)
-- Current execution focus: advanced secrets and key rotation (`NEST-075`)
+- `NEST-075` completed: advanced secrets rotation and credential revoke
+  operations delivered with audited command workflows and scoped execution
+  controls (`docs/secrets_rotation_and_revocation_ops.md`)
+- Current execution focus: security control verification suite (`NEST-076`)
 
 ## Auth, AI, Offline, Notifications
 

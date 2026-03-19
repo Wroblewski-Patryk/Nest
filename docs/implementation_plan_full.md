@@ -232,7 +232,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-071
   - Done when: export includes security-sensitive events in documented formats.
 
-- [ ] NEST-075 Add advanced secrets and key rotation operations
+- [x] NEST-075 Add advanced secrets and key rotation operations
   - Depends on: NEST-061
   - Done when: automated key rotation and credential revoke paths are tested.
 

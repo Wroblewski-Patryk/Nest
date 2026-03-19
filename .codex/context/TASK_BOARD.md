@@ -930,6 +930,26 @@ Last updated: 2026-03-19
     - Documented implementation in
       `docs/organization_audit_export_package.md`.
 
+- [x] NEST-075 Add advanced secrets and key rotation operations
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-061
+  - Done when: automated key rotation and credential revoke paths are tested.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added secret rotation audit storage:
+      `secret_rotation_audits`.
+    - Added automated secret rotation command:
+      `secrets:rotate` with tenant scope and dry-run/json output.
+    - Added scoped credential revoke command:
+      `secrets:credentials:revoke` with tenant/provider/user filters and dry-run/json output.
+    - Added secret rotation service that re-encrypts integration credentials,
+      mobile push tokens, and organization SSO signing secrets.
+    - Added feature coverage in
+      `apps/api/tests/Feature/SecretRotationOperationsCommandTest.php`.
+    - Documented operations in
+      `docs/secrets_rotation_and_revocation_ops.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

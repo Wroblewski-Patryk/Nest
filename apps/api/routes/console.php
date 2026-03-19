@@ -3,6 +3,7 @@
 use App\Jobs\DeleteTenantDataJob;
 use App\Notifications\Services\MobilePushReminderService;
 use App\Observability\IntegrationSyncSloService;
+use App\Security\Services\SecretRotationService;
 use App\Tenancy\Services\TenantDataDeletionService;
 use App\Tenancy\Services\TenantDataRetentionService;
 use Illuminate\Foundation\Inspiring;
@@ -126,3 +127,51 @@ Artisan::command('tenants:delete-data {tenant} {--dry-run} {--queue} {--json}', 
 
     return self::SUCCESS;
 })->purpose('Run or queue tenant-scoped data deletion workflow with audit output');
+
+Artisan::command('secrets:rotate {--tenant=} {--dry-run} {--json}', function (): int {
+    $tenantId = $this->option('tenant');
+    $summary = app(SecretRotationService::class)->rotate(
+        is_string($tenantId) && $tenantId !== '' ? $tenantId : null,
+        (bool) $this->option('dry-run')
+    );
+
+    if ($this->option('json')) {
+        $this->line((string) json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    } else {
+        $this->info('Secret rotation workflow completed.');
+        $this->line('Tenant: '.($summary['tenant_id'] ?? 'all'));
+        $this->line('Dry run: '.($summary['dry_run'] ? 'yes' : 'no'));
+        $this->line('Integration credentials rotated: '.$summary['integration_credentials_rotated']);
+        $this->line('Mobile push tokens rotated: '.$summary['mobile_push_tokens_rotated']);
+        $this->line('Organization SSO secrets rotated: '.$summary['organization_sso_secrets_rotated']);
+        $this->line('Total affected: '.$summary['affected_records']);
+    }
+
+    return self::SUCCESS;
+})->purpose('Rotate encrypted secrets by re-encrypting credential and token records');
+
+Artisan::command('secrets:credentials:revoke {--tenant=} {--provider=} {--user=} {--dry-run} {--json}', function (): int {
+    $tenantId = $this->option('tenant');
+    $provider = $this->option('provider');
+    $userId = $this->option('user');
+
+    $summary = app(SecretRotationService::class)->revokeCredentials(
+        is_string($tenantId) && $tenantId !== '' ? $tenantId : null,
+        is_string($provider) && $provider !== '' ? $provider : null,
+        is_string($userId) && $userId !== '' ? $userId : null,
+        (bool) $this->option('dry-run')
+    );
+
+    if ($this->option('json')) {
+        $this->line((string) json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    } else {
+        $this->info('Credential revoke workflow completed.');
+        $this->line('Tenant: '.($summary['tenant_id'] ?? 'all'));
+        $this->line('Provider: '.($summary['provider'] ?? 'all'));
+        $this->line('User: '.($summary['user_id'] ?? 'all'));
+        $this->line('Dry run: '.($summary['dry_run'] ? 'yes' : 'no'));
+        $this->line('Affected records: '.$summary['affected_records']);
+    }
+
+    return self::SUCCESS;
+})->purpose('Revoke integration credentials by tenant/provider/user scope');

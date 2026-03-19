@@ -199,6 +199,23 @@ Current workflow implementation:
 - Reference:
   - `docs/organization_audit_export_package.md`
 
+## Secrets Rotation and Revocation Operations
+
+- Secret rotation:
+  - `php artisan secrets:rotate`
+  - `php artisan secrets:rotate --tenant=<tenant-id>`
+  - `php artisan secrets:rotate --dry-run`
+  - `php artisan secrets:rotate --json`
+- Credential revoke:
+  - `php artisan secrets:credentials:revoke`
+  - `php artisan secrets:credentials:revoke --tenant=<tenant-id>`
+  - `php artisan secrets:credentials:revoke --provider=<provider>`
+  - `php artisan secrets:credentials:revoke --user=<user-id>`
+  - `php artisan secrets:credentials:revoke --dry-run`
+  - `php artisan secrets:credentials:revoke --json`
+- Reference:
+  - `docs/secrets_rotation_and_revocation_ops.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.
