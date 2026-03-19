@@ -8,8 +8,14 @@ quality consistent.
 
 ## Design Source of Truth
 
-- Primary: Figma MCP context for exact node/frame implementation.
+- Default primary: Figma MCP context for exact node/frame implementation.
 - Secondary: Stitch MCP can be used for ideation/proposal drafts.
+- Exception path: for a dedicated UX cycle, Documentation Agent can promote an
+  approved Stitch project snapshot to temporary source of truth if:
+  - the decision is documented in `docs/`,
+  - task board references the Stitch project ID,
+  - implementation is blocked until explicit user approval of that Stitch
+    baseline.
 - Final implementation must always be validated against a concrete design
   artifact (Figma screenshot or approved design snapshot).
 
@@ -84,8 +90,9 @@ Use this payload when asking UX-specialized AI for implementation guidance:
 Recommended baseline for this repository:
 
 - Enable and authenticate Figma MCP.
-- Keep Stitch MCP optional and explicitly marked as experimental.
-- Treat Figma artifact parity as release gate for UX-heavy tasks.
+- Keep Stitch MCP available for ideation and approved-stitch exception path.
+- Treat selected source-of-truth artifact parity as release gate for UX-heavy
+  tasks.
 
 ## Evidence Gate (Definition of Done Add-on)
 

@@ -4,6 +4,33 @@ Last updated: 2026-03-19
 
 ## Backlog
 
+- [ ] NEST-098 Operationalize Stitch source-of-truth exception workflow
+  - Status: BACKLOG
+  - Owner: Planning Agent
+  - Depends on: NEST-085, NEST-086
+  - Done when:
+    - task workflow explicitly supports Stitch-as-source exception path,
+    - required approval evidence and project snapshot reference are mandatory,
+    - implementation tasks cannot start without approved exception record.
+
+- [ ] NEST-099 Add UX task template fields for MCP evidence and artifact source
+  - Status: BACKLOG
+  - Owner: Documentation Agent
+  - Depends on: NEST-098
+  - Done when:
+    - task template includes source-of-truth type (`figma|approved_snapshot`),
+    - task template includes artifact reference and approval checkpoint fields,
+    - review checklist enforces UX evidence gate from MCP collaboration standard.
+
+- [ ] NEST-100 Validate existing UX-heavy tasks against unified Stitch baseline
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-098, NEST-099
+  - Done when:
+    - existing UX-heavy tasks are audited for artifact parity requirements,
+    - gaps are documented with remediation follow-ups,
+    - board reflects pass/fail results for audited tasks.
+
 - [x] NEST-015 Implement journal and life areas module
   - Status: DONE
   - Owner: Execution Agent
