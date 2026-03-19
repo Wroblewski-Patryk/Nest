@@ -892,6 +892,25 @@ Last updated: 2026-03-19
       feature tests in `apps/api/tests/Feature/OAuthProviderAuthApiTest.php`.
     - Documented implementation in `docs/oauth_b2c_auth_expansion.md`.
 
+- [x] NEST-073 Implement SSO (OIDC/SAML) for organization plans
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-071
+  - Done when: supported enterprise auth flows are production-ready.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added organization SSO provider and identity domain tables:
+      `organization_sso_providers`, `organization_sso_identities`.
+    - Added org-scoped SSO provider management API with RBAC gate
+      `org.sso.manage`.
+    - Added organization SSO exchange endpoint for OIDC id_token and SAML
+      signed assertion bridge token flows.
+    - Added tenant-safe identity linking, organization membership checks, JIT
+      auto-provision toggle, and domain allowlist enforcement.
+    - Added feature coverage in
+      `apps/api/tests/Feature/OrganizationSsoApiTest.php`.
+    - Documented implementation in `docs/organization_sso_oidc_saml.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

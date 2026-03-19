@@ -172,6 +172,20 @@ Current workflow implementation:
 - Reference:
   - `docs/oauth_b2c_auth_expansion.md`
 
+## Organization SSO Operations
+
+- Provider management endpoints (authenticated):
+  - `GET /api/v1/orgs/{organizationId}/sso/providers`
+  - `POST /api/v1/orgs/{organizationId}/sso/providers`
+  - `PATCH /api/v1/orgs/{organizationId}/sso/providers/{providerId}`
+- Login exchange endpoint (public):
+  - `POST /api/v1/auth/orgs/{organizationSlug}/sso/{providerSlug}/exchange`
+- SAML bridge requirement:
+  - configure `saml_assertion_signing_secret` per provider for signed assertion
+    bridge token verification.
+- Reference:
+  - `docs/organization_sso_oidc_saml.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

@@ -224,7 +224,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Done when: Google/Apple (or approved set) login works with tenant-safe
     account linking and security controls.
 
-- [ ] NEST-073 Implement SSO (OIDC/SAML) for organization plans
+- [x] NEST-073 Implement SSO (OIDC/SAML) for organization plans
   - Depends on: NEST-071
   - Done when: supported enterprise auth flows are production-ready.
 

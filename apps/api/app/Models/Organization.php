@@ -46,4 +46,12 @@ class Organization extends Model
     {
         return $this->hasMany(Workspace::class, 'organization_id');
     }
+
+    /**
+     * @return HasMany<OrganizationSsoProvider, $this>
+     */
+    public function ssoProviders(): HasMany
+    {
+        return $this->hasMany(OrganizationSsoProvider::class, 'organization_id');
+    }
 }

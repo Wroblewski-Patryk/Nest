@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\JournalEntryController;
 use App\Http\Controllers\Api\LifeAreaBalanceScoreController;
 use App\Http\Controllers\Api\LifeAreaController;
 use App\Http\Controllers\Api\MobilePushDeviceController;
+use App\Http\Controllers\Api\OrganizationSsoController;
 use App\Http\Controllers\Api\OrganizationWorkspaceController;
 use App\Http\Controllers\Api\RoutineController;
 use App\Http\Controllers\Api\TargetController;
@@ -35,6 +36,7 @@ Route::prefix('v1')->group(function (): void {
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::post('/auth/login', [AuthController::class, 'login']);
     Route::post('/auth/oauth/{provider}/exchange', [AuthController::class, 'oauthExchange']);
+    Route::post('/auth/orgs/{organizationSlug}/sso/{providerSlug}/exchange', [OrganizationSsoController::class, 'exchange']);
     Route::post('/billing/providers/stripe/webhook', [BillingWebhookController::class, 'stripe']);
 
     Route::middleware(['auth:sanctum', 'tenant.usage', 'entitlements'])->group(function (): void {
@@ -60,6 +62,9 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/orgs', [OrganizationWorkspaceController::class, 'createOrganization']);
         Route::post('/orgs/{organizationId}/members', [OrganizationWorkspaceController::class, 'addOrganizationMember']);
         Route::patch('/orgs/{organizationId}/members/{memberUserId}', [OrganizationWorkspaceController::class, 'updateOrganizationMemberRole']);
+        Route::get('/orgs/{organizationId}/sso/providers', [OrganizationSsoController::class, 'index']);
+        Route::post('/orgs/{organizationId}/sso/providers', [OrganizationSsoController::class, 'store']);
+        Route::patch('/orgs/{organizationId}/sso/providers/{providerId}', [OrganizationSsoController::class, 'update']);
         Route::get('/workspaces', [OrganizationWorkspaceController::class, 'listWorkspaces']);
         Route::post('/workspaces', [OrganizationWorkspaceController::class, 'createWorkspace']);
         Route::get('/collaboration/spaces', [CollaborationSpaceController::class, 'index']);

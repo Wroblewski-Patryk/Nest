@@ -222,7 +222,11 @@ Last updated: 2026-03-19
   allowlist (`google`, `apple`), id_token signature/claim verification,
   tenant-safe account linking safeguards, and feature coverage
   (`docs/oauth_b2c_auth_expansion.md`)
-- Current execution focus: SSO expansion (`NEST-073`)
+- `NEST-073` completed: organization SSO expansion delivered with
+  OIDC + SAML provider model, tenant-safe identity linking, org membership
+  enforcement, and enterprise exchange endpoint coverage
+  (`docs/organization_sso_oidc_saml.md`)
+- Current execution focus: organization compliance audit export (`NEST-074`)
 
 ## Auth, AI, Offline, Notifications
 
