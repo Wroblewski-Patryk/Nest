@@ -134,6 +134,28 @@ class IntegrationJournalSyncApiTest extends TestCase
         $this->drainIntegrationQueue();
     }
 
+    public function test_sync_processes_journal_entries_across_chunk_boundary(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        JournalEntry::factory()->count(101)->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->postJson('/api/v1/integrations/journal-sync', [
+            'provider' => 'obsidian',
+        ])->assertOk();
+
+        $response->assertJsonPath('data.processed', 101)
+            ->assertJsonPath('data.enqueued', 101)
+            ->assertJsonPath('data.skipped', 0);
+
+        $this->assertCount(101, $response->json('data.job_references', []));
+    }
+
     private function drainIntegrationQueue(): void
     {
         while ((int) DB::table('jobs')->count() > 0) {

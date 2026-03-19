@@ -278,6 +278,36 @@ class IntegrationListTaskSyncApiTest extends TestCase
         $this->drainIntegrationQueue();
     }
 
+    public function test_sync_processes_list_and_task_records_across_chunk_boundary(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $lists = TaskList::factory()->count(101)->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'is_archived' => false,
+        ]);
+
+        Task::factory()->count(101)->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'list_id' => $lists->first()->id,
+            'status' => 'todo',
+        ]);
+
+        $response = $this->postJson('/api/v1/integrations/list-task-sync', [
+            'provider' => 'trello',
+        ])->assertOk();
+
+        $response->assertJsonPath('data.processed', 202)
+            ->assertJsonPath('data.enqueued', 202)
+            ->assertJsonPath('data.skipped', 0);
+
+        $this->assertCount(202, $response->json('data.job_references', []));
+    }
+
     private function drainIntegrationQueue(): void
     {
         while ((int) DB::table('jobs')->count() > 0) {

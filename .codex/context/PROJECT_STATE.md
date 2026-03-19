@@ -111,6 +111,8 @@ Last updated: 2026-03-19
 - `NEST-088` completed: integration sync API endpoints now operate in
   enqueue-first async mode, returning job references while provider execution
   runs in queue workers
+- `NEST-089` completed: list/task, journal, and calendar sync candidate
+  traversal now uses bounded chunk processing to avoid full-table sync loads
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -259,8 +261,8 @@ Last updated: 2026-03-19
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute remediation wave `NEST-089` to `NEST-096`
-  (P0/P1 queue-first steps completed through `NEST-088`)
+- Current execution focus: execute remediation wave `NEST-090` to `NEST-096`
+  (P1 sync scaling steps completed through `NEST-089`)
 
 ## Auth, AI, Offline, Notifications
 

@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 
 class CalendarIntegrationSyncService
 {
+    private const CHUNK_SIZE = 100;
+
     /**
      * @return array{
      *   processed:int,
@@ -25,59 +27,67 @@ class CalendarIntegrationSyncService
     {
         $syncRequestId ??= (string) Str::ulid();
 
-        $events = CalendarEvent::query()
-            ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
-            ->orderBy('start_at')
-            ->get();
-
         $processed = 0;
         $enqueued = 0;
         $skipped = 0;
         $conflicts = 0;
         $jobReferences = [];
 
-        foreach ($events as $event) {
-            $processed++;
+        CalendarEvent::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('user_id', $user->id)
+            ->chunkById(self::CHUNK_SIZE, function ($events) use (
+                $user,
+                $provider,
+                $syncRequestId,
+                &$processed,
+                &$skipped,
+                &$conflicts,
+                &$enqueued,
+                &$jobReferences
+            ): void {
+                foreach ($events as $event) {
+                    $processed++;
 
-            $entityPayload = [
-                'title' => $event->title,
-                'description' => $event->description,
-                'start_at' => $event->start_at?->toIso8601String(),
-                'end_at' => $event->end_at?->toIso8601String(),
-                'timezone' => $event->timezone,
-                'all_day' => $event->all_day,
-                'linked_entity_type' => $event->linked_entity_type,
-                'linked_entity_id' => $event->linked_entity_id,
-            ];
+                    $entityPayload = [
+                        'title' => $event->title,
+                        'description' => $event->description,
+                        'start_at' => $event->start_at?->toIso8601String(),
+                        'end_at' => $event->end_at?->toIso8601String(),
+                        'timezone' => $event->timezone,
+                        'all_day' => $event->all_day,
+                        'linked_entity_type' => $event->linked_entity_type,
+                        'linked_entity_id' => $event->linked_entity_id,
+                    ];
 
-            $payload = $this->buildPayload(
-                user: $user,
-                provider: $provider,
-                entityId: $event->id,
-                syncRequestId: $syncRequestId,
-                entityData: $entityPayload,
-            );
+                    $payload = $this->buildPayload(
+                        user: $user,
+                        provider: $provider,
+                        entityId: $event->id,
+                        syncRequestId: $syncRequestId,
+                        entityData: $entityPayload,
+                    );
 
-            if ($this->isUnchangedMapping($payload)) {
-                $skipped++;
+                    if ($this->isUnchangedMapping($payload)) {
+                        $skipped++;
 
-                continue;
-            }
+                        continue;
+                    }
 
-            if (($payload['conflict_fields'] ?? []) !== []) {
-                $conflicts++;
-            }
+                    if (($payload['conflict_fields'] ?? []) !== []) {
+                        $conflicts++;
+                    }
 
-            $queueJobId = $this->enqueueSync($payload);
-            $enqueued++;
-            $jobReferences[] = [
-                'job_reference' => (string) $payload['job_reference'],
-                'queue_job_id' => $queueJobId,
-                'internal_entity_type' => 'calendar_event',
-                'internal_entity_id' => $event->id,
-            ];
-        }
+                    $queueJobId = $this->enqueueSync($payload);
+                    $enqueued++;
+                    $jobReferences[] = [
+                        'job_reference' => (string) $payload['job_reference'],
+                        'queue_job_id' => $queueJobId,
+                        'internal_entity_type' => 'calendar_event',
+                        'internal_entity_id' => $event->id,
+                    ];
+                }
+            });
 
         return [
             'processed' => $processed,

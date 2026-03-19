@@ -12,6 +12,8 @@ use Illuminate\Support\Str;
 
 class ListTaskIntegrationSyncService
 {
+    private const CHUNK_SIZE = 100;
+
     /**
      * @return array{
      *   processed:int,
@@ -25,87 +27,103 @@ class ListTaskIntegrationSyncService
     {
         $syncRequestId ??= (string) Str::ulid();
 
-        $lists = TaskList::query()
-            ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
-            ->where('is_archived', false)
-            ->get();
-
-        $tasks = Task::query()
-            ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
-            ->where('status', '!=', 'canceled')
-            ->get();
-
         $processed = 0;
         $enqueued = 0;
         $skipped = 0;
         $jobReferences = [];
 
-        foreach ($lists as $list) {
-            $processed++;
-            $payload = $this->buildPayload(
-                user: $user,
-                provider: $provider,
-                entityType: 'task_list',
-                entityId: $list->id,
-                syncRequestId: $syncRequestId,
-                entityData: [
-                    'name' => $list->name,
-                    'color' => $list->color,
-                    'position' => $list->position,
-                ]
-            );
+        TaskList::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('user_id', $user->id)
+            ->where('is_archived', false)
+            ->chunkById(self::CHUNK_SIZE, function ($lists) use (
+                $user,
+                $provider,
+                $syncRequestId,
+                &$processed,
+                &$skipped,
+                &$enqueued,
+                &$jobReferences
+            ): void {
+                foreach ($lists as $list) {
+                    $processed++;
+                    $payload = $this->buildPayload(
+                        user: $user,
+                        provider: $provider,
+                        entityType: 'task_list',
+                        entityId: $list->id,
+                        syncRequestId: $syncRequestId,
+                        entityData: [
+                            'name' => $list->name,
+                            'color' => $list->color,
+                            'position' => $list->position,
+                        ]
+                    );
 
-            if ($this->isUnchangedMapping($payload)) {
-                $skipped++;
+                    if ($this->isUnchangedMapping($payload)) {
+                        $skipped++;
 
-                continue;
-            }
+                        continue;
+                    }
 
-            $queueJobId = $this->enqueueSync($payload);
-            $enqueued++;
-            $jobReferences[] = [
-                'job_reference' => (string) $payload['job_reference'],
-                'queue_job_id' => $queueJobId,
-                'internal_entity_type' => 'task_list',
-                'internal_entity_id' => $list->id,
-            ];
-        }
+                    $queueJobId = $this->enqueueSync($payload);
+                    $enqueued++;
+                    $jobReferences[] = [
+                        'job_reference' => (string) $payload['job_reference'],
+                        'queue_job_id' => $queueJobId,
+                        'internal_entity_type' => 'task_list',
+                        'internal_entity_id' => $list->id,
+                    ];
+                }
+            });
 
-        foreach ($tasks as $task) {
-            $processed++;
-            $payload = $this->buildPayload(
-                user: $user,
-                provider: $provider,
-                entityType: 'task',
-                entityId: $task->id,
-                syncRequestId: $syncRequestId,
-                entityData: [
-                    'title' => $task->title,
-                    'description' => $task->description,
-                    'status' => $task->status,
-                    'priority' => $task->priority,
-                    'due_date' => optional($task->due_date)->toDateString(),
-                    'list_id' => $task->list_id,
-                ]
-            );
+        Task::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('user_id', $user->id)
+            ->where('status', '!=', 'canceled')
+            ->chunkById(self::CHUNK_SIZE, function ($tasks) use (
+                $user,
+                $provider,
+                $syncRequestId,
+                &$processed,
+                &$skipped,
+                &$enqueued,
+                &$jobReferences
+            ): void {
+                foreach ($tasks as $task) {
+                    $processed++;
+                    $payload = $this->buildPayload(
+                        user: $user,
+                        provider: $provider,
+                        entityType: 'task',
+                        entityId: $task->id,
+                        syncRequestId: $syncRequestId,
+                        entityData: [
+                            'title' => $task->title,
+                            'description' => $task->description,
+                            'status' => $task->status,
+                            'priority' => $task->priority,
+                            'due_date' => optional($task->due_date)->toDateString(),
+                            'list_id' => $task->list_id,
+                        ]
+                    );
 
-            if ($this->isUnchangedMapping($payload)) {
-                $skipped++;
+                    if ($this->isUnchangedMapping($payload)) {
+                        $skipped++;
 
-                continue;
-            }
+                        continue;
+                    }
 
-            $queueJobId = $this->enqueueSync($payload);
-            $enqueued++;
-            $jobReferences[] = [
-                'job_reference' => (string) $payload['job_reference'],
-                'queue_job_id' => $queueJobId,
-                'internal_entity_type' => 'task',
-                'internal_entity_id' => $task->id,
-            ];
-        }
+                    $queueJobId = $this->enqueueSync($payload);
+                    $enqueued++;
+                    $jobReferences[] = [
+                        'job_reference' => (string) $payload['job_reference'],
+                        'queue_job_id' => $queueJobId,
+                        'internal_entity_type' => 'task',
+                        'internal_entity_id' => $task->id,
+                    ];
+                }
+            });
 
         return [
             'processed' => $processed,

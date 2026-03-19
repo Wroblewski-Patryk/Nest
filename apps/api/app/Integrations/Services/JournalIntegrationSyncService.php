@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 
 class JournalIntegrationSyncService
 {
+    private const CHUNK_SIZE = 100;
+
     /**
      * @return array{
      *   processed:int,
@@ -24,52 +26,59 @@ class JournalIntegrationSyncService
     {
         $syncRequestId ??= (string) Str::ulid();
 
-        $entries = JournalEntry::query()
-            ->with('lifeAreas:id,name')
-            ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
-            ->orderByDesc('entry_date')
-            ->get();
-
         $processed = 0;
         $enqueued = 0;
         $skipped = 0;
         $jobReferences = [];
 
-        foreach ($entries as $entry) {
-            $processed++;
+        JournalEntry::query()
+            ->with('lifeAreas:id,name')
+            ->where('tenant_id', $user->tenant_id)
+            ->where('user_id', $user->id)
+            ->chunkById(self::CHUNK_SIZE, function ($entries) use (
+                $user,
+                $provider,
+                $syncRequestId,
+                &$processed,
+                &$skipped,
+                &$enqueued,
+                &$jobReferences
+            ): void {
+                foreach ($entries as $entry) {
+                    $processed++;
 
-            $entityPayload = [
-                'title' => $entry->title,
-                'body' => $entry->body,
-                'mood' => $entry->mood,
-                'entry_date' => $entry->entry_date?->toDateString(),
-                'life_areas' => $entry->lifeAreas->pluck('name')->values()->all(),
-            ];
+                    $entityPayload = [
+                        'title' => $entry->title,
+                        'body' => $entry->body,
+                        'mood' => $entry->mood,
+                        'entry_date' => $entry->entry_date?->toDateString(),
+                        'life_areas' => $entry->lifeAreas->pluck('name')->values()->all(),
+                    ];
 
-            $payload = $this->buildPayload(
-                user: $user,
-                provider: $provider,
-                entityId: $entry->id,
-                syncRequestId: $syncRequestId,
-                entityData: $entityPayload,
-            );
+                    $payload = $this->buildPayload(
+                        user: $user,
+                        provider: $provider,
+                        entityId: $entry->id,
+                        syncRequestId: $syncRequestId,
+                        entityData: $entityPayload,
+                    );
 
-            if ($this->isUnchangedMapping($payload)) {
-                $skipped++;
+                    if ($this->isUnchangedMapping($payload)) {
+                        $skipped++;
 
-                continue;
-            }
+                        continue;
+                    }
 
-            $queueJobId = $this->enqueueSync($payload);
-            $enqueued++;
-            $jobReferences[] = [
-                'job_reference' => (string) $payload['job_reference'],
-                'queue_job_id' => $queueJobId,
-                'internal_entity_type' => 'journal_entry',
-                'internal_entity_id' => $entry->id,
-            ];
-        }
+                    $queueJobId = $this->enqueueSync($payload);
+                    $enqueued++;
+                    $jobReferences[] = [
+                        'job_reference' => (string) $payload['job_reference'],
+                        'queue_job_id' => $queueJobId,
+                        'internal_entity_type' => 'journal_entry',
+                        'internal_entity_id' => $entry->id,
+                    ];
+                }
+            });
 
         return [
             'processed' => $processed,

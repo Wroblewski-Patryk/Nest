@@ -1151,14 +1151,23 @@ Last updated: 2026-03-19
       workers before asserting audit/mapping side effects.
     - Validation: `php artisan test --testsuite=Feature --env=testing` passed.
 
-- [ ] NEST-089 Implement chunked tenant sync processing (P1)
-  - Status: BACKLOG
+- [x] NEST-089 Implement chunked tenant sync processing (P1)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-088
   - Done when:
     - sync services avoid full-table `get()` fetches,
     - chunk/cursor processing is bounded and tested,
     - integration tests cover chunk boundary behavior.
+  - Done on: 2026-03-19
+  - Notes:
+    - Replaced full dataset sync loads with `chunkById` bounded processing in:
+      list/task, journal, and calendar sync services.
+    - Added chunk-boundary feature tests:
+      `IntegrationListTaskSyncApiTest`,
+      `IntegrationJournalSyncApiTest`,
+      `IntegrationCalendarSyncApiTest`.
+    - Validation: `php artisan test --testsuite=Feature --env=testing` passed.
 
 - [ ] NEST-090 Align runtime baseline with PostgreSQL/Redis docs (P1)
   - Status: BACKLOG

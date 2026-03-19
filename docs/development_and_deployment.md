@@ -69,7 +69,9 @@ Current workflow implementation:
   - endpoints return immediately in `mode=async` with `sync_request_id` and
     `job_references`,
   - provider sync execution runs in queue workers from
-    `database` connection queue `integrations`.
+    `database` connection queue `integrations`,
+  - list/task, journal, and calendar sync candidate selection is processed in
+    bounded chunks (no full-table `get()` loads).
 - Worker execution example:
   - `php artisan queue:work database --queue=integrations`
 
