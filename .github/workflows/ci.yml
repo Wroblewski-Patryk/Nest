@@ -77,6 +77,9 @@ jobs:
       - name: Run feature suite
         run: php artisan test --testsuite=Feature --env=testing
 
+      - name: Verify security controls
+        run: php artisan security:controls:verify --json --env=testing
+
       - name: Security audit (Composer)
         run: composer audit --no-interaction
 

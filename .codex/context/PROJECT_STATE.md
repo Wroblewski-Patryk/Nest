@@ -232,7 +232,11 @@ Last updated: 2026-03-19
 - `NEST-075` completed: advanced secrets rotation and credential revoke
   operations delivered with audited command workflows and scoped execution
   controls (`docs/secrets_rotation_and_revocation_ops.md`)
-- Current execution focus: security control verification suite (`NEST-076`)
+- `NEST-076` completed: recurring security control verification suite
+  delivered with command-based control checks, severity gating, CI baseline
+  integration, and staging-ready strict mode
+  (`docs/security_control_verification_suite.md`)
+- Current execution focus: performance and load test harness (`NEST-077`)
 
 ## Auth, AI, Offline, Notifications
 

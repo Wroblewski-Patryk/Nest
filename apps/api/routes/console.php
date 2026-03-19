@@ -4,6 +4,7 @@ use App\Jobs\DeleteTenantDataJob;
 use App\Notifications\Services\MobilePushReminderService;
 use App\Observability\IntegrationSyncSloService;
 use App\Security\Services\SecretRotationService;
+use App\Security\Services\SecurityControlVerificationService;
 use App\Tenancy\Services\TenantDataDeletionService;
 use App\Tenancy\Services\TenantDataRetentionService;
 use Illuminate\Foundation\Inspiring;
@@ -175,3 +176,36 @@ Artisan::command('secrets:credentials:revoke {--tenant=} {--provider=} {--user=}
 
     return self::SUCCESS;
 })->purpose('Revoke integration credentials by tenant/provider/user scope');
+
+Artisan::command('security:controls:verify {--json} {--strict}', function (): int {
+    $snapshot = app(SecurityControlVerificationService::class)->verify();
+    $severity = (string) ($snapshot['severity'] ?? 'ok');
+    $strict = (bool) $this->option('strict');
+
+    if ($this->option('json')) {
+        $this->line((string) json_encode($snapshot, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    } else {
+        $this->info("Security controls status: {$severity}");
+        $this->line('Total checks: '.$snapshot['checks_total']);
+        $this->line('Failed checks: '.$snapshot['checks_failed']);
+
+        /** @var array<int, array<string, mixed>> $failed */
+        $failed = (array) ($snapshot['failed_checks'] ?? []);
+        if ($failed !== []) {
+            $this->line('Failed control IDs: '.implode(', ', array_map(
+                static fn (array $check): string => (string) ($check['id'] ?? 'unknown'),
+                $failed
+            )));
+        }
+    }
+
+    if ($severity === 'critical') {
+        return self::FAILURE;
+    }
+
+    if ($strict && $severity === 'warning') {
+        return self::FAILURE;
+    }
+
+    return self::SUCCESS;
+})->purpose('Verify recurring security controls for CI and staging gates');

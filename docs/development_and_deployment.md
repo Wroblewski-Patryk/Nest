@@ -216,6 +216,17 @@ Current workflow implementation:
 - Reference:
   - `docs/secrets_rotation_and_revocation_ops.md`
 
+## Security Control Verification Operations
+
+- Verification command:
+  - `php artisan security:controls:verify`
+  - `php artisan security:controls:verify --json`
+  - `php artisan security:controls:verify --strict`
+- CI baseline:
+  - backend pipeline executes `security:controls:verify --json`.
+- Reference:
+  - `docs/security_control_verification_suite.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

@@ -236,7 +236,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-061
   - Done when: automated key rotation and credential revoke paths are tested.
 
-- [ ] NEST-076 Introduce security control verification suite
+- [x] NEST-076 Introduce security control verification suite
   - Depends on: NEST-071, NEST-072, NEST-073, NEST-075
   - Done when: recurring security control checks run in CI and staging.
 

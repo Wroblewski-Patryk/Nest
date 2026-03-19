@@ -950,6 +950,24 @@ Last updated: 2026-03-19
     - Documented operations in
       `docs/secrets_rotation_and_revocation_ops.md`.
 
+- [x] NEST-076 Introduce security control verification suite
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-071, NEST-072, NEST-073, NEST-075
+  - Done when: recurring security control checks run in CI and staging.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added security controls config baseline:
+      `apps/api/config/security_controls.php`.
+    - Added verification service and command:
+      `SecurityControlVerificationService`,
+      `php artisan security:controls:verify`.
+    - Implemented warning/critical severity evaluation with strict mode.
+    - Added CI backend step to execute security control verification command.
+    - Added feature coverage in
+      `apps/api/tests/Feature/SecurityControlVerificationCommandTest.php`.
+    - Documented suite in `docs/security_control_verification_suite.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent
