@@ -102,9 +102,9 @@ Last updated: 2026-03-19
 - `NEST-085` completed: UX/UI MCP collaboration standard added with
   Figma-first design-source policy, optional Stitch ideation role, and
   evidence-gated UX implementation/review workflow
-- `NEST-086` in progress: unified Stitch UX/UI approval baseline is being
-  prepared before implementation, with design-system and acceptance spec in
-  `docs/ux_ui_stitch_unified_spec_v1.md`
+- `NEST-086` completed: unified Stitch UX/UI approval baseline finalized in
+  Stitch with documented evidence and user approval before implementation
+  (`docs/ux_ui_stitch_unified_spec_v1.md`)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -250,7 +250,7 @@ Last updated: 2026-03-19
   (`docs/final_readiness_review_2026-03-19.md`)
 - `NEST-081` completed: full-product launch milestone declared with post-launch
   monitoring baseline (`docs/full_product_launch_milestone_2026-03-19.md`)
-- Current execution focus: UX/UI unified design baseline (`NEST-086`)
+- Current execution focus: full roadmap backlog completed through `NEST-086`
 
 ## Auth, AI, Offline, Notifications
 

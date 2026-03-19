@@ -1096,21 +1096,27 @@ Last updated: 2026-03-19
     - Linked UX/UI MCP standard from `docs/frontend_strategy.md`.
     - Updated `AGENTS.md` with mandatory UX/UI MCP contract for all agents.
 
-- [ ] NEST-086 Build unified Stitch UX/UI approval baseline before implementation
-  - Status: IN_PROGRESS
+- [x] NEST-086 Build unified Stitch UX/UI approval baseline before implementation
+  - Status: DONE
   - Owner: Documentation Agent
   - Depends on: NEST-085
   - Done when:
     - one coherent Stitch design system and full screen set are generated,
     - UX/UI spec and acceptance criteria are documented in `docs/`,
     - user explicitly approves Stitch baseline before any implementation starts.
+  - Done on: 2026-03-19
   - Notes:
     - Design-only phase; no web/mobile code changes allowed.
     - Baseline spec documented in `docs/ux_ui_stitch_unified_spec_v1.md`.
+    - Verified Stitch project baseline: `projects/14952238901582428681`.
+    - Added and verified missing baseline screens:
+      `1c4d38cf15b44887882973973a7c5c26` (Morning Briefing),
+      `f81dbf00a9b5489cb72377a2ad454ec0` (Weekly Report).
+    - User approval for baseline captured in thread on `2026-03-19`.
 
 ## In Progress
 
-- [ ] NEST-086 Build unified Stitch UX/UI approval baseline before implementation
+- [ ] (none)
 
 ## Blocked
 
