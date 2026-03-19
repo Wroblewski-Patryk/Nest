@@ -58,6 +58,7 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/orgs', [OrganizationWorkspaceController::class, 'listOrganizations']);
         Route::post('/orgs', [OrganizationWorkspaceController::class, 'createOrganization']);
         Route::post('/orgs/{organizationId}/members', [OrganizationWorkspaceController::class, 'addOrganizationMember']);
+        Route::patch('/orgs/{organizationId}/members/{memberUserId}', [OrganizationWorkspaceController::class, 'updateOrganizationMemberRole']);
         Route::get('/workspaces', [OrganizationWorkspaceController::class, 'listWorkspaces']);
         Route::post('/workspaces', [OrganizationWorkspaceController::class, 'createWorkspace']);
         Route::get('/collaboration/spaces', [CollaborationSpaceController::class, 'index']);

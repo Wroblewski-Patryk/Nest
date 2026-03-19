@@ -216,7 +216,9 @@ Last updated: 2026-03-19
 - `NEST-070` completed: organization/workspace domain model delivered with
   tenant-scoped memberships, migrations, and baseline org/workspace API flows
   (`docs/organization_workspace_domain_model.md`)
-- Current execution focus: org roles and permission matrix (`NEST-071`)
+- `NEST-071` completed: org RBAC matrix delivered with API-enforced owner/admin/member
+  policy checks and role update flow (`docs/organization_rbac_matrix.md`)
+- Current execution focus: OAuth provider expansion (`NEST-072`)
 
 ## Auth, AI, Offline, Notifications
 

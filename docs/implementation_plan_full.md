@@ -215,7 +215,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-061
   - Done when: org/workspace membership model is implemented with migrations.
 
-- [ ] NEST-071 Implement org roles and permission matrix (RBAC)
+- [x] NEST-071 Implement org roles and permission matrix (RBAC)
   - Depends on: NEST-070
   - Done when: role assignments and policy checks are enforced by API.
 

@@ -857,6 +857,23 @@ Last updated: 2026-03-16
     - Documented baseline in
       `docs/organization_workspace_domain_model.md`.
 
+- [x] NEST-071 Implement org roles and permission matrix (RBAC)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-070
+  - Done when: role assignments and policy checks are enforced by API.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added centralized org policy matrix service:
+      `OrganizationRbacService`.
+    - Enforced role checks for org member management and workspace creation.
+    - Added organization member role update endpoint:
+      `PATCH /api/v1/orgs/{organizationId}/members/{memberUserId}`.
+    - Added RBAC-focused feature coverage in
+      `apps/api/tests/Feature/OrganizationRbacApiTest.php`.
+    - Documented policy matrix in
+      `docs/organization_rbac_matrix.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

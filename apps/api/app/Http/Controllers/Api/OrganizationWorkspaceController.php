@@ -8,6 +8,7 @@ use App\Models\OrganizationMember;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Models\WorkspaceMember;
+use App\Organization\Services\OrganizationRbacService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,10 @@ use Illuminate\Support\Str;
 
 class OrganizationWorkspaceController extends Controller
 {
+    public function __construct(
+        private readonly OrganizationRbacService $rbac
+    ) {}
+
     public function listOrganizations(Request $request): JsonResponse
     {
         /** @var User $user */
@@ -79,8 +84,11 @@ class OrganizationWorkspaceController extends Controller
         $organization = Organization::query()
             ->where('tenant_id', $user->tenant_id)
             ->where('id', $organizationId)
-            ->where('owner_user_id', $user->id)
             ->firstOrFail();
+
+        if (! $this->rbac->can($user, $organization, 'org.members.create')) {
+            abort(403);
+        }
 
         $memberUser = User::query()
             ->where('tenant_id', $user->tenant_id)
@@ -99,6 +107,42 @@ class OrganizationWorkspaceController extends Controller
         );
 
         return response()->json(['data' => $member], 201);
+    }
+
+    public function updateOrganizationMemberRole(
+        Request $request,
+        string $organizationId,
+        string $memberUserId
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $request->user();
+        $payload = $request->validate([
+            'role' => ['required', 'in:admin,member'],
+            'status' => ['nullable', 'in:active,inactive'],
+        ]);
+
+        $organization = Organization::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('id', $organizationId)
+            ->firstOrFail();
+
+        if (! $this->rbac->can($user, $organization, 'org.members.update_role')) {
+            abort(403);
+        }
+
+        $member = OrganizationMember::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('organization_id', $organizationId)
+            ->where('user_id', $memberUserId)
+            ->firstOrFail();
+
+        $member->role = $payload['role'];
+        if (array_key_exists('status', $payload)) {
+            $member->status = $payload['status'];
+        }
+        $member->save();
+
+        return response()->json(['data' => $member->fresh()]);
     }
 
     public function listWorkspaces(Request $request): JsonResponse
@@ -132,13 +176,11 @@ class OrganizationWorkspaceController extends Controller
         $organization = Organization::query()
             ->where('tenant_id', $user->tenant_id)
             ->where('id', $payload['organization_id'])
-            ->where(function ($query) use ($user): void {
-                $query->where('owner_user_id', $user->id)
-                    ->orWhereHas('members', function ($members) use ($user): void {
-                        $members->where('user_id', $user->id)->whereIn('role', ['owner', 'admin'])->where('status', 'active');
-                    });
-            })
             ->firstOrFail();
+
+        if (! $this->rbac->can($user, $organization, 'workspace.create')) {
+            abort(403);
+        }
 
         $workspace = DB::transaction(function () use ($payload, $user, $organization): Workspace {
             $workspace = Workspace::query()->create([
