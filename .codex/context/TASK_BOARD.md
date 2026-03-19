@@ -59,8 +59,8 @@ Last updated: 2026-03-19
         evidence gates under current UX standard).
     - Follow-up remediation tasks added: `NEST-101`, `NEST-102`.
 
-- [ ] NEST-101 Backfill UX evidence records for legacy UX-heavy tasks
-  - Status: BACKLOG
+- [x] NEST-101 Backfill UX evidence records for legacy UX-heavy tasks
+  - Status: DONE
   - Owner: Documentation Agent
   - Depends on: NEST-100
   - Done when:
@@ -68,6 +68,14 @@ Last updated: 2026-03-19
       reference recorded,
     - approval checkpoint references are added where required,
     - task notes include required state/responsive/a11y evidence links.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added backfilled UX evidence registry in
+      `docs/legacy_ux_evidence_backfill_2026-03-19.md`.
+    - Recorded approved snapshot source, approval checkpoint, and evidence
+      references for `NEST-021`, `NEST-022`, `NEST-037`, `NEST-041`,
+      `NEST-042`, `NEST-050`, `NEST-058`, and `NEST-068`.
+    - Linked backfill evidence records from each legacy UX-heavy task note.
 
 - [ ] NEST-102 Re-verify legacy UX-heavy implementations against approved baseline
   - Status: BACKLOG
@@ -171,6 +179,8 @@ Last updated: 2026-03-19
       goals/targets, journal/life areas, and calendar.
     - Verified frontend quality gates: `pnpm lint` and `pnpm build` pass with
       static routes generated for all MVP module pages.
+    - UX evidence backfill:
+      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-021`.
 
 - [x] NEST-022 Deliver mobile MVP screens
   - Status: DONE
@@ -184,6 +194,8 @@ Last updated: 2026-03-19
       goals/targets, journal/life areas, and calendar.
     - Verified mobile web export build with
       `pnpm exec expo export --platform web`.
+    - UX evidence backfill:
+      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-022`.
 
 - [x] NEST-023 Align shared UX states and telemetry naming
   - Status: DONE
@@ -397,6 +409,8 @@ Last updated: 2026-03-19
       `POST /api/v1/integrations/conflicts/{conflictId}/resolve`.
     - Delivered web/mobile UI workflows on calendar screens to review open
       conflicts and execute `accept` or `override` actions.
+    - UX evidence backfill:
+      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-037`.
 
 - [x] NEST-038 Add deterministic conflict policy matrix by field/provider
   - Status: DONE
@@ -458,6 +472,8 @@ Last updated: 2026-03-19
     - Added web and mobile calendar workflows to list providers and execute
       connect/reconnect/revoke actions, plus API/client contract updates and
       feature tests.
+    - UX evidence backfill:
+      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-041`.
 
 - [x] NEST-042 Add provider permission scope review screens
   - Status: DONE
@@ -472,6 +488,8 @@ Last updated: 2026-03-19
       warning status for extra or missing scopes.
     - Added shared visual status treatment for scope review results
       (`scope-ok`/`scope-warn`) and validated web/mobile quality checks.
+    - UX evidence backfill:
+      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-042`.
 
 - [x] NEST-043 Add integration regression suite
   - Status: DONE
@@ -597,6 +615,8 @@ Last updated: 2026-03-19
       shared telemetry naming (`screen.insights.view`).
     - Extended shared API client/types to include insights endpoints and
       documented UI baseline in `docs/insights_ui_baseline.md`.
+    - UX evidence backfill:
+      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-050`.
 
 - [x] NEST-051 Expand AI tools for weekly planning
   - Status: DONE
@@ -712,6 +732,8 @@ Last updated: 2026-03-19
       and recent run visibility.
     - Extended shared/web/mobile API clients for automation endpoints and
       documented UI baseline in `docs/automation_builder_ui_web.md`.
+    - UX evidence backfill:
+      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-058`.
 
 - [x] NEST-059 Deliver automation execution history and debugging view
   - Status: DONE
@@ -895,6 +917,8 @@ Last updated: 2026-03-19
       `apps/mobile/app/(tabs)/billing.tsx`.
     - Added billing module navigation/snapshot updates for web and mobile.
     - Documented UI baseline in `docs/billing_ui_management.md`.
+    - UX evidence backfill:
+      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-068`.
 
 - [x] NEST-069 Implement entitlement enforcement across API/tools
   - Status: DONE

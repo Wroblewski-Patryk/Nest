@@ -136,6 +136,9 @@ Last updated: 2026-03-19
 - `NEST-100` completed: legacy UX-heavy tasks audited against unified Stitch
   baseline evidence requirements (`PASS: 1`, `FAIL: 8`) with remediation
   follow-up tasks created
+- `NEST-101` completed: legacy UX-heavy tasks now have backfilled UX evidence
+  records with approved snapshot source references, approval checkpoint linkage,
+  and state/responsive/a11y evidence pointers
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -284,7 +287,7 @@ Last updated: 2026-03-19
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute UX remediation follow-ups `NEST-101` and `NEST-102`
+- Current execution focus: execute UX remediation follow-up `NEST-102`
 
 ## Auth, AI, Offline, Notifications
 
