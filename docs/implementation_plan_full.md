@@ -259,7 +259,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Done when: launch checklist is approved by product, engineering, and
     operations.
 
-- [ ] NEST-081 Full-product launch milestone
+- [x] NEST-081 Full-product launch milestone
   - Depends on: NEST-080
   - Done when: full product scope is released and monitored in production.
 

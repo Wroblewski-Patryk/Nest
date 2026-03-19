@@ -1030,6 +1030,17 @@ Last updated: 2026-03-19
     - Product, engineering, and operations approvals recorded in readiness
       review packet.
 
+- [x] NEST-081 Full-product launch milestone
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-080
+  - Done when: full product scope is released and monitored in production.
+  - Done on: 2026-03-19
+  - Notes:
+    - Launch milestone recorded in
+      `docs/full_product_launch_milestone_2026-03-19.md`.
+    - Post-launch monitoring actions captured for immediate follow-up cycle.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

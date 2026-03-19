@@ -248,7 +248,9 @@ Last updated: 2026-03-19
 - `NEST-080` completed: final readiness review approved with product,
   engineering, and operations gates accepted
   (`docs/final_readiness_review_2026-03-19.md`)
-- Current execution focus: full-product launch milestone (`NEST-081`)
+- `NEST-081` completed: full-product launch milestone declared with post-launch
+  monitoring baseline (`docs/full_product_launch_milestone_2026-03-19.md`)
+- Current execution focus: UX/UI unified design baseline (`NEST-086`)
 
 ## Auth, AI, Offline, Notifications
 

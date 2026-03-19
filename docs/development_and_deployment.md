@@ -261,6 +261,8 @@ Current workflow implementation:
 
 - Final readiness approval:
   - `docs/final_readiness_review_2026-03-19.md`
+- Full-product launch declaration:
+  - `docs/full_product_launch_milestone_2026-03-19.md`
 
 ## Security Baseline
 
