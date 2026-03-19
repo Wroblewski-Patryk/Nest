@@ -38,14 +38,46 @@ Last updated: 2026-03-19
     - Updated `docs/ux_ui_mcp_collaboration.md` to require usage of the
       template UX evidence sections by Planning Agent.
 
-- [ ] NEST-100 Validate existing UX-heavy tasks against unified Stitch baseline
-  - Status: BACKLOG
+- [x] NEST-100 Validate existing UX-heavy tasks against unified Stitch baseline
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-098, NEST-099
   - Done when:
     - existing UX-heavy tasks are audited for artifact parity requirements,
     - gaps are documented with remediation follow-ups,
     - board reflects pass/fail results for audited tasks.
+  - Done on: 2026-03-19
+  - Notes:
+    - Audit delivered in
+      `docs/ux_heavy_task_artifact_parity_audit_2026-03-19.md`.
+    - Audited tasks: 9 (`PASS: 1`, `FAIL: 8`).
+    - PASS:
+      - `NEST-086` (approved Stitch baseline evidence complete).
+    - FAIL:
+      - `NEST-021`, `NEST-022`, `NEST-037`, `NEST-041`, `NEST-042`,
+        `NEST-050`, `NEST-058`, `NEST-068` (missing full artifact parity
+        evidence gates under current UX standard).
+    - Follow-up remediation tasks added: `NEST-101`, `NEST-102`.
+
+- [ ] NEST-101 Backfill UX evidence records for legacy UX-heavy tasks
+  - Status: BACKLOG
+  - Owner: Documentation Agent
+  - Depends on: NEST-100
+  - Done when:
+    - each failed legacy UX-heavy task has explicit source-of-truth artifact
+      reference recorded,
+    - approval checkpoint references are added where required,
+    - task notes include required state/responsive/a11y evidence links.
+
+- [ ] NEST-102 Re-verify legacy UX-heavy implementations against approved baseline
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-101
+  - Done when:
+    - remediated legacy UX-heavy tasks are re-reviewed against approved Stitch
+      baseline artifact(s),
+    - pass/fail re-check results are recorded on the board,
+    - unresolved gaps are converted into explicit execution tasks.
 
 - [x] NEST-015 Implement journal and life areas module
   - Status: DONE

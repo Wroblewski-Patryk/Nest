@@ -133,6 +133,9 @@ Last updated: 2026-03-19
   blocking rules
 - `NEST-099` completed: UX task template now requires MCP source/artifact
   evidence fields and review evidence-gate checklist
+- `NEST-100` completed: legacy UX-heavy tasks audited against unified Stitch
+  baseline evidence requirements (`PASS: 1`, `FAIL: 8`) with remediation
+  follow-up tasks created
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -281,7 +284,7 @@ Last updated: 2026-03-19
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute UX governance task `NEST-100`
+- Current execution focus: execute UX remediation follow-ups `NEST-101` and `NEST-102`
 
 ## Auth, AI, Offline, Notifications
 
