@@ -839,6 +839,24 @@ Last updated: 2026-03-16
     - Documented enforcement baseline in
       `docs/entitlement_enforcement_api_tools.md`.
 
+- [x] NEST-070 Add organization/workspace domain model
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-061
+  - Done when: org/workspace membership model is implemented with migrations.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added organization/workspace migrations:
+      `organizations`, `organization_members`, `workspaces`,
+      `workspace_members`.
+    - Added domain models and API baseline controller for org/workspace
+      create/list/member flows.
+    - Added tenant-scoped organization/workspace endpoints under `/api/v1`.
+    - Added feature coverage in
+      `apps/api/tests/Feature/OrganizationWorkspaceDomainApiTest.php`.
+    - Documented baseline in
+      `docs/organization_workspace_domain_model.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

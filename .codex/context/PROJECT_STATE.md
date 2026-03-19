@@ -213,7 +213,10 @@ Last updated: 2026-03-19
 - `NEST-069` completed: entitlement enforcement delivered for API/tooling
   feature gates and plan limits with structured denial payloads
   (`docs/entitlement_enforcement_api_tools.md`)
-- Current execution focus: organization/workspace domain model (`NEST-070`)
+- `NEST-070` completed: organization/workspace domain model delivered with
+  tenant-scoped memberships, migrations, and baseline org/workspace API flows
+  (`docs/organization_workspace_domain_model.md`)
+- Current execution focus: org roles and permission matrix (`NEST-071`)
 
 ## Auth, AI, Offline, Notifications
 

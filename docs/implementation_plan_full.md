@@ -211,7 +211,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
 
 ### Organization and advanced security controls
 
-- [ ] NEST-070 Add organization/workspace domain model
+- [x] NEST-070 Add organization/workspace domain model
   - Depends on: NEST-061
   - Done when: org/workspace membership model is implemented with migrations.
 

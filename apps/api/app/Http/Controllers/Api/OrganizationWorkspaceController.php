@@ -1,0 +1,172 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Organization;
+use App\Models\OrganizationMember;
+use App\Models\User;
+use App\Models\Workspace;
+use App\Models\WorkspaceMember;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
+class OrganizationWorkspaceController extends Controller
+{
+    public function listOrganizations(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $organizations = Organization::query()
+            ->with('members')
+            ->where('tenant_id', $user->tenant_id)
+            ->where(function ($query) use ($user): void {
+                $query->where('owner_user_id', $user->id)
+                    ->orWhereHas('members', function ($members) use ($user): void {
+                        $members->where('user_id', $user->id)->where('status', 'active');
+                    });
+            })
+            ->orderByDesc('created_at')
+            ->get();
+
+        return response()->json(['data' => $organizations]);
+    }
+
+    public function createOrganization(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $payload = $request->validate([
+            'name' => ['required', 'string', 'max:160'],
+            'slug' => ['nullable', 'string', 'max:190'],
+        ]);
+
+        $organization = DB::transaction(function () use ($payload, $user): Organization {
+            $organization = Organization::query()->create([
+                'tenant_id' => $user->tenant_id,
+                'owner_user_id' => $user->id,
+                'name' => $payload['name'],
+                'slug' => $payload['slug'] ?? Str::slug((string) $payload['name']).'-'.Str::lower(Str::random(4)),
+                'status' => 'active',
+            ]);
+
+            OrganizationMember::query()->create([
+                'tenant_id' => $user->tenant_id,
+                'organization_id' => $organization->id,
+                'user_id' => $user->id,
+                'role' => 'owner',
+                'status' => 'active',
+            ]);
+
+            return $organization;
+        });
+
+        return response()->json(['data' => $organization], 201);
+    }
+
+    public function addOrganizationMember(Request $request, string $organizationId): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $payload = $request->validate([
+            'user_id' => ['required', 'uuid'],
+            'role' => ['nullable', 'in:admin,member'],
+        ]);
+
+        $organization = Organization::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('id', $organizationId)
+            ->where('owner_user_id', $user->id)
+            ->firstOrFail();
+
+        $memberUser = User::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->findOrFail($payload['user_id']);
+
+        $member = OrganizationMember::query()->updateOrCreate(
+            [
+                'tenant_id' => $user->tenant_id,
+                'organization_id' => $organization->id,
+                'user_id' => $memberUser->id,
+            ],
+            [
+                'role' => $payload['role'] ?? 'member',
+                'status' => 'active',
+            ]
+        );
+
+        return response()->json(['data' => $member], 201);
+    }
+
+    public function listWorkspaces(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $workspaces = Workspace::query()
+            ->with('members')
+            ->where('tenant_id', $user->tenant_id)
+            ->whereHas('members', function ($query) use ($user): void {
+                $query->where('user_id', $user->id)->where('status', 'active');
+            })
+            ->orderByDesc('created_at')
+            ->get();
+
+        return response()->json(['data' => $workspaces]);
+    }
+
+    public function createWorkspace(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $payload = $request->validate([
+            'organization_id' => ['required', 'uuid'],
+            'name' => ['required', 'string', 'max:160'],
+            'slug' => ['nullable', 'string', 'max:190'],
+            'is_default' => ['nullable', 'boolean'],
+        ]);
+
+        $organization = Organization::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('id', $payload['organization_id'])
+            ->where(function ($query) use ($user): void {
+                $query->where('owner_user_id', $user->id)
+                    ->orWhereHas('members', function ($members) use ($user): void {
+                        $members->where('user_id', $user->id)->whereIn('role', ['owner', 'admin'])->where('status', 'active');
+                    });
+            })
+            ->firstOrFail();
+
+        $workspace = DB::transaction(function () use ($payload, $user, $organization): Workspace {
+            $workspace = Workspace::query()->create([
+                'tenant_id' => $user->tenant_id,
+                'organization_id' => $organization->id,
+                'name' => $payload['name'],
+                'slug' => $payload['slug'] ?? Str::slug((string) $payload['name']).'-'.Str::lower(Str::random(4)),
+                'is_default' => (bool) ($payload['is_default'] ?? false),
+            ]);
+
+            $members = OrganizationMember::query()
+                ->where('organization_id', $organization->id)
+                ->where('status', 'active')
+                ->get();
+
+            foreach ($members as $member) {
+                WorkspaceMember::query()->create([
+                    'tenant_id' => $user->tenant_id,
+                    'workspace_id' => $workspace->id,
+                    'user_id' => $member->user_id,
+                    'role' => $member->role === 'owner' ? 'admin' : $member->role,
+                    'status' => 'active',
+                ]);
+            }
+
+            return $workspace;
+        });
+
+        return response()->json(['data' => $workspace], 201);
+    }
+}
