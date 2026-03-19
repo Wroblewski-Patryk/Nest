@@ -117,6 +117,8 @@ Last updated: 2026-03-19
   PostgreSQL + Redis baseline across env/config/docs
 - `NEST-091` completed: OpenAPI coverage expanded for auth/integrations/platform
   route groups and CI now lints all maintained OpenAPI contracts
+- `NEST-092` completed: web and mobile now instantiate only shared runtime API
+  client from `@nest/shared-types` with duplicated local client logic removed
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -265,8 +267,8 @@ Last updated: 2026-03-19
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute remediation wave `NEST-092` to `NEST-096`
-  (OpenAPI coverage and CI enforcement completed through `NEST-091`)
+- Current execution focus: execute remediation wave `NEST-093` to `NEST-096`
+  (shared runtime API client convergence completed through `NEST-092`)
 
 ## Auth, AI, Offline, Notifications
 

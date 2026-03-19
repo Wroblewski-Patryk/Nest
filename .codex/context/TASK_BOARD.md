@@ -1202,13 +1202,21 @@ Last updated: 2026-03-19
     - Updated CI OpenAPI validation to lint all maintained
       `docs/openapi_*.yaml` contracts (not only a single file).
 
-- [ ] NEST-092 Converge web/mobile on shared runtime API client (P2)
-  - Status: BACKLOG
+- [x] NEST-092 Converge web/mobile on shared runtime API client (P2)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-091
   - Done when:
     - duplicated app-local request client logic is removed,
     - both clients use shared runtime client implementation only.
+  - Done on: 2026-03-19
+  - Notes:
+    - Removed duplicated `createClient` runtime implementations from:
+      `apps/web/src/lib/api-client.ts` and
+      `apps/mobile/constants/apiClient.ts`.
+    - Both apps now instantiate shared runtime client directly via
+      `createNestApiClient` from `@nest/shared-types`.
+    - Validation: `pnpm test:unit` passed in both `apps/web` and `apps/mobile`.
 
 - [ ] NEST-093 Normalize pagination meta contract shape (P2)
   - Status: BACKLOG
