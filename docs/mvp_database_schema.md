@@ -1,6 +1,6 @@
 # MVP Database Schema (NEST-009)
 
-Last updated: 2026-03-15
+Last updated: 2026-03-19
 
 ## Purpose
 
@@ -52,6 +52,16 @@ baseline for implementation.
   - tenant + goal status
   - tenant + calendar start window
   - tenant + sync provider/external id uniqueness
+
+## Soft-Delete Uniqueness Policy
+
+- Canonical policy: recreate-after-delete is allowed for user-facing naming
+  domains.
+- For soft-deleted entities with tenant-scoped name uniqueness, unique indexes
+  include `deleted_at` to reserve uniqueness only across active rows.
+- Current coverage:
+  - `life_areas`: unique key `(tenant_id, name, deleted_at)`
+  - `task_lists`: unique key `(tenant_id, user_id, name, deleted_at)`
 
 ## Verification
 

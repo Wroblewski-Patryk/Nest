@@ -47,7 +47,9 @@ class LifeAreaController extends Controller
                 'required',
                 'string',
                 'max:120',
-                Rule::unique('life_areas', 'name')->where('tenant_id', $user->tenant_id),
+                Rule::unique('life_areas', 'name')
+                    ->where('tenant_id', $user->tenant_id)
+                    ->whereNull('deleted_at'),
             ],
             'color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'weight' => ['nullable', 'integer', 'min:0', 'max:100'],
@@ -90,6 +92,7 @@ class LifeAreaController extends Controller
                 'max:120',
                 Rule::unique('life_areas', 'name')
                     ->where('tenant_id', $user->tenant_id)
+                    ->whereNull('deleted_at')
                     ->ignore($lifeAreaId),
             ],
             'color' => ['sometimes', 'regex:/^#[0-9A-Fa-f]{6}$/'],

@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TaskListController extends Controller
 {
@@ -52,7 +53,15 @@ class TaskListController extends Controller
         $user = $request->user();
 
         $payload = $request->validate([
-            'name' => ['required', 'string', 'max:120'],
+            'name' => [
+                'required',
+                'string',
+                'max:120',
+                Rule::unique('task_lists', 'name')
+                    ->where('tenant_id', $user->tenant_id)
+                    ->where('user_id', $user->id)
+                    ->whereNull('deleted_at'),
+            ],
             'color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'position' => ['nullable', 'integer', 'min:0'],
         ]);
@@ -100,7 +109,16 @@ class TaskListController extends Controller
         $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $payload = $request->validate([
-            'name' => ['sometimes', 'string', 'max:120'],
+            'name' => [
+                'sometimes',
+                'string',
+                'max:120',
+                Rule::unique('task_lists', 'name')
+                    ->where('tenant_id', $user->tenant_id)
+                    ->where('user_id', $user->id)
+                    ->whereNull('deleted_at')
+                    ->ignore($listId),
+            ],
             'color' => ['sometimes', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'position' => ['sometimes', 'integer', 'min:0'],
             'is_archived' => ['sometimes', 'boolean'],

@@ -88,6 +88,34 @@ class JournalAndLifeAreasApiTest extends TestCase
         $this->assertSoftDeleted('journal_entries', ['id' => $entryId]);
     }
 
+    public function test_user_can_recreate_life_area_name_after_soft_delete(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $first = $this->postJson('/api/v1/life-areas', [
+            'name' => 'Health',
+            'color' => '#22C55E',
+            'weight' => 35,
+        ])->assertCreated();
+
+        $firstId = $first->json('data.id');
+
+        $this->deleteJson("/api/v1/life-areas/{$firstId}")->assertNoContent();
+        $this->assertSoftDeleted('life_areas', ['id' => $firstId]);
+
+        $second = $this->postJson('/api/v1/life-areas', [
+            'name' => 'Health',
+            'color' => '#16A34A',
+            'weight' => 40,
+        ])->assertCreated();
+
+        $secondId = $second->json('data.id');
+
+        $this->assertNotSame($firstId, $secondId);
+    }
+
     public function test_life_areas_and_journal_entries_are_tenant_scoped(): void
     {
         $tenantA = Tenant::factory()->create();

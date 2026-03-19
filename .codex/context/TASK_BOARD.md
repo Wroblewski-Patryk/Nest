@@ -1234,13 +1234,25 @@ Last updated: 2026-03-19
     - Documented canonical pagination naming policy in `docs/api_contracts.md`.
     - Validation: web and mobile TypeScript checks passed.
 
-- [ ] NEST-094 Define and implement soft-delete uniqueness policy (P2)
-  - Status: BACKLOG
+- [x] NEST-094 Define and implement soft-delete uniqueness policy (P2)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-083
   - Done when:
     - recreate-after-delete behavior is deterministic and documented,
     - schema/index + tests reflect the selected policy.
+  - Done on: 2026-03-19
+  - Notes:
+    - Defined canonical policy: recreate-after-delete is allowed for
+      user-facing name domains.
+    - Added migration
+      `2026_03_19_200000_update_soft_delete_uniqueness_for_lists_and_life_areas.php`
+      to include `deleted_at` in unique keys for `life_areas` and `task_lists`.
+    - Updated validation rules in `TaskListController` and
+      `LifeAreaController` to enforce uniqueness on active rows only.
+    - Added recreate-after-soft-delete feature regressions in
+      `TasksAndListsApiTest` and `JournalAndLifeAreasApiTest`.
+    - Documented policy in `docs/mvp_database_schema.md`.
 
 - [ ] NEST-095 Consolidate policy-layer authorization (P2)
   - Status: BACKLOG

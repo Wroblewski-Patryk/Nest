@@ -109,6 +109,32 @@ class TasksAndListsApiTest extends TestCase
         $this->assertSoftDeleted('tasks', ['id' => $taskId]);
     }
 
+    public function test_user_can_recreate_list_name_after_soft_delete(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $first = $this->postJson('/api/v1/lists', [
+            'name' => 'Deep Work',
+            'color' => '#10B981',
+        ])->assertCreated();
+
+        $firstId = $first->json('data.id');
+
+        $this->deleteJson("/api/v1/lists/{$firstId}")->assertNoContent();
+        $this->assertSoftDeleted('task_lists', ['id' => $firstId]);
+
+        $second = $this->postJson('/api/v1/lists', [
+            'name' => 'Deep Work',
+            'color' => '#3B82F6',
+        ])->assertCreated();
+
+        $secondId = $second->json('data.id');
+
+        $this->assertNotSame($firstId, $secondId);
+    }
+
     public function test_user_cannot_access_other_tenant_lists_or_tasks(): void
     {
         $tenantA = Tenant::factory()->create();
