@@ -37,7 +37,11 @@ export interface GoalSummary {
 
 export interface ApiCollectionMeta {
   page: number;
-  perPage: number;
+  per_page: number;
+  /**
+   * @deprecated Use `per_page`. This alias remains optional for transitional compatibility.
+   */
+  perPage?: number;
   total: number;
 }
 

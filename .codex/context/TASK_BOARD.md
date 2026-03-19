@@ -1218,13 +1218,21 @@ Last updated: 2026-03-19
       `createNestApiClient` from `@nest/shared-types`.
     - Validation: `pnpm test:unit` passed in both `apps/web` and `apps/mobile`.
 
-- [ ] NEST-093 Normalize pagination meta contract shape (P2)
-  - Status: BACKLOG
+- [x] NEST-093 Normalize pagination meta contract shape (P2)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-091
   - Done when:
     - `perPage` vs `per_page` mismatch is resolved with documented policy,
     - contract + implementation + tests are aligned.
+  - Done on: 2026-03-19
+  - Notes:
+    - Canonicalized shared pagination meta contract to `meta.per_page` in
+      `packages/shared-types/src/index.d.ts`.
+    - Kept optional `meta.perPage` as deprecated transitional alias for
+      compatibility.
+    - Documented canonical pagination naming policy in `docs/api_contracts.md`.
+    - Validation: web and mobile TypeScript checks passed.
 
 - [ ] NEST-094 Define and implement soft-delete uniqueness policy (P2)
   - Status: BACKLOG

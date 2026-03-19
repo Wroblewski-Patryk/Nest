@@ -119,6 +119,8 @@ Last updated: 2026-03-19
   route groups and CI now lints all maintained OpenAPI contracts
 - `NEST-092` completed: web and mobile now instantiate only shared runtime API
   client from `@nest/shared-types` with duplicated local client logic removed
+- `NEST-093` completed: shared pagination contract now uses canonical
+  `meta.per_page` with an optional deprecated `meta.perPage` compatibility alias
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -267,8 +269,8 @@ Last updated: 2026-03-19
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute remediation wave `NEST-093` to `NEST-096`
-  (shared runtime API client convergence completed through `NEST-092`)
+- Current execution focus: execute remediation wave `NEST-094` to `NEST-096`
+  (pagination contract normalization completed through `NEST-093`)
 
 ## Auth, AI, Offline, Notifications
 

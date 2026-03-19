@@ -23,6 +23,11 @@ for backend and client integration.
 ## Notes
 
 - Contract format: OpenAPI 3.1.
+- Pagination meta policy:
+  - canonical response shape is snake_case: `meta.page`, `meta.per_page`,
+    `meta.total`
+  - optional `meta.perPage` alias is transitional client-side compatibility only
+    and is not part of canonical server response
 - Draft coverage:
   - `openapi_tasks_lists_v1.yaml`: tasks and lists
   - `openapi_core_modules_v1.yaml`: habits, routines, goals, targets, journal,
