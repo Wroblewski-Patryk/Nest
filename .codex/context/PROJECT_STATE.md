@@ -115,6 +115,8 @@ Last updated: 2026-03-19
   traversal now uses bounded chunk processing to avoid full-table sync loads
 - `NEST-090` completed: backend runtime defaults and setup guidance aligned to
   PostgreSQL + Redis baseline across env/config/docs
+- `NEST-091` completed: OpenAPI coverage expanded for auth/integrations/platform
+  route groups and CI now lints all maintained OpenAPI contracts
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -263,8 +265,8 @@ Last updated: 2026-03-19
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute remediation wave `NEST-091` to `NEST-096`
-  (runtime baseline alignment completed through `NEST-090`)
+- Current execution focus: execute remediation wave `NEST-092` to `NEST-096`
+  (OpenAPI coverage and CI enforcement completed through `NEST-091`)
 
 ## Auth, AI, Offline, Notifications
 

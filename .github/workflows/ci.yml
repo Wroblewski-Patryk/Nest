@@ -28,8 +28,12 @@ jobs:
         with:
           version: 10
 
-      - name: Lint OpenAPI contract
-        run: pnpm --package=@redocly/cli dlx redocly lint docs/openapi_tasks_lists_v1.yaml
+      - name: Lint OpenAPI contracts
+        run: |
+          for file in docs/openapi_*.yaml; do
+            echo "Linting ${file}"
+            pnpm --package=@redocly/cli dlx redocly lint "${file}"
+          done
 
   backend:
     name: Backend (Laravel)

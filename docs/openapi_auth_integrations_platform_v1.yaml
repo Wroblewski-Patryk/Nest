@@ -1,0 +1,1061 @@
+openapi: 3.1.0
+info:
+  title: Nest API - Auth, Integrations and Platform Contract
+  version: 1.0.0-draft
+  summary: Public API contract for auth, integrations, and cross-module platform endpoints.
+  description: >
+    OpenAPI draft introduced in NEST-091 to ensure all active public route groups
+    are represented by maintained contracts.
+  license:
+    name: Proprietary
+    url: https://nest.local/license
+servers:
+  - url: /api
+    description: Relative API base path
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+  - name: Billing
+  - name: Analytics
+  - name: AI
+  - name: Insights
+  - name: Organizations
+  - name: Collaboration
+  - name: Integrations
+  - name: Notifications
+paths:
+  /v1/auth/register:
+    post:
+      tags: [Auth]
+      summary: Register account
+      operationId: authRegister
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login account
+      operationId: authLogin
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout current token
+      operationId: authLogout
+      responses:
+        '204':
+          description: Logged out
+
+  /v1/auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current user profile
+      operationId: authMe
+      responses:
+        '200':
+          description: Authenticated user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/auth/settings:
+    patch:
+      tags: [Auth]
+      summary: Update current user settings
+      operationId: authSettingsUpdate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Updated profile/settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/auth/oauth/{provider}/exchange:
+    post:
+      tags: [Auth]
+      summary: Exchange OAuth identity for local auth token
+      operationId: oauthExchange
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Provider'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Authenticated via OAuth
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/auth/orgs/{organizationSlug}/sso/{providerSlug}/exchange:
+    post:
+      tags: [Auth, Organizations]
+      summary: Exchange SSO assertion/token for local auth token
+      operationId: organizationSsoExchange
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/OrganizationSlug'
+        - $ref: '#/components/parameters/ProviderSlug'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Authenticated via organization SSO
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/billing/providers/stripe/webhook:
+    post:
+      tags: [Billing]
+      summary: Stripe webhook receiver
+      operationId: stripeWebhook
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Event accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  /v1/analytics/events:
+    post:
+      tags: [Analytics]
+      summary: Ingest analytics events batch
+      operationId: ingestAnalyticsEvents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [events]
+              properties:
+                events:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    additionalProperties: true
+      responses:
+        '202':
+          description: Batch accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/ai/weekly-plan/propose:
+    post:
+      tags: [AI]
+      summary: Propose AI weekly plan
+      operationId: proposeWeeklyPlan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Weekly plan response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/ai/feedback:
+    post:
+      tags: [AI]
+      summary: Submit AI recommendation feedback
+      operationId: submitAiFeedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '201':
+          description: Feedback accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/insights/life-area-balance:
+    get:
+      tags: [Insights]
+      summary: Get life area balance summary
+      operationId: getLifeAreaBalance
+      parameters:
+        - in: query
+          name: window_days
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Balance summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/insights/trends/tasks:
+    get:
+      tags: [Insights]
+      summary: Get tasks trend
+      operationId: getTasksTrend
+      responses:
+        '200':
+          description: Trend payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/insights/trends/habits:
+    get:
+      tags: [Insights]
+      summary: Get habits trend
+      operationId: getHabitsTrend
+      responses:
+        '200':
+          description: Trend payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/insights/trends/goals:
+    get:
+      tags: [Insights]
+      summary: Get goals trend
+      operationId: getGoalsTrend
+      responses:
+        '200':
+          description: Trend payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/orgs:
+    get:
+      tags: [Organizations]
+      summary: List organizations
+      operationId: listOrganizations
+      responses:
+        '200':
+          description: Organization collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCollectionResponse'
+    post:
+      tags: [Organizations]
+      summary: Create organization
+      operationId: createOrganization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '201':
+          description: Organization created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/orgs/{organizationId}/members:
+    post:
+      tags: [Organizations]
+      summary: Add organization member
+      operationId: addOrganizationMember
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '201':
+          description: Member added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/orgs/{organizationId}/members/{memberUserId}:
+    patch:
+      tags: [Organizations]
+      summary: Update organization member role
+      operationId: updateOrganizationMemberRole
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+        - $ref: '#/components/parameters/MemberUserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Member updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/orgs/{organizationId}/sso/providers:
+    get:
+      tags: [Organizations]
+      summary: List organization SSO providers
+      operationId: listOrganizationSsoProviders
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+      responses:
+        '200':
+          description: SSO provider collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCollectionResponse'
+    post:
+      tags: [Organizations]
+      summary: Create organization SSO provider
+      operationId: createOrganizationSsoProvider
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '201':
+          description: SSO provider created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/orgs/{organizationId}/sso/providers/{providerId}:
+    patch:
+      tags: [Organizations]
+      summary: Update organization SSO provider
+      operationId: updateOrganizationSsoProvider
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+        - $ref: '#/components/parameters/ProviderId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: SSO provider updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/orgs/{organizationId}/audit-exports:
+    get:
+      tags: [Organizations]
+      summary: Export organization audit package
+      operationId: exportOrganizationAudit
+      parameters:
+        - $ref: '#/components/parameters/OrganizationId'
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [json, csv]
+      responses:
+        '200':
+          description: Audit export payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+            text/csv:
+              schema:
+                type: string
+
+  /v1/workspaces:
+    get:
+      tags: [Organizations]
+      summary: List workspaces
+      operationId: listWorkspaces
+      responses:
+        '200':
+          description: Workspace collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCollectionResponse'
+    post:
+      tags: [Organizations]
+      summary: Create workspace
+      operationId: createWorkspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '201':
+          description: Workspace created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/collaboration/spaces:
+    get:
+      tags: [Collaboration]
+      summary: List collaboration spaces
+      operationId: listCollaborationSpaces
+      responses:
+        '200':
+          description: Space collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCollectionResponse'
+    post:
+      tags: [Collaboration]
+      summary: Create collaboration space
+      operationId: createCollaborationSpace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '201':
+          description: Space created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/collaboration/spaces/{spaceId}/invites:
+    post:
+      tags: [Collaboration]
+      summary: Invite member to collaboration space
+      operationId: inviteCollaborationMember
+      parameters:
+        - $ref: '#/components/parameters/SpaceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '202':
+          description: Invite created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/collaboration/invites/{token}/accept:
+    post:
+      tags: [Collaboration]
+      summary: Accept collaboration invite
+      operationId: acceptCollaborationInvite
+      parameters:
+        - $ref: '#/components/parameters/Token'
+      responses:
+        '200':
+          description: Invite accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/collaboration/spaces/{spaceId}/share/lists/{listId}:
+    post:
+      tags: [Collaboration]
+      summary: Share list to collaboration space
+      operationId: shareListToCollaborationSpace
+      parameters:
+        - $ref: '#/components/parameters/SpaceId'
+        - $ref: '#/components/parameters/ListId'
+      responses:
+        '200':
+          description: List shared
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/collaboration/spaces/{spaceId}/share/goals/{goalId}:
+    post:
+      tags: [Collaboration]
+      summary: Share goal to collaboration space
+      operationId: shareGoalToCollaborationSpace
+      parameters:
+        - $ref: '#/components/parameters/SpaceId'
+        - $ref: '#/components/parameters/GoalId'
+      responses:
+        '200':
+          description: Goal shared
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/integrations/list-task-sync:
+    post:
+      tags: [Integrations]
+      summary: Enqueue list/task provider sync
+      operationId: syncListsAndTasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationSyncRequest'
+      responses:
+        '202':
+          description: Sync queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationSyncResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/integrations/calendar-sync:
+    post:
+      tags: [Integrations]
+      summary: Enqueue calendar provider sync
+      operationId: syncCalendar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationSyncRequest'
+      responses:
+        '202':
+          description: Sync queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationSyncResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/integrations/journal-sync:
+    post:
+      tags: [Integrations]
+      summary: Enqueue journal provider sync
+      operationId: syncJournal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntegrationSyncRequest'
+      responses:
+        '202':
+          description: Sync queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationSyncResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/integrations/connections:
+    get:
+      tags: [Integrations]
+      summary: List integration connections
+      operationId: listIntegrationConnections
+      responses:
+        '200':
+          description: Connection collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCollectionResponse'
+
+  /v1/integrations/connections/{provider}:
+    put:
+      tags: [Integrations]
+      summary: Connect or reconnect provider
+      operationId: upsertIntegrationConnection
+      parameters:
+        - $ref: '#/components/parameters/Provider'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Connection upserted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+    delete:
+      tags: [Integrations]
+      summary: Revoke provider connection
+      operationId: revokeIntegrationConnection
+      parameters:
+        - $ref: '#/components/parameters/Provider'
+      responses:
+        '204':
+          description: Connection revoked
+
+  /v1/integrations/conflicts:
+    get:
+      tags: [Integrations]
+      summary: List open integration conflicts
+      operationId: listIntegrationConflicts
+      responses:
+        '200':
+          description: Conflict collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCollectionResponse'
+
+  /v1/integrations/conflicts/{conflictId}/resolve:
+    post:
+      tags: [Integrations]
+      summary: Resolve integration conflict
+      operationId: resolveIntegrationConflict
+      parameters:
+        - $ref: '#/components/parameters/ConflictId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  enum: [accept, override]
+                resolution_payload:
+                  type: object
+                  additionalProperties: true
+      responses:
+        '200':
+          description: Conflict resolved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/integrations/failures:
+    get:
+      tags: [Integrations]
+      summary: List integration sync failures
+      operationId: listIntegrationFailures
+      responses:
+        '200':
+          description: Failure collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCollectionResponse'
+
+  /v1/integrations/failures/{failureId}/replay:
+    post:
+      tags: [Integrations]
+      summary: Replay failed integration sync job
+      operationId: replayIntegrationFailure
+      parameters:
+        - $ref: '#/components/parameters/FailureId'
+      responses:
+        '202':
+          description: Replay queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  /v1/notifications/mobile/devices:
+    get:
+      tags: [Notifications]
+      summary: List mobile push devices
+      operationId: listMobilePushDevices
+      responses:
+        '200':
+          description: Device collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCollectionResponse'
+    post:
+      tags: [Notifications]
+      summary: Register mobile push device
+      operationId: createMobilePushDevice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '201':
+          description: Device registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+
+  /v1/notifications/mobile/devices/{deviceId}:
+    delete:
+      tags: [Notifications]
+      summary: Revoke mobile push device
+      operationId: deleteMobilePushDevice
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '204':
+          description: Device revoked
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: SanctumToken
+
+  parameters:
+    Provider:
+      name: provider
+      in: path
+      required: true
+      schema:
+        type: string
+    ProviderSlug:
+      name: providerSlug
+      in: path
+      required: true
+      schema:
+        type: string
+    OrganizationSlug:
+      name: organizationSlug
+      in: path
+      required: true
+      schema:
+        type: string
+    OrganizationId:
+      name: organizationId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    MemberUserId:
+      name: memberUserId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ProviderId:
+      name: providerId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    SpaceId:
+      name: spaceId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Token:
+      name: token
+      in: path
+      required: true
+      schema:
+        type: string
+    ListId:
+      name: listId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    GoalId:
+      name: goalId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ConflictId:
+      name: conflictId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    FailureId:
+      name: failureId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    DeviceId:
+      name: deviceId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    Unauthorized:
+      description: Authentication required or token invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [name, email, password, tenant_slug]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        tenant_slug:
+          type: string
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    IntegrationSyncRequest:
+      type: object
+      required: [provider]
+      properties:
+        provider:
+          type: string
+        idempotency_key:
+          type: string
+
+    AuthTokenResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [token, user]
+          properties:
+            token:
+              type: string
+            user:
+              type: object
+              additionalProperties: true
+
+    MessageResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+
+    EntityResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          additionalProperties: true
+
+    EntityCollectionResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        meta:
+          type: object
+          properties:
+            page:
+              type: integer
+            per_page:
+              type: integer
+            total:
+              type: integer
+
+    IntegrationSyncResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [mode, enqueued, skipped, sync_request_id, job_references]
+          properties:
+            mode:
+              type: string
+              enum: [async]
+            processed:
+              type: integer
+            enqueued:
+              type: integer
+            skipped:
+              type: integer
+            sync_request_id:
+              type: string
+              format: uuid
+            job_references:
+              type: array
+              items:
+                type: string
+
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+
+    ValidationErrorResponse:
+      type: object
+      required: [message, errors]
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string

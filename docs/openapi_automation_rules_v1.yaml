@@ -5,8 +5,13 @@ info:
   description: >
     Draft contract for automation rule model covering trigger, condition, and
     action definitions.
+  license:
+    name: Proprietary
+    url: https://nest.local/license
 servers:
   - url: https://api.nest.local/api/v1
+security:
+  - bearerAuth: []
 paths:
   /automations/rules:
     get:
@@ -147,6 +152,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/AutomationRunSingleResponse'
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: SanctumToken
+
   parameters:
     RuleId:
       name: ruleId
@@ -322,12 +333,10 @@ components:
           type: string
           format: date-time
         finished_at:
-          type: string
+          type: [string, 'null']
           format: date-time
-          nullable: true
         error_code:
-          type: string
-          nullable: true
+          type: [string, 'null']
     AutomationRunCollectionResponse:
       type: object
       properties:

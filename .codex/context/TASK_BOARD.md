@@ -1186,13 +1186,21 @@ Last updated: 2026-03-19
     - Added runtime default summary in `docs/system_architecture.md`.
     - Validation: `php artisan test --testsuite=Feature --env=testing` passed.
 
-- [ ] NEST-091 Complete OpenAPI coverage and CI enforcement (P2)
-  - Status: BACKLOG
+- [x] NEST-091 Complete OpenAPI coverage and CI enforcement (P2)
+  - Status: DONE
   - Owner: Documentation Agent
   - Depends on: NEST-088
   - Done when:
     - all public route groups are represented in maintained OpenAPI specs,
     - CI validates all maintained specs (not only one contract).
+  - Done on: 2026-03-19
+  - Notes:
+    - Added maintained OpenAPI draft for uncovered public route groups:
+      `docs/openapi_auth_integrations_platform_v1.yaml`.
+    - Updated API contract index in `docs/api_contracts.md` with expanded
+      coverage map.
+    - Updated CI OpenAPI validation to lint all maintained
+      `docs/openapi_*.yaml` contracts (not only a single file).
 
 - [ ] NEST-092 Converge web/mobile on shared runtime API client (P2)
   - Status: BACKLOG

@@ -6,8 +6,13 @@ info:
     Draft API contract for billing subscription snapshots and tenant billing
     events. This artifact defines normalized shapes for the lifecycle model
     introduced in NEST-065.
+  license:
+    name: Proprietary
+    url: https://nest.local/license
 servers:
   - url: /api/v1
+security:
+  - bearerAuth: []
 paths:
   /billing/subscription:
     get:
@@ -71,10 +76,10 @@ components:
         status:
           type: string
           enum: [trialing, active, past_due, paused, canceled, expired]
-        trial_ends_at: { type: string, format: date-time, nullable: true }
-        current_period_starts_at: { type: string, format: date-time, nullable: true }
-        current_period_ends_at: { type: string, format: date-time, nullable: true }
-        canceled_at: { type: string, format: date-time, nullable: true }
+        trial_ends_at: { type: [string, 'null'], format: date-time }
+        current_period_starts_at: { type: [string, 'null'], format: date-time }
+        current_period_ends_at: { type: [string, 'null'], format: date-time }
+        canceled_at: { type: [string, 'null'], format: date-time }
         entitlements:
           type: array
           items:
@@ -100,8 +105,8 @@ components:
       properties:
         id: { type: string, format: uuid }
         tenant_id: { type: string, format: uuid }
-        subscription_id: { type: string, format: uuid, nullable: true }
-        plan_code: { type: string, nullable: true }
+        subscription_id: { type: [string, 'null'], format: uuid }
+        plan_code: { type: [string, 'null'] }
         event_name:
           type: string
           enum:
@@ -119,8 +124,14 @@ components:
             - billing.entitlement.changed
         event_version: { type: string, example: '1.0' }
         provider: { type: string, example: stripe }
-        provider_event_id: { type: string, nullable: true }
+        provider_event_id: { type: [string, 'null'] }
         occurred_at: { type: string, format: date-time }
         payload:
           type: object
           additionalProperties: true
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: SanctumToken
