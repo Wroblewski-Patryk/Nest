@@ -59,6 +59,20 @@ Current workflow implementation:
   - queue and integration counters are emitted (`api.requests.*`,
     `queue.jobs.*`, `integration.sync.*`).
 
+## Integration Sync Operations
+
+- Sync endpoints (enqueue-first):
+  - `POST /api/v1/integrations/list-task-sync`
+  - `POST /api/v1/integrations/calendar-sync`
+  - `POST /api/v1/integrations/journal-sync`
+- Runtime behavior:
+  - endpoints return immediately in `mode=async` with `sync_request_id` and
+    `job_references`,
+  - provider sync execution runs in queue workers from
+    `database` connection queue `integrations`.
+- Worker execution example:
+  - `php artisan queue:work database --queue=integrations`
+
 ## Mobile Push Baseline Operations
 
 - Device registration API:

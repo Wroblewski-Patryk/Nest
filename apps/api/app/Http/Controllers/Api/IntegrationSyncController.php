@@ -29,6 +29,7 @@ class IntegrationSyncController extends Controller
         return response()->json([
             'data' => [
                 'provider' => $payload['provider'],
+                'mode' => 'async',
                 ...$summary,
             ],
         ]);
@@ -50,6 +51,7 @@ class IntegrationSyncController extends Controller
         return response()->json([
             'data' => [
                 'provider' => $payload['provider'],
+                'mode' => 'async',
                 ...$summary,
             ],
         ]);
@@ -71,6 +73,7 @@ class IntegrationSyncController extends Controller
         return response()->json([
             'data' => [
                 'provider' => $payload['provider'],
+                'mode' => 'async',
                 ...$summary,
             ],
         ]);

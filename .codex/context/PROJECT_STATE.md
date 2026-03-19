@@ -108,6 +108,9 @@ Last updated: 2026-03-19
 - `NEST-087` completed: integration sync idempotency now distinguishes changed
   payloads while safely deduplicating exact replays, with feature regressions
   for list/task and journal sync flows
+- `NEST-088` completed: integration sync API endpoints now operate in
+  enqueue-first async mode, returning job references while provider execution
+  runs in queue workers
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -256,8 +259,8 @@ Last updated: 2026-03-19
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute remediation wave `NEST-088` to `NEST-096`
-  (P0 `NEST-087` completed; continuing strict order)
+- Current execution focus: execute remediation wave `NEST-089` to `NEST-096`
+  (P0/P1 queue-first steps completed through `NEST-088`)
 
 ## Auth, AI, Offline, Notifications
 

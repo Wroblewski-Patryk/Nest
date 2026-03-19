@@ -7,7 +7,9 @@ use App\Models\IntegrationSyncConflict;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -107,6 +109,8 @@ class IntegrationConflictQueueApiTest extends TestCase
             'provider' => 'google_calendar',
         ])->assertOk();
 
+        $this->drainIntegrationQueue();
+
         $event->update([
             'title' => 'Conflict Source Event Updated',
             'all_day' => true,
@@ -116,6 +120,19 @@ class IntegrationConflictQueueApiTest extends TestCase
             'provider' => 'google_calendar',
         ])->assertOk()->assertJsonPath('data.conflicts', 1);
 
+        $this->drainIntegrationQueue();
+
         return [$tenant, $user];
+    }
+
+    private function drainIntegrationQueue(): void
+    {
+        while ((int) DB::table('jobs')->count() > 0) {
+            Artisan::call('queue:work', [
+                'connection' => 'database',
+                '--queue' => 'integrations',
+                '--once' => true,
+            ]);
+        }
     }
 }

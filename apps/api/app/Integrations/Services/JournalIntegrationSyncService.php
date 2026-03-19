@@ -6,15 +6,24 @@ use App\Jobs\ProcessIntegrationSyncJob;
 use App\Models\JournalEntry;
 use App\Models\SyncMapping;
 use App\Models\User;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
 
 class JournalIntegrationSyncService
 {
     /**
-     * @return array{processed:int,synced:int,skipped:int}
+     * @return array{
+     *   processed:int,
+     *   enqueued:int,
+     *   skipped:int,
+     *   sync_request_id:string,
+     *   job_references:array<int, array{job_reference:string,queue_job_id:mixed,internal_entity_type:string,internal_entity_id:string}>
+     * }
      */
-    public function syncForUser(User $user, string $provider): array
+    public function syncForUser(User $user, string $provider, ?string $syncRequestId = null): array
     {
+        $syncRequestId ??= (string) Str::ulid();
+
         $entries = JournalEntry::query()
             ->with('lifeAreas:id,name')
             ->where('tenant_id', $user->tenant_id)
@@ -23,8 +32,9 @@ class JournalIntegrationSyncService
             ->get();
 
         $processed = 0;
-        $synced = 0;
+        $enqueued = 0;
         $skipped = 0;
+        $jobReferences = [];
 
         foreach ($entries as $entry) {
             $processed++;
@@ -41,6 +51,7 @@ class JournalIntegrationSyncService
                 user: $user,
                 provider: $provider,
                 entityId: $entry->id,
+                syncRequestId: $syncRequestId,
                 entityData: $entityPayload,
             );
 
@@ -50,20 +61,22 @@ class JournalIntegrationSyncService
                 continue;
             }
 
-            $result = ProcessIntegrationSyncJob::dispatchSync($payload);
-            $status = is_array($result) ? ($result['status'] ?? null) : null;
-
-            if ($status === 'duplicate_skipped') {
-                $skipped++;
-            } else {
-                $synced++;
-            }
+            $queueJobId = $this->enqueueSync($payload);
+            $enqueued++;
+            $jobReferences[] = [
+                'job_reference' => (string) $payload['job_reference'],
+                'queue_job_id' => $queueJobId,
+                'internal_entity_type' => 'journal_entry',
+                'internal_entity_id' => $entry->id,
+            ];
         }
 
         return [
             'processed' => $processed,
-            'synced' => $synced,
+            'enqueued' => $enqueued,
             'skipped' => $skipped,
+            'sync_request_id' => $syncRequestId,
+            'job_references' => $jobReferences,
         ];
     }
 
@@ -75,6 +88,7 @@ class JournalIntegrationSyncService
         User $user,
         string $provider,
         string $entityId,
+        string $syncRequestId,
         array $entityData,
     ): array {
         $mapping = SyncMapping::query()
@@ -94,8 +108,21 @@ class JournalIntegrationSyncService
             'idempotency_key' => "{$provider}:journal_entry:{$entityId}",
             'entity_payload' => $entityData,
             'sync_hash' => hash('sha256', json_encode($entityData, JSON_THROW_ON_ERROR)),
+            'sync_request_id' => $syncRequestId,
+            'job_reference' => (string) Str::ulid(),
             'trace_id' => (string) Str::uuid(),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function enqueueSync(array $payload): mixed
+    {
+        return Queue::connection('database')->pushOn(
+            'integrations',
+            new ProcessIntegrationSyncJob($payload)
+        );
     }
 
     /**

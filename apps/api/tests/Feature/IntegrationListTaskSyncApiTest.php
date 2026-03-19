@@ -8,7 +8,9 @@ use App\Models\TaskList;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -46,8 +48,12 @@ class IntegrationListTaskSyncApiTest extends TestCase
         ])->assertOk();
 
         $first->assertJsonPath('data.processed', 2)
-            ->assertJsonPath('data.synced', 2)
-            ->assertJsonPath('data.skipped', 0);
+            ->assertJsonPath('data.enqueued', 2)
+            ->assertJsonPath('data.skipped', 0)
+            ->assertJsonPath('data.mode', 'async');
+
+        $this->assertCount(2, $first->json('data.job_references', []));
+        $this->drainIntegrationQueue();
 
         $this->assertDatabaseCount('sync_mappings', 2);
         $this->assertDatabaseHas('sync_mappings', [
@@ -79,7 +85,7 @@ class IntegrationListTaskSyncApiTest extends TestCase
         ])->assertOk();
 
         $second->assertJsonPath('data.processed', 2)
-            ->assertJsonPath('data.synced', 0)
+            ->assertJsonPath('data.enqueued', 0)
             ->assertJsonPath('data.skipped', 2);
 
         $this->assertDatabaseCount('integration_sync_audits', 2);
@@ -107,7 +113,10 @@ class IntegrationListTaskSyncApiTest extends TestCase
         ])->assertOk()
             ->assertJsonPath('data.provider', 'google_tasks')
             ->assertJsonPath('data.processed', 2)
-            ->assertJsonPath('data.synced', 2);
+            ->assertJsonPath('data.enqueued', 2)
+            ->assertJsonPath('data.mode', 'async');
+
+        $this->drainIntegrationQueue();
 
         $this->assertDatabaseHas('sync_mappings', [
             'tenant_id' => $tenant->id,
@@ -151,7 +160,10 @@ class IntegrationListTaskSyncApiTest extends TestCase
         ])->assertOk()
             ->assertJsonPath('data.provider', 'todoist')
             ->assertJsonPath('data.processed', 2)
-            ->assertJsonPath('data.synced', 2);
+            ->assertJsonPath('data.enqueued', 2)
+            ->assertJsonPath('data.mode', 'async');
+
+        $this->drainIntegrationQueue();
 
         $this->assertDatabaseHas('sync_mappings', [
             'tenant_id' => $tenant->id,
@@ -201,7 +213,11 @@ class IntegrationListTaskSyncApiTest extends TestCase
 
         $this->postJson('/api/v1/integrations/list-task-sync', [
             'provider' => 'trello',
-        ])->assertOk()->assertJsonPath('data.processed', 2);
+        ])->assertOk()
+            ->assertJsonPath('data.processed', 2)
+            ->assertJsonPath('data.enqueued', 2);
+
+        $this->drainIntegrationQueue();
 
         $this->assertDatabaseMissing('sync_mappings', [
             'tenant_id' => $tenantB->id,
@@ -238,14 +254,16 @@ class IntegrationListTaskSyncApiTest extends TestCase
             'provider' => 'trello',
         ])->assertOk()
             ->assertJsonPath('data.processed', 2)
-            ->assertJsonPath('data.synced', 2)
+            ->assertJsonPath('data.enqueued', 2)
             ->assertJsonPath('data.skipped', 0);
+
+        $this->drainIntegrationQueue();
 
         $this->postJson('/api/v1/integrations/list-task-sync', [
             'provider' => 'trello',
         ])->assertOk()
             ->assertJsonPath('data.processed', 2)
-            ->assertJsonPath('data.synced', 0)
+            ->assertJsonPath('data.enqueued', 0)
             ->assertJsonPath('data.skipped', 2);
 
         $task->forceFill(['title' => 'Updated title'])->save();
@@ -254,7 +272,20 @@ class IntegrationListTaskSyncApiTest extends TestCase
             'provider' => 'trello',
         ])->assertOk()
             ->assertJsonPath('data.processed', 2)
-            ->assertJsonPath('data.synced', 1)
+            ->assertJsonPath('data.enqueued', 1)
             ->assertJsonPath('data.skipped', 1);
+
+        $this->drainIntegrationQueue();
+    }
+
+    private function drainIntegrationQueue(): void
+    {
+        while ((int) DB::table('jobs')->count() > 0) {
+            Artisan::call('queue:work', [
+                'connection' => 'database',
+                '--queue' => 'integrations',
+                '--once' => true,
+            ]);
+        }
     }
 }

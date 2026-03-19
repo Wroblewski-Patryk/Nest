@@ -7,7 +7,9 @@ use App\Models\IntegrationSyncAudit;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -39,9 +41,12 @@ class IntegrationCalendarSyncApiTest extends TestCase
         ])->assertOk()
             ->assertJsonPath('data.provider', 'google_calendar')
             ->assertJsonPath('data.processed', 1)
-            ->assertJsonPath('data.synced', 1)
+            ->assertJsonPath('data.enqueued', 1)
             ->assertJsonPath('data.skipped', 0)
-            ->assertJsonPath('data.conflicts', 0);
+            ->assertJsonPath('data.conflicts', 0)
+            ->assertJsonPath('data.mode', 'async');
+
+        $this->drainIntegrationQueue();
 
         $this->assertDatabaseHas('sync_mappings', [
             'tenant_id' => $tenant->id,
@@ -74,11 +79,13 @@ class IntegrationCalendarSyncApiTest extends TestCase
             'provider' => 'google_calendar',
         ])->assertOk();
 
+        $this->drainIntegrationQueue();
+
         $this->postJson('/api/v1/integrations/calendar-sync', [
             'provider' => 'google_calendar',
         ])->assertOk()
             ->assertJsonPath('data.processed', 1)
-            ->assertJsonPath('data.synced', 0)
+            ->assertJsonPath('data.enqueued', 0)
             ->assertJsonPath('data.skipped', 1)
             ->assertJsonPath('data.conflicts', 0);
     }
@@ -99,6 +106,8 @@ class IntegrationCalendarSyncApiTest extends TestCase
             'provider' => 'google_calendar',
         ])->assertOk();
 
+        $this->drainIntegrationQueue();
+
         $event->update([
             'title' => 'Planning updated',
             'all_day' => true,
@@ -108,8 +117,10 @@ class IntegrationCalendarSyncApiTest extends TestCase
             'provider' => 'google_calendar',
         ])->assertOk()
             ->assertJsonPath('data.processed', 1)
-            ->assertJsonPath('data.synced', 1)
+            ->assertJsonPath('data.enqueued', 1)
             ->assertJsonPath('data.conflicts', 1);
+
+        $this->drainIntegrationQueue();
 
         $audits = IntegrationSyncAudit::query()
             ->where('tenant_id', $tenant->id)
@@ -124,5 +135,16 @@ class IntegrationCalendarSyncApiTest extends TestCase
         $this->postJson('/api/v1/integrations/calendar-sync', [
             'provider' => 'google_calendar',
         ])->assertUnauthorized();
+    }
+
+    private function drainIntegrationQueue(): void
+    {
+        while ((int) DB::table('jobs')->count() > 0) {
+            Artisan::call('queue:work', [
+                'connection' => 'database',
+                '--queue' => 'integrations',
+                '--once' => true,
+            ]);
+        }
     }
 }

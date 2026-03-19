@@ -1133,14 +1133,23 @@ Last updated: 2026-03-19
       `IntegrationListTaskSyncApiTest` and `IntegrationJournalSyncApiTest`.
     - Validation: `php artisan test --testsuite=Feature --env=testing` passed.
 
-- [ ] NEST-088 Convert sync endpoints to enqueue-first execution (P1)
-  - Status: BACKLOG
+- [x] NEST-088 Convert sync endpoints to enqueue-first execution (P1)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-087
   - Done when:
     - sync endpoints enqueue work and return quickly,
     - provider execution runs in workers (not request thread),
     - queue retry/failure/audit behavior remains verifiable.
+  - Done on: 2026-03-19
+  - Notes:
+    - Converted list/task, calendar, and journal sync services to queue-first
+      dispatch on `database` connection queue `integrations`.
+    - API response now exposes async execution metadata (`mode`,
+      `sync_request_id`, `job_references`).
+    - Updated feature tests to validate enqueue-first semantics and drain queue
+      workers before asserting audit/mapping side effects.
+    - Validation: `php artisan test --testsuite=Feature --env=testing` passed.
 
 - [ ] NEST-089 Implement chunked tenant sync processing (P1)
   - Status: BACKLOG
