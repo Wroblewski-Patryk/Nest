@@ -1017,16 +1017,18 @@ Last updated: 2026-03-19
     - Documented workflow in
       `docs/release_train_change_management.md`.
 
-- [ ] NEST-080 Final readiness review for full-product launch
-  - Status: IN_PROGRESS
+- [x] NEST-080 Final readiness review for full-product launch
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-068, NEST-074, NEST-076, NEST-078, NEST-079
   - Done when: launch checklist is approved by product, engineering, and
     operations.
+  - Done on: 2026-03-19
   - Notes:
-    - Draft readiness packet prepared in
+    - Final readiness packet completed in
       `docs/final_readiness_review_2026-03-19.md`.
-    - Awaiting explicit product/engineering/operations approval to close.
+    - Product, engineering, and operations approvals recorded in readiness
+      review packet.
 
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
@@ -1097,7 +1099,6 @@ Last updated: 2026-03-19
 
 ## In Progress
 
-- [ ] NEST-080 Final readiness review for full-product launch
 - [ ] NEST-086 Build unified Stitch UX/UI approval baseline before implementation
 
 ## Blocked

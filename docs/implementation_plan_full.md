@@ -254,7 +254,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-077
   - Done when: regular release cadence and quality gates are institutionalized.
 
-- [ ] NEST-080 Final readiness review for full-product launch
+- [x] NEST-080 Final readiness review for full-product launch
   - Depends on: NEST-068, NEST-074, NEST-076, NEST-078, NEST-079
   - Done when: launch checklist is approved by product, engineering, and
     operations.

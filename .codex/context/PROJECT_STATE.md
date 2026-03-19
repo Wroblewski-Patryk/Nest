@@ -245,7 +245,10 @@ Last updated: 2026-03-19
 - `NEST-079` completed: release train and change-management workflow
   delivered with gated release pipeline, checklist baseline, and release
   manifest traceability (`docs/release_train_change_management.md`)
-- Current execution focus: final readiness review (`NEST-080`)
+- `NEST-080` completed: final readiness review approved with product,
+  engineering, and operations gates accepted
+  (`docs/final_readiness_review_2026-03-19.md`)
+- Current execution focus: full-product launch milestone (`NEST-081`)
 
 ## Auth, AI, Offline, Notifications
 
