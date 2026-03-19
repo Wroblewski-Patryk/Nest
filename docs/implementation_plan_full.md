@@ -197,7 +197,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-065
   - Done when: trial/active/past-due/canceled lifecycle is fully supported.
 
-- [ ] NEST-067 Implement billing provider integration and webhook handling
+- [x] NEST-067 Implement billing provider integration and webhook handling
   - Depends on: NEST-066
   - Done when: invoicing/payment events are synchronized reliably and audited.
 

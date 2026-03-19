@@ -203,8 +203,11 @@ Last updated: 2026-03-19
 - `NEST-066` completed: subscription lifecycle backend delivered for
   trialing/active/past_due/canceled flows with tenant billing event audit
   logging (`docs/billing_subscription_lifecycle_backend.md`)
-- Current execution focus: billing provider integration and webhook handling
-  (`NEST-067`)
+- `NEST-067` completed: billing provider webhook integration delivered with
+  Stripe webhook processing, idempotent receipt audit trail, and synchronized
+  invoice/subscription status updates
+  (`docs/billing_provider_webhook_integration.md`)
+- Current execution focus: billing and plan management UI (`NEST-068`)
 
 ## Auth, AI, Offline, Notifications
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AutomationRuleController;
 use App\Http\Controllers\Api\AutomationRunController;
 use App\Http\Controllers\Api\BillingSubscriptionController;
+use App\Http\Controllers\Api\BillingWebhookController;
 use App\Http\Controllers\Api\CalendarEventController;
 use App\Http\Controllers\Api\CollaborationInviteController;
 use App\Http\Controllers\Api\CollaborationSpaceController;
@@ -31,6 +32,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function (): void {
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::post('/billing/providers/stripe/webhook', [BillingWebhookController::class, 'stripe']);
 
     Route::middleware(['auth:sanctum', 'tenant.usage'])->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);

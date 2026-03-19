@@ -784,6 +784,25 @@ Last updated: 2026-03-16
     - Documented implementation in
       `docs/billing_subscription_lifecycle_backend.md`.
 
+- [x] NEST-067 Implement billing provider integration and webhook handling
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-066
+  - Done when: invoicing/payment events are synchronized reliably and audited.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added Stripe webhook integration endpoint:
+      `POST /api/v1/billing/providers/stripe/webhook`.
+    - Added webhook processing service with signature validation,
+      subscription status synchronization, and normalized billing event writes.
+    - Added idempotent webhook receipt audit model/table:
+      `billing_webhook_receipts`.
+    - Added configuration baseline in `apps/api/config/billing.php`.
+    - Added feature coverage in
+      `apps/api/tests/Feature/BillingWebhookApiTest.php`.
+    - Documented operations in
+      `docs/billing_provider_webhook_integration.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

@@ -137,6 +137,15 @@ Current workflow implementation:
 - Reference:
   - `docs/billing_subscription_lifecycle_backend.md`
 
+## Billing Webhook Operations
+
+- Stripe webhook endpoint:
+  - `POST /api/v1/billing/providers/stripe/webhook`
+- Secret configuration:
+  - `BILLING_STRIPE_WEBHOOK_SECRET`
+- Reference:
+  - `docs/billing_provider_webhook_integration.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.
