@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Auth\Services\OAuthAccountLinkingService;
 use App\Http\Controllers\Controller;
 use App\Models\Tenant;
 use App\Models\User;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 
 class AuthController extends Controller
 {
@@ -69,6 +71,48 @@ class AuthController extends Controller
             'data' => [
                 'token' => $token,
                 'user' => $this->serializeUser($user),
+            ],
+        ]);
+    }
+
+    public function oauthExchange(
+        Request $request,
+        string $provider,
+        OAuthAccountLinkingService $oauth
+    ): JsonResponse {
+        $payload = $request->validate([
+            'id_token' => ['required', 'string'],
+            'tenant_slug' => ['nullable', 'string', 'max:190'],
+        ]);
+
+        try {
+            $result = $oauth->authenticate(
+                provider: $provider,
+                idToken: (string) $payload['id_token'],
+                tenantSlug: $payload['tenant_slug'] ?? null
+            );
+        } catch (InvalidArgumentException $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 422);
+        }
+
+        $user = $result['user'];
+        if (! $user->tenant->is_active) {
+            return response()->json([
+                'message' => 'Tenant is inactive.',
+            ], 403);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'data' => [
+                'token' => $token,
+                'user' => $this->serializeUser($user),
+                'provider' => $provider,
+                'linked' => $result['linked'],
+                'created' => $result['created'],
             ],
         ]);
     }

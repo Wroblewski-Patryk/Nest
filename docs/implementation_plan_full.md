@@ -1,6 +1,6 @@
 # Implementation Plan (Full Product)
 
-Last updated: 2026-03-15
+Last updated: 2026-03-19
 
 ## Purpose
 
@@ -219,7 +219,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-070
   - Done when: role assignments and policy checks are enforced by API.
 
-- [ ] NEST-072 Implement OAuth providers for B2C auth expansion
+- [x] NEST-072 Implement OAuth providers for B2C auth expansion
   - Depends on: NEST-071
   - Done when: Google/Apple (or approved set) login works with tenant-safe
     account linking and security controls.

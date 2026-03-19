@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-03-16
+Last updated: 2026-03-19
 
 ## Backlog
 
@@ -873,6 +873,24 @@ Last updated: 2026-03-16
       `apps/api/tests/Feature/OrganizationRbacApiTest.php`.
     - Documented policy matrix in
       `docs/organization_rbac_matrix.md`.
+
+- [x] NEST-072 Implement OAuth providers for B2C auth expansion
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-071
+  - Done when: Google/Apple (or approved set) login works with tenant-safe
+    account linking and security controls.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added OAuth provider exchange endpoint:
+      `POST /api/v1/auth/oauth/{provider}/exchange`.
+    - Added secure id_token verification with provider JWK lookup and issuer/
+      audience/expiry checks.
+    - Added tenant-safe account linking with verified-email enforcement and
+      ambiguous-email protection requiring `tenant_slug`.
+    - Added OAuth identity persistence model (`oauth_identities`) and
+      feature tests in `apps/api/tests/Feature/OAuthProviderAuthApiTest.php`.
+    - Documented implementation in `docs/oauth_b2c_auth_expansion.md`.
 
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE

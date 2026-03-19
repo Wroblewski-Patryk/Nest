@@ -156,6 +156,22 @@ Current workflow implementation:
 - Reference:
   - `docs/entitlement_enforcement_api_tools.md`
 
+## OAuth B2C Operations
+
+- OAuth exchange endpoint:
+  - `POST /api/v1/auth/oauth/{provider}/exchange`
+- Supported providers:
+  - `google`
+  - `apple`
+- Required environment variables:
+  - `OAUTH_GOOGLE_CLIENT_ID`
+  - `OAUTH_APPLE_CLIENT_ID`
+- Optional JWK URL overrides:
+  - `OAUTH_GOOGLE_JWKS_URL`
+  - `OAUTH_APPLE_JWKS_URL`
+- Reference:
+  - `docs/oauth_b2c_auth_expansion.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.

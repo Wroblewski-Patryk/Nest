@@ -218,7 +218,11 @@ Last updated: 2026-03-19
   (`docs/organization_workspace_domain_model.md`)
 - `NEST-071` completed: org RBAC matrix delivered with API-enforced owner/admin/member
   policy checks and role update flow (`docs/organization_rbac_matrix.md`)
-- Current execution focus: OAuth provider expansion (`NEST-072`)
+- `NEST-072` completed: OAuth B2C expansion delivered with provider
+  allowlist (`google`, `apple`), id_token signature/claim verification,
+  tenant-safe account linking safeguards, and feature coverage
+  (`docs/oauth_b2c_auth_expansion.md`)
+- Current execution focus: SSO expansion (`NEST-073`)
 
 ## Auth, AI, Offline, Notifications
 

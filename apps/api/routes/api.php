@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function (): void {
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::post('/auth/oauth/{provider}/exchange', [AuthController::class, 'oauthExchange']);
     Route::post('/billing/providers/stripe/webhook', [BillingWebhookController::class, 'stripe']);
 
     Route::middleware(['auth:sanctum', 'tenant.usage', 'entitlements'])->group(function (): void {
