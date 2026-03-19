@@ -242,7 +242,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
 
 ### Scale, reliability, and launch readiness
 
-- [ ] NEST-077 Implement performance and load test harness
+- [x] NEST-077 Implement performance and load test harness
   - Depends on: NEST-063, NEST-069
   - Done when: representative load scenarios and thresholds are defined.
 

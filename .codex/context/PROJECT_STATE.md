@@ -236,7 +236,10 @@ Last updated: 2026-03-19
   delivered with command-based control checks, severity gating, CI baseline
   integration, and staging-ready strict mode
   (`docs/security_control_verification_suite.md`)
-- Current execution focus: performance and load test harness (`NEST-077`)
+- `NEST-077` completed: performance/load harness delivered with k6 scenario
+  baseline, thresholded read/write profiles, and operational run script
+  (`docs/performance_load_test_harness.md`)
+- Current execution focus: resilience drills (`NEST-078`)
 
 ## Auth, AI, Offline, Notifications
 

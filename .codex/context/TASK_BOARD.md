@@ -968,6 +968,22 @@ Last updated: 2026-03-19
       `apps/api/tests/Feature/SecurityControlVerificationCommandTest.php`.
     - Documented suite in `docs/security_control_verification_suite.md`.
 
+- [x] NEST-077 Implement performance and load test harness
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-063, NEST-069
+  - Done when: representative load scenarios and thresholds are defined.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added API load harness scenario file:
+      `apps/api/tests/Performance/k6-load-harness.js`.
+    - Added local execution script:
+      `scripts/performance/run-k6-harness.ps1`.
+    - Defined read/write scenario profiles with latency and error-rate
+      thresholds.
+    - Added runbook and baseline guidance in
+      `docs/performance_load_test_harness.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

@@ -227,6 +227,17 @@ Current workflow implementation:
 - Reference:
   - `docs/security_control_verification_suite.md`
 
+## Performance Harness Operations
+
+- Load harness script:
+  - `pwsh ./scripts/performance/run-k6-harness.ps1`
+- Optional write-mode run:
+  - `pwsh ./scripts/performance/run-k6-harness.ps1 -ApiToken "<token>" -ListId "<list-id>" -EnableWrites`
+- Output artifact:
+  - `apps/api/tests/Performance/k6-summary.json`
+- Reference:
+  - `docs/performance_load_test_harness.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.
