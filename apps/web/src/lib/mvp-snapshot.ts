@@ -64,6 +64,14 @@ export const moduleReadiness: Array<{
     state: "success",
     telemetry: "screen.automations.view",
   },
+  {
+    href: "/billing",
+    label: "Billing",
+    key: "billing",
+    focus: "Manage subscription lifecycle and audit billing events.",
+    state: "success",
+    telemetry: "screen.billing.view",
+  },
 ];
 
 export const tasksSnapshot = {

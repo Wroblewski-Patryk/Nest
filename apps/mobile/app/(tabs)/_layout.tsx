@@ -96,6 +96,19 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="billing"
+        options={{
+          title: 'Billing',
+          tabBarIcon: ({ color }) => (
+            <SymbolView
+              name={{ ios: 'creditcard', android: 'credit_card', web: 'credit_card' }}
+              tintColor={color}
+              size={22}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

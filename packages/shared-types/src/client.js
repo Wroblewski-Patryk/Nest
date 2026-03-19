@@ -101,6 +101,25 @@ export function createNestApiClient(options) {
       request(`/automations/runs/${runId}/replay`, {
         method: "POST",
       }),
+    getBillingSubscription: () => request("/billing/subscription"),
+    getBillingEvents: (query = {}) => request("/billing/events", { query }),
+    startBillingTrial: (planCode) =>
+      request("/billing/subscription/start-trial", {
+        method: "POST",
+        body: { plan_code: planCode },
+      }),
+    activateBillingSubscription: () =>
+      request("/billing/subscription/activate", {
+        method: "POST",
+      }),
+    markBillingSubscriptionPastDue: () =>
+      request("/billing/subscription/past-due", {
+        method: "POST",
+      }),
+    cancelBillingSubscription: () =>
+      request("/billing/subscription/cancel", {
+        method: "POST",
+      }),
     syncListTasks: (provider) =>
       request("/integrations/list-task-sync", {
         method: "POST",

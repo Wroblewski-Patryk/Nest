@@ -201,7 +201,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-066
   - Done when: invoicing/payment events are synchronized reliably and audited.
 
-- [ ] NEST-068 Deliver billing and plan management UI
+- [x] NEST-068 Deliver billing and plan management UI
   - Depends on: NEST-066, NEST-067
   - Done when: users can manage plan, billing details, and invoices.
 

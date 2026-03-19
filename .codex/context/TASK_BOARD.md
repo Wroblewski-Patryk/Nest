@@ -803,6 +803,24 @@ Last updated: 2026-03-16
     - Documented operations in
       `docs/billing_provider_webhook_integration.md`.
 
+- [x] NEST-068 Deliver billing and plan management UI
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-066, NEST-067
+  - Done when: users can manage plan, billing details, and invoices.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added billing events API endpoint (`GET /api/v1/billing/events`) for
+      tenant-scoped invoice/event history listing.
+    - Extended shared API client contracts with billing subscription and event
+      operations.
+    - Delivered web billing management route in
+      `apps/web/src/app/billing/page.tsx`.
+    - Delivered mobile billing tab screen in
+      `apps/mobile/app/(tabs)/billing.tsx`.
+    - Added billing module navigation/snapshot updates for web and mobile.
+    - Documented UI baseline in `docs/billing_ui_management.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

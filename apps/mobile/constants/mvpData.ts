@@ -103,3 +103,19 @@ export const insightsData: ModuleSnapshot = {
     { title: 'Tasks/Habits/Goals', detail: 'weekly trend totals', badge: '8/11/4' },
   ],
 };
+
+export const billingData: ModuleSnapshot = {
+  state: 'success',
+  module: 'billing',
+  telemetry: 'screen.billing.view',
+  metrics: [
+    { label: 'Status', value: 'active' },
+    { label: 'Plan', value: 'plus' },
+    { label: 'Events', value: '6' },
+  ],
+  rows: [
+    { title: 'billing.subscription.activated', detail: 'internal', badge: 'active' },
+    { title: 'billing.invoice.paid', detail: 'stripe', badge: 'paid' },
+    { title: 'billing.invoice.payment_failed', detail: 'stripe', badge: 'past_due' },
+  ],
+};

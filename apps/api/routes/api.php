@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AnalyticsIngestionController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AutomationRuleController;
 use App\Http\Controllers\Api\AutomationRunController;
+use App\Http\Controllers\Api\BillingEventController;
 use App\Http\Controllers\Api\BillingSubscriptionController;
 use App\Http\Controllers\Api\BillingWebhookController;
 use App\Http\Controllers\Api\CalendarEventController;
@@ -39,6 +40,7 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/auth/me', [UserSettingsController::class, 'me']);
         Route::patch('/auth/settings', [UserSettingsController::class, 'update']);
         Route::get('/billing/subscription', [BillingSubscriptionController::class, 'show']);
+        Route::get('/billing/events', [BillingEventController::class, 'index']);
         Route::post('/billing/subscription/start-trial', [BillingSubscriptionController::class, 'startTrial']);
         Route::post('/billing/subscription/activate', [BillingSubscriptionController::class, 'activate']);
         Route::post('/billing/subscription/past-due', [BillingSubscriptionController::class, 'markPastDue']);

@@ -9,7 +9,8 @@ export type ModuleKey =
   | "life_areas"
   | "calendar"
   | "insights"
-  | "automations";
+  | "automations"
+  | "billing";
 
 export type Priority = "low" | "medium" | "high" | "urgent";
 
@@ -49,7 +50,8 @@ export type TelemetryEventName =
   | "screen.journal.view"
   | "screen.calendar.view"
   | "screen.insights.view"
-  | "screen.automations.view";
+  | "screen.automations.view"
+  | "screen.billing.view";
 
 export interface ClientTelemetryEvent {
   name: TelemetryEventName;
@@ -191,6 +193,49 @@ export type AutomationRunItem = {
   error_message?: string | null;
 };
 
+export type BillingEntitlementItem = {
+  key: string;
+  type: "boolean" | "limit";
+  value: string;
+  soft_limit?: number | null;
+};
+
+export type BillingSubscriptionItem = {
+  id: string;
+  tenant_id: string;
+  plan_id: string;
+  status: "trialing" | "active" | "past_due" | "canceled" | "paused" | "expired";
+  provider: string;
+  provider_subscription_id: string | null;
+  trial_ends_at: string | null;
+  current_period_starts_at: string | null;
+  current_period_ends_at: string | null;
+  canceled_at: string | null;
+  plan?: {
+    id: string;
+    plan_code: string;
+    display_name: string;
+    billing_interval: string;
+    currency: string;
+    price_minor: number;
+    trial_days: number;
+    entitlements?: BillingEntitlementItem[];
+  };
+};
+
+export type BillingEventItem = {
+  id: string;
+  tenant_id: string;
+  subscription_id: string | null;
+  plan_code: string | null;
+  event_name: string;
+  event_version: string;
+  provider: string;
+  provider_event_id: string | null;
+  occurred_at: string;
+  payload: Record<string, unknown> | null;
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
@@ -232,6 +277,12 @@ export type NestApiClient = {
   getAutomationRuns(query?: Record<string, unknown>): Promise<ApiCollectionResponse<AutomationRunItem>>;
   getAutomationRun(runId: string): Promise<{ data: AutomationRunItem }>;
   replayAutomationRun(runId: string): Promise<{ data: AutomationRunItem }>;
+  getBillingSubscription(): Promise<{ data: BillingSubscriptionItem | null }>;
+  getBillingEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<BillingEventItem>>;
+  startBillingTrial(planCode: string): Promise<{ data: BillingSubscriptionItem }>;
+  activateBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
+  markBillingSubscriptionPastDue(): Promise<{ data: BillingSubscriptionItem }>;
+  cancelBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
   syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;

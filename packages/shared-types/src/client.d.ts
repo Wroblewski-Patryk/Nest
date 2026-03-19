@@ -2,6 +2,8 @@ import type {
   ApiCollectionMeta,
   AutomationRuleItem,
   AutomationRunItem,
+  BillingEventItem,
+  BillingSubscriptionItem,
   InsightsTrendResponse,
   LifeAreaBalanceResponse,
 } from "./index";
@@ -113,6 +115,12 @@ export type NestApiClient = {
   getAutomationRuns(query?: Record<string, unknown>): Promise<ApiCollectionResponse<AutomationRunItem>>;
   getAutomationRun(runId: string): Promise<{ data: AutomationRunItem }>;
   replayAutomationRun(runId: string): Promise<{ data: AutomationRunItem }>;
+  getBillingSubscription(): Promise<{ data: BillingSubscriptionItem | null }>;
+  getBillingEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<BillingEventItem>>;
+  startBillingTrial(planCode: string): Promise<{ data: BillingSubscriptionItem }>;
+  activateBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
+  markBillingSubscriptionPastDue(): Promise<{ data: BillingSubscriptionItem }>;
+  cancelBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
   syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;

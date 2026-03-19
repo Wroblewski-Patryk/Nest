@@ -207,7 +207,10 @@ Last updated: 2026-03-19
   Stripe webhook processing, idempotent receipt audit trail, and synchronized
   invoice/subscription status updates
   (`docs/billing_provider_webhook_integration.md`)
-- Current execution focus: billing and plan management UI (`NEST-068`)
+- `NEST-068` completed: billing and plan management UI delivered across web
+  and mobile with subscription actions and billing event history surfaces
+  (`docs/billing_ui_management.md`)
+- Current execution focus: entitlement enforcement across API/tools (`NEST-069`)
 
 ## Auth, AI, Offline, Notifications
 

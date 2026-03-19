@@ -91,6 +91,27 @@ function createClient(baseUrl: string): NestApiClient {
       request(`/automations/runs/${runId}/replay`, {
         method: "POST",
       }) as ReturnType<NestApiClient["replayAutomationRun"]>,
+    getBillingSubscription: () =>
+      request("/billing/subscription") as ReturnType<NestApiClient["getBillingSubscription"]>,
+    getBillingEvents: (query = {}) =>
+      request("/billing/events", { query }) as ReturnType<NestApiClient["getBillingEvents"]>,
+    startBillingTrial: (planCode) =>
+      request("/billing/subscription/start-trial", {
+        method: "POST",
+        body: { plan_code: planCode },
+      }) as ReturnType<NestApiClient["startBillingTrial"]>,
+    activateBillingSubscription: () =>
+      request("/billing/subscription/activate", {
+        method: "POST",
+      }) as ReturnType<NestApiClient["activateBillingSubscription"]>,
+    markBillingSubscriptionPastDue: () =>
+      request("/billing/subscription/past-due", {
+        method: "POST",
+      }) as ReturnType<NestApiClient["markBillingSubscriptionPastDue"]>,
+    cancelBillingSubscription: () =>
+      request("/billing/subscription/cancel", {
+        method: "POST",
+      }) as ReturnType<NestApiClient["cancelBillingSubscription"]>,
     syncListTasks: (provider) =>
       request("/integrations/list-task-sync", {
         method: "POST",
