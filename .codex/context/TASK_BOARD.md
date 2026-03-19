@@ -96,7 +96,7 @@ Last updated: 2026-03-19
       `NEST-106`.
 
 - [ ] NEST-103 Build MCP screenshot parity packs for legacy UX-heavy tasks
-  - Status: BACKLOG
+  - Status: BLOCKED
   - Owner: Execution Agent
   - Depends on: NEST-102
   - Done when:
@@ -104,6 +104,13 @@ Last updated: 2026-03-19
       against approved Stitch baseline screens,
     - parity captures are linked from task notes and review artifacts,
     - unresolved visual diffs are explicitly listed for implementation.
+  - Notes:
+    - Added Expo Metro monorepo resolution config in
+      `apps/mobile/metro.config.js` to unblock mobile web export for parity
+      artifact generation.
+    - `pnpm --dir apps/mobile exec expo export --platform web` now succeeds,
+      but screenshot capture pipeline for deterministic side-by-side parity
+      evidence still needs final execution in this environment.
 
 - [x] NEST-104 Add explicit accessibility verification outputs for legacy UX-heavy screens
   - Status: DONE
