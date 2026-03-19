@@ -228,7 +228,7 @@ Note: End-user AI surface remains disabled in Phase 2 and starts in Phase 3.
   - Depends on: NEST-071
   - Done when: supported enterprise auth flows are production-ready.
 
-- [ ] NEST-074 Add audit export package for organization compliance
+- [x] NEST-074 Add audit export package for organization compliance
   - Depends on: NEST-071
   - Done when: export includes security-sensitive events in documented formats.
 

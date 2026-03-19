@@ -911,6 +911,25 @@ Last updated: 2026-03-19
       `apps/api/tests/Feature/OrganizationSsoApiTest.php`.
     - Documented implementation in `docs/organization_sso_oidc_saml.md`.
 
+- [x] NEST-074 Add audit export package for organization compliance
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-071
+  - Done when: export includes security-sensitive events in documented formats.
+  - Done on: 2026-03-19
+  - Notes:
+    - Added organization compliance export endpoint:
+      `GET /api/v1/orgs/{organizationId}/audit-exports`.
+    - Added JSON and CSV export formats with optional date window filters.
+    - Added normalized audit export service covering org membership changes,
+      org SSO provider changes, org SSO identity links, and tenant lifecycle
+      audit events.
+    - Added RBAC permission gate `org.audit.export` (owner/admin).
+    - Added feature coverage in
+      `apps/api/tests/Feature/OrganizationAuditExportApiTest.php`.
+    - Documented implementation in
+      `docs/organization_audit_export_package.md`.
+
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
   - Status: DONE
   - Owner: Planning Agent

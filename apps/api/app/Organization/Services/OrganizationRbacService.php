@@ -17,6 +17,7 @@ class OrganizationRbacService
         'org.members.update_role' => ['owner'],
         'workspace.create' => ['owner', 'admin'],
         'org.sso.manage' => ['owner', 'admin'],
+        'org.audit.export' => ['owner', 'admin'],
     ];
 
     public function can(User $user, Organization $organization, string $permission): bool

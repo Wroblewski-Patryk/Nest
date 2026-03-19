@@ -226,7 +226,10 @@ Last updated: 2026-03-19
   OIDC + SAML provider model, tenant-safe identity linking, org membership
   enforcement, and enterprise exchange endpoint coverage
   (`docs/organization_sso_oidc_saml.md`)
-- Current execution focus: organization compliance audit export (`NEST-074`)
+- `NEST-074` completed: organization audit export package delivered with
+  RBAC-gated JSON/CSV export endpoint and normalized security event schema
+  for compliance workflows (`docs/organization_audit_export_package.md`)
+- Current execution focus: advanced secrets and key rotation (`NEST-075`)
 
 ## Auth, AI, Offline, Notifications
 

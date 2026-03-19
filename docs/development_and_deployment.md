@@ -186,6 +186,19 @@ Current workflow implementation:
 - Reference:
   - `docs/organization_sso_oidc_saml.md`
 
+## Organization Audit Export Operations
+
+- Compliance export endpoint:
+  - `GET /api/v1/orgs/{organizationId}/audit-exports`
+- Formats:
+  - `format=json`
+  - `format=csv`
+- Optional date window filters:
+  - `from`
+  - `to`
+- Reference:
+  - `docs/organization_audit_export_package.md`
+
 ## Security Baseline
 
 - Secrets manager for environment secrets.
