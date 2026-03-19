@@ -77,8 +77,8 @@ Last updated: 2026-03-19
       `NEST-042`, `NEST-050`, `NEST-058`, and `NEST-068`.
     - Linked backfill evidence records from each legacy UX-heavy task note.
 
-- [ ] NEST-102 Re-verify legacy UX-heavy implementations against approved baseline
-  - Status: BACKLOG
+- [x] NEST-102 Re-verify legacy UX-heavy implementations against approved baseline
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-101
   - Done when:
@@ -86,6 +86,52 @@ Last updated: 2026-03-19
       baseline artifact(s),
     - pass/fail re-check results are recorded on the board,
     - unresolved gaps are converted into explicit execution tasks.
+  - Done on: 2026-03-19
+  - Notes:
+    - Re-verification delivered in `docs/legacy_ux_reverification_2026-03-19.md`.
+    - Reviewed tasks: 8 (`PASS: 0`, `FAIL: 8`).
+    - Failures remain due to missing MCP screenshot parity evidence and
+      incomplete checklist-grade responsive/a11y verification artifacts.
+    - Follow-up execution tasks added: `NEST-103`, `NEST-104`, `NEST-105`,
+      `NEST-106`.
+
+- [ ] NEST-103 Build MCP screenshot parity packs for legacy UX-heavy tasks
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-102
+  - Done when:
+    - each legacy UX-heavy task has side-by-side MCP screenshot parity evidence
+      against approved Stitch baseline screens,
+    - parity captures are linked from task notes and review artifacts,
+    - unresolved visual diffs are explicitly listed for implementation.
+
+- [ ] NEST-104 Add explicit accessibility verification outputs for legacy UX-heavy screens
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-102
+  - Done when:
+    - keyboard/focus order verification is recorded for web flows,
+    - semantic roles/labels checks are recorded for web and mobile screens,
+    - contrast checks for key UI states are documented and linked in task notes.
+
+- [ ] NEST-105 Add responsive verification outputs for legacy UX-heavy screens
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-102
+  - Done when:
+    - desktop/tablet/mobile captures are recorded for each legacy UX-heavy task,
+    - responsive behavior differences are reviewed against approved baseline,
+    - evidence links are attached in task notes.
+
+- [ ] NEST-106 Execute legacy UX visual parity fixes and re-run UX evidence gate
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-103, NEST-104, NEST-105
+  - Done when:
+    - visual diffs discovered in parity packs are implemented,
+    - legacy UX-heavy tasks pass source/parity/state/responsive/a11y evidence
+      gates,
+    - board pass/fail records are updated with closure evidence.
 
 - [x] NEST-015 Implement journal and life areas module
   - Status: DONE
