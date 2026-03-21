@@ -4,6 +4,10 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$RepoRoot = (Resolve-Path ".").Path
+$ConfigPath = Join-Path $RepoRoot "scripts/ux-parity/web-capture-config.json"
+$OutputPath = Join-Path $RepoRoot $OutputRoot
+$PlaywrightImportPath = Join-Path $RepoRoot "apps/web/node_modules/playwright/index.mjs"
 
 pnpm --dir apps/web exec next build --webpack | Out-Host
 
@@ -15,8 +19,10 @@ $job = Start-Job -ScriptBlock {
 Start-Sleep -Seconds 6
 
 try {
-  pnpm --dir apps/web dlx --allow-build=playwright --package playwright node scripts/ux-parity/capture-with-playwright.mjs scripts/ux-parity/web-capture-config.json $BaseUrl $OutputRoot desktop | Out-Host
+  $env:NEST_PLAYWRIGHT_IMPORT = $PlaywrightImportPath
+  pnpm --dir apps/web exec node "$RepoRoot/scripts/ux-parity/capture-with-playwright.mjs" "$ConfigPath" "$BaseUrl" "$OutputPath" desktop | Out-Host
 } finally {
+  Remove-Item Env:NEST_PLAYWRIGHT_IMPORT -ErrorAction SilentlyContinue
   Stop-Job $job -ErrorAction SilentlyContinue | Out-Null
   Receive-Job $job -ErrorAction SilentlyContinue | Out-Null
   Remove-Job $job -Force -ErrorAction SilentlyContinue | Out-Null

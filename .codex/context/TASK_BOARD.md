@@ -133,8 +133,8 @@ Last updated: 2026-03-21
     - Follow-up execution tasks added: `NEST-103`, `NEST-104`, `NEST-105`,
       `NEST-106`.
 
-- [ ] NEST-103 Build MCP screenshot parity packs for legacy UX-heavy tasks
-  - Status: IN_PROGRESS
+- [x] NEST-103 Build MCP screenshot parity packs for legacy UX-heavy tasks
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-102
   - Done when:
@@ -156,6 +156,12 @@ Last updated: 2026-03-21
       `scripts/ux-parity/web-capture-config.json`,
       `scripts/ux-parity/mobile-capture-config.json`,
       `docs/ux/nest_103_parity_capture_pipeline_2026-03-21.md`.
+    - Published parity packs + visual diff index in:
+      `docs/ux_parity_evidence/2026-03-21/artifact-index.md`,
+      `docs/ux_parity_evidence/2026-03-21/capture-manifest.json`,
+      `docs/ux_parity_evidence/2026-03-21/web/*.png`,
+      `docs/ux_parity_evidence/2026-03-21/mobile/*.png`.
+  - Done on: 2026-03-21
 
 - [x] NEST-104 Add explicit accessibility verification outputs for legacy UX-heavy screens
   - Status: DONE

@@ -2,6 +2,7 @@
 import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import process from "node:process";
+import { pathToFileURL } from "node:url";
 
 const [, , configPathArg, baseUrlArg, outputDirArg, viewportArg] = process.argv;
 
@@ -29,7 +30,13 @@ if (captures.length === 0) {
   throw new Error(`No captures configured in ${configPathArg}`);
 }
 
-const { chromium } = await import("playwright");
+const playwrightImportTarget =
+  process.env.NEST_PLAYWRIGHT_IMPORT ?? "playwright";
+const playwrightImportSpecifier =
+  playwrightImportTarget.includes(":\\") || playwrightImportTarget.startsWith("/")
+    ? pathToFileURL(playwrightImportTarget).href
+    : playwrightImportTarget;
+const { chromium } = await import(playwrightImportSpecifier);
 
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport });

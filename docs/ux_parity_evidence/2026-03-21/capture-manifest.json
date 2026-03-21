@@ -1,0 +1,77 @@
+{
+  "task": "NEST-103",
+  "captured_at": "2026-03-21",
+  "approved_source": {
+    "type": "approved_snapshot",
+    "project": "projects/11122321523690086751"
+  },
+  "web": [
+    {
+      "task_id": "NEST-021",
+      "screen_id": "tasks",
+      "file": "docs/ux_parity_evidence/2026-03-21/web/nest-021-tasks.png"
+    },
+    {
+      "task_id": "NEST-037",
+      "screen_id": "calendar-conflicts",
+      "file": "docs/ux_parity_evidence/2026-03-21/web/nest-037-calendar-conflicts.png"
+    },
+    {
+      "task_id": "NEST-041",
+      "screen_id": "calendar-connections",
+      "file": "docs/ux_parity_evidence/2026-03-21/web/nest-041-calendar-connections.png"
+    },
+    {
+      "task_id": "NEST-042",
+      "screen_id": "calendar-scopes",
+      "file": "docs/ux_parity_evidence/2026-03-21/web/nest-042-calendar-scopes.png"
+    },
+    {
+      "task_id": "NEST-050",
+      "screen_id": "insights",
+      "file": "docs/ux_parity_evidence/2026-03-21/web/nest-050-insights.png"
+    },
+    {
+      "task_id": "NEST-058",
+      "screen_id": "automations",
+      "file": "docs/ux_parity_evidence/2026-03-21/web/nest-058-automations.png"
+    },
+    {
+      "task_id": "NEST-068",
+      "screen_id": "billing",
+      "file": "docs/ux_parity_evidence/2026-03-21/web/nest-068-billing.png"
+    }
+  ],
+  "mobile": [
+    {
+      "task_id": "NEST-022",
+      "screen_id": "mobile-home-tasks",
+      "file": "docs/ux_parity_evidence/2026-03-21/mobile/nest-022-mobile-home-tasks.png"
+    },
+    {
+      "task_id": "NEST-037",
+      "screen_id": "mobile-calendar-conflicts",
+      "file": "docs/ux_parity_evidence/2026-03-21/mobile/nest-037-mobile-calendar-conflicts.png"
+    },
+    {
+      "task_id": "NEST-041",
+      "screen_id": "mobile-calendar-connections",
+      "file": "docs/ux_parity_evidence/2026-03-21/mobile/nest-041-mobile-calendar-connections.png"
+    },
+    {
+      "task_id": "NEST-042",
+      "screen_id": "mobile-calendar-scopes",
+      "file": "docs/ux_parity_evidence/2026-03-21/mobile/nest-042-mobile-calendar-scopes.png"
+    },
+    {
+      "task_id": "NEST-050",
+      "screen_id": "mobile-insights",
+      "file": "docs/ux_parity_evidence/2026-03-21/mobile/nest-050-mobile-insights.png"
+    },
+    {
+      "task_id": "NEST-068",
+      "screen_id": "mobile-billing",
+      "file": "docs/ux_parity_evidence/2026-03-21/mobile/nest-068-mobile-billing.png"
+    }
+  ]
+}
