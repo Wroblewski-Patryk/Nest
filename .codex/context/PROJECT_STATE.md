@@ -310,6 +310,9 @@ Last updated: 2026-03-21
   resolution actions (`docs/modules/manual_sync_retry_conflict_resolution_baseline_v1.md`)
 - `NEST-113` completed: full UX evidence gate re-run confirms `PASS 8/8` for
   legacy UX-heavy task set (`docs/ux/full_ux_evidence_gate_rerun_2026-03-21.md`)
+- `NEST-114` completed: planning status checkboxes in
+  `docs/planning/implementation_plan_full.md` are reconciled to task-board
+  completion state (`docs/planning/planning_status_reconciliation_2026-03-21.md`)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -458,8 +461,8 @@ Last updated: 2026-03-21
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: reconcile planning/docs alignment (`NEST-114`,
-  `NEST-121`), and complete
+- Current execution focus: resolve remaining product-doc offline policy drift
+  (`NEST-121`), and complete
   deploy readiness wave for server + phone
   (`NEST-115` to `NEST-120`).
 

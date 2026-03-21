@@ -390,14 +390,20 @@ Last updated: 2026-03-21
     - sign-off packet captures test evidence and rollback verification,
     - release status is marked ready for production launch window.
 
-- [ ] NEST-114 Reconcile planning docs status with task board reality
-  - Status: BACKLOG
+- [x] NEST-114 Reconcile planning docs status with task board reality
+  - Status: DONE
   - Owner: Documentation Agent
   - Depends on: NEST-113
   - Done when:
     - `docs/planning/implementation_plan_full.md` status checkboxes reflect
       actual `TASK_BOARD` completion state,
     - planning docs and board have no status drift for completed phases.
+  - Done on: 2026-03-21
+  - Notes:
+    - Reconciled status checkboxes and metadata in
+      `docs/planning/implementation_plan_full.md`.
+    - Published reconciliation record in
+      `docs/planning/planning_status_reconciliation_2026-03-21.md`.
 
 - [ ] NEST-121 Resolve MVP offline policy drift across product docs
   - Status: BACKLOG
