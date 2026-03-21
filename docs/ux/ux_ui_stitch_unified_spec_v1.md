@@ -10,22 +10,32 @@ in web/mobile code.
 - Design-only phase (no code changes).
 - One approved Stitch project as source of truth for this cycle.
 - After approval: implementation tasks split per module.
+- Visual and UX language must follow:
+  `docs/ux/nest_os_design_system_mix_ideal_v1.md`.
 
 ## Source of Truth (This Cycle)
 
 - Type: approved Stitch snapshot
-- Project: `projects/14952238901582428681`
-- Baseline status: unified v1 approval set generated and approved on
-  `2026-03-19`
+- Project: `projects/11122321523690086751`
+- Baseline status: unified v2 approval package in active iteration, generated on
+  `2026-03-21`
+- Style system baseline add-on approved on `2026-03-21`:
+  `docs/ux/nest_os_design_system_mix_ideal_v1.md`
 
 ## Evidence (Stitch)
 
-- Verified baseline project: `projects/14952238901582428681`.
-- Verified additional baseline screens:
-  - Morning briefing: `projects/14952238901582428681/screens/1c4d38cf15b44887882973973a7c5c26`
-  - Weekly report: `projects/14952238901582428681/screens/f81dbf00a9b5489cb72377a2ad454ec0`
-- User approval captured in delivery thread on `2026-03-19` before moving to
-  implementation.
+- Verified baseline project: `projects/11122321523690086751`.
+- Verified unified screen set and IDs are tracked in:
+  `docs/ux/stitch_screen_registry_2026-03-21.md`.
+- Mobile unified update batch applied on `2026-03-21` for:
+  - Home today: `projects/11122321523690086751/screens/7decc38f1eaf4da3ae262c145d21c231`
+  - Journal/reflection:
+    `projects/11122321523690086751/screens/47539c8935d044f2b7de82e34b2676da`
+  - Tasks/habits:
+    `projects/11122321523690086751/screens/81fbbc74978a4d7cb180d0bd2ceeef80`
+- User intent for Stitch-first design iteration in current thread confirmed on
+  `2026-03-21`; implementation remains blocked until explicit implementation
+  approval after final screen review.
 
 ## UX Principles
 
@@ -52,6 +62,11 @@ in web/mobile code.
   - Empty-state block, error block, success toast
   - Primary/secondary/ghost button patterns
   - Section header with helper action
+- Mandatory style constraints:
+  - ultra-thin outline icon language (`1px` target),
+  - earthy calm palette with sage accent and no pure black/white baseline,
+  - subtle watercolor aura treatment with module-specific low-contrast variants,
+  - compact left-aligned header and floating bottom navigation panel patterns.
 
 ## Required Screen Set (Approval Pack)
 
@@ -76,6 +91,7 @@ in web/mobile code.
 - One style language across all screens (no mixed themes).
 - Shared navigation and reusable component patterns visible.
 - All core modules have at least one desktop and one mobile-ready treatment.
+- Full compliance with `docs/ux/nest_os_design_system_mix_ideal_v1.md`.
 - Critical states included:
   - empty
   - error/failure

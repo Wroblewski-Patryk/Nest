@@ -25,6 +25,9 @@ Both editions keep the same core functionality and a consistent visual language.
   design-source validation and implementation evidence.
 - Unified Stitch approval baseline (when used): follow
   `docs/ux/ux_ui_stitch_unified_spec_v1.md` before implementation.
+- Nest visual system baseline: enforce
+  `docs/ux/nest_os_design_system_mix_ideal_v1.md` for cohesive style direction
+  during Stitch generation and implementation handoff.
 - Insights UI baseline: see `docs/ux/insights_ui_baseline.md` for Phase 3 web +
   mobile coverage.
 

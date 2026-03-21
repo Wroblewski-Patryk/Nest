@@ -1,8 +1,46 @@
 ﻿# TASK_BOARD
 
-Last updated: 2026-03-19
+Last updated: 2026-03-21
 
 ## Backlog
+
+- [x] NEST-108 Operationalize Stitch unified screen workflow for Mix Ideal v2
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Depends on: NEST-086, NEST-107
+  - Done when:
+    - active Stitch project and screen registry are documented as a working
+      UX/UI source artifact set for this cycle,
+    - Stitch playbook includes repeatable update flow and prompt contract for
+      consistent cross-view generation,
+    - unified spec references the active project and current evidence.
+  - Done on: 2026-03-21
+  - Notes:
+    - Added screen registry in
+      `docs/ux/stitch_screen_registry_2026-03-21.md`.
+    - Updated `docs/ux/stitch-mcp-playbook.md` with active baseline, execution
+      loop, and prompt contract.
+    - Updated `docs/ux/ux_ui_stitch_unified_spec_v1.md` source/evidence to
+      active Stitch project `projects/11122321523690086751`.
+
+- [x] NEST-107 Capture approved "Mix Ideal" Nest design system in repository docs
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Depends on: NEST-086
+  - Done when:
+    - approved visual and UX rules are captured as implementation-ready design
+      system documentation,
+    - Stitch unified spec is linked to the new style baseline document,
+    - frontend strategy and Stitch playbook reference the same source.
+  - Done on: 2026-03-21
+  - Notes:
+    - Added canonical style spec in
+      `docs/ux/nest_os_design_system_mix_ideal_v1.md`.
+    - Linked the style baseline from
+      `docs/ux/ux_ui_stitch_unified_spec_v1.md`.
+    - Added cross-references in
+      `docs/architecture/frontend_strategy.md` and
+      `docs/ux/stitch-mcp-playbook.md`.
 
 - [x] NEST-098 Operationalize Stitch source-of-truth exception workflow
   - Status: DONE

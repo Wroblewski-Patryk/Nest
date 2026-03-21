@@ -235,6 +235,13 @@ Last updated: 2026-03-21
 - `NEST-086` completed: unified Stitch UX/UI approval baseline finalized in
   Stitch with documented evidence and user approval before implementation
   (`docs/ux/ux_ui_stitch_unified_spec_v1.md`)
+- `NEST-107` completed: approved "Mix Ideal" Nest design system baseline
+  captured as canonical documentation and linked into Stitch/playbook/frontend
+  strategy (`docs/ux/nest_os_design_system_mix_ideal_v1.md`)
+- `NEST-108` completed: Stitch unified screen workflow operationalized for active
+  Mix Ideal v2 cycle, including screen registry, playbook execution contract,
+  and unified spec source/evidence update to project
+  `projects/11122321523690086751`
 - `NEST-087` completed: integration sync idempotency now distinguishes changed
   payloads while safely deduplicating exact replays, with feature regressions
   for list/task and journal sync flows
