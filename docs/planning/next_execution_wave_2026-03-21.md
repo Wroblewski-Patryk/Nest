@@ -4,6 +4,9 @@ Date: 2026-03-21
 Scope: complete remaining UX parity remediation and start v1 localization +
 offline/manual-sync delivery decisions that are confirmed in `PROJECT_STATE`.
 
+Status: execution wave completed (`NEST-103..NEST-121`); remaining release
+operations are tracked as `NEST-122..NEST-124`.
+
 ## Primary Objectives
 
 1. Close remaining UX remediation blockers (`NEST-103`, `NEST-106`).

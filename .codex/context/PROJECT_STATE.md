@@ -484,8 +484,9 @@ Last updated: 2026-03-21
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: prepare next planning wave after completion of
-  deploy-readiness deliverables.
+- Current execution focus: execute launch-window and post-launch closure
+  (`NEST-122`, `NEST-123`, `NEST-124`) and then define the next prioritized
+  backlog wave.
 
 ## Auth, AI, Offline, Notifications
 
@@ -509,6 +510,7 @@ Last updated: 2026-03-21
 - Next execution wave: `docs/planning/next_execution_wave_2026-03-21.md`
 - MVP execution track: `docs/planning/mvp-execution-plan.md`
 - V1 launch track: `docs/planning/v1-live-release-plan.md`
+- Function coverage audit: `docs/planning/function_coverage_audit_2026-03-21.md`
 
 ## Confirmed Decisions (2026-03-15)
 

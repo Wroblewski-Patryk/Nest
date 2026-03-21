@@ -466,6 +466,33 @@ Last updated: 2026-03-21
     - Published alignment record in
       `docs/product/offline_policy_alignment_2026-03-21.md`.
 
+- [ ] NEST-122 Execute production launch window checklist
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-120
+  - Done when:
+    - release-train run for target tag is executed and recorded,
+    - API/web deployment steps and DB migration are executed in launch order,
+    - post-deploy smoke suite and mobile distribution verification pass.
+
+- [ ] NEST-123 Execute Day0/Day1 post-launch operational validation
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-122
+  - Done when:
+    - Day0 monitoring checklist is executed and logged,
+    - Day1 incident + regression review is completed,
+    - first stabilization patch decision is documented.
+
+- [ ] NEST-124 Publish Week1 stabilization summary and next backlog wave
+  - Status: BACKLOG
+  - Owner: Planning Agent
+  - Depends on: NEST-123
+  - Done when:
+    - week1 post-launch summary is published with metrics and incidents,
+    - release cadence decision (weekly vs hotfix mode) is recorded,
+    - next prioritized backlog wave is explicitly defined.
+
 - [x] NEST-015 Implement journal and life areas module
   - Status: DONE
   - Owner: Execution Agent
