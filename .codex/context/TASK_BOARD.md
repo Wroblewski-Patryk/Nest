@@ -405,8 +405,8 @@ Last updated: 2026-03-21
     - Published reconciliation record in
       `docs/planning/planning_status_reconciliation_2026-03-21.md`.
 
-- [ ] NEST-121 Resolve MVP offline policy drift across product docs
-  - Status: BACKLOG
+- [x] NEST-121 Resolve MVP offline policy drift across product docs
+  - Status: DONE
   - Owner: Documentation Agent
   - Depends on: NEST-111
   - Done when:
@@ -414,6 +414,14 @@ Last updated: 2026-03-21
       `PROJECT_STATE` describe one consistent MVP offline/manual-sync policy,
     - no conflicting statements remain about online-only vs manual offline
       queue support.
+  - Done on: 2026-03-21
+  - Notes:
+    - Updated `docs/product/mvp_scope.md` offline decision wording to manual
+      queue + force-sync model.
+    - Updated `.codex/context/PROJECT_STATE.md` offline summary line for MVP
+      consistency.
+    - Published alignment record in
+      `docs/product/offline_policy_alignment_2026-03-21.md`.
 
 - [x] NEST-015 Implement journal and life areas module
   - Status: DONE

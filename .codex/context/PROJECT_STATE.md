@@ -313,6 +313,9 @@ Last updated: 2026-03-21
 - `NEST-114` completed: planning status checkboxes in
   `docs/planning/implementation_plan_full.md` are reconciled to task-board
   completion state (`docs/planning/planning_status_reconciliation_2026-03-21.md`)
+- `NEST-121` completed: MVP offline/manual-sync policy wording is aligned across
+  product overview/scope and project context
+  (`docs/product/offline_policy_alignment_2026-03-21.md`)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -461,9 +464,7 @@ Last updated: 2026-03-21
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: resolve remaining product-doc offline policy drift
-  (`NEST-121`), and complete
-  deploy readiness wave for server + phone
+- Current execution focus: complete deploy readiness wave for server + phone
   (`NEST-115` to `NEST-120`).
 
 ## Auth, AI, Offline, Notifications
@@ -471,7 +472,7 @@ Last updated: 2026-03-21
 - MVP auth: email + password
 - OAuth providers: post-MVP
 - AI: post-MVP rollout, default ON when introduced
-- Offline: not planned in MVP
+- Offline: local offline queue with manual force-sync in settings/options
 - Notifications: mostly post-MVP, simplest mobile push can be first
 
 ## Integrations Direction

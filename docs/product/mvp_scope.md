@@ -25,7 +25,8 @@
 ## Not Included in MVP
 
 - Enterprise SSO/RBAC.
-- Full offline-first with complex merge strategies.
+- Full offline-first with automatic background sync and complex merge
+  strategies.
 - Third-party plugin marketplace.
 - Advanced predictive analytics and autonomous AI planning.
 - OAuth providers (Google/Apple/etc.) in auth layer.
@@ -35,6 +36,8 @@
 ## Confirmed Product Decisions (March 15, 2026)
 
 - Multi-tenant architecture, single active user at launch.
-- Online-only operation in MVP (no offline support).
+- Offline/manual-sync policy in MVP: offline changes are queued locally and
+  synchronized only by explicit user-triggered force-sync action from
+  settings/options.
 - AI introduced after MVP and default ON when released.
 - Notifications mostly post-MVP; simple mobile push can be the first step.
