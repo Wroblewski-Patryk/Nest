@@ -84,3 +84,8 @@ Deliver a production-ready V1 that can be:
 
 - [ ] Publish post-launch summary and follow-up backlog (`NEST-124`).
 - [ ] Confirm if release train cadence remains weekly or moves to hotfix mode (`NEST-124`).
+
+## Post-V1 Handoff
+
+- V2 target execution backlog is maintained in
+  `docs/planning/v2-target-execution-plan.md` (`NEST-125..NEST-152`).

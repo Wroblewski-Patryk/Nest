@@ -4,6 +4,7 @@ Implementation references:
 
 - MVP delivery backlog: `docs/planning/implementation_plan_mvp.md`
 - Full product delivery backlog: `docs/planning/implementation_plan_full.md`
+- V2 target delivery backlog: `docs/planning/v2-target-execution-plan.md`
 
 ## Phase 1 - Foundation and MVP
 
@@ -33,4 +34,14 @@ Implementation references:
 - Family/friends collaboration model hardening and permissions.
 - Billing and subscription model.
 - Organization-level features and advanced security controls.
+
+## Phase 5 - V2 Target Product
+
+- V1->V2 production reliability hardening and progressive delivery.
+- Offline-first continuity with automatic background sync and resilient merge
+  policy.
+- Collaboration V2 with shared workflows and multi-channel notifications.
+- AI copilot V2 with conversational surface and approval-gated actions.
+- Integration marketplace and near-real-time sync upgrades.
+- V2 commercial readiness, GA release, and stabilization loop.
 

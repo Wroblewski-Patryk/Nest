@@ -164,7 +164,7 @@ Last updated: 2026-03-21
 ## Current Phase
 
 - Architecture and documentation foundation complete
-- Planning baseline complete for MVP and full-product roadmap
+- Planning baseline complete for MVP, full-product roadmap, and V2 target wave
 - Next execution wave plan documented in
   `docs/planning/next_execution_wave_2026-03-21.md`
 - `NEST-001` completed: monorepo structure approved and documented in
@@ -484,9 +484,9 @@ Last updated: 2026-03-21
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute launch-window and post-launch closure
-  (`NEST-122`, `NEST-123`, `NEST-124`) and then define the next prioritized
-  backlog wave.
+- Current execution focus: complete launch-window and immediate post-launch
+  closure (`NEST-122`, `NEST-123`, `NEST-124`), then execute V2 target backlog
+  starting from `NEST-125`.
 
 ## Auth, AI, Offline, Notifications
 
@@ -506,6 +506,9 @@ Last updated: 2026-03-21
 
 - MVP execution backlog: `docs/planning/implementation_plan_mvp.md`
 - Full-product execution backlog: `docs/planning/implementation_plan_full.md`
+- V2 target execution backlog: `docs/planning/v2-target-execution-plan.md`
+- V2 execution roundbook: `docs/planning/v2-execution-roundbook.md`
+- V2 task cards: `docs/planning/v2-task-cards.md`
 - Roadmap overview: `docs/product/roadmap.md`
 - Next execution wave: `docs/planning/next_execution_wave_2026-03-21.md`
 - MVP execution track: `docs/planning/mvp-execution-plan.md`

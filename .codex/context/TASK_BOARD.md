@@ -493,6 +493,276 @@ Last updated: 2026-03-21
     - release cadence decision (weekly vs hotfix mode) is recorded,
     - next prioritized backlog wave is explicitly defined.
 
+- [x] NEST-153 Publish executor-ready V2 roundbook and task cards
+  - Status: DONE
+  - Owner: Planning Agent
+  - Depends on: NEST-124
+  - Done when:
+    - round-by-round execution protocol is documented for one-task-per-commit
+      delivery,
+    - each V2 task has implementation/test/commit guidance for execution
+      handoff,
+    - planning/state references include the new executor artifacts.
+  - Done on: 2026-03-21
+  - Notes:
+    - Added execution protocol:
+      `docs/planning/v2-execution-roundbook.md`.
+    - Added detailed task cards:
+      `docs/planning/v2-task-cards.md`.
+    - Linked artifacts from V2 plan and project planning baseline.
+
+- [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-123
+  - Done when:
+    - production dashboards include baseline traffic data for API/web/mobile,
+    - top failure modes are quantified by frequency and impact,
+    - V2 reliability priorities are published in operations docs.
+
+- [ ] NEST-126 Enforce SLO/error-budget workflow with automated gate checks
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-125
+  - Done when:
+    - SLO checks can block risky releases on error-budget burn,
+    - alert routing and escalation ownership are explicit,
+    - runbook includes breach recovery flow per SLO.
+
+- [ ] NEST-127 Implement progressive delivery for API/web (canary or blue-green)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-126
+  - Done when:
+    - deployment supports partial rollout and monitored promotion,
+    - rollback path is automated and tested,
+    - release evidence includes canary metrics before full rollout.
+
+- [ ] NEST-128 Implement mobile staged rollout and rollback strategy
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-126
+  - Done when:
+    - internal/beta/prod channels are documented and automated,
+    - staged rollout percentages and halt criteria are defined,
+    - rollback procedure is tested on physical devices.
+
+- [ ] NEST-129 Close V1.1 stabilization wave and open V2 execution gate
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-127, NEST-128
+  - Done when:
+    - reliability risks from V1 launch period are resolved or accepted,
+    - unresolved high risks have explicit mitigation tasks,
+    - V2 execution gate sign-off is recorded.
+
+- [ ] NEST-130 Deliver automatic background sync with adaptive retry/backoff
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-129
+  - Done when:
+    - sync can run automatically in background on supported clients,
+    - retry/backoff rules are deterministic,
+    - user can still force manual sync and inspect recent results.
+
+- [ ] NEST-131 Add durable local sync scheduler for web/mobile
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-130
+  - Done when:
+    - scheduler survives app restarts and transient network failures,
+    - sync jobs are deduplicated and safely persisted,
+    - monitoring includes scheduler lag and stuck-job detection.
+
+- [ ] NEST-132 Implement deterministic merge policy for offline conflicts (V2)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-130
+  - Done when:
+    - module-level merge strategy is documented (auto vs manual fields),
+    - conflict UI supports auto-merged and manual-merge states,
+    - regressions cover concurrent multi-device edits.
+
+- [ ] NEST-133 Add encrypted local cache profile and retention controls
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-131
+  - Done when:
+    - local offline data is encrypted at rest on supported clients,
+    - cache retention/cleanup policy is documented and enforced,
+    - secure wipe path exists for logout/account removal.
+
+- [ ] NEST-134 Ship offline chaos/regression suite for unstable network scenarios
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-131, NEST-132, NEST-133
+  - Done when:
+    - automated tests cover packet loss, high latency, and reconnect storms,
+    - key user flows pass in offline-first scenarios,
+    - known limitations are documented with mitigations.
+
+- [ ] NEST-135 Expand collaboration model to shared household/workspace operations
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-129
+  - Done when:
+    - shared ownership and role model supports family/friends workflows,
+    - cross-user task/list/goal permissions are policy-enforced,
+    - collaboration audits confirm tenant and membership boundaries.
+
+- [ ] NEST-136 Add shared planning workflows (assignment, handoff, reminders)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-135
+  - Done when:
+    - tasks/events can be assigned and handed over between members,
+    - reminder ownership and visibility are explicit,
+    - timeline/history captures assignment changes.
+
+- [ ] NEST-137 Deliver in-app notification center with actionable events
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-136
+  - Done when:
+    - users can view grouped activity and pending actions in-app,
+    - notification items deep-link to module context,
+    - read/unread and snooze behavior is consistent across clients.
+
+- [ ] NEST-138 Implement notification channel matrix (push/email/in-app)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-137
+  - Done when:
+    - per-channel and per-event preferences are configurable,
+    - quiet hours and locale-aware delivery windows are supported,
+    - delivery telemetry exists per channel with failure reasons.
+
+- [ ] NEST-139 Run collaboration safety and UX regression certification
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-136, NEST-137, NEST-138
+  - Done when:
+    - permission/privacy regressions are validated,
+    - collaboration smoke tests pass on desktop/mobile,
+    - certification report is attached to release docs.
+
+- [ ] NEST-140 Build AI context graph across key product modules
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-129
+  - Done when:
+    - context model unifies tasks/calendar/habits/goals/journal signals,
+    - retrieval payload is deterministic and versioned,
+    - privacy/redaction rules are enforced in context assembly.
+
+- [ ] NEST-141 Deliver conversational copilot surface (web + mobile)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-140
+  - Done when:
+    - users can ask planning/execution questions in natural language,
+    - responses include explainability and source references,
+    - graceful fallback exists when AI provider is unavailable.
+
+- [ ] NEST-142 Implement approval-gated AI actions (write operations)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-141
+  - Done when:
+    - AI can propose concrete mutations (create/update plans/tasks),
+    - high-impact actions require explicit user approval,
+    - audit trail records proposal, approval, and execution results.
+
+- [ ] NEST-143 Add proactive briefings (daily + weekly) with user controls
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-141
+  - Done when:
+    - daily and weekly briefing templates are generated reliably,
+    - cadence and content scope are user-configurable,
+    - notifications deep-link to briefing summaries.
+
+- [ ] NEST-144 Deliver AI safety/evaluation harness for V2 copilot behaviors
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-142, NEST-143
+  - Done when:
+    - regression suite covers policy, hallucination, and action-safety checks,
+    - quality scorecard is produced for each release candidate,
+    - release gate blocks promotion below safety threshold.
+
+- [ ] NEST-145 Implement integration marketplace framework
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-129
+  - Done when:
+    - providers can be discovered, connected, and managed from one catalog,
+    - install/uninstall flows are auditable and reversible,
+    - provider metadata/status are exposed in API contracts.
+
+- [ ] NEST-146 Add next-wave providers based on demand scoring
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-145
+  - Done when:
+    - at least two high-priority providers are implemented end-to-end,
+    - each provider meets sync/idempotency/conflict quality bars,
+    - rollout docs include limits and known caveats.
+
+- [ ] NEST-147 Add near-real-time sync triggers (webhooks/event ingestion)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-146
+  - Done when:
+    - webhook/event-driven sync paths exist where provider supports them,
+    - deduplication and replay protection are enforced,
+    - monitoring tracks ingestion lag and dropped-event rates.
+
+- [ ] NEST-148 Deliver integration health center and remediation playbooks
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-147
+  - Done when:
+    - health center surfaces provider status, failures, and recovery hints,
+    - common failures have one-click remediation or guided flows,
+    - runbooks include provider-specific incident procedures.
+
+- [ ] NEST-149 Expand billing to self-serve checkout/portal/dunning (V2)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-129
+  - Done when:
+    - checkout and subscription self-management are production-ready,
+    - dunning and payment recovery flows are automated,
+    - financial event audit trail is complete and reconciled.
+
+- [ ] NEST-150 Implement activation, retention, and monetization analytics loops
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-149
+  - Done when:
+    - funnel and retention metrics are tracked end-to-end,
+    - experiment hooks support onboarding and pricing tests,
+    - decision dashboard exists for weekly product iterations.
+
+- [ ] NEST-151 Execute V2 production readiness review (perf/security/cost/ops)
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-134, NEST-139, NEST-144, NEST-148, NEST-150
+  - Done when:
+    - cross-functional readiness packet is complete,
+    - unresolved P0/P1 risks have explicit owner and mitigation,
+    - go/no-go decision is documented with sign-offs.
+
+- [ ] NEST-152 Execute V2 GA release and 30-day stabilization plan
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-151
+  - Done when:
+    - V2 GA release is deployed and monitored,
+    - day0/day1/week1/week4 checkpoints are executed,
+    - next backlog wave (V2.1) is published with prioritized tasks.
+
 - [x] NEST-015 Implement journal and life areas module
   - Status: DONE
   - Owner: Execution Agent
