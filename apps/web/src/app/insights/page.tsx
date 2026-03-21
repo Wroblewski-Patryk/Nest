@@ -155,7 +155,15 @@ export default function InsightsPage() {
         </ul>
       </Panel>
 
-      <Panel title="Weekly Trends (6 buckets)">
+      <Panel
+        title="Weekly Trends (6 buckets)"
+        actions={(
+          <>
+            <button type="button" className="btn-primary">Refresh Trends</button>
+            <button type="button" className="btn-secondary">Export Snapshot</button>
+          </>
+        )}
+      >
         <ul className="list">
           {trends.map((trend) => (
             <li className="list-row" key={trend.module}>

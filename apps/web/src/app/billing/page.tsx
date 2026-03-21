@@ -103,16 +103,16 @@ export default function BillingPage() {
         <div className="panel-content">
           <p className="callout">Run baseline lifecycle transitions for plan management.</p>
           <div className="row-inline">
-            <button className="pill-link" onClick={() => runAction("trial")} disabled={busyAction !== null}>
+            <button className="btn-primary" onClick={() => runAction("trial")} disabled={busyAction !== null}>
               {busyAction === "trial" ? "Starting..." : "Start Trial (plus)"}
             </button>
-            <button className="pill-link" onClick={() => runAction("activate")} disabled={busyAction !== null}>
+            <button className="btn-secondary" onClick={() => runAction("activate")} disabled={busyAction !== null}>
               {busyAction === "activate" ? "Activating..." : "Activate"}
             </button>
-            <button className="pill-link" onClick={() => runAction("past_due")} disabled={busyAction !== null}>
+            <button className="btn-secondary" onClick={() => runAction("past_due")} disabled={busyAction !== null}>
               {busyAction === "past_due" ? "Marking..." : "Mark Past Due"}
             </button>
-            <button className="pill-link" onClick={() => runAction("cancel")} disabled={busyAction !== null}>
+            <button className="btn-secondary" onClick={() => runAction("cancel")} disabled={busyAction !== null}>
               {busyAction === "cancel" ? "Canceling..." : "Cancel"}
             </button>
           </div>

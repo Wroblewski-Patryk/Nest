@@ -37,6 +37,21 @@ export default function CalendarPage() {
         </p>
       </Panel>
 
+      <Panel
+        title="Calendar Commands"
+        actions={(
+          <>
+            <button type="button" className="btn-primary">Add Event</button>
+            <button type="button" className="btn-secondary">Force Sync</button>
+          </>
+        )}
+      >
+        <p className="callout">
+          Use force sync when provider changes should be pulled immediately
+          before resolving conflict queue items.
+        </p>
+      </Panel>
+
       <ConflictQueueCard />
       <ProviderConnectionsCard />
     </WorkspaceShell>

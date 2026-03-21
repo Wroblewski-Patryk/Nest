@@ -230,7 +230,7 @@ export default function AutomationsPage() {
               </option>
             ))}
           </select>
-          <button className="pill-link" onClick={createRule} disabled={isCreating || name.trim().length === 0}>
+          <button className="btn-primary" onClick={createRule} disabled={isCreating || name.trim().length === 0}>
             {isCreating ? "Creating..." : "Create Rule"}
           </button>
         </div>

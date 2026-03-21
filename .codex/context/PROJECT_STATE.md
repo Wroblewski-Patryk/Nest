@@ -291,6 +291,9 @@ Last updated: 2026-03-21
   `docs/ux_parity_evidence/2026-03-21/capture-manifest.json`,
   `docs/ux_parity_evidence/2026-03-21/web/*.png`,
   `docs/ux_parity_evidence/2026-03-21/mobile/*.png`)
+- `NEST-106` in progress: web parity fixes (wave 1) are implemented with
+  stronger action-entry CTAs, improved calendar integration hierarchy, and
+  refreshed web parity captures for legacy UX-heavy tasks
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs

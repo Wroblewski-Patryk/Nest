@@ -164,7 +164,7 @@ export function ProviderConnectionsCard() {
 
               return (
                 <li className="list-row" key={connection.provider}>
-                  <div>
+                  <div className="panel-content">
                     <strong>{providerLabels[connection.provider] ?? connection.provider}</strong>
                     <p>Status: {connection.status}</p>
                     <p className="mono-note">
@@ -179,7 +179,7 @@ export function ProviderConnectionsCard() {
                   <div className="row-inline">
                     <button
                       type="button"
-                      className="pill-link"
+                      className={connection.status === "connected" ? "btn-secondary" : "btn-primary"}
                       onClick={() => void connectProvider(connection.provider)}
                       disabled={busyProvider === connection.provider}
                     >
@@ -187,7 +187,7 @@ export function ProviderConnectionsCard() {
                     </button>
                     <button
                       type="button"
-                      className="pill-link"
+                      className="btn-secondary"
                       onClick={() => void revokeProvider(connection.provider)}
                       disabled={busyProvider === connection.provider}
                     >

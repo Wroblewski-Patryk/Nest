@@ -50,13 +50,17 @@ export function MetricCard({ label, value }: MetricCardProps) {
 
 type PanelProps = {
   title: string;
+  actions?: ReactNode;
   children: ReactNode;
 };
 
-export function Panel({ title, children }: PanelProps) {
+export function Panel({ title, actions, children }: PanelProps) {
   return (
     <section className="panel">
-      <h2>{title}</h2>
+      <div className="panel-header">
+        <h2>{title}</h2>
+        {actions ? <div className="panel-actions">{actions}</div> : null}
+      </div>
       <div className="panel-content">{children}</div>
     </section>
   );

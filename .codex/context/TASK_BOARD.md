@@ -196,7 +196,7 @@ Last updated: 2026-03-21
     - Captured responsive follow-up inputs for `NEST-106`.
 
 - [ ] NEST-106 Execute legacy UX visual parity fixes and re-run UX evidence gate
-  - Status: BACKLOG
+  - Status: IN_PROGRESS
   - Owner: Execution Agent
   - Depends on: NEST-103, NEST-104, NEST-105
   - Done when:
@@ -204,6 +204,20 @@ Last updated: 2026-03-21
     - legacy UX-heavy tasks pass source/parity/state/responsive/a11y evidence
       gates,
     - board pass/fail records are updated with closure evidence.
+  - Notes:
+    - Web parity fixes (wave 1) applied across legacy surfaces:
+      `apps/web/src/app/tasks/page.tsx`,
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/insights/page.tsx`,
+      `apps/web/src/app/automations/page.tsx`,
+      `apps/web/src/app/billing/page.tsx`,
+      `apps/web/src/components/conflict-queue-card.tsx`,
+      `apps/web/src/components/provider-connections-card.tsx`,
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Refreshed web parity captures for `NEST-021`, `NEST-037`, `NEST-041`,
+      `NEST-042`, `NEST-050`, `NEST-058`, `NEST-068` in
+      `docs/ux_parity_evidence/2026-03-21/web/*.png`.
 
 - [ ] NEST-109 Deliver localization foundation (en/pl) across API, web, and mobile
   - Status: BACKLOG

@@ -85,7 +85,7 @@ export function ConflictQueueCard() {
                 <div className="row-inline">
                   <button
                     type="button"
-                    className="pill-link"
+                    className="btn-secondary"
                     onClick={() => void resolveConflict(conflict.id, "accept")}
                     disabled={busyId === conflict.id}
                   >
@@ -93,7 +93,7 @@ export function ConflictQueueCard() {
                   </button>
                   <button
                     type="button"
-                    className="pill-link"
+                    className="btn-primary"
                     onClick={() => void resolveConflict(conflict.id, "override")}
                     disabled={busyId === conflict.id}
                   >

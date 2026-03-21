@@ -28,7 +28,15 @@ export default function TasksPage() {
         </ul>
       </Panel>
 
-      <Panel title="Priority Queue">
+      <Panel
+        title="Priority Queue"
+        actions={(
+          <>
+            <button type="button" className="btn-primary">Add Task</button>
+            <button type="button" className="btn-secondary">Add List</button>
+          </>
+        )}
+      >
         <ul className="list">
           {tasksSnapshot.items.map((task) => (
             <li className="list-row" key={task.title}>
