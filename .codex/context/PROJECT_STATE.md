@@ -1,4 +1,4 @@
-﻿# PROJECT_STATE
+# PROJECT_STATE
 
 Last updated: 2026-03-21
 
@@ -436,9 +436,10 @@ Last updated: 2026-03-21
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute remaining UX remediation tasks
-  (`NEST-103`, `NEST-106`) and start localization/offline-sync baseline
-  (`NEST-109`, `NEST-110`, `NEST-111`, `NEST-112`)
+- Current execution focus: close UX remediation (`NEST-103`, `NEST-106`,
+  `NEST-113`), deliver localization/offline-sync baseline (`NEST-109` to
+  `NEST-112`), and complete deploy readiness wave for server + phone
+  (`NEST-115` to `NEST-120`).
 
 ## Auth, AI, Offline, Notifications
 
@@ -460,6 +461,8 @@ Last updated: 2026-03-21
 - Full-product execution backlog: `docs/planning/implementation_plan_full.md`
 - Roadmap overview: `docs/product/roadmap.md`
 - Next execution wave: `docs/planning/next_execution_wave_2026-03-21.md`
+- MVP execution track: `docs/planning/mvp-execution-plan.md`
+- V1 launch track: `docs/planning/v1-live-release-plan.md`
 
 ## Confirmed Decisions (2026-03-15)
 

@@ -100,10 +100,21 @@ offline/manual-sync delivery decisions that are confirmed in `PROJECT_STATE`.
   - API feature tests for idempotent replay/retry behavior,
   - web/mobile smoke tests for manual sync flow and conflict path.
 
+### Commit 9 - `docs(product): align offline policy wording across docs`
+
+- Tasks: `NEST-121`
+- Changes:
+  - reconcile MVP offline/manual-sync wording in product docs and project state,
+  - remove contradictory online-only statements where manual offline queue is
+    now planned.
+- Validation:
+  - policy wording consistent across `mvp_scope`, `overview`, and context docs.
+
 ## Exit Criteria for This Wave
 
 - `NEST-103` and `NEST-106` moved to `DONE` with complete evidence links.
 - Localization baseline (`en` + `pl`) is active in pre-auth + onboarding +
   settings flows.
 - Offline/manual-sync baseline is functional, documented, and tested.
+- MVP/offline policy docs are consistent across product and context sources.
 - `TASK_BOARD` and `PROJECT_STATE` are updated after each meaningful slice.

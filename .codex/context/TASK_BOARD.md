@@ -197,9 +197,9 @@ Last updated: 2026-03-21
   - Owner: Execution Agent
   - Depends on: NEST-106
   - Done when:
-    - shared localization contracts and translation resources are enabled,
-    - English and Polish are available with deterministic fallback behavior,
-    - locale-aware formatting baseline is verified in both clients.
+    - shared localization contracts/resources exist in backend and both clients,
+    - `en` and `pl` are available with deterministic fallback behavior,
+    - locale formatting baseline is verified in web/mobile.
 
 - [ ] NEST-110 Implement onboarding + account localization preference flows
   - Status: BACKLOG
@@ -207,8 +207,8 @@ Last updated: 2026-03-21
   - Depends on: NEST-109
   - Done when:
     - pre-auth language selection is available,
-    - onboarding enforces `language` + `display name`,
-    - saved preferences apply immediately across active session and clients.
+    - onboarding enforces required `language` and `display_name`,
+    - localization preferences apply immediately after save.
 
 - [ ] NEST-111 Implement offline queue and manual force-sync baseline
   - Status: BACKLOG
@@ -216,18 +216,18 @@ Last updated: 2026-03-21
   - Depends on: NEST-109
   - Done when:
     - offline changes are queued locally,
-    - manual force-sync from settings/options processes queue oldest-first,
-    - sync stops on first error with explicit user-facing reason.
+    - manual force-sync option exists in settings/options,
+    - sync runs oldest-first and stops on first error with clear reason.
 
-- [ ] NEST-112 Implement manual sync retry + conflict resolution baseline
+- [ ] NEST-112 Implement manual sync retry + conflict-resolution baseline
   - Status: BACKLOG
   - Owner: Execution Agent
   - Depends on: NEST-111
   - Done when:
     - retry starts from queue beginning and skips already-synced items via
       idempotency checks,
-    - conflict view presents base/local/remote values,
-    - user-driven final resolution flow is available in web and mobile.
+    - conflict screen shows base/local/remote values,
+    - user can choose final resolution on web and mobile.
 
 - [ ] NEST-113 Re-run full UX evidence gate after parity fixes
   - Status: BACKLOG
@@ -235,8 +235,60 @@ Last updated: 2026-03-21
   - Depends on: NEST-106
   - Done when:
     - legacy UX-heavy tasks are re-reviewed against approved baseline,
-    - pass/fail is published per task with evidence links,
+    - pass/fail report is published with evidence links,
     - unresolved gaps are converted into explicit execution tasks.
+
+- [ ] NEST-115 Define production topology and environment contract
+  - Status: BACKLOG
+  - Owner: Documentation Agent
+  - Depends on: NEST-112
+  - Done when:
+    - production server topology is documented (API/web/db/redis/workers/cron),
+    - required env vars/secrets contract is documented by service,
+    - TLS/domain and backup/restore prerequisites are explicit.
+
+- [ ] NEST-116 Implement production deploy pipeline for API + web
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-115
+  - Done when:
+    - deploy pipeline performs build, migration, health checks, and rollback
+      hooks,
+    - staging and production deployment paths are documented and tested.
+
+- [ ] NEST-117 Prepare mobile release pipeline for physical devices
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-110, NEST-115
+  - Done when:
+    - environment-aware mobile builds are generated with signing profiles,
+    - internal distribution flow for physical phone testing is documented,
+    - release checklist includes mobile artifact verification.
+
+- [ ] NEST-118 Add post-deploy smoke suite (server + phone critical paths)
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-116, NEST-117
+  - Done when:
+    - smoke suite covers auth, tasks, calendar, sync trigger, and core UX loop,
+    - suite runs in staging and production candidate flow.
+
+- [ ] NEST-119 Finalize production operations runbook
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-116, NEST-118
+  - Done when:
+    - incident, rollback, and escalation procedures are fully documented,
+    - release ownership and monitoring checklist are explicit.
+
+- [ ] NEST-120 Execute staging rehearsal and production go-live sign-off
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-118, NEST-119
+  - Done when:
+    - full rehearsal run is executed end-to-end,
+    - sign-off packet captures test evidence and rollback verification,
+    - release status is marked ready for production launch window.
 
 - [ ] NEST-114 Reconcile planning docs status with task board reality
   - Status: BACKLOG
@@ -246,6 +298,16 @@ Last updated: 2026-03-21
     - `docs/planning/implementation_plan_full.md` status checkboxes reflect
       actual `TASK_BOARD` completion state,
     - planning docs and board have no status drift for completed phases.
+
+- [ ] NEST-121 Resolve MVP offline policy drift across product docs
+  - Status: BACKLOG
+  - Owner: Documentation Agent
+  - Depends on: NEST-111
+  - Done when:
+    - `docs/product/mvp_scope.md`, `docs/product/overview.md`, and
+      `PROJECT_STATE` describe one consistent MVP offline/manual-sync policy,
+    - no conflicting statements remain about online-only vs manual offline
+      queue support.
 
 - [x] NEST-015 Implement journal and life areas module
   - Status: DONE
