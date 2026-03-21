@@ -85,6 +85,10 @@ export default function InsightsScreen() {
       telemetry={telemetry}
       metrics={metrics}
       rows={rows}
+      quickActions={[
+        { label: 'Refresh Trends', variant: 'primary' },
+        { label: 'Export Snapshot', variant: 'secondary' },
+      ]}
       connectivity={{
         state: apiState,
         detail: apiDetail,

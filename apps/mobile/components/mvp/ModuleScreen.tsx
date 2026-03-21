@@ -23,6 +23,10 @@ type ModuleScreenProps = {
   telemetry: TelemetryEventName;
   metrics: Metric[];
   rows: Row[];
+  quickActions?: Array<{
+    label: string;
+    variant?: 'primary' | 'secondary';
+  }>;
   connectivity?: {
     state: UiAsyncState;
     detail: string;
@@ -103,6 +107,7 @@ export function ModuleScreen({
   telemetry,
   metrics,
   rows,
+  quickActions,
   connectivity,
   conflicts,
   connections,
@@ -127,6 +132,32 @@ export function ModuleScreen({
           </View>
         ))}
       </View>
+
+      {quickActions && quickActions.length > 0 ? (
+        <View style={styles.panel}>
+          <Text style={styles.panelTitle}>Quick Actions</Text>
+          <View style={styles.actionRow}>
+            {quickActions.map((action) => (
+              <Pressable
+                key={action.label}
+                style={[
+                  styles.actionButton,
+                  action.variant === 'primary' ? styles.actionButtonPrimary : styles.actionButtonSecondary,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.actionButtonText,
+                    action.variant === 'primary' ? styles.actionButtonTextPrimary : styles.actionButtonTextSecondary,
+                  ]}
+                >
+                  {action.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      ) : null}
 
       <View style={styles.panel}>
         <Text style={styles.panelTitle}>Live Snapshot</Text>
@@ -178,7 +209,7 @@ export function ModuleScreen({
                   <View style={styles.rowTextWrap}>
                     <Text style={styles.rowTitle}>{conflict.provider}</Text>
                     <Text style={styles.rowDetail}>
-                      {conflict.entityType} • {conflict.fields.join(', ')}
+                      {conflict.entityType} - {conflict.fields.join(', ')}
                     </Text>
                   </View>
                   <View style={styles.badge}>
@@ -225,9 +256,13 @@ export function ModuleScreen({
                   <View style={styles.rowTextWrap}>
                     <Text style={styles.rowTitle}>{connection.provider}</Text>
                     <Text style={styles.rowDetail}>Status: {connection.status}</Text>
+                    <Text style={styles.scopeHeading}>Connection Scopes</Text>
                     <Text style={styles.rowDetail}>
                       Granted: {connection.scopes.length > 0 ? connection.scopes.join(', ') : 'none'}
                     </Text>
+                    {connection.status === 'connected' ? (
+                      <Text style={styles.scopeHeading}>Scope Review</Text>
+                    ) : null}
                     {connection.status === 'connected' ? (
                       <Text style={review.level === 'warn' ? styles.scopeWarnText : styles.scopeOkText}>
                         {review.message}
@@ -407,11 +442,17 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     borderWidth: 1,
-    borderColor: '#99f6e4',
     borderRadius: 8,
-    backgroundColor: '#ccfbf1',
     paddingVertical: 6,
     paddingHorizontal: 10,
+  },
+  actionButtonPrimary: {
+    borderColor: '#0f766e',
+    backgroundColor: '#0f766e',
+  },
+  actionButtonSecondary: {
+    borderColor: '#99f6e4',
+    backgroundColor: '#ccfbf1',
   },
   actionButtonDisabled: {
     opacity: 0.6,
@@ -419,7 +460,18 @@ const styles = StyleSheet.create({
   actionButtonText: {
     fontSize: 12,
     fontWeight: '600',
+  },
+  actionButtonTextPrimary: {
+    color: '#ecfeff',
+  },
+  actionButtonTextSecondary: {
     color: '#115e59',
+  },
+  scopeHeading: {
+    marginTop: 2,
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#334155',
   },
   scopeWarnText: {
     fontSize: 12,
@@ -430,3 +482,4 @@ const styles = StyleSheet.create({
     color: '#166534',
   },
 });
+

@@ -218,6 +218,15 @@ Last updated: 2026-03-21
     - Refreshed web parity captures for `NEST-021`, `NEST-037`, `NEST-041`,
       `NEST-042`, `NEST-050`, `NEST-058`, `NEST-068` in
       `docs/ux_parity_evidence/2026-03-21/web/*.png`.
+    - Mobile parity fixes (wave 2) applied across legacy surfaces:
+      `apps/mobile/components/mvp/ModuleScreen.tsx`,
+      `apps/mobile/app/(tabs)/index.tsx`,
+      `apps/mobile/app/(tabs)/calendar.tsx`,
+      `apps/mobile/app/(tabs)/insights.tsx`,
+      `apps/mobile/app/(tabs)/billing.tsx`.
+    - Refreshed mobile parity captures for `NEST-022`, `NEST-037`, `NEST-041`,
+      `NEST-042`, `NEST-050`, `NEST-068` in
+      `docs/ux_parity_evidence/2026-03-21/mobile/*.png`.
 
 - [ ] NEST-109 Deliver localization foundation (en/pl) across API, web, and mobile
   - Status: BACKLOG

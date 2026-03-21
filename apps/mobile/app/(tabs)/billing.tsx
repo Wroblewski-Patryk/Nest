@@ -68,6 +68,10 @@ export default function BillingScreen() {
       telemetry={telemetry}
       metrics={metrics}
       rows={rows}
+      quickActions={[
+        { label: 'Start Trial', variant: 'primary' },
+        { label: 'Manage Plan', variant: 'secondary' },
+      ]}
       connectivity={{
         state: apiState,
         detail: apiDetail,

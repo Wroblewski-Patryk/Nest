@@ -48,6 +48,10 @@ export default function TasksScreen() {
       telemetry={tasksData.telemetry}
       metrics={tasksData.metrics}
       rows={tasksData.rows}
+      quickActions={[
+        { label: 'Add Task', variant: 'primary' },
+        { label: 'Add List', variant: 'secondary' },
+      ]}
       connectivity={{
         state: apiState,
         detail: apiDetail,

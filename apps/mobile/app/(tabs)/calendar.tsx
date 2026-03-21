@@ -120,6 +120,10 @@ export default function CalendarScreen() {
       telemetry={calendarData.telemetry}
       metrics={calendarData.metrics}
       rows={calendarData.rows}
+      quickActions={[
+        { label: 'Add Event', variant: 'primary' },
+        { label: 'Force Sync', variant: 'secondary' },
+      ]}
       conflicts={{
         items: conflicts.map((conflict) => ({
           id: conflict.id,
