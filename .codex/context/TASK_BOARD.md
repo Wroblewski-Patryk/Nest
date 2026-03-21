@@ -418,14 +418,20 @@ Last updated: 2026-03-21
     - Final runbook published:
       `docs/operations/production_operations_runbook_v1.md`.
 
-- [ ] NEST-120 Execute staging rehearsal and production go-live sign-off
-  - Status: BACKLOG
+- [x] NEST-120 Execute staging rehearsal and production go-live sign-off
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-118, NEST-119
   - Done when:
     - full rehearsal run is executed end-to-end,
     - sign-off packet captures test evidence and rollback verification,
     - release status is marked ready for production launch window.
+  - Done on: 2026-03-21
+  - Notes:
+    - Rehearsal and sign-off packet published in
+      `docs/operations/staging_rehearsal_go_live_signoff_2026-03-21.md`.
+    - End-to-end dry-run rehearsal commands executed for deploy, mobile release,
+      and post-deploy smoke suite.
 
 - [x] NEST-114 Reconcile planning docs status with task board reality
   - Status: DONE
