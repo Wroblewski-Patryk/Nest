@@ -25,11 +25,31 @@ class AuthApiTest extends TestCase
         $response
             ->assertCreated()
             ->assertJsonPath('data.user.email', 'alice@example.com')
-            ->assertJsonPath('data.user.timezone', 'Europe/Berlin');
+            ->assertJsonPath('data.user.timezone', 'Europe/Berlin')
+            ->assertJsonPath('data.user.language', 'en')
+            ->assertJsonPath('data.user.locale', 'en-US');
 
         $this->assertDatabaseHas('users', [
             'email' => 'alice@example.com',
         ]);
+    }
+
+    public function test_user_can_register_with_explicit_localization_preferences(): void
+    {
+        $response = $this->postJson('/api/v1/auth/register', [
+            'name' => 'Ala',
+            'email' => 'ala@example.com',
+            'password' => 'secret-pass',
+            'password_confirmation' => 'secret-pass',
+            'language' => 'pl',
+            'locale' => 'pl-PL',
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('data.user.email', 'ala@example.com')
+            ->assertJsonPath('data.user.language', 'pl')
+            ->assertJsonPath('data.user.locale', 'pl-PL');
     }
 
     public function test_user_can_login_with_valid_credentials(): void
@@ -57,7 +77,7 @@ class AuthApiTest extends TestCase
         $user = User::factory()->create([
             'tenant_id' => $tenant->id,
             'timezone' => 'UTC',
-            'settings' => ['theme' => 'light'],
+            'settings' => ['theme' => 'light', 'language' => 'en', 'locale' => 'en-US'],
         ]);
 
         Sanctum::actingAs($user);
@@ -65,16 +85,22 @@ class AuthApiTest extends TestCase
         $this->getJson('/api/v1/auth/me')
             ->assertOk()
             ->assertJsonPath('data.timezone', 'UTC')
-            ->assertJsonPath('data.settings.theme', 'light');
+            ->assertJsonPath('data.settings.theme', 'light')
+            ->assertJsonPath('data.language', 'en')
+            ->assertJsonPath('data.locale', 'en-US');
 
         $this->patchJson('/api/v1/auth/settings', [
             'timezone' => 'Europe/Warsaw',
             'settings' => ['theme' => 'dark', 'daily_digest' => true],
+            'language' => 'pl',
+            'locale' => 'pl-PL',
         ])
             ->assertOk()
             ->assertJsonPath('data.timezone', 'Europe/Warsaw')
             ->assertJsonPath('data.settings.theme', 'dark')
-            ->assertJsonPath('data.settings.daily_digest', true);
+            ->assertJsonPath('data.settings.daily_digest', true)
+            ->assertJsonPath('data.language', 'pl')
+            ->assertJsonPath('data.locale', 'pl-PL');
     }
 
     public function test_guest_cannot_access_protected_profile_routes(): void

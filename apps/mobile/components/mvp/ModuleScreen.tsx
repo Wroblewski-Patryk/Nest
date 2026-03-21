@@ -4,6 +4,7 @@ import type {
   TelemetryEventName,
   UiAsyncState,
 } from '@nest/shared-types';
+import { resolveLanguage, translate } from '@nest/shared-types';
 
 type Metric = {
   label: string;
@@ -112,10 +113,12 @@ export function ModuleScreen({
   conflicts,
   connections,
 }: ModuleScreenProps) {
+  const language = resolveLanguage(process.env.EXPO_PUBLIC_NEST_DEFAULT_LANGUAGE);
+
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <View style={styles.hero}>
-        <Text style={styles.kicker}>Nest MVP</Text>
+        <Text style={styles.kicker}>{translate('app.kicker', language)}</Text>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subtitle}>{subtitle}</Text>
         <View style={styles.metaRow}>

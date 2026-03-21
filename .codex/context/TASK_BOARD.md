@@ -231,14 +231,27 @@ Last updated: 2026-03-21
       `docs/ux/legacy_ux_evidence_gate_closure_2026-03-21.md`.
   - Done on: 2026-03-21
 
-- [ ] NEST-109 Deliver localization foundation (en/pl) across API, web, and mobile
-  - Status: BACKLOG
+- [x] NEST-109 Deliver localization foundation (en/pl) across API, web, and mobile
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-106
   - Done when:
     - shared localization contracts/resources exist in backend and both clients,
     - `en` and `pl` are available with deterministic fallback behavior,
     - locale formatting baseline is verified in web/mobile.
+  - Done on: 2026-03-21
+  - Notes:
+    - Shared localization contracts and runtime helpers added in
+      `packages/shared-types/src/localization.js` and exposed via shared client
+      types (`index.d.ts`, `client.d.ts`).
+    - Backend auth/settings now persist and expose normalized `language` and
+      `locale` with deterministic fallback (`en`/`en-US`, `pl`/`pl-PL`).
+    - Web/mobile clients consume shared localization helpers for translated app
+      kicker and locale-aware date-time rendering baseline.
+    - Validation:
+      `php artisan test --filter=AuthApiTest`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/mobile exec expo export --platform web`.
 
 - [ ] NEST-110 Implement onboarding + account localization preference flows
   - Status: BACKLOG

@@ -2,11 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { BillingEventItem, BillingSubscriptionItem, UiAsyncState } from "@nest/shared-types";
+import { formatLocalizedDateTime, resolveLanguage } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
 import { STATE_LABELS } from "@/lib/ux-contract";
 
 export default function BillingPage() {
+  const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const [state, setState] = useState<UiAsyncState>("loading");
   const [detail, setDetail] = useState("Loading billing subscription and invoices...");
   const [subscription, setSubscription] = useState<BillingSubscriptionItem | null>(null);
@@ -127,7 +129,7 @@ export default function BillingPage() {
                 <strong>{event.event_name}</strong>
                 <p>{event.provider}</p>
               </div>
-              <span className="pill">{new Date(event.occurred_at).toLocaleString("pl-PL")}</span>
+              <span className="pill">{formatLocalizedDateTime(event.occurred_at, language)}</span>
             </li>
           ))}
         </ul>

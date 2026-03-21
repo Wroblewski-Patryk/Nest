@@ -23,6 +23,8 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
             'timezone' => ['nullable', 'timezone'],
+            'language' => ['nullable', Rule::in(['en', 'pl'])],
+            'locale' => ['nullable', 'string', 'max:16'],
         ]);
 
         $tenant = Tenant::query()->create([
@@ -37,7 +39,10 @@ class AuthController extends Controller
             'email' => $payload['email'],
             'password' => $payload['password'],
             'timezone' => $payload['timezone'] ?? 'UTC',
-            'settings' => [],
+            'settings' => [
+                'language' => $payload['language'] ?? 'en',
+                'locale' => $payload['locale'] ?? (($payload['language'] ?? 'en') === 'pl' ? 'pl-PL' : 'en-US'),
+            ],
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -129,13 +134,26 @@ class AuthController extends Controller
      */
     private function serializeUser(User $user): array
     {
+        $settings = is_array($user->settings) ? $user->settings : [];
+        $language = in_array($settings['language'] ?? null, ['en', 'pl'], true)
+            ? $settings['language']
+            : 'en';
+        $locale = is_string($settings['locale'] ?? null) && $settings['locale'] !== ''
+            ? $settings['locale']
+            : ($language === 'pl' ? 'pl-PL' : 'en-US');
+
         return [
             'id' => $user->id,
             'tenant_id' => $user->tenant_id,
             'name' => $user->name,
             'email' => $user->email,
             'timezone' => $user->timezone,
-            'settings' => $user->settings ?? [],
+            'language' => $language,
+            'locale' => $locale,
+            'settings' => array_merge($settings, [
+                'language' => $language,
+                'locale' => $locale,
+            ]),
         ];
     }
 }

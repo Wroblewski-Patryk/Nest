@@ -6,6 +6,7 @@ import type {
   BillingSubscriptionItem,
   InsightsTrendResponse,
   LifeAreaBalanceResponse,
+  SupportedLanguage,
 } from "./index";
 
 export type ApiCollectionResponse<TItem> = {
@@ -149,3 +150,12 @@ export function createNestApiClient(options: {
   getToken?: () => string | undefined | null;
   timeoutMs?: number;
 }): NestApiClient;
+
+export function resolveLanguage(value: unknown): SupportedLanguage;
+export function resolveLocale(language?: SupportedLanguage | string | null, override?: string | null): string;
+export function translate(key: string, language?: SupportedLanguage | string | null, fallback?: string): string;
+export function formatLocalizedDateTime(
+  value: string | number | Date,
+  language?: SupportedLanguage | string | null,
+  localeOverride?: string | null
+): string;

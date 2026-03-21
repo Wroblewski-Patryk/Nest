@@ -46,6 +46,7 @@ export interface ApiCollectionMeta {
 }
 
 export type UiAsyncState = "loading" | "empty" | "error" | "success";
+export type SupportedLanguage = "en" | "pl";
 
 export type TelemetryEventName =
   | "screen.tasks.view"
@@ -264,6 +265,15 @@ export type ApiErrorEnvelope = {
     contract_version: string;
   };
 };
+
+export function resolveLanguage(value: unknown): SupportedLanguage;
+export function resolveLocale(language?: SupportedLanguage | string | null, override?: string | null): string;
+export function translate(key: string, language?: SupportedLanguage | string | null, fallback?: string): string;
+export function formatLocalizedDateTime(
+  value: string | number | Date,
+  language?: SupportedLanguage | string | null,
+  localeOverride?: string | null
+): string;
 
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;

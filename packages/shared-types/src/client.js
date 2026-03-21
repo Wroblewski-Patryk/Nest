@@ -1,5 +1,12 @@
 const DEFAULT_TIMEOUT_MS = 10000;
 
+export {
+  formatLocalizedDateTime,
+  resolveLanguage,
+  resolveLocale,
+  translate,
+} from "./localization.js";
+
 /**
  * @param {object} options
  * @param {string} options.baseUrl

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { resolveLanguage, translate } from "@nest/shared-types";
 import { moduleReadiness } from "@/lib/mvp-snapshot";
 import { STATE_LABELS } from "@/lib/ux-contract";
 
@@ -10,11 +11,13 @@ type WorkspaceShellProps = {
 };
 
 export function WorkspaceShell({ title, subtitle, children }: WorkspaceShellProps) {
+  const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
+
   return (
     <div className="workspace-bg">
       <div className="workspace-container">
         <header className="workspace-hero">
-          <p className="workspace-kicker">Nest LifeOS MVP</p>
+          <p className="workspace-kicker">{translate("app.kicker", language)}</p>
           <h1>{title}</h1>
           <p>{subtitle}</p>
         </header>

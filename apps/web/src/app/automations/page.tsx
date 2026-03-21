@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { AutomationRuleItem, AutomationRunItem, UiAsyncState } from "@nest/shared-types";
+import { formatLocalizedDateTime, resolveLanguage } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
 import { STATE_LABELS } from "@/lib/ux-contract";
@@ -13,6 +14,7 @@ const ACTION_OPTIONS = [
 type ActionOption = (typeof ACTION_OPTIONS)[number];
 
 export default function AutomationsPage() {
+  const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const [state, setState] = useState<UiAsyncState>("loading");
   const [detail, setDetail] = useState("Loading automation rules...");
   const [rules, setRules] = useState<AutomationRuleItem[]>([]);
@@ -290,7 +292,7 @@ export default function AutomationsPage() {
                 {run.error_code ? <p>Error: {run.error_code}</p> : null}
               </div>
               <div className="row-inline">
-                <span className="pill">{new Date(run.started_at).toLocaleTimeString("pl-PL")}</span>
+                <span className="pill">{formatLocalizedDateTime(run.started_at, language)}</span>
                 <button className="pill-link" onClick={() => inspectRun(run.id)} disabled={busyRunId === run.id}>
                   Inspect
                 </button>

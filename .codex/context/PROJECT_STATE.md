@@ -295,6 +295,10 @@ Last updated: 2026-03-21
   parity captures refreshed, and closure report confirms source/parity/state/
   responsive/a11y evidence gate coverage for legacy UX-heavy task set
   (`docs/ux/legacy_ux_evidence_gate_closure_2026-03-21.md`)
+- `NEST-109` completed: localization foundation baseline (`en` + `pl`) is now
+  active across API/web/mobile with shared runtime helpers, deterministic
+  language/locale fallback, and locale-aware date-time formatting baseline
+  (`docs/modules/localization_foundation_v1.md`)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -444,7 +448,7 @@ Last updated: 2026-03-21
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: complete post-fix UX re-review (`NEST-113`),
-  deliver localization/offline-sync baseline (`NEST-109` to
+  deliver localization/offline-sync baseline (`NEST-110` to
   `NEST-112`), and complete deploy readiness wave for server + phone
   (`NEST-115` to `NEST-120`).
 
