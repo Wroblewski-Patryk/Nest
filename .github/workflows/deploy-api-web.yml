@@ -1,0 +1,51 @@
+name: Deploy API and Web
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deploy target
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+      dry_run:
+        description: Run deployment in dry-run mode
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  deploy:
+    name: Deploy API+Web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Execute deploy pipeline
+        shell: pwsh
+        run: |
+          if ("${{ inputs.dry_run }}" -eq "true") {
+            ./scripts/release/deploy-api-web.ps1 -Environment "${{ inputs.environment }}" -DryRun
+          } else {
+            ./scripts/release/deploy-api-web.ps1 -Environment "${{ inputs.environment }}"
+          }

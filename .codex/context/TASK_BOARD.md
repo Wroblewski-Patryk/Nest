@@ -351,14 +351,23 @@ Last updated: 2026-03-21
     - Production topology and environment contract published in
       `docs/operations/production_topology_environment_contract_v1.md`.
 
-- [ ] NEST-116 Implement production deploy pipeline for API + web
-  - Status: BACKLOG
+- [x] NEST-116 Implement production deploy pipeline for API + web
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-115
   - Done when:
     - deploy pipeline performs build, migration, health checks, and rollback
       hooks,
     - staging and production deployment paths are documented and tested.
+  - Done on: 2026-03-21
+  - Notes:
+    - Added deploy workflow: `.github/workflows/deploy-api-web.yml`.
+    - Added scripted deploy pipeline with dry-run support:
+      `scripts/release/deploy-api-web.ps1`.
+    - Added documentation:
+      `docs/operations/api_web_deploy_pipeline_v1.md`.
+    - Validation:
+      `powershell -ExecutionPolicy Bypass -File scripts/release/deploy-api-web.ps1 -Environment staging -DryRun`.
 
 - [ ] NEST-117 Prepare mobile release pipeline for physical devices
   - Status: BACKLOG
