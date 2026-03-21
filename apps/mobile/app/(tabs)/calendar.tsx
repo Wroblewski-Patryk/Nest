@@ -130,6 +130,7 @@ export default function CalendarScreen() {
           provider: conflict.provider,
           entityType: conflict.internal_entity_type,
           fields: conflict.conflict_fields,
+          comparison: conflict.comparison,
         })),
         onResolve: resolveConflict,
         resolvingId,

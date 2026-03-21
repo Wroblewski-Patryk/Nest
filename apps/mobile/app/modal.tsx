@@ -32,9 +32,9 @@ export default function ModalScreen() {
     setQueue(enqueueOfflineAction(action));
   };
 
-  const forceSync = async () => {
+  const forceSync = async (queueSource: MobileOfflineQueueItem[] = queue) => {
     setIsSyncing(true);
-    const nextQueue = [...queue].sort((a, b) => a.created_at.localeCompare(b.created_at));
+    const nextQueue = [...queueSource].sort((a, b) => a.created_at.localeCompare(b.created_at));
 
     try {
       for (const item of nextQueue) {
@@ -66,6 +66,17 @@ export default function ModalScreen() {
       setQueue(nextQueue);
       setIsSyncing(false);
     }
+  };
+
+  const retrySync = async () => {
+    const retriable = queue.map((item) =>
+      item.status === 'failed'
+        ? { ...item, status: 'pending' as const, last_error: undefined }
+        : item
+    );
+    setQueue(retriable);
+    saveOfflineQueue(retriable);
+    await forceSync(retriable);
   };
 
   const pending = queue.filter((item) => item.status === 'pending').length;
@@ -105,6 +116,13 @@ export default function ModalScreen() {
         disabled={isSyncing || pending === 0}
       >
         <Text style={styles.languageButtonText}>{isSyncing ? 'Syncing...' : 'Force Sync'}</Text>
+      </Pressable>
+      <Pressable
+        style={styles.languageButton}
+        onPress={() => void retrySync()}
+        disabled={isSyncing}
+      >
+        <Text style={styles.languageButtonText}>Retry Sync</Text>
       </Pressable>
       <Text style={styles.description}>Pending: {pending} | Total: {queue.length}</Text>
       <EditScreenInfo path="app/modal.tsx" />

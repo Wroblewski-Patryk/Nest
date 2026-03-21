@@ -61,6 +61,7 @@ export type IntegrationConflictItem = {
   external_id: string | null;
   status: "open" | "resolved";
   conflict_fields: string[];
+  comparison?: Record<string, { base: string; local: string; remote: string }>;
   detected_at: string;
   last_seen_at: string;
 };

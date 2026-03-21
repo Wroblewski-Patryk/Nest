@@ -301,8 +301,8 @@ Last updated: 2026-03-21
       `pnpm --dir apps/web build`,
       `pnpm --dir apps/mobile exec expo export --platform web`.
 
-- [ ] NEST-112 Implement manual sync retry + conflict-resolution baseline
-  - Status: BACKLOG
+- [x] NEST-112 Implement manual sync retry + conflict-resolution baseline
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-111
   - Done when:
@@ -310,6 +310,18 @@ Last updated: 2026-03-21
       idempotency checks,
     - conflict screen shows base/local/remote values,
     - user can choose final resolution on web and mobile.
+  - Done on: 2026-03-21
+  - Notes:
+    - Added manual retry sync flow in web/mobile options with queue restart
+      semantics and synced-item skipping.
+    - Extended conflict API response and shared contracts with
+      `comparison.base|local|remote` values and fallback handling.
+    - Web/mobile conflict UI now displays base/local/remote values and keeps
+      explicit user resolution choices (`accept`, `override`).
+    - Validation:
+      `php artisan test --filter=IntegrationConflictQueueApiTest`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/mobile exec expo export --platform web`.
 
 - [ ] NEST-113 Re-run full UX evidence gate after parity fixes
   - Status: BACKLOG

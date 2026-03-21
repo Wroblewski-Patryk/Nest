@@ -38,6 +38,7 @@ type ModuleScreenProps = {
       provider: string;
       entityType: string;
       fields: string[];
+      comparison?: Record<string, { base: string; local: string; remote: string }>;
     }>;
     onResolve: (conflictId: string, action: 'accept' | 'override') => void;
     resolvingId?: string | null;
@@ -214,6 +215,14 @@ export function ModuleScreen({
                     <Text style={styles.rowDetail}>
                       {conflict.entityType} - {conflict.fields.join(', ')}
                     </Text>
+                    {conflict.fields[0] ? (
+                      <Text style={styles.rowDetail}>
+                        base/local/remote ({conflict.fields[0]}):{' '}
+                        {conflict.comparison?.[conflict.fields[0]]?.base ?? '(unavailable)'} /{' '}
+                        {conflict.comparison?.[conflict.fields[0]]?.local ?? '(unavailable)'} /{' '}
+                        {conflict.comparison?.[conflict.fields[0]]?.remote ?? '(unavailable)'}
+                      </Text>
+                    ) : null}
                   </View>
                   <View style={styles.badge}>
                     <Text style={styles.badgeText}>open</Text>

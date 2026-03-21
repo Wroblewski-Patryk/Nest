@@ -65,9 +65,9 @@ export function OfflineSyncCard() {
     saveQueue(next);
   };
 
-  const forceSync = async () => {
+  const forceSync = async (queueSource: QueueItem[] = queue) => {
     setIsSyncing(true);
-    const nextQueue = [...queue].sort((a, b) => a.created_at.localeCompare(b.created_at));
+    const nextQueue = [...queueSource].sort((a, b) => a.created_at.localeCompare(b.created_at));
 
     try {
       for (const item of nextQueue) {
@@ -108,6 +108,17 @@ export function OfflineSyncCard() {
     }
   };
 
+  const retrySync = async () => {
+    const retriable = queue.map((item) =>
+      item.status === "failed"
+        ? { ...item, status: "pending" as const, last_error: undefined }
+        : item
+    );
+    setQueue(retriable);
+    saveQueue(retriable);
+    await forceSync(retriable);
+  };
+
   return (
     <div className="panel-content">
       <p className="callout">{detail}</p>
@@ -123,6 +134,9 @@ export function OfflineSyncCard() {
         </button>
         <button type="button" className="btn-primary" onClick={() => void forceSync()} disabled={isSyncing || pendingCount === 0}>
           {isSyncing ? "Syncing..." : "Force Sync"}
+        </button>
+        <button type="button" className="btn-secondary" onClick={() => void retrySync()} disabled={isSyncing}>
+          Retry Sync
         </button>
       </div>
       <p className="mono-note">

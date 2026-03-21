@@ -81,6 +81,14 @@ export function ConflictQueueCard() {
                   <p>
                     {conflict.internal_entity_type} • fields: {conflict.conflict_fields.join(", ")}
                   </p>
+                  {conflict.conflict_fields[0] ? (
+                    <p className="mono-note">
+                      base/local/remote ({conflict.conflict_fields[0]}):{" "}
+                      {conflict.comparison?.[conflict.conflict_fields[0]]?.base ?? "(unavailable)"} /{" "}
+                      {conflict.comparison?.[conflict.conflict_fields[0]]?.local ?? "(unavailable)"} /{" "}
+                      {conflict.comparison?.[conflict.conflict_fields[0]]?.remote ?? "(unavailable)"}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="row-inline">
                   <button

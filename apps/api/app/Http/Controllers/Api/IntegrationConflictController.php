@@ -29,9 +29,28 @@ class IntegrationConflictController extends Controller
         $provider = isset($payload['provider']) ? (string) $payload['provider'] : null;
 
         $conflicts = $service->listOpenForUser($user, $provider, $perPage, $page);
+        $items = array_map(function (IntegrationSyncConflict $conflict): array {
+            $conflictFields = is_array($conflict->conflict_fields) ? $conflict->conflict_fields : [];
+            $payload = is_array($conflict->resolution_payload) ? $conflict->resolution_payload : [];
+            $comparison = is_array($payload['comparison'] ?? null) ? $payload['comparison'] : [];
+
+            foreach ($conflictFields as $field) {
+                if (! isset($comparison[$field]) || ! is_array($comparison[$field])) {
+                    $comparison[$field] = [
+                        'base' => '(unavailable)',
+                        'local' => '(unavailable)',
+                        'remote' => '(unavailable)',
+                    ];
+                }
+            }
+
+            return array_merge($conflict->toArray(), [
+                'comparison' => $comparison,
+            ]);
+        }, $conflicts->items());
 
         return response()->json([
-            'data' => $conflicts->items(),
+            'data' => $items,
             'meta' => [
                 'page' => $conflicts->currentPage(),
                 'per_page' => $conflicts->perPage(),
