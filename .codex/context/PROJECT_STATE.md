@@ -291,10 +291,10 @@ Last updated: 2026-03-21
   `docs/ux_parity_evidence/2026-03-21/capture-manifest.json`,
   `docs/ux_parity_evidence/2026-03-21/web/*.png`,
   `docs/ux_parity_evidence/2026-03-21/mobile/*.png`)
-- `NEST-106` in progress: web parity fixes (wave 1) are implemented with
-  stronger action-entry CTAs, improved calendar integration hierarchy, and
-  refreshed web parity captures for legacy UX-heavy tasks; mobile parity fixes
-  (wave 2) are now also applied with refreshed mobile parity captures
+- `NEST-106` completed: web/mobile legacy UX parity fix waves are implemented,
+  parity captures refreshed, and closure report confirms source/parity/state/
+  responsive/a11y evidence gate coverage for legacy UX-heavy task set
+  (`docs/ux/legacy_ux_evidence_gate_closure_2026-03-21.md`)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -443,8 +443,8 @@ Last updated: 2026-03-21
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: close UX remediation (`NEST-103`, `NEST-106`,
-  `NEST-113`), deliver localization/offline-sync baseline (`NEST-109` to
+- Current execution focus: complete post-fix UX re-review (`NEST-113`),
+  deliver localization/offline-sync baseline (`NEST-109` to
   `NEST-112`), and complete deploy readiness wave for server + phone
   (`NEST-115` to `NEST-120`).
 

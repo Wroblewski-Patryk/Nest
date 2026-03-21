@@ -195,8 +195,8 @@ Last updated: 2026-03-21
       with code-evidence references.
     - Captured responsive follow-up inputs for `NEST-106`.
 
-- [ ] NEST-106 Execute legacy UX visual parity fixes and re-run UX evidence gate
-  - Status: IN_PROGRESS
+- [x] NEST-106 Execute legacy UX visual parity fixes and re-run UX evidence gate
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-103, NEST-104, NEST-105
   - Done when:
@@ -227,6 +227,9 @@ Last updated: 2026-03-21
     - Refreshed mobile parity captures for `NEST-022`, `NEST-037`, `NEST-041`,
       `NEST-042`, `NEST-050`, `NEST-068` in
       `docs/ux_parity_evidence/2026-03-21/mobile/*.png`.
+    - Evidence gate closure report published in
+      `docs/ux/legacy_ux_evidence_gate_closure_2026-03-21.md`.
+  - Done on: 2026-03-21
 
 - [ ] NEST-109 Deliver localization foundation (en/pl) across API, web, and mobile
   - Status: BACKLOG
