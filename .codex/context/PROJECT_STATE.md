@@ -308,6 +308,8 @@ Last updated: 2026-03-21
 - `NEST-112` completed: manual retry sync baseline and conflict comparison UI
   are active in web/mobile with base/local/remote values and explicit user
   resolution actions (`docs/modules/manual_sync_retry_conflict_resolution_baseline_v1.md`)
+- `NEST-113` completed: full UX evidence gate re-run confirms `PASS 8/8` for
+  legacy UX-heavy task set (`docs/ux/full_ux_evidence_gate_rerun_2026-03-21.md`)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -456,8 +458,8 @@ Last updated: 2026-03-21
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: complete post-fix UX re-review (`NEST-113`),
-  reconcile planning/docs alignment (`NEST-114`, `NEST-121`), and complete
+- Current execution focus: reconcile planning/docs alignment (`NEST-114`,
+  `NEST-121`), and complete
   deploy readiness wave for server + phone
   (`NEST-115` to `NEST-120`).
 

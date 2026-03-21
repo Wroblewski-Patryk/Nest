@@ -323,14 +323,20 @@ Last updated: 2026-03-21
       `pnpm --dir apps/web build`,
       `pnpm --dir apps/mobile exec expo export --platform web`.
 
-- [ ] NEST-113 Re-run full UX evidence gate after parity fixes
-  - Status: BACKLOG
+- [x] NEST-113 Re-run full UX evidence gate after parity fixes
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-106
   - Done when:
     - legacy UX-heavy tasks are re-reviewed against approved baseline,
     - pass/fail report is published with evidence links,
     - unresolved gaps are converted into explicit execution tasks.
+  - Done on: 2026-03-21
+  - Notes:
+    - Full re-run report published in
+      `docs/ux/full_ux_evidence_gate_rerun_2026-03-21.md`.
+    - Result: `PASS 8 / 8`, no further execution tasks required for legacy UX
+      evidence gate closure in this wave.
 
 - [ ] NEST-115 Define production topology and environment contract
   - Status: BACKLOG
