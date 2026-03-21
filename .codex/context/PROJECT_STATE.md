@@ -331,6 +331,9 @@ Last updated: 2026-03-21
   critical paths in staging/production candidate flows
   (`.github/workflows/post-deploy-smoke.yml`,
   `scripts/release/post-deploy-smoke.ps1`)
+- `NEST-119` completed: production operations runbook is finalized with
+  incident/rollback/escalation procedures, release ownership, and monitoring
+  checklist (`docs/operations/production_operations_runbook_v1.md`)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -480,7 +483,7 @@ Last updated: 2026-03-21
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: complete deploy readiness wave for server + phone
-  (`NEST-119` to `NEST-120`).
+  (`NEST-120`).
 
 ## Auth, AI, Offline, Notifications
 

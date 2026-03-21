@@ -406,13 +406,17 @@ Last updated: 2026-03-21
     - Validation:
       `powershell -ExecutionPolicy Bypass -File scripts/release/post-deploy-smoke.ps1 -Environment staging -DryRun`.
 
-- [ ] NEST-119 Finalize production operations runbook
-  - Status: BACKLOG
+- [x] NEST-119 Finalize production operations runbook
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-116, NEST-118
   - Done when:
     - incident, rollback, and escalation procedures are fully documented,
     - release ownership and monitoring checklist are explicit.
+  - Done on: 2026-03-21
+  - Notes:
+    - Final runbook published:
+      `docs/operations/production_operations_runbook_v1.md`.
 
 - [ ] NEST-120 Execute staging rehearsal and production go-live sign-off
   - Status: BACKLOG
