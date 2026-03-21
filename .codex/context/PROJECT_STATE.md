@@ -165,6 +165,8 @@ Last updated: 2026-03-21
 
 - Architecture and documentation foundation complete
 - Planning baseline complete for MVP and full-product roadmap
+- Next execution wave plan documented in
+  `docs/planning/next_execution_wave_2026-03-21.md`
 - `NEST-001` completed: monorepo structure approved and documented in
   `docs/engineering/monorepo_structure.md`
 - `NEST-002` completed: Laravel backend skeleton bootstrapped in `apps/api`
@@ -434,8 +436,9 @@ Last updated: 2026-03-21
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute remaining UX remediation execution tasks
-  `NEST-103`, `NEST-105`, and `NEST-106`
+- Current execution focus: execute remaining UX remediation tasks
+  (`NEST-103`, `NEST-106`) and start localization/offline-sync baseline
+  (`NEST-109`, `NEST-110`, `NEST-111`, `NEST-112`)
 
 ## Auth, AI, Offline, Notifications
 
@@ -456,6 +459,7 @@ Last updated: 2026-03-21
 - MVP execution backlog: `docs/planning/implementation_plan_mvp.md`
 - Full-product execution backlog: `docs/planning/implementation_plan_full.md`
 - Roadmap overview: `docs/product/roadmap.md`
+- Next execution wave: `docs/planning/next_execution_wave_2026-03-21.md`
 
 ## Confirmed Decisions (2026-03-15)
 

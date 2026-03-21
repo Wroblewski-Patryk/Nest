@@ -192,6 +192,61 @@ Last updated: 2026-03-21
       gates,
     - board pass/fail records are updated with closure evidence.
 
+- [ ] NEST-109 Deliver localization foundation (en/pl) across API, web, and mobile
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-106
+  - Done when:
+    - shared localization contracts and translation resources are enabled,
+    - English and Polish are available with deterministic fallback behavior,
+    - locale-aware formatting baseline is verified in both clients.
+
+- [ ] NEST-110 Implement onboarding + account localization preference flows
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-109
+  - Done when:
+    - pre-auth language selection is available,
+    - onboarding enforces `language` + `display name`,
+    - saved preferences apply immediately across active session and clients.
+
+- [ ] NEST-111 Implement offline queue and manual force-sync baseline
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-109
+  - Done when:
+    - offline changes are queued locally,
+    - manual force-sync from settings/options processes queue oldest-first,
+    - sync stops on first error with explicit user-facing reason.
+
+- [ ] NEST-112 Implement manual sync retry + conflict resolution baseline
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-111
+  - Done when:
+    - retry starts from queue beginning and skips already-synced items via
+      idempotency checks,
+    - conflict view presents base/local/remote values,
+    - user-driven final resolution flow is available in web and mobile.
+
+- [ ] NEST-113 Re-run full UX evidence gate after parity fixes
+  - Status: BACKLOG
+  - Owner: Review Agent
+  - Depends on: NEST-106
+  - Done when:
+    - legacy UX-heavy tasks are re-reviewed against approved baseline,
+    - pass/fail is published per task with evidence links,
+    - unresolved gaps are converted into explicit execution tasks.
+
+- [ ] NEST-114 Reconcile planning docs status with task board reality
+  - Status: BACKLOG
+  - Owner: Documentation Agent
+  - Depends on: NEST-113
+  - Done when:
+    - `docs/planning/implementation_plan_full.md` status checkboxes reflect
+      actual `TASK_BOARD` completion state,
+    - planning docs and board have no status drift for completed phases.
+
 - [x] NEST-015 Implement journal and life areas module
   - Status: DONE
   - Owner: Execution Agent
