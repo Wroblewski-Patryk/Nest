@@ -74,6 +74,12 @@ export function createNestApiClient(options) {
 
   return {
     request,
+    getLocalizationOptions: () => request("/auth/localization/options"),
+    completeOnboarding: (payload) =>
+      request("/auth/onboarding", {
+        method: "POST",
+        body: payload,
+      }),
     getLists: (query = {}) => request("/lists", { query }),
     getTasks: (query = {}) => request("/tasks", { query }),
     getHabits: (query = {}) => request("/habits", { query }),

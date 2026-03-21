@@ -16,6 +16,22 @@ use InvalidArgumentException;
 
 class AuthController extends Controller
 {
+    public function localizationOptions(Request $request): JsonResponse
+    {
+        $acceptLanguage = (string) $request->header('Accept-Language', '');
+        $detectedLanguage = Str::startsWith(Str::lower($acceptLanguage), 'pl') ? 'pl' : 'en';
+
+        return response()->json([
+            'data' => [
+                'detected_language' => $detectedLanguage,
+                'supported_languages' => [
+                    ['code' => 'en', 'label' => 'English'],
+                    ['code' => 'pl', 'label' => 'Polski'],
+                ],
+            ],
+        ]);
+    }
+
     public function register(Request $request): JsonResponse
     {
         $payload = $request->validate([
@@ -141,6 +157,7 @@ class AuthController extends Controller
         $locale = is_string($settings['locale'] ?? null) && $settings['locale'] !== ''
             ? $settings['locale']
             : ($language === 'pl' ? 'pl-PL' : 'en-US');
+        $onboardingCompletedAt = $settings['onboarding_completed_at'] ?? null;
 
         return [
             'id' => $user->id,
@@ -150,6 +167,7 @@ class AuthController extends Controller
             'timezone' => $user->timezone,
             'language' => $language,
             'locale' => $locale,
+            'onboarding_required' => ! is_string($onboardingCompletedAt) || $onboardingCompletedAt === '',
             'settings' => array_merge($settings, [
                 'language' => $language,
                 'locale' => $locale,

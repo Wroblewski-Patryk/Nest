@@ -71,6 +71,15 @@ class AuthApiTest extends TestCase
             ->assertJsonPath('data.user.email', 'john@example.com');
     }
 
+    public function test_pre_auth_localization_options_detect_language_from_header(): void
+    {
+        $this->withHeaders([
+            'Accept-Language' => 'pl-PL,pl;q=0.9,en;q=0.8',
+        ])->getJson('/api/v1/auth/localization/options')
+            ->assertOk()
+            ->assertJsonPath('data.detected_language', 'pl');
+    }
+
     public function test_authenticated_user_can_read_and_update_settings(): void
     {
         $tenant = Tenant::factory()->create();
@@ -101,6 +110,32 @@ class AuthApiTest extends TestCase
             ->assertJsonPath('data.settings.daily_digest', true)
             ->assertJsonPath('data.language', 'pl')
             ->assertJsonPath('data.locale', 'pl-PL');
+    }
+
+    public function test_onboarding_requires_display_name_and_language_and_applies_preferences(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create([
+            'tenant_id' => $tenant->id,
+            'name' => 'Temp',
+            'settings' => ['language' => 'en', 'locale' => 'en-US'],
+        ]);
+        Sanctum::actingAs($user);
+
+        $this->postJson('/api/v1/auth/onboarding', [])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['display_name', 'language']);
+
+        $this->postJson('/api/v1/auth/onboarding', [
+            'display_name' => 'Alicja',
+            'language' => 'pl',
+            'locale' => 'pl-PL',
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.name', 'Alicja')
+            ->assertJsonPath('data.language', 'pl')
+            ->assertJsonPath('data.locale', 'pl-PL')
+            ->assertJsonPath('data.onboarding_required', false);
     }
 
     public function test_guest_cannot_access_protected_profile_routes(): void

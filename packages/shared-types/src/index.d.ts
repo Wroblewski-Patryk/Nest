@@ -241,6 +241,14 @@ export type BillingEventItem = {
   payload: Record<string, unknown> | null;
 };
 
+export type LocalizationOptionsResponse = {
+  detected_language: SupportedLanguage;
+  supported_languages: Array<{
+    code: SupportedLanguage;
+    label: string;
+  }>;
+};
+
 export type ApiErrorCode =
   | "validation_failed"
   | "auth_required"
@@ -277,6 +285,12 @@ export function formatLocalizedDateTime(
 
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
+  getLocalizationOptions(): Promise<{ data: LocalizationOptionsResponse }>;
+  completeOnboarding(payload: {
+    display_name: string;
+    language: SupportedLanguage;
+    locale?: string | null;
+  }): Promise<{ data: Record<string, unknown> }>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
   getTasks(query?: Record<string, unknown>): Promise<ApiCollectionResponse<TaskItem>>;
   getHabits(query?: Record<string, unknown>): Promise<ApiCollectionResponse<HabitItem>>;

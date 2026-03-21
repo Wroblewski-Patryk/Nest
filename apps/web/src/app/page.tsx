@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
+import { PreAuthLanguageSelector } from "@/components/pre-auth-language-selector";
 import { moduleReadiness } from "@/lib/mvp-snapshot";
 
 export default function HomePage() {
@@ -29,6 +30,10 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
+      </Panel>
+
+      <Panel title="Pre-Auth Language">
+        <PreAuthLanguageSelector />
       </Panel>
     </WorkspaceShell>
   );

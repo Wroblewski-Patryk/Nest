@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function (): void {
     Route::post('/auth/register', [AuthController::class, 'register']);
     Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::get('/auth/localization/options', [AuthController::class, 'localizationOptions']);
     Route::post('/auth/oauth/{provider}/exchange', [AuthController::class, 'oauthExchange']);
     Route::post('/auth/orgs/{organizationSlug}/sso/{providerSlug}/exchange', [OrganizationSsoController::class, 'exchange']);
     Route::post('/billing/providers/stripe/webhook', [BillingWebhookController::class, 'stripe']);
@@ -44,6 +45,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::get('/auth/me', [UserSettingsController::class, 'me']);
         Route::patch('/auth/settings', [UserSettingsController::class, 'update']);
+        Route::post('/auth/onboarding', [UserSettingsController::class, 'completeOnboarding']);
         Route::get('/billing/subscription', [BillingSubscriptionController::class, 'show']);
         Route::get('/billing/events', [BillingEventController::class, 'index']);
         Route::post('/billing/subscription/start-trial', [BillingSubscriptionController::class, 'startTrial']);

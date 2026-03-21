@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 
 class UserSettingsController extends Controller
@@ -58,6 +59,33 @@ class UserSettingsController extends Controller
         ]);
     }
 
+    public function completeOnboarding(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $payload = $request->validate([
+            'display_name' => ['required', 'string', 'max:255'],
+            'language' => ['required', Rule::in(['en', 'pl'])],
+            'locale' => ['nullable', 'string', 'max:16'],
+        ]);
+
+        $settings = is_array($user->settings) ? $user->settings : [];
+        $settings['language'] = $payload['language'];
+        $settings['locale'] = $payload['locale'] ?? ($payload['language'] === 'pl' ? 'pl-PL' : 'en-US');
+        $settings['onboarding_completed_at'] = Carbon::now()->toIso8601String();
+
+        $user->fill([
+            'name' => $payload['display_name'],
+            'settings' => $settings,
+        ]);
+        $user->save();
+
+        return response()->json([
+            'data' => $this->serializeUser($user->fresh()),
+        ]);
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -70,6 +98,7 @@ class UserSettingsController extends Controller
         $locale = is_string($settings['locale'] ?? null) && $settings['locale'] !== ''
             ? $settings['locale']
             : ($language === 'pl' ? 'pl-PL' : 'en-US');
+        $onboardingCompletedAt = $settings['onboarding_completed_at'] ?? null;
 
         return [
             'id' => $user->id,
@@ -79,6 +108,7 @@ class UserSettingsController extends Controller
             'timezone' => $user->timezone,
             'language' => $language,
             'locale' => $locale,
+            'onboarding_required' => ! is_string($onboardingCompletedAt) || $onboardingCompletedAt === '',
             'settings' => array_merge($settings, [
                 'language' => $language,
                 'locale' => $locale,

@@ -6,6 +6,7 @@ import type {
   BillingSubscriptionItem,
   InsightsTrendResponse,
   LifeAreaBalanceResponse,
+  LocalizationOptionsResponse,
   SupportedLanguage,
 } from "./index";
 
@@ -77,6 +78,12 @@ export type IntegrationConnectionItem = {
 
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
+  getLocalizationOptions(): Promise<{ data: LocalizationOptionsResponse }>;
+  completeOnboarding(payload: {
+    display_name: string;
+    language: SupportedLanguage;
+    locale?: string | null;
+  }): Promise<{ data: Record<string, unknown> }>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
   getTasks(query?: Record<string, unknown>): Promise<ApiCollectionResponse<TaskItem>>;
   getHabits(query?: Record<string, unknown>): Promise<ApiCollectionResponse<HabitItem>>;

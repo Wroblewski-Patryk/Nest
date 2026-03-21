@@ -253,14 +253,30 @@ Last updated: 2026-03-21
       `pnpm --dir apps/web build`,
       `pnpm --dir apps/mobile exec expo export --platform web`.
 
-- [ ] NEST-110 Implement onboarding + account localization preference flows
-  - Status: BACKLOG
+- [x] NEST-110 Implement onboarding + account localization preference flows
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-109
   - Done when:
     - pre-auth language selection is available,
     - onboarding enforces required `language` and `display_name`,
     - localization preferences apply immediately after save.
+  - Done on: 2026-03-21
+  - Notes:
+    - Added pre-auth localization options endpoint:
+      `GET /api/v1/auth/localization/options`.
+    - Added onboarding completion endpoint with required
+      `display_name` + `language`:
+      `POST /api/v1/auth/onboarding`.
+    - Added pre-auth language selectors in web and mobile:
+      `apps/web/src/components/pre-auth-language-selector.tsx`,
+      `apps/mobile/app/modal.tsx`.
+    - Added onboarding web flow baseline:
+      `apps/web/src/app/onboarding/page.tsx`.
+    - Validation:
+      `php artisan test --filter=AuthApiTest`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/mobile exec expo export --platform web`.
 
 - [ ] NEST-111 Implement offline queue and manual force-sync baseline
   - Status: BACKLOG
