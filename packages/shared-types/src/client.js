@@ -138,6 +138,16 @@ export function createNestApiClient(options) {
         method: "POST",
         body: { provider },
       }),
+    syncCalendar: (provider) =>
+      request("/integrations/calendar-sync", {
+        method: "POST",
+        body: { provider },
+      }),
+    syncJournal: (provider) =>
+      request("/integrations/journal-sync", {
+        method: "POST",
+        body: { provider },
+      }),
     getIntegrationConnections: () => request("/integrations/connections"),
     upsertIntegrationConnection: (provider, payload) =>
       request(`/integrations/connections/${provider}`, {

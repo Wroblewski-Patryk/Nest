@@ -278,14 +278,28 @@ Last updated: 2026-03-21
       `pnpm --dir apps/web build`,
       `pnpm --dir apps/mobile exec expo export --platform web`.
 
-- [ ] NEST-111 Implement offline queue and manual force-sync baseline
-  - Status: BACKLOG
+- [x] NEST-111 Implement offline queue and manual force-sync baseline
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-109
   - Done when:
     - offline changes are queued locally,
     - manual force-sync option exists in settings/options,
     - sync runs oldest-first and stops on first error with clear reason.
+  - Done on: 2026-03-21
+  - Notes:
+    - Implemented local offline queue + manual force-sync UI in web settings
+      options (`apps/web/src/components/offline-sync-card.tsx`) and mobile
+      options (`apps/mobile/app/modal.tsx`,
+      `apps/mobile/constants/offlineQueue.ts`).
+    - Force-sync processing now runs oldest-first and stops on first error with
+      explicit HTTP status reason.
+    - Added sync API client methods for calendar/journal routes in shared
+      client contracts (`packages/shared-types/src/client.js`,
+      `packages/shared-types/src/index.d.ts`).
+    - Validation:
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/mobile exec expo export --platform web`.
 
 - [ ] NEST-112 Implement manual sync retry + conflict-resolution baseline
   - Status: BACKLOG

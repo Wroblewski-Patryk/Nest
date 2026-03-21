@@ -130,6 +130,8 @@ export type NestApiClient = {
   markBillingSubscriptionPastDue(): Promise<{ data: BillingSubscriptionItem }>;
   cancelBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
   syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
+  syncCalendar(provider: "google_calendar"): Promise<{ data: Record<string, unknown> }>;
+  syncJournal(provider: "obsidian"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;
   upsertIntegrationConnection(

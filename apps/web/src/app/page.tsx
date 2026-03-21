@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
+import { OfflineSyncCard } from "@/components/offline-sync-card";
 import { PreAuthLanguageSelector } from "@/components/pre-auth-language-selector";
 import { moduleReadiness } from "@/lib/mvp-snapshot";
 
@@ -34,6 +35,10 @@ export default function HomePage() {
 
       <Panel title="Pre-Auth Language">
         <PreAuthLanguageSelector />
+      </Panel>
+
+      <Panel title="Sync Options">
+        <OfflineSyncCard />
       </Panel>
     </WorkspaceShell>
   );

@@ -302,6 +302,9 @@ Last updated: 2026-03-21
 - `NEST-110` completed: pre-auth language selection + onboarding localization
   preference flow are active with required `display_name` and `language` fields
   and immediate preference-apply behavior (`docs/modules/onboarding_localization_preference_flow_v1.md`)
+- `NEST-111` completed: offline queue + manual force-sync baseline is active in
+  web/mobile options surfaces with oldest-first processing and stop-on-first-
+  error behavior (`docs/modules/offline_queue_manual_force_sync_baseline_v1.md`)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -451,8 +454,8 @@ Last updated: 2026-03-21
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: complete post-fix UX re-review (`NEST-113`),
-  deliver localization/offline-sync baseline (`NEST-111` to
-  `NEST-112`), and complete deploy readiness wave for server + phone
+  deliver localization/offline-sync baseline (`NEST-112`), and complete deploy
+  readiness wave for server + phone
   (`NEST-115` to `NEST-120`).
 
 ## Auth, AI, Offline, Notifications
