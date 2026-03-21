@@ -23,10 +23,11 @@ Maintain clear, current, and implementation-ready documentation for Nest.
 - Link related docs when adding a new document.
 - Keep terminology stable: Nest is a product name, not NestJS.
 - For UX/UI decisions, require a design source of truth (Figma node/frame or
-  approved snapshot) and link `docs/ux_ui_mcp_collaboration.md`.
+  approved snapshot) and link `docs/ux/ux_ui_mcp_collaboration.md`.
 
 ## Completion Checklist
 
 - Relevant docs updated
 - Cross-links verified
 - PROJECT_STATE updated
+

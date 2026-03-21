@@ -14,20 +14,20 @@ Use these agents as separate conversation roles:
 
 ## Global Rules (All Agents)
 
-- Keep architecture and product docs in `docs/` aligned with real decisions.
+- Keep documentation aligned with `docs/README.md` and
+  `docs/governance/repository-structure-policy.md`.
 - Keep task state in `.codex/context/TASK_BOARD.md` up to date.
-- Keep current project snapshot in `.codex/context/PROJECT_STATE.md` up to date.
+- Keep current snapshot in `.codex/context/PROJECT_STATE.md` up to date.
 - Do not invent completed work.
 - Every meaningful change must update at least one of:
   - `docs/`
   - `.codex/context/TASK_BOARD.md`
   - `.codex/context/PROJECT_STATE.md`
 - For UX/UI tasks, use MCP-based design context first:
-  - Primary source: Figma MCP (design context + screenshot + assets).
+  - Primary source: Figma MCP (design context + screenshots + assets).
   - Optional source: Stitch MCP as ideation input, never as sole source of truth.
-  - Stitch source-of-truth exception path:
-    `docs/ux_stitch_source_of_truth_exception_workflow.md`.
-  - Implementation and review must validate against a concrete design artifact.
+  - Exception process: `docs/ux/ux_stitch_source_of_truth_exception_workflow.md`.
+  - Implementation and review must validate against concrete design artifacts.
 
 ## Agent Routing
 
@@ -37,7 +37,10 @@ Use when defining assumptions, architecture, scope, decisions, and product rules
 
 Primary files:
 
-- `docs/*.md`
+- `docs/product/*.md`
+- `docs/architecture/*.md`
+- `docs/governance/*.md`
+- `docs/README.md`
 - `.codex/context/PROJECT_STATE.md`
 
 ### Planning Agent
@@ -46,6 +49,7 @@ Use when turning decisions into executable tasks and sequencing delivery.
 
 Primary files:
 
+- `docs/planning/*.md`
 - `.codex/context/TASK_BOARD.md`
 - `.codex/templates/task-template.md`
 - `.codex/context/PROJECT_STATE.md`
@@ -56,7 +60,7 @@ Use when implementing tasks from the board.
 
 Primary files:
 
-- codebase files (future app directories)
+- codebase files in `apps/`, `packages/`, `scripts/`
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/PROJECT_STATE.md`
 
@@ -67,34 +71,21 @@ Use for QA, code review, risk checks, and definition-of-done validation.
 Primary files:
 
 - changed implementation files
+- relevant docs under `docs/`
 - `.codex/context/TASK_BOARD.md`
 
 ## Workflow Contract
 
-1. Documentation Agent defines or updates architecture/product truth.
-2. Planning Agent translates that truth into tasks with acceptance criteria.
-3. Execution Agent builds tasks and updates status.
-4. Review Agent verifies quality and closes tasks.
-
-## UX/UI MCP Contract
-
-Use this contract whenever a task changes UX/UI:
-
-1. Documentation Agent records UX intent, acceptance criteria, and design source
-   (Figma link/node or approved equivalent) in docs.
-2. Planning Agent creates executable tasks that include UX validation evidence
-   requirements (screenshots, states, responsive behavior, accessibility checks).
-   For Stitch source-of-truth usage, approved exception record is mandatory.
-3. Execution Agent implements only after pulling MCP design context and
-   screenshot reference; then maps output to project conventions.
-4. Review Agent blocks completion when visual parity, state behavior, or
-   accessibility evidence is missing.
+1. Documentation Agent updates product/architecture/governance truth.
+2. Planning Agent translates truth into executable tasks.
+3. Execution Agent implements scoped tasks.
+4. Review Agent validates quality and closure criteria.
 
 ## Definition of Done (Task)
 
 A task is done only when:
 
-- implementation (or document output) exists,
+- implementation (or documentation output) exists,
 - acceptance criteria are checked,
 - task status is updated in board,
-- `PROJECT_STATE.md` reflects the new reality.
+- `.codex/context/PROJECT_STATE.md` reflects reality.

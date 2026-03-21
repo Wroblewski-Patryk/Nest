@@ -1,20 +1,150 @@
 ﻿# PROJECT_STATE
 
-Last updated: 2026-03-19
+Last updated: 2026-03-21
 
 ## Product
 
 - Name: Nest (LifeOS)
 - Goal: unified life orchestration platform with AI support
 - Commercial intent: SaaS
+- Current strategic priority: maximize practical day-to-day usefulness for the
+  founder user.
+- Product horizon priority: long-term life management foundation that prepares
+  structured context for future conversational AI agent operation.
+- V1 delivery priority policy: optimize first for founder usability, while
+  keeping architecture scalable and extensible for later AI expansion.
+- V1 quality priority policy: stability, test coverage, and security validation
+  take precedence over shipping speed for new features.
+- Core user value model (v1): reduce stress/chaos, strengthen execution
+  consistency, and maintain strong planning control as equal outcomes.
+- UX complexity policy (v1): target a balanced middle-ground with simple
+  default interface and sufficient, non-overwhelming configurability.
+- Monetization staging: current phase runs on free tier; target model is
+  `free/basic/advanced` with limits and permissions to be calibrated in later
+  phases.
 
 ## Product Decisions (Confirmed)
 
 - Tenancy: multi-tenant architecture from day one
+- Tenancy data model (v1): shared PostgreSQL database with row-level isolation
+  via `tenant_id` across tenant-scoped tables
 - Launch mode: one active user (founder)
 - Audience: private users first, then family/friends shared collaboration
+- Product positioning: personal life-management system (not enterprise/corporate
+  workflow tooling); collaboration direction is family/friends context.
 - Planning hierarchy: goals -> targets -> lists/tasks -> habits/routines ->
   calendar -> journal
+- Core loop priority model (v1): tasks/lists, calendar planning, and
+  habits/routines are equally critical and intentionally interconnected as one
+  unified daily workflow.
+- Planning/execution/reflection model (v1): planning and execution are
+  first-class together with reflection/insight loops (journal + analytics) as
+  one connected lifecycle.
+- V1 foundation policy: product and data model decisions must support future
+  human+agent collaboration workflows without redesigning core domain entities.
+- Feature integration policy (v1): every new capability must integrate cleanly
+  with existing modules and shared contracts before release.
+- Client parity policy (v1): no functional differences between web and mobile
+  for end-user core modules in current phase.
+- Admin surface policy: subscription/user administration is planned as
+  web-only surface in a later phase and is not required in current single-user
+  operation mode.
+- Offline behavior policy (v1): user changes made offline are queued locally
+  and synchronized by explicit manual action from sync options (automatic
+  background sync is disabled by default).
+- Offline sync ordering policy (v1): manual synchronization processes queued
+  offline changes sequentially from oldest to newest.
+- Manual sync scope policy (v1): force sync runs for all pending changes
+  globally (no per-module selection in v1); scoped sync may be added later.
+- Manual sync failure policy (v1): synchronization stops on first error and
+  presents clear reason/context to user for corrective action before retry.
+- Manual sync retry policy (v1): retry starts from queue beginning, verifies
+  already-synced items via idempotency checks, skips sent items, and syncs only
+  missing/pending items.
+- Manual sync success feedback policy (v1): successful sync uses the same
+  standard success notification pattern as other completed actions in app.
+- Sync visibility policy (v1): no persistent sync status element in primary UI;
+  sync controls are available in settings/options, including a manual "force
+  sync" action.
+- Conflict resolution policy (v1): when both local and remote versions change
+  the same record, user is shown base/local/remote values in context and
+  chooses final resolution manually.
+- Conflict recommendation policy (v1): conflict UI is neutral by default and
+  does not auto-recommend a winning version.
+- Project scope in this workspace: documentation and delivery decisions in this
+  repository apply only to Nest; Cryptosparrow is handled independently.
+- Product reach and localization: Nest is a global product with multi-language
+  support and locale-aware user settings (language, region, formatting, and
+  culturally-aware defaults).
+- Localization rollout policy (v1): multilingual capability is implemented in
+  code from day one; default language is English (`en`), and Polish (`pl`) is
+  the first additionally deployed language.
+- Timezone preference policy (v1): timezone is configured per user account and
+  is independent from workspace defaults.
+- Week-start preference policy (v1): first day of week is user-configurable,
+  with locale-based default value.
+- Time format policy (v1): clock format is user-configurable (for example 12h
+  or 24h).
+- Number and currency formatting policy (v1): defaults are inferred from user
+  locale, with user-level override support.
+- Measurement units policy (v1): defaults are inferred from user locale
+  (metric/imperial), with user-level override support.
+- Localization detection policy (v1): onboarding proposes the most accurate
+  defaults from available signals and granted permissions; if no reliable
+  signal is available, user sets localization preferences manually.
+- Localization preferences apply behavior (v1): all localization setting
+  changes apply immediately after save in active session without restart or
+  re-login.
+- Localization preference source-of-truth (v1): backend-stored user profile
+  settings synchronized across web and mobile clients.
+- Localization profile scope (v1): one shared user localization profile across
+  all devices; no per-device localization overrides.
+- Language initialization flow (v1): default language is set during onboarding
+  and remains editable later in account settings.
+- Content language policy (v1): account language is the single enforced
+  language for user experience, including UI copy, validation messages, and
+  system-generated content; mixed-language behavior is not supported.
+- User-generated content translation policy (v1): user-authored content (for
+  example list names, task titles, notes) is never auto-translated when account
+  language changes; localization applies only to system/UI surfaces.
+- Outbound communication localization policy (v1): system emails and push
+  notifications are sent in the current account language of the user.
+- Outbound template strategy (v1): communication templates share one structural
+  layout across languages; localized text and optional localized graphics may
+  vary per language.
+- Onboarding localization confirmation (v1): first-run onboarding includes a
+  simplified language selection step with detected language preselected and a
+  single primary continue action.
+- Onboarding friction policy (v1): localization setup is optimized for minimal
+  clicks and only essential account configuration before entering the app.
+- Onboarding entry requirement (v1): a short onboarding step is required before
+  first app access, with minimum mandatory fields `language` and `display
+  name`.
+- Post-onboarding navigation (v1): user lands directly on the main dashboard;
+  guided quick setup is planned for a future release.
+- Pre-auth localization access (v1): language selection is available from the
+  very beginning on authentication screens (sign in/sign up), before login.
+- Localization consistency policy (v1): one unified localization-detection and
+  default-selection mechanism is used across pre-auth, onboarding, and in-app
+  flows.
+- Localization settings persistence policy (v1): store only current effective
+  localization preferences; no dedicated localization change history is kept.
+- Account locale baseline policy (v1): one default account-level locale profile
+  (language, region, formatting preferences) is the shared default for all
+  modules.
+- Localization reset policy (v1): no dedicated "reset to defaults" action;
+  users manage localization preferences by editing individual settings.
+- RTL support policy (v1): right-to-left language support is deferred to a
+  future phase after v1.
+- Region initialization policy (v1): region is auto-detected during onboarding
+  and remains user-editable in settings.
+- Region change side-effect policy (v1): changing region does not
+  auto-adjust other localization preferences (currency/number formats/units).
+- Translation storage policy (v1): system translation resources are maintained
+  in-repository with application code; no external translation management
+  platform is used in v1.
+- Translation rollout quality gate (v1): a new language can be released only
+  after reaching at least 90% translation key coverage.
 
 ## Platform Strategy
 
@@ -36,7 +166,7 @@ Last updated: 2026-03-19
 - Architecture and documentation foundation complete
 - Planning baseline complete for MVP and full-product roadmap
 - `NEST-001` completed: monorepo structure approved and documented in
-  `docs/monorepo_structure.md`
+  `docs/engineering/monorepo_structure.md`
 - `NEST-002` completed: Laravel backend skeleton bootstrapped in `apps/api`
   with health endpoint (`GET /health`) and passing baseline tests
 - `NEST-003` completed: Next.js web shell bootstrapped in `apps/web` with
@@ -44,11 +174,11 @@ Last updated: 2026-03-19
 - `NEST-004` completed: Expo mobile shell bootstrapped in `apps/mobile` with
   base tabs navigation and passing web export build
 - `NEST-005` completed: OpenAPI v1 draft for tasks/lists created in
-  `docs/openapi_tasks_lists_v1.yaml` and referenced from docs
+  `docs/engineering/contracts/openapi_tasks_lists_v1.yaml` and referenced from docs
 - `NEST-006` completed: minimum CI pipeline configured in
   `.github/workflows/ci.yml` (backend/web/mobile checks + security + OpenAPI validation)
 - `NEST-007` completed: OpenAPI v1 draft for remaining MVP modules created in
-  `docs/openapi_core_modules_v1.yaml` and referenced from docs
+  `docs/engineering/contracts/openapi_core_modules_v1.yaml` and referenced from docs
 - `NEST-008` completed: shared API/domain package created in
   `packages/shared-types` and consumed by both web and mobile clients
 - `NEST-009` completed: tenant-ready MVP PostgreSQL schema migrated with FK and
@@ -104,7 +234,7 @@ Last updated: 2026-03-19
   evidence-gated UX implementation/review workflow
 - `NEST-086` completed: unified Stitch UX/UI approval baseline finalized in
   Stitch with documented evidence and user approval before implementation
-  (`docs/ux_ui_stitch_unified_spec_v1.md`)
+  (`docs/ux/ux_ui_stitch_unified_spec_v1.md`)
 - `NEST-087` completed: integration sync idempotency now distinguishes changed
   payloads while safely deduplicating exact replays, with feature regressions
   for list/task and journal sync flows
@@ -191,13 +321,13 @@ Last updated: 2026-03-19
   with operational and product validation baseline
 - `NEST-084` completed: strict architecture/programming/scalability/AI-readiness
   audit delivered with prioritized hardening recommendations and implementation
-  sequencing (`docs/architecture_programming_scalability_ai_audit_2026-03-16.md`)
+  sequencing (`docs/planning/architecture_programming_scalability_ai_audit_2026-03-16.md`)
 - `NEST-083` completed: post-MVP hardening plan translated from audit into
   sequenced P0/P1/P2 implementation backlog with dependencies and acceptance
-  criteria (`docs/post_mvp_hardening_plan.md`)
+  criteria (`docs/planning/post_mvp_hardening_plan.md`)
 - `NEST-046` completed: analytics event taxonomy documented with canonical
   envelope, naming rules, and v1 cross-module event dictionary
-  (`docs/analytics_event_taxonomy.md`)
+  (`docs/modules/analytics_event_taxonomy.md`)
 - `NEST-047` completed: analytics ingestion pipeline delivered with validated
   ingest API, durable event storage, and retention command baseline
 - `NEST-048` completed: life-area balance scoring baseline delivered with
@@ -231,72 +361,72 @@ Last updated: 2026-03-19
   automation scope with quality/policy gates confirmed
 - `NEST-061` completed: tenant isolation verification suite delivered with API,
   integration, and queue path coverage plus strict sync entity ownership checks
-  (`docs/tenant_isolation_verification_suite.md`)
+  (`docs/security/tenant_isolation_verification_suite.md`)
 - `NEST-062` completed: tenant-scoped retention and deletion workflows
   delivered with audited lifecycle logs, queue-backed tenant deletion, and
-  command-line operations (`docs/tenant_data_lifecycle_workflows.md`)
+  command-line operations (`docs/modules/tenant_data_lifecycle_workflows.md`)
 - `NEST-063` completed: tenant-level usage limits and quotas delivered with
   middleware-based create-path enforcement, structured quota errors, and
-  tenant-scoped API coverage (`docs/tenant_usage_limits_and_quotas.md`)
+  tenant-scoped API coverage (`docs/modules/tenant_usage_limits_and_quotas.md`)
 - `NEST-064` completed: invite-based collaboration spaces delivered with
   shared list/goal co-management, invite acceptance flow, and private-vs-shared
-  access boundaries (`docs/collaboration_spaces_v1.md`)
+  access boundaries (`docs/modules/collaboration_spaces_v1.md`)
 - `NEST-065` completed: plans, entitlements, and billing event model
   documented with lifecycle states and draft billing event contract
-  (`docs/billing_entitlements_model.md`, `docs/openapi_billing_events_v1.yaml`)
+  (`docs/modules/billing_entitlements_model.md`, `docs/engineering/contracts/openapi_billing_events_v1.yaml`)
 - `NEST-066` completed: subscription lifecycle backend delivered for
   trialing/active/past_due/canceled flows with tenant billing event audit
-  logging (`docs/billing_subscription_lifecycle_backend.md`)
+  logging (`docs/modules/billing_subscription_lifecycle_backend.md`)
 - `NEST-067` completed: billing provider webhook integration delivered with
   Stripe webhook processing, idempotent receipt audit trail, and synchronized
   invoice/subscription status updates
-  (`docs/billing_provider_webhook_integration.md`)
+  (`docs/modules/billing_provider_webhook_integration.md`)
 - `NEST-068` completed: billing and plan management UI delivered across web
   and mobile with subscription actions and billing event history surfaces
-  (`docs/billing_ui_management.md`)
+  (`docs/modules/billing_ui_management.md`)
 - `NEST-069` completed: entitlement enforcement delivered for API/tooling
   feature gates and plan limits with structured denial payloads
-  (`docs/entitlement_enforcement_api_tools.md`)
+  (`docs/security/entitlement_enforcement_api_tools.md`)
 - `NEST-070` completed: organization/workspace domain model delivered with
   tenant-scoped memberships, migrations, and baseline org/workspace API flows
-  (`docs/organization_workspace_domain_model.md`)
+  (`docs/modules/organization_workspace_domain_model.md`)
 - `NEST-071` completed: org RBAC matrix delivered with API-enforced owner/admin/member
-  policy checks and role update flow (`docs/organization_rbac_matrix.md`)
+  policy checks and role update flow (`docs/security/organization_rbac_matrix.md`)
 - `NEST-072` completed: OAuth B2C expansion delivered with provider
   allowlist (`google`, `apple`), id_token signature/claim verification,
   tenant-safe account linking safeguards, and feature coverage
-  (`docs/oauth_b2c_auth_expansion.md`)
+  (`docs/security/oauth_b2c_auth_expansion.md`)
 - `NEST-073` completed: organization SSO expansion delivered with
   OIDC + SAML provider model, tenant-safe identity linking, org membership
   enforcement, and enterprise exchange endpoint coverage
-  (`docs/organization_sso_oidc_saml.md`)
+  (`docs/security/organization_sso_oidc_saml.md`)
 - `NEST-074` completed: organization audit export package delivered with
   RBAC-gated JSON/CSV export endpoint and normalized security event schema
-  for compliance workflows (`docs/organization_audit_export_package.md`)
+  for compliance workflows (`docs/security/organization_audit_export_package.md`)
 - `NEST-075` completed: advanced secrets rotation and credential revoke
   operations delivered with audited command workflows and scoped execution
-  controls (`docs/secrets_rotation_and_revocation_ops.md`)
+  controls (`docs/security/secrets_rotation_and_revocation_ops.md`)
 - `NEST-076` completed: recurring security control verification suite
   delivered with command-based control checks, severity gating, CI baseline
   integration, and staging-ready strict mode
-  (`docs/security_control_verification_suite.md`)
+  (`docs/security/security_control_verification_suite.md`)
 - `NEST-077` completed: performance/load harness delivered with k6 scenario
   baseline, thresholded read/write profiles, and operational run script
-  (`docs/performance_load_test_harness.md`)
+  (`docs/engineering/performance_load_test_harness.md`)
 - `NEST-078` completed: resilience drills executed and documented with backup
   integrity checks, queue recovery validation, and corrective actions for
-  local schema drift (`docs/resilience_drills_2026-03-19.md`)
+  local schema drift (`docs/operations/resilience_drills_2026-03-19.md`)
 - `NEST-079` completed: release train and change-management workflow
   delivered with gated release pipeline, checklist baseline, and release
-  manifest traceability (`docs/release_train_change_management.md`)
+  manifest traceability (`docs/operations/release_train_change_management.md`)
 - `NEST-080` completed: final readiness review approved with product,
   engineering, and operations gates accepted
-  (`docs/final_readiness_review_2026-03-19.md`)
+  (`docs/operations/final_readiness_review_2026-03-19.md`)
 - `NEST-081` completed: full-product launch milestone declared with post-launch
-  monitoring baseline (`docs/full_product_launch_milestone_2026-03-19.md`)
+  monitoring baseline (`docs/operations/full_product_launch_milestone_2026-03-19.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
-  (`docs/audit_remediation_execution_handoff_2026-03-19.md`)
+  (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: execute remaining UX remediation execution tasks
   `NEST-103`, `NEST-105`, and `NEST-106`
 
@@ -316,9 +446,9 @@ Last updated: 2026-03-19
 
 ## Planning Baseline
 
-- MVP execution backlog: `docs/implementation_plan_mvp.md`
-- Full-product execution backlog: `docs/implementation_plan_full.md`
-- Roadmap overview: `docs/roadmap.md`
+- MVP execution backlog: `docs/planning/implementation_plan_mvp.md`
+- Full-product execution backlog: `docs/planning/implementation_plan_full.md`
+- Roadmap overview: `docs/product/roadmap.md`
 
 ## Confirmed Decisions (2026-03-15)
 
@@ -346,15 +476,16 @@ Last updated: 2026-03-19
 
 ## Canonical Docs
 
-- `docs/overview.md`
-- `docs/system_architecture.md`
-- `docs/tech_stack.md`
-- `docs/database_decision.md`
-- `docs/frontend_strategy.md`
-- `docs/ux_ui_mcp_collaboration.md`
-- `docs/backend_strategy.md`
-- `docs/monorepo_structure.md`
-- `docs/api_contracts.md`
-- `docs/development_and_deployment.md`
-- `docs/openapi_core_modules_v1.yaml`
-- `docs/mvp_database_schema.md`
+- `docs/product/overview.md`
+- `docs/architecture/system-architecture.md`
+- `docs/architecture/tech-stack.md`
+- `docs/architecture/database_decision.md`
+- `docs/architecture/frontend_strategy.md`
+- `docs/ux/ux_ui_mcp_collaboration.md`
+- `docs/architecture/backend_strategy.md`
+- `docs/engineering/monorepo_structure.md`
+- `docs/engineering/api_contracts.md`
+- `docs/engineering/development_and_deployment.md`
+- `docs/engineering/contracts/openapi_core_modules_v1.yaml`
+- `docs/engineering/mvp_database_schema.md`
+

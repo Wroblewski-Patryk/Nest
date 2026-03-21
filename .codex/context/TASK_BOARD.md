@@ -1,4 +1,4 @@
-# TASK_BOARD
+﻿# TASK_BOARD
 
 Last updated: 2026-03-19
 
@@ -15,8 +15,8 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Added formal exception workflow contract in
-      `docs/ux_stitch_source_of_truth_exception_workflow.md`.
-    - Linked exception workflow from `docs/ux_ui_mcp_collaboration.md` and
+      `docs/ux/ux_stitch_source_of_truth_exception_workflow.md`.
+    - Linked exception workflow from `docs/ux/ux_ui_mcp_collaboration.md` and
       `AGENTS.md`.
     - Added explicit READY/blocking gates for Stitch source-of-truth exception
       records in UX planning/execution flow.
@@ -35,7 +35,7 @@ Last updated: 2026-03-19
       MCP evidence fields for UX/UI tasks.
     - Added explicit review checklist section enforcing UX evidence gate
       (artifact source, approval checkpoint, states, responsive, a11y, parity).
-    - Updated `docs/ux_ui_mcp_collaboration.md` to require usage of the
+    - Updated `docs/ux/ux_ui_mcp_collaboration.md` to require usage of the
       template UX evidence sections by Planning Agent.
 
 - [x] NEST-100 Validate existing UX-heavy tasks against unified Stitch baseline
@@ -49,7 +49,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Audit delivered in
-      `docs/ux_heavy_task_artifact_parity_audit_2026-03-19.md`.
+      `docs/ux/ux_heavy_task_artifact_parity_audit_2026-03-19.md`.
     - Audited tasks: 9 (`PASS: 1`, `FAIL: 8`).
     - PASS:
       - `NEST-086` (approved Stitch baseline evidence complete).
@@ -71,7 +71,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Added backfilled UX evidence registry in
-      `docs/legacy_ux_evidence_backfill_2026-03-19.md`.
+      `docs/ux/legacy_ux_evidence_backfill_2026-03-19.md`.
     - Recorded approved snapshot source, approval checkpoint, and evidence
       references for `NEST-021`, `NEST-022`, `NEST-037`, `NEST-041`,
       `NEST-042`, `NEST-050`, `NEST-058`, and `NEST-068`.
@@ -88,7 +88,7 @@ Last updated: 2026-03-19
     - unresolved gaps are converted into explicit execution tasks.
   - Done on: 2026-03-19
   - Notes:
-    - Re-verification delivered in `docs/legacy_ux_reverification_2026-03-19.md`.
+    - Re-verification delivered in `docs/ux/legacy_ux_reverification_2026-03-19.md`.
     - Reviewed tasks: 8 (`PASS: 0`, `FAIL: 8`).
     - Failures remain due to missing MCP screenshot parity evidence and
       incomplete checklist-grade responsive/a11y verification artifacts.
@@ -123,7 +123,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Accessibility verification artifact delivered in
-      `docs/legacy_ux_accessibility_verification_2026-03-19.md`.
+      `docs/ux/legacy_ux_accessibility_verification_2026-03-19.md`.
     - Recorded per-task keyboard/focus, semantic-label, and contrast outcomes
       for all 8 legacy UX-heavy tasks.
     - Captured explicit a11y follow-up inputs for `NEST-106`.
@@ -139,7 +139,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Responsive verification artifact delivered in
-      `docs/legacy_ux_responsive_verification_2026-03-19.md`.
+      `docs/ux/legacy_ux_responsive_verification_2026-03-19.md`.
     - Recorded desktop/tablet/mobile outcomes for all 8 legacy UX-heavy tasks
       with code-evidence references.
     - Captured responsive follow-up inputs for `NEST-106`.
@@ -219,7 +219,7 @@ Last updated: 2026-03-19
       default in backend.
     - Added guard tests that enforce absence of public `/api/v1/ai/*` routes
       and verify AI endpoint pattern returns `404`.
-    - Updated `docs/ai_layer.md` with MVP enforcement policy.
+    - Updated `docs/modules/ai_layer.md` with MVP enforcement policy.
 
 - [x] NEST-020 Add observability baseline
   - Status: DONE
@@ -247,7 +247,7 @@ Last updated: 2026-03-19
     - Verified frontend quality gates: `pnpm lint` and `pnpm build` pass with
       static routes generated for all MVP module pages.
     - UX evidence backfill:
-      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-021`.
+      `docs/ux/legacy_ux_evidence_backfill_2026-03-19.md#nest-021`.
 
 - [x] NEST-022 Deliver mobile MVP screens
   - Status: DONE
@@ -262,7 +262,7 @@ Last updated: 2026-03-19
     - Verified mobile web export build with
       `pnpm exec expo export --platform web`.
     - UX evidence backfill:
-      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-022`.
+      `docs/ux/legacy_ux_evidence_backfill_2026-03-19.md#nest-022`.
 
 - [x] NEST-023 Align shared UX states and telemetry naming
   - Status: DONE
@@ -340,7 +340,7 @@ Last updated: 2026-03-19
   - Notes:
     - Executed local backup/restore drill for API SQLite database snapshot.
     - Verified backup integrity with SHA256 checksum match.
-    - Documented runbook and outcomes in `docs/backup_restore_drill.md`
+    - Documented runbook and outcomes in `docs/operations/backup_restore_drill.md`
       including observed RTO/RPO.
 
 - [x] NEST-029 Finalize MVP release checklist and staging sign-off
@@ -351,7 +351,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-16
   - Notes:
     - Created formal MVP release checklist and staging sign-off artifact in
-      `docs/mvp_release_checklist.md`.
+      `docs/operations/mvp_release_checklist.md`.
     - Recorded scope, quality, security, and resilience gates as complete.
     - Added explicit sign-off record for MVP staging baseline.
 
@@ -370,7 +370,7 @@ Last updated: 2026-03-19
       automated checks for API/web/mobile changes.
     - Added mandatory manual checklist acknowledgement gate.
     - Added untracked/staged/unstaged diff aggregation for unintended change
-      review and documented workflow in `docs/quality_gate_workflow.md`.
+      review and documented workflow in `docs/engineering/quality_gate_workflow.md`.
 
 - [x] NEST-031 Define post-MVP integration contract versioning strategy
   - Status: DONE
@@ -381,9 +381,9 @@ Last updated: 2026-03-19
   - Done on: 2026-03-16
   - Notes:
     - Defined post-MVP integration contract versioning strategy in
-      `docs/integration_contract_versioning.md`.
+      `docs/engineering/integration_contract_versioning.md`.
     - Added explicit integration docs link to versioning strategy from
-      `docs/integrations.md`.
+      `docs/modules/integrations.md`.
     - Established migration, compatibility, deprecation, rollback, and
       validation rules for provider contract evolution.
 
@@ -477,7 +477,7 @@ Last updated: 2026-03-19
     - Delivered web/mobile UI workflows on calendar screens to review open
       conflicts and execute `accept` or `override` actions.
     - UX evidence backfill:
-      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-037`.
+      `docs/ux/legacy_ux_evidence_backfill_2026-03-19.md#nest-037`.
 
 - [x] NEST-038 Add deterministic conflict policy matrix by field/provider
   - Status: DONE
@@ -487,7 +487,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-16
   - Notes:
     - Added deterministic provider/field conflict matrix documentation in
-      `docs/integration_conflict_policy_matrix.md`.
+      `docs/modules/integration_conflict_policy_matrix.md`.
     - Implemented policy enforcement service used by conflict queue to persist
       only `manual_queue` fields.
     - Added unit and feature tests validating policy matrix output and queue
@@ -540,7 +540,7 @@ Last updated: 2026-03-19
       connect/reconnect/revoke actions, plus API/client contract updates and
       feature tests.
     - UX evidence backfill:
-      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-041`.
+      `docs/ux/legacy_ux_evidence_backfill_2026-03-19.md#nest-041`.
 
 - [x] NEST-042 Add provider permission scope review screens
   - Status: DONE
@@ -556,7 +556,7 @@ Last updated: 2026-03-19
     - Added shared visual status treatment for scope review results
       (`scope-ok`/`scope-warn`) and validated web/mobile quality checks.
     - UX evidence backfill:
-      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-042`.
+      `docs/ux/legacy_ux_evidence_backfill_2026-03-19.md#nest-042`.
 
 - [x] NEST-043 Add integration regression suite
   - Status: DONE
@@ -573,8 +573,8 @@ Last updated: 2026-03-19
       suites explicitly, making provider regression execution visible and
       mandatory.
     - Added regression suite documentation in
-      `docs/integration_regression_suite.md` and linked it from
-      `docs/integrations.md`.
+      `docs/engineering/integration_regression_suite.md` and linked it from
+      `docs/modules/integrations.md`.
 
 - [x] NEST-044 Deliver notifications first step (mobile push baseline)
   - Status: DONE
@@ -602,7 +602,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-16
   - Notes:
     - Recorded formal Phase 2 release sign-off in
-      `docs/phase2_release_signoff.md`.
+      `docs/operations/phase2_release_signoff.md`.
     - Confirmed dependency gates (`NEST-040`, `NEST-043`, `NEST-044`) as
       complete and validated.
     - Documented operational checks, CI coverage, and product validation scope
@@ -615,7 +615,7 @@ Last updated: 2026-03-19
   - Done when: canonical event dictionary is documented and adopted in clients.
   - Done on: 2026-03-16
   - Notes:
-    - Added canonical analytics taxonomy in `docs/analytics_event_taxonomy.md`.
+    - Added canonical analytics taxonomy in `docs/modules/analytics_event_taxonomy.md`.
     - Defined event envelope fields, naming rules, and module-level v1 event
       set.
     - Added rollout constraints for ingestion contracts and downstream
@@ -634,7 +634,7 @@ Last updated: 2026-03-19
     - Added durable analytics storage (`analytics_events`) with tenant/module/
       event indexes and ingestion metrics (`analytics.events.*`).
     - Added retention command `analytics:prune-events` and documented baseline
-      in `docs/analytics_ingestion_pipeline.md`.
+      in `docs/modules/analytics_ingestion_pipeline.md`.
 
 - [x] NEST-048 Create life-area balance score model (v1)
   - Status: DONE
@@ -650,7 +650,7 @@ Last updated: 2026-03-19
       rows and `global_balance_score` from journal/task/habit activity shares.
     - Added feature tests for formula baseline, tenant scoping, auth, and
       input validation plus model documentation in
-      `docs/life_area_balance_score_model.md`.
+      `docs/modules/life_area_balance_score_model.md`.
 
 - [x] NEST-049 Implement trends and insights API
   - Status: DONE
@@ -666,7 +666,7 @@ Last updated: 2026-03-19
     - Added bucketed trend aggregation service supporting `weekly`/`monthly`
       periods and configurable bucket count (`points`).
     - Added feature tests for bucket outputs, tenant/user scoping, validation,
-      and auth plus baseline documentation in `docs/insights_trends_api.md`.
+      and auth plus baseline documentation in `docs/modules/insights_trends_api.md`.
 
 - [x] NEST-050 Deliver insights UI (web and mobile)
   - Status: DONE
@@ -681,9 +681,9 @@ Last updated: 2026-03-19
     - Added mobile insights tab screen with the same insight payloads and
       shared telemetry naming (`screen.insights.view`).
     - Extended shared API client/types to include insights endpoints and
-      documented UI baseline in `docs/insights_ui_baseline.md`.
+      documented UI baseline in `docs/ux/insights_ui_baseline.md`.
     - UX evidence backfill:
-      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-050`.
+      `docs/ux/legacy_ux_evidence_backfill_2026-03-19.md#nest-050`.
 
 - [x] NEST-051 Expand AI tools for weekly planning
   - Status: DONE
@@ -699,7 +699,7 @@ Last updated: 2026-03-19
       planning service using tenant/user scoped task, habit, and goal signals.
     - Added feature tests for feature-flag gate, constraint-aware proposals,
       rationale payload, tenant scoping, and auth plus API documentation in
-      `docs/ai_weekly_planning_api.md`.
+      `docs/modules/ai_weekly_planning_api.md`.
 
 - [x] NEST-052 Add explainability payloads for AI recommendations
   - Status: DONE
@@ -713,7 +713,7 @@ Last updated: 2026-03-19
     - Added per-item `reason_codes` and `source_entities` payloads for
       recommendation provenance.
     - Added/updated feature tests and explainability contract docs in
-      `docs/ai_explainability_payloads.md`.
+      `docs/modules/ai_explainability_payloads.md`.
 
 - [x] NEST-053 Add confidence scoring and guardrails for AI suggestions
   - Status: DONE
@@ -743,7 +743,7 @@ Last updated: 2026-03-19
       tenant/user scope, decision type, reason codes, and optional edit payload.
     - Added feature tests for enabled/disabled gate, accept/edit/reject flows,
       validation, auth, and storage scope plus docs in
-      `docs/ai_feedback_loop.md`.
+      `docs/modules/ai_feedback_loop.md`.
 
 - [x] NEST-055 Add assistant policy testing suite
   - Status: DONE
@@ -757,7 +757,7 @@ Last updated: 2026-03-19
     - Added unit + feature regression tests for safe/blocked planning contexts
       and integrated policy assertions into weekly planning API tests.
     - Documented policy test suite baseline and CI execution scope in
-      `docs/ai_policy_testing_suite.md`.
+      `docs/modules/ai_policy_testing_suite.md`.
 
 - [x] NEST-056 Define automation rule model (trigger/condition/action)
   - Status: DONE
@@ -766,11 +766,11 @@ Last updated: 2026-03-19
   - Done when: automation domain model and API contracts are documented.
   - Done on: 2026-03-19
   - Notes:
-    - Added automation domain model spec in `docs/automation_rule_model.md`
+    - Added automation domain model spec in `docs/modules/automation_rule_model.md`
       with trigger/condition/action entities and execution constraints.
     - Added OpenAPI draft contract
-      `docs/openapi_automation_rules_v1.yaml` for rule CRUD and run listing.
-    - Linked automation contract draft in `docs/api_contracts.md`.
+      `docs/engineering/contracts/openapi_automation_rules_v1.yaml` for rule CRUD and run listing.
+    - Linked automation contract draft in `docs/engineering/api_contracts.md`.
 
 - [x] NEST-057 Implement automation engine (v1)
   - Status: DONE
@@ -785,7 +785,7 @@ Last updated: 2026-03-19
       listing under authenticated scope.
     - Added execution service with deterministic condition evaluation, allowed
       action dispatch, and persisted run outcomes plus feature tests and docs
-      in `docs/automation_engine_v1.md`.
+      in `docs/modules/automation_engine_v1.md`.
 
 - [x] NEST-058 Deliver automation builder UI (web)
   - Status: DONE
@@ -798,9 +798,9 @@ Last updated: 2026-03-19
     - Added rule control actions (`create`, `activate/pause`, manual execute)
       and recent run visibility.
     - Extended shared/web/mobile API clients for automation endpoints and
-      documented UI baseline in `docs/automation_builder_ui_web.md`.
+      documented UI baseline in `docs/ux/automation_builder_ui_web.md`.
     - UX evidence backfill:
-      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-058`.
+      `docs/ux/legacy_ux_evidence_backfill_2026-03-19.md#nest-058`.
 
 - [x] NEST-059 Deliver automation execution history and debugging view
   - Status: DONE
@@ -815,7 +815,7 @@ Last updated: 2026-03-19
     - Added web automation debugging view with run status filters, per-run
       action trace inspection, and replay controls.
     - Extended shared/web/mobile API clients with run detail/replay methods and
-      documented debugging baseline in `docs/automation_execution_debugging_view.md`.
+      documented debugging baseline in `docs/modules/automation_execution_debugging_view.md`.
 
 - [x] NEST-060 Phase 3 release sign-off
   - Status: DONE
@@ -825,7 +825,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Recorded formal Phase 3 release sign-off in
-      `docs/phase3_release_signoff.md`.
+      `docs/operations/phase3_release_signoff.md`.
     - Confirmed quality gates for backend/web/mobile checks and test coverage.
     - Confirmed policy guardrails, AI feedback loop, and automation audit
       readiness for transition to Phase 4 hardening.
@@ -846,7 +846,7 @@ Last updated: 2026-03-19
     - Aligned integration/observability regression tests to use
       tenant-owned internal entities before sync execution.
     - Documented verification matrix in
-      `docs/tenant_isolation_verification_suite.md`.
+      `docs/security/tenant_isolation_verification_suite.md`.
 
 - [x] NEST-062 Add tenant-scoped data retention and deletion workflows
   - Status: DONE
@@ -869,7 +869,7 @@ Last updated: 2026-03-19
     - Added feature coverage in
       `apps/api/tests/Feature/TenantDataLifecycleCommandTest.php`.
     - Documented runbooks in
-      `docs/tenant_data_lifecycle_workflows.md`.
+      `docs/modules/tenant_data_lifecycle_workflows.md`.
 
 - [x] NEST-063 Implement tenant-level usage limits and quotas
   - Status: DONE
@@ -890,7 +890,7 @@ Last updated: 2026-03-19
     - Added coverage in
       `apps/api/tests/Feature/TenantUsageLimitApiTest.php`.
     - Documented baseline in
-      `docs/tenant_usage_limits_and_quotas.md`.
+      `docs/modules/tenant_usage_limits_and_quotas.md`.
 
 - [x] NEST-064 Implement invite-based family/friends collaboration spaces
   - Status: DONE
@@ -911,7 +911,7 @@ Last updated: 2026-03-19
       goal/target API flows while preserving private-vs-shared boundaries.
     - Added feature coverage in
       `apps/api/tests/Feature/CollaborationSpacesApiTest.php`.
-    - Documented baseline in `docs/collaboration_spaces_v1.md`.
+    - Documented baseline in `docs/modules/collaboration_spaces_v1.md`.
 
 - [x] NEST-065 Define plans, entitlements, and billing events model
   - Status: DONE
@@ -921,12 +921,12 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Added billing model baseline in
-      `docs/billing_entitlements_model.md`.
+      `docs/modules/billing_entitlements_model.md`.
     - Documented plan structure, entitlement types, and lifecycle states.
     - Added canonical billing event taxonomy and normalized event envelope.
     - Added billing API contract draft in
-      `docs/openapi_billing_events_v1.yaml`.
-    - Linked new contract from `docs/api_contracts.md`.
+      `docs/engineering/contracts/openapi_billing_events_v1.yaml`.
+    - Linked new contract from `docs/engineering/api_contracts.md`.
 
 - [x] NEST-066 Implement subscription lifecycle backend
   - Status: DONE
@@ -946,7 +946,7 @@ Last updated: 2026-03-19
     - Added feature coverage in
       `apps/api/tests/Feature/BillingSubscriptionLifecycleApiTest.php`.
     - Documented implementation in
-      `docs/billing_subscription_lifecycle_backend.md`.
+      `docs/modules/billing_subscription_lifecycle_backend.md`.
 
 - [x] NEST-067 Implement billing provider integration and webhook handling
   - Status: DONE
@@ -965,7 +965,7 @@ Last updated: 2026-03-19
     - Added feature coverage in
       `apps/api/tests/Feature/BillingWebhookApiTest.php`.
     - Documented operations in
-      `docs/billing_provider_webhook_integration.md`.
+      `docs/modules/billing_provider_webhook_integration.md`.
 
 - [x] NEST-068 Deliver billing and plan management UI
   - Status: DONE
@@ -983,9 +983,9 @@ Last updated: 2026-03-19
     - Delivered mobile billing tab screen in
       `apps/mobile/app/(tabs)/billing.tsx`.
     - Added billing module navigation/snapshot updates for web and mobile.
-    - Documented UI baseline in `docs/billing_ui_management.md`.
+    - Documented UI baseline in `docs/modules/billing_ui_management.md`.
     - UX evidence backfill:
-      `docs/legacy_ux_evidence_backfill_2026-03-19.md#nest-068`.
+      `docs/ux/legacy_ux_evidence_backfill_2026-03-19.md#nest-068`.
 
 - [x] NEST-069 Implement entitlement enforcement across API/tools
   - Status: DONE
@@ -1003,7 +1003,7 @@ Last updated: 2026-03-19
     - Added feature tests in
       `apps/api/tests/Feature/EntitlementEnforcementApiTest.php`.
     - Documented enforcement baseline in
-      `docs/entitlement_enforcement_api_tools.md`.
+      `docs/security/entitlement_enforcement_api_tools.md`.
 
 - [x] NEST-070 Add organization/workspace domain model
   - Status: DONE
@@ -1021,7 +1021,7 @@ Last updated: 2026-03-19
     - Added feature coverage in
       `apps/api/tests/Feature/OrganizationWorkspaceDomainApiTest.php`.
     - Documented baseline in
-      `docs/organization_workspace_domain_model.md`.
+      `docs/modules/organization_workspace_domain_model.md`.
 
 - [x] NEST-071 Implement org roles and permission matrix (RBAC)
   - Status: DONE
@@ -1038,7 +1038,7 @@ Last updated: 2026-03-19
     - Added RBAC-focused feature coverage in
       `apps/api/tests/Feature/OrganizationRbacApiTest.php`.
     - Documented policy matrix in
-      `docs/organization_rbac_matrix.md`.
+      `docs/security/organization_rbac_matrix.md`.
 
 - [x] NEST-072 Implement OAuth providers for B2C auth expansion
   - Status: DONE
@@ -1056,7 +1056,7 @@ Last updated: 2026-03-19
       ambiguous-email protection requiring `tenant_slug`.
     - Added OAuth identity persistence model (`oauth_identities`) and
       feature tests in `apps/api/tests/Feature/OAuthProviderAuthApiTest.php`.
-    - Documented implementation in `docs/oauth_b2c_auth_expansion.md`.
+    - Documented implementation in `docs/security/oauth_b2c_auth_expansion.md`.
 
 - [x] NEST-073 Implement SSO (OIDC/SAML) for organization plans
   - Status: DONE
@@ -1075,7 +1075,7 @@ Last updated: 2026-03-19
       auto-provision toggle, and domain allowlist enforcement.
     - Added feature coverage in
       `apps/api/tests/Feature/OrganizationSsoApiTest.php`.
-    - Documented implementation in `docs/organization_sso_oidc_saml.md`.
+    - Documented implementation in `docs/security/organization_sso_oidc_saml.md`.
 
 - [x] NEST-074 Add audit export package for organization compliance
   - Status: DONE
@@ -1094,7 +1094,7 @@ Last updated: 2026-03-19
     - Added feature coverage in
       `apps/api/tests/Feature/OrganizationAuditExportApiTest.php`.
     - Documented implementation in
-      `docs/organization_audit_export_package.md`.
+      `docs/security/organization_audit_export_package.md`.
 
 - [x] NEST-075 Add advanced secrets and key rotation operations
   - Status: DONE
@@ -1114,7 +1114,7 @@ Last updated: 2026-03-19
     - Added feature coverage in
       `apps/api/tests/Feature/SecretRotationOperationsCommandTest.php`.
     - Documented operations in
-      `docs/secrets_rotation_and_revocation_ops.md`.
+      `docs/security/secrets_rotation_and_revocation_ops.md`.
 
 - [x] NEST-076 Introduce security control verification suite
   - Status: DONE
@@ -1132,7 +1132,7 @@ Last updated: 2026-03-19
     - Added CI backend step to execute security control verification command.
     - Added feature coverage in
       `apps/api/tests/Feature/SecurityControlVerificationCommandTest.php`.
-    - Documented suite in `docs/security_control_verification_suite.md`.
+    - Documented suite in `docs/security/security_control_verification_suite.md`.
 
 - [x] NEST-077 Implement performance and load test harness
   - Status: DONE
@@ -1148,7 +1148,7 @@ Last updated: 2026-03-19
     - Defined read/write scenario profiles with latency and error-rate
       thresholds.
     - Added runbook and baseline guidance in
-      `docs/performance_load_test_harness.md`.
+      `docs/engineering/performance_load_test_harness.md`.
 
 - [x] NEST-078 Execute resilience tests (backup/restore/failover drills)
   - Status: DONE
@@ -1163,7 +1163,7 @@ Last updated: 2026-03-19
     - Identified local schema drift during drill and applied corrective action
       (`php artisan migrate --force`) before rerun.
     - Documented outcomes and corrective actions in
-      `docs/resilience_drills_2026-03-19.md`.
+      `docs/operations/resilience_drills_2026-03-19.md`.
 
 - [x] NEST-079 Introduce release train and change management workflow
   - Status: DONE
@@ -1181,7 +1181,7 @@ Last updated: 2026-03-19
     - Added local change-management checklist helper:
       `scripts/release/release-train-checklist.ps1`.
     - Documented workflow in
-      `docs/release_train_change_management.md`.
+      `docs/operations/release_train_change_management.md`.
 
 - [x] NEST-080 Final readiness review for full-product launch
   - Status: DONE
@@ -1192,7 +1192,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Final readiness packet completed in
-      `docs/final_readiness_review_2026-03-19.md`.
+      `docs/operations/final_readiness_review_2026-03-19.md`.
     - Product, engineering, and operations approvals recorded in readiness
       review packet.
 
@@ -1204,7 +1204,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Launch milestone recorded in
-      `docs/full_product_launch_milestone_2026-03-19.md`.
+      `docs/operations/full_product_launch_milestone_2026-03-19.md`.
     - Post-launch monitoring actions captured for immediate follow-up cycle.
 
 - [x] NEST-083 Deliver post-MVP hardening plan from architecture/code audit
@@ -1217,8 +1217,8 @@ Last updated: 2026-03-19
     - execution order is defined with P0/P1/P2 priorities.
   - Done on: 2026-03-16
   - Notes:
-    - Source audit: `docs/architecture_programming_scalability_ai_audit_2026-03-16.md`
-    - Hardening plan delivered in `docs/post_mvp_hardening_plan.md`.
+    - Source audit: `docs/planning/architecture_programming_scalability_ai_audit_2026-03-16.md`
+    - Hardening plan delivered in `docs/planning/post_mvp_hardening_plan.md`.
     - Includes sequenced P0/P1/P2 tasks with dependencies, acceptance criteria,
       and execution order.
 
@@ -1233,7 +1233,7 @@ Last updated: 2026-03-19
     - Aligned AI sequencing to start with first end-user surface in Phase 3.
     - Clarified that Phase 2 remains integration-only and AI surface stays
       disabled there.
-    - Clarified MVP vs post-MVP integration scope wording in `docs/mvp_scope.md`.
+    - Clarified MVP vs post-MVP integration scope wording in `docs/product/mvp_scope.md`.
 
 - [x] NEST-084 Run strict architecture/programming/scalability/AI-readiness audit
   - Status: DONE
@@ -1246,7 +1246,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-16
   - Notes:
     - Audit delivered in
-      `docs/architecture_programming_scalability_ai_audit_2026-03-16.md`.
+      `docs/planning/architecture_programming_scalability_ai_audit_2026-03-16.md`.
     - Includes prioritized findings and recommended sequencing for next phases.
 
 - [x] NEST-085 Establish UX/UI MCP collaboration standard
@@ -1258,8 +1258,8 @@ Last updated: 2026-03-19
   - Done on: 2026-03-16
   - Notes:
     - Added UX/UI MCP operating standard in
-      `docs/ux_ui_mcp_collaboration.md`.
-    - Linked UX/UI MCP standard from `docs/frontend_strategy.md`.
+      `docs/ux/ux_ui_mcp_collaboration.md`.
+    - Linked UX/UI MCP standard from `docs/architecture/frontend_strategy.md`.
     - Updated `AGENTS.md` with mandatory UX/UI MCP contract for all agents.
 
 - [x] NEST-086 Build unified Stitch UX/UI approval baseline before implementation
@@ -1273,7 +1273,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Design-only phase; no web/mobile code changes allowed.
-    - Baseline spec documented in `docs/ux_ui_stitch_unified_spec_v1.md`.
+    - Baseline spec documented in `docs/ux/ux_ui_stitch_unified_spec_v1.md`.
     - Verified Stitch project baseline: `projects/14952238901582428681`.
     - Added and verified missing baseline screens:
       `1c4d38cf15b44887882973973a7c5c26` (Morning Briefing),
@@ -1292,7 +1292,7 @@ Last updated: 2026-03-19
   - Notes:
     - Source audit finding: P0 idempotency correctness.
     - Execution handoff:
-      `docs/audit_remediation_execution_handoff_2026-03-19.md`.
+      `docs/operations/audit_remediation_execution_handoff_2026-03-19.md`.
     - Updated idempotency lock fingerprint to include payload-level hash while
       preserving replay deduplication semantics for exact payload replays.
     - Added feature regressions for changed-vs-unchanged sync payload behavior:
@@ -1348,8 +1348,8 @@ Last updated: 2026-03-19
     - Updated config defaults:
       `apps/api/config/database.php`, `apps/api/config/queue.php`.
     - Added explicit PostgreSQL/Redis local bring-up guidance in
-      `docs/development_and_deployment.md`.
-    - Added runtime default summary in `docs/system_architecture.md`.
+      `docs/engineering/development_and_deployment.md`.
+    - Added runtime default summary in `docs/architecture/system-architecture.md`.
     - Validation: `php artisan test --testsuite=Feature --env=testing` passed.
 
 - [x] NEST-091 Complete OpenAPI coverage and CI enforcement (P2)
@@ -1362,11 +1362,11 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Added maintained OpenAPI draft for uncovered public route groups:
-      `docs/openapi_auth_integrations_platform_v1.yaml`.
-    - Updated API contract index in `docs/api_contracts.md` with expanded
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`.
+    - Updated API contract index in `docs/engineering/api_contracts.md` with expanded
       coverage map.
     - Updated CI OpenAPI validation to lint all maintained
-      `docs/openapi_*.yaml` contracts (not only a single file).
+      `docs/engineering/contracts/openapi_*.yaml` contracts (not only a single file).
 
 - [x] NEST-092 Converge web/mobile on shared runtime API client (P2)
   - Status: DONE
@@ -1397,7 +1397,7 @@ Last updated: 2026-03-19
       `packages/shared-types/src/index.d.ts`.
     - Kept optional `meta.perPage` as deprecated transitional alias for
       compatibility.
-    - Documented canonical pagination naming policy in `docs/api_contracts.md`.
+    - Documented canonical pagination naming policy in `docs/engineering/api_contracts.md`.
     - Validation: web and mobile TypeScript checks passed.
 
 - [x] NEST-094 Define and implement soft-delete uniqueness policy (P2)
@@ -1418,7 +1418,7 @@ Last updated: 2026-03-19
       `LifeAreaController` to enforce uniqueness on active rows only.
     - Added recreate-after-soft-delete feature regressions in
       `TasksAndListsApiTest` and `JournalAndLifeAreasApiTest`.
-    - Documented policy in `docs/mvp_database_schema.md`.
+    - Documented policy in `docs/engineering/mvp_database_schema.md`.
 
 - [x] NEST-095 Consolidate policy-layer authorization (P2)
   - Status: DONE
@@ -1439,7 +1439,7 @@ Last updated: 2026-03-19
       `IntegrationSyncReplayController`.
     - Added policy-enforcement tenant isolation regressions in:
       `IntegrationConflictQueueApiTest` and `IntegrationSyncReplayApiTest`.
-    - Documented policy-layer baseline in `docs/system_architecture.md`.
+    - Documented policy-layer baseline in `docs/architecture/system-architecture.md`.
 
 - [x] NEST-096 Harden AI-readiness response/error contracts (P2)
   - Status: DONE
@@ -1461,7 +1461,7 @@ Last updated: 2026-03-19
     - Added contract regression suite:
       `apps/api/tests/Feature/ApiErrorEnvelopeContractTest.php`.
     - Documented versioned AI/tool error contract and retry guidance in
-      `docs/ai_tool_api_error_contract_v1.md` and linked from `docs/ai_layer.md`.
+      `docs/modules/ai_tool_api_error_contract_v1.md` and linked from `docs/modules/ai_layer.md`.
 
 - [x] NEST-097 Prepare execution handoff for audit remediation wave
   - Status: DONE
@@ -1473,7 +1473,7 @@ Last updated: 2026-03-19
   - Done on: 2026-03-19
   - Notes:
     - Handoff prepared in
-      `docs/audit_remediation_execution_handoff_2026-03-19.md`.
+      `docs/operations/audit_remediation_execution_handoff_2026-03-19.md`.
     - Wave defined as `NEST-087` to `NEST-096` (P0->P2 order).
 
 ## In Progress
@@ -1495,7 +1495,7 @@ Last updated: 2026-03-19
   - Status: DONE
   - Owner: Planning Agent
   - Done on: 2026-03-15
-  - Notes: approved structure documented in `docs/monorepo_structure.md`.
+  - Notes: approved structure documented in `docs/engineering/monorepo_structure.md`.
 
 - [x] NEST-002 Bootstrap backend Laravel app skeleton
   - Status: DONE
@@ -1529,9 +1529,9 @@ Last updated: 2026-03-19
   - Owner: Documentation Agent
   - Done on: 2026-03-15
   - Notes:
-    - OpenAPI draft created in `docs/openapi_tasks_lists_v1.yaml`.
-    - Contract is referenced from `docs/api_contracts.md` and
-      `docs/backend_strategy.md`.
+    - OpenAPI draft created in `docs/engineering/contracts/openapi_tasks_lists_v1.yaml`.
+    - Contract is referenced from `docs/engineering/api_contracts.md` and
+      `docs/architecture/backend_strategy.md`.
 
 - [x] NEST-006 Configure minimum CI pipeline
   - Status: DONE
@@ -1540,16 +1540,16 @@ Last updated: 2026-03-19
   - Notes:
     - GitHub Actions workflow added: `.github/workflows/ci.yml`.
     - Includes lint/test/build/security checks for backend, web, and mobile.
-    - Includes OpenAPI contract validation for `docs/openapi_tasks_lists_v1.yaml`.
+    - Includes OpenAPI contract validation for `docs/engineering/contracts/openapi_tasks_lists_v1.yaml`.
 
 - [x] NEST-007 Define API contract v1 for remaining MVP modules
   - Status: DONE
   - Owner: Documentation Agent
   - Done on: 2026-03-15
   - Notes:
-    - OpenAPI draft created in `docs/openapi_core_modules_v1.yaml`.
+    - OpenAPI draft created in `docs/engineering/contracts/openapi_core_modules_v1.yaml`.
     - Covers habits/routines, goals/targets, journal, life areas, and calendar.
-    - Referenced from `docs/api_contracts.md` and `docs/backend_strategy.md`.
+    - Referenced from `docs/engineering/api_contracts.md` and `docs/architecture/backend_strategy.md`.
 
 - [x] NEST-008 Create shared API/domain types package
   - Status: DONE
@@ -1567,7 +1567,7 @@ Last updated: 2026-03-19
   - Notes:
     - Tenant-ready MVP schema migrated with FK constraints and composite indexes.
     - Includes sync mapping entity baseline (`sync_mappings`).
-    - Schema documented in `docs/mvp_database_schema.md`.
+    - Schema documented in `docs/engineering/mvp_database_schema.md`.
 
 - [x] NEST-010 Create migrations and baseline seed data
   - Status: DONE
@@ -1614,3 +1614,4 @@ Last updated: 2026-03-19
     - Delivered goals CRUD endpoints (`/api/v1/goals`).
     - Delivered targets CRUD endpoints (`/api/v1/targets`).
     - Added measurable target update flow and tenant-scoped feature tests.
+
