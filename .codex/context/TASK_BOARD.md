@@ -369,14 +369,24 @@ Last updated: 2026-03-21
     - Validation:
       `powershell -ExecutionPolicy Bypass -File scripts/release/deploy-api-web.ps1 -Environment staging -DryRun`.
 
-- [ ] NEST-117 Prepare mobile release pipeline for physical devices
-  - Status: BACKLOG
+- [x] NEST-117 Prepare mobile release pipeline for physical devices
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-110, NEST-115
   - Done when:
     - environment-aware mobile builds are generated with signing profiles,
     - internal distribution flow for physical phone testing is documented,
     - release checklist includes mobile artifact verification.
+  - Done on: 2026-03-21
+  - Notes:
+    - Added mobile release workflow:
+      `.github/workflows/mobile-release.yml`.
+    - Added mobile release automation script:
+      `scripts/release/mobile-release.ps1`.
+    - Documented internal distribution flow and artifact checklist in
+      `docs/operations/mobile_release_pipeline_v1.md`.
+    - Validation:
+      `powershell -ExecutionPolicy Bypass -File scripts/release/mobile-release.ps1 -Profile preview -DryRun`.
 
 - [ ] NEST-118 Add post-deploy smoke suite (server + phone critical paths)
   - Status: BACKLOG

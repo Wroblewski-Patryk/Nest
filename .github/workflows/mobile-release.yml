@@ -1,0 +1,47 @@
+name: Mobile Release Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: EAS profile
+        required: true
+        default: preview
+        type: choice
+        options:
+          - preview
+          - production
+      dry_run:
+        description: Run release in dry-run mode
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  mobile-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup EAS CLI
+        run: npm install -g eas-cli
+
+      - name: Run mobile release script
+        shell: pwsh
+        run: |
+          if ("${{ inputs.dry_run }}" -eq "true") {
+            ./scripts/release/mobile-release.ps1 -Profile "${{ inputs.profile }}" -DryRun
+          } else {
+            ./scripts/release/mobile-release.ps1 -Profile "${{ inputs.profile }}"
+          }

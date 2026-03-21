@@ -323,6 +323,10 @@ Last updated: 2026-03-21
   production paths, migration/health/rollback steps, and dry-run validation
   (`.github/workflows/deploy-api-web.yml`,
   `scripts/release/deploy-api-web.ps1`)
+- `NEST-117` completed: mobile release pipeline for physical devices is
+  documented and automated with profile-aware workflow + dry-run script
+  (`.github/workflows/mobile-release.yml`,
+  `scripts/release/mobile-release.ps1`)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -472,7 +476,7 @@ Last updated: 2026-03-21
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: complete deploy readiness wave for server + phone
-  (`NEST-117` to `NEST-120`).
+  (`NEST-118` to `NEST-120`).
 
 ## Auth, AI, Offline, Notifications
 
