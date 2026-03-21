@@ -316,6 +316,9 @@ Last updated: 2026-03-21
 - `NEST-121` completed: MVP offline/manual-sync policy wording is aligned across
   product overview/scope and project context
   (`docs/product/offline_policy_alignment_2026-03-21.md`)
+- `NEST-115` completed: production topology + env/secrets + TLS/backup
+  prerequisites are documented in
+  `docs/operations/production_topology_environment_contract_v1.md`
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -465,7 +468,7 @@ Last updated: 2026-03-21
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: complete deploy readiness wave for server + phone
-  (`NEST-115` to `NEST-120`).
+  (`NEST-116` to `NEST-120`).
 
 ## Auth, AI, Offline, Notifications
 

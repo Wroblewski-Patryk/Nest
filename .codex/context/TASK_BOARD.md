@@ -338,14 +338,18 @@ Last updated: 2026-03-21
     - Result: `PASS 8 / 8`, no further execution tasks required for legacy UX
       evidence gate closure in this wave.
 
-- [ ] NEST-115 Define production topology and environment contract
-  - Status: BACKLOG
+- [x] NEST-115 Define production topology and environment contract
+  - Status: DONE
   - Owner: Documentation Agent
   - Depends on: NEST-112
   - Done when:
     - production server topology is documented (API/web/db/redis/workers/cron),
     - required env vars/secrets contract is documented by service,
     - TLS/domain and backup/restore prerequisites are explicit.
+  - Done on: 2026-03-21
+  - Notes:
+    - Production topology and environment contract published in
+      `docs/operations/production_topology_environment_contract_v1.md`.
 
 - [ ] NEST-116 Implement production deploy pipeline for API + web
   - Status: BACKLOG
