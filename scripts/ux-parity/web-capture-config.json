@@ -1,0 +1,46 @@
+{
+  "captures": [
+    {
+      "task_id": "NEST-021",
+      "screen_id": "tasks",
+      "url": "/tasks",
+      "file": "nest-021-tasks.png"
+    },
+    {
+      "task_id": "NEST-037",
+      "screen_id": "calendar-conflicts",
+      "url": "/calendar",
+      "file": "nest-037-calendar-conflicts.png"
+    },
+    {
+      "task_id": "NEST-041",
+      "screen_id": "calendar-connections",
+      "url": "/calendar",
+      "file": "nest-041-calendar-connections.png"
+    },
+    {
+      "task_id": "NEST-042",
+      "screen_id": "calendar-scopes",
+      "url": "/calendar",
+      "file": "nest-042-calendar-scopes.png"
+    },
+    {
+      "task_id": "NEST-050",
+      "screen_id": "insights",
+      "url": "/insights",
+      "file": "nest-050-insights.png"
+    },
+    {
+      "task_id": "NEST-058",
+      "screen_id": "automations",
+      "url": "/automations",
+      "file": "nest-058-automations.png"
+    },
+    {
+      "task_id": "NEST-068",
+      "screen_id": "billing",
+      "url": "/billing",
+      "file": "nest-068-billing.png"
+    }
+  ]
+}

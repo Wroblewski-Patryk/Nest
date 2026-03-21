@@ -134,7 +134,7 @@ Last updated: 2026-03-21
       `NEST-106`.
 
 - [ ] NEST-103 Build MCP screenshot parity packs for legacy UX-heavy tasks
-  - Status: BLOCKED
+  - Status: IN_PROGRESS
   - Owner: Execution Agent
   - Depends on: NEST-102
   - Done when:
@@ -149,6 +149,13 @@ Last updated: 2026-03-21
     - `pnpm --dir apps/mobile exec expo export --platform web` now succeeds,
       but screenshot capture pipeline for deterministic side-by-side parity
       evidence still needs final execution in this environment.
+    - Added deterministic parity capture pipeline assets:
+      `scripts/ux-parity/capture-with-playwright.mjs`,
+      `scripts/ux-parity/capture-web-parity.ps1`,
+      `scripts/ux-parity/capture-mobile-parity.ps1`,
+      `scripts/ux-parity/web-capture-config.json`,
+      `scripts/ux-parity/mobile-capture-config.json`,
+      `docs/ux/nest_103_parity_capture_pipeline_2026-03-21.md`.
 
 - [x] NEST-104 Add explicit accessibility verification outputs for legacy UX-heavy screens
   - Status: DONE

@@ -1,0 +1,40 @@
+{
+  "captures": [
+    {
+      "task_id": "NEST-022",
+      "screen_id": "mobile-home-tasks",
+      "url": "/",
+      "file": "nest-022-mobile-home-tasks.png"
+    },
+    {
+      "task_id": "NEST-037",
+      "screen_id": "mobile-calendar-conflicts",
+      "url": "/calendar",
+      "file": "nest-037-mobile-calendar-conflicts.png"
+    },
+    {
+      "task_id": "NEST-041",
+      "screen_id": "mobile-calendar-connections",
+      "url": "/calendar",
+      "file": "nest-041-mobile-calendar-connections.png"
+    },
+    {
+      "task_id": "NEST-042",
+      "screen_id": "mobile-calendar-scopes",
+      "url": "/calendar",
+      "file": "nest-042-mobile-calendar-scopes.png"
+    },
+    {
+      "task_id": "NEST-050",
+      "screen_id": "mobile-insights",
+      "url": "/insights",
+      "file": "nest-050-mobile-insights.png"
+    },
+    {
+      "task_id": "NEST-068",
+      "screen_id": "mobile-billing",
+      "url": "/billing",
+      "file": "nest-068-mobile-billing.png"
+    }
+  ]
+}

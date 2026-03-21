@@ -285,9 +285,10 @@ Last updated: 2026-03-21
   now documented per task (keyboard/focus, semantic labels, contrast checks)
 - `NEST-105` completed: legacy UX-heavy responsive verification outputs are now
   documented per task (desktop/tablet/mobile outcomes)
-- `NEST-103` in progress/blocking: mobile parity-export dependency was fixed via
-  `apps/mobile/metro.config.js`, but parity screenshot pack generation still
-  requires final capture run in this environment
+- `NEST-103` in progress: deterministic parity capture pipeline was added
+  (`scripts/ux-parity/*`, `docs/ux/nest_103_parity_capture_pipeline_2026-03-21.md`)
+  and mobile export dependency is fixed via `apps/mobile/metro.config.js`; final
+  parity capture execution and diff publication are still pending
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
