@@ -388,13 +388,23 @@ Last updated: 2026-03-21
     - Validation:
       `powershell -ExecutionPolicy Bypass -File scripts/release/mobile-release.ps1 -Profile preview -DryRun`.
 
-- [ ] NEST-118 Add post-deploy smoke suite (server + phone critical paths)
-  - Status: BACKLOG
+- [x] NEST-118 Add post-deploy smoke suite (server + phone critical paths)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-116, NEST-117
   - Done when:
     - smoke suite covers auth, tasks, calendar, sync trigger, and core UX loop,
     - suite runs in staging and production candidate flow.
+  - Done on: 2026-03-21
+  - Notes:
+    - Added smoke workflow:
+      `.github/workflows/post-deploy-smoke.yml`.
+    - Added smoke execution script:
+      `scripts/release/post-deploy-smoke.ps1`.
+    - Added suite documentation:
+      `docs/operations/post_deploy_smoke_suite_v1.md`.
+    - Validation:
+      `powershell -ExecutionPolicy Bypass -File scripts/release/post-deploy-smoke.ps1 -Environment staging -DryRun`.
 
 - [ ] NEST-119 Finalize production operations runbook
   - Status: BACKLOG

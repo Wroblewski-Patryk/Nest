@@ -327,6 +327,10 @@ Last updated: 2026-03-21
   documented and automated with profile-aware workflow + dry-run script
   (`.github/workflows/mobile-release.yml`,
   `scripts/release/mobile-release.ps1`)
+- `NEST-118` completed: post-deploy smoke suite is available for server + phone
+  critical paths in staging/production candidate flows
+  (`.github/workflows/post-deploy-smoke.yml`,
+  `scripts/release/post-deploy-smoke.ps1`)
 - `NEST-031` completed: post-MVP integration contract versioning strategy
   documented with compatibility, migration, rollback, and deprecation rules and
   linked from integration docs
@@ -476,7 +480,7 @@ Last updated: 2026-03-21
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: complete deploy readiness wave for server + phone
-  (`NEST-118` to `NEST-120`).
+  (`NEST-119` to `NEST-120`).
 
 ## Auth, AI, Offline, Notifications
 
