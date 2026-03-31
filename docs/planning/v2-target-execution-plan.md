@@ -42,7 +42,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - alert routing and escalation ownership are explicit,
     - runbook includes recovery flow per breached SLO.
 
-- [ ] NEST-127 Implement progressive delivery for API/web (canary or blue-green)
+- [x] NEST-127 Implement progressive delivery for API/web (canary or blue-green)
   - Depends on: NEST-126
   - Done when:
     - deployment supports partial rollout and monitored promotion,

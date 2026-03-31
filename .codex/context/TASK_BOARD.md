@@ -555,14 +555,21 @@ Last updated: 2026-03-21
     - Added SLO breach recovery flow and escalation routing to production
       runbook.
 
-- [ ] NEST-127 Implement progressive delivery for API/web (canary or blue-green)
-  - Status: BACKLOG
+- [x] NEST-127 Implement progressive delivery for API/web (canary or blue-green)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-126
   - Done when:
     - deployment supports partial rollout and monitored promotion,
     - rollback path is automated and tested,
     - release evidence includes canary metrics before full rollout.
+  - Done on: 2026-03-31
+  - Notes:
+    - Extended API/web deploy pipeline with progressive rollout controls
+      (`canary`/`bluegreen`), promotion gating, and rollback-on-failure path.
+    - Added strict SLO gate checks for canary and post-promotion phases.
+    - Rehearsal evidence published:
+      `docs/operations/api_web_progressive_delivery_rehearsal_2026-03-31.md`.
 
 - [ ] NEST-128 Implement mobile staged rollout and rollback strategy
   - Status: BACKLOG

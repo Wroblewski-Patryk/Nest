@@ -16,6 +16,24 @@ on:
         required: true
         default: true
         type: boolean
+      rollout_strategy:
+        description: Progressive rollout strategy
+        required: true
+        default: canary
+        type: choice
+        options:
+          - canary
+          - bluegreen
+      canary_percent:
+        description: Canary rollout percentage (1-50)
+        required: true
+        default: "10"
+        type: string
+      auto_promote:
+        description: Auto promote to full rollout when canary gates pass
+        required: true
+        default: true
+        type: boolean
 
 jobs:
   deploy:
@@ -45,7 +63,7 @@ jobs:
         shell: pwsh
         run: |
           if ("${{ inputs.dry_run }}" -eq "true") {
-            ./scripts/release/deploy-api-web.ps1 -Environment "${{ inputs.environment }}" -DryRun
+            ./scripts/release/deploy-api-web.ps1 -Environment "${{ inputs.environment }}" -RolloutStrategy "${{ inputs.rollout_strategy }}" -CanaryPercent "${{ inputs.canary_percent }}" -AutoPromote "${{ inputs.auto_promote }}" -DryRun
           } else {
-            ./scripts/release/deploy-api-web.ps1 -Environment "${{ inputs.environment }}"
+            ./scripts/release/deploy-api-web.ps1 -Environment "${{ inputs.environment }}" -RolloutStrategy "${{ inputs.rollout_strategy }}" -CanaryPercent "${{ inputs.canary_percent }}" -AutoPromote "${{ inputs.auto_promote }}"
           }

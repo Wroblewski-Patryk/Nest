@@ -497,6 +497,9 @@ Last updated: 2026-03-21
   release-train workflow with runbook breach-recovery escalation flow
   (`docs/operations/release_train_change_management.md`,
   `docs/operations/production_operations_runbook_v1.md`)
+- `NEST-127` completed: progressive API/web delivery flow implemented with
+  canary/blue-green strategy options, monitored promotion, and rollback
+  rehearsal evidence (`docs/operations/api_web_progressive_delivery_rehearsal_2026-03-31.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
