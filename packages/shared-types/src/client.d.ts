@@ -2,7 +2,10 @@ import type {
   ApiCollectionMeta,
   AutomationRuleItem,
   AutomationRunItem,
+  BillingAuditReconciliationItem,
+  BillingDunningAttemptItem,
   BillingEventItem,
+  BillingSelfServeSessionItem,
   BillingSubscriptionItem,
   CollaborationInviteItem,
   CollaborationMemberRole,
@@ -541,6 +544,20 @@ export type NestApiClient = {
   replayAutomationRun(runId: string): Promise<{ data: AutomationRunItem }>;
   getBillingSubscription(): Promise<{ data: BillingSubscriptionItem | null }>;
   getBillingEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<BillingEventItem>>;
+  createBillingCheckoutSession(payload: {
+    plan_code: string;
+    success_url?: string | null;
+    cancel_url?: string | null;
+  }): Promise<{ data: BillingSelfServeSessionItem }>;
+  createBillingPortalSession(payload?: {
+    return_url?: string | null;
+  }): Promise<{ data: BillingSelfServeSessionItem }>;
+  recoverBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
+  getBillingDunningAttempts(query?: { per_page?: number }): Promise<{
+    data: BillingDunningAttemptItem[];
+    meta: { total: number };
+  }>;
+  getBillingAuditReconciliation(): Promise<{ data: BillingAuditReconciliationItem }>;
   startBillingTrial(planCode: string): Promise<{ data: BillingSubscriptionItem }>;
   activateBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
   markBillingSubscriptionPastDue(): Promise<{ data: BillingSubscriptionItem }>;

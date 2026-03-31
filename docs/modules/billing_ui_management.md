@@ -1,12 +1,15 @@
-# Billing and Plan Management UI (NEST-068)
+# Billing and Plan Management UI (NEST-068, NEST-149)
 
 ## Scope
 
-`NEST-068` delivers billing management UI surfaces on web and mobile with:
+`NEST-068` delivers baseline billing management UI surfaces on web and mobile.
+`NEST-149` extends the same screens with self-serve and dunning workflows:
 
 - subscription status and plan visibility,
 - lifecycle control actions (trial/activate/past_due/cancel),
 - billing event history as invoice/audit stream.
+- self-serve checkout + portal sessions.
+- dunning attempts and reconciliation visibility.
 
 ## Backend dependency
 
@@ -18,12 +21,19 @@ UI is powered by:
 - `POST /api/v1/billing/subscription/activate`
 - `POST /api/v1/billing/subscription/past-due`
 - `POST /api/v1/billing/subscription/cancel`
+- `POST /api/v1/billing/subscription/recover`
+- `POST /api/v1/billing/checkout/session`
+- `POST /api/v1/billing/portal/session`
+- `GET /api/v1/billing/dunning/attempts`
+- `GET /api/v1/billing/audit/reconciliation`
 
 ## Web delivery
 
 - Route: `apps/web/src/app/billing/page.tsx`
 - Added to module readiness navigation:
   `apps/web/src/lib/mvp-snapshot.ts`
+- Self-serve and dunning expansion:
+  `docs/modules/billing_self_serve_checkout_portal_dunning_v2.md`
 
 ## Mobile delivery
 

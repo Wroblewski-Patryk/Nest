@@ -1,6 +1,7 @@
 <?php
 
 use App\AI\Evaluation\CopilotSafetyEvaluationService;
+use App\Billing\Services\BillingDunningService;
 use App\Jobs\DeleteTenantDataJob;
 use App\Notifications\Services\MobilePushReminderService;
 use App\Observability\IntegrationSyncSloService;
@@ -202,6 +203,27 @@ Artisan::command('analytics:prune-events {--days=}', function (): int {
 
     return self::SUCCESS;
 })->purpose('Prune analytics events older than configured retention window');
+
+Artisan::command('billing:dunning:run {--tenant=} {--dry-run} {--json}', function (): int {
+    $tenantId = $this->option('tenant');
+    $summary = app(BillingDunningService::class)->run(
+        is_string($tenantId) && $tenantId !== '' ? $tenantId : null,
+        (bool) $this->option('dry-run')
+    );
+
+    if ($this->option('json')) {
+        $this->line((string) json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    } else {
+        $this->info('Billing dunning run completed.');
+        $this->line('Processed subscriptions: '.$summary['processed_subscriptions']);
+        $this->line('Attempts created: '.$summary['attempts_created']);
+        $this->line('Subscriptions canceled: '.$summary['subscriptions_canceled']);
+        $this->line('Skipped not due: '.$summary['skipped_not_due']);
+        $this->line('Dry run: '.($summary['dry_run'] ? 'yes' : 'no'));
+    }
+
+    return self::SUCCESS;
+})->purpose('Execute billing dunning attempts for past_due subscriptions');
 
 Artisan::command('tenants:retention-prune {--tenant=} {--dry-run} {--json}', function (): int {
     $tenantId = $this->option('tenant');

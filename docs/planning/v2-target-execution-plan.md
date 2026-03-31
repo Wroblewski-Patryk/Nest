@@ -209,7 +209,7 @@ Execution of this plan starts after launch closure tasks are complete:
 
 ## Workstream F: Commercial and V2 Release (`NEST-149..NEST-152`)
 
-- [ ] NEST-149 Expand billing to self-serve checkout/portal/dunning V2
+- [x] NEST-149 Expand billing to self-serve checkout/portal/dunning V2
   - Depends on: NEST-129
   - Done when:
     - checkout and subscription self-management are production-ready,

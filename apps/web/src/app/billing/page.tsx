@@ -1,27 +1,44 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { BillingEventItem, BillingSubscriptionItem, UiAsyncState } from "@nest/shared-types";
+import type {
+  BillingAuditReconciliationItem,
+  BillingDunningAttemptItem,
+  BillingEventItem,
+  BillingSelfServeSessionItem,
+  BillingSubscriptionItem,
+  UiAsyncState,
+} from "@nest/shared-types";
 import { formatLocalizedDateTime, resolveLanguage } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
 import { STATE_LABELS } from "@/lib/ux-contract";
 
+type BillingAction = "trial" | "activate" | "past_due" | "cancel" | "recover" | "checkout" | "portal";
+
 export default function BillingPage() {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const [state, setState] = useState<UiAsyncState>("loading");
-  const [detail, setDetail] = useState("Loading billing subscription and invoices...");
+  const [detail, setDetail] = useState("Loading billing subscription, sessions, and dunning data...");
   const [subscription, setSubscription] = useState<BillingSubscriptionItem | null>(null);
   const [events, setEvents] = useState<BillingEventItem[]>([]);
-  const [busyAction, setBusyAction] = useState<string | null>(null);
+  const [dunningAttempts, setDunningAttempts] = useState<BillingDunningAttemptItem[]>([]);
+  const [reconciliation, setReconciliation] = useState<BillingAuditReconciliationItem | null>(null);
+  const [sessions, setSessions] = useState<BillingSelfServeSessionItem[]>([]);
+  const [busyAction, setBusyAction] = useState<BillingAction | null>(null);
 
   const loadData = useCallback(async () => {
-    const [subscriptionResponse, eventResponse] = await Promise.all([
+    const [subscriptionResponse, eventResponse, dunningResponse, reconciliationResponse] = await Promise.all([
       nestApiClient.getBillingSubscription(),
       nestApiClient.getBillingEvents({ per_page: 15 }),
+      nestApiClient.getBillingDunningAttempts({ per_page: 10 }),
+      nestApiClient.getBillingAuditReconciliation(),
     ]);
+
     setSubscription(subscriptionResponse.data);
     setEvents(eventResponse.data ?? []);
+    setDunningAttempts(dunningResponse.data ?? []);
+    setReconciliation(reconciliationResponse.data ?? null);
   }, []);
 
   useEffect(() => {
@@ -31,7 +48,7 @@ export default function BillingPage() {
       .then(() => {
         if (!mounted) return;
         setState("success");
-        setDetail("Billing API calls succeeded.");
+        setDetail("Billing self-serve and dunning APIs are healthy.");
       })
       .catch((error) => {
         if (!mounted) return;
@@ -54,16 +71,33 @@ export default function BillingPage() {
   }, [loadData]);
 
   const runAction = useCallback(
-    async (action: "trial" | "activate" | "past_due" | "cancel") => {
+    async (action: BillingAction) => {
       setBusyAction(action);
+
       try {
         if (action === "trial") await nestApiClient.startBillingTrial("plus");
         if (action === "activate") await nestApiClient.activateBillingSubscription();
         if (action === "past_due") await nestApiClient.markBillingSubscriptionPastDue();
         if (action === "cancel") await nestApiClient.cancelBillingSubscription();
+        if (action === "recover") await nestApiClient.recoverBillingSubscription();
+        if (action === "checkout") {
+          const response = await nestApiClient.createBillingCheckoutSession({
+            plan_code: subscription?.plan?.plan_code ?? "plus",
+            success_url: "https://nest.local/billing/success",
+            cancel_url: "https://nest.local/billing/cancel",
+          });
+          setSessions((current) => [response.data, ...current].slice(0, 6));
+        }
+        if (action === "portal") {
+          const response = await nestApiClient.createBillingPortalSession({
+            return_url: "https://nest.local/billing",
+          });
+          setSessions((current) => [response.data, ...current].slice(0, 6));
+        }
+
         await loadData();
         setState("success");
-        setDetail("Subscription state updated.");
+        setDetail("Billing action completed.");
       } catch (error) {
         const status =
           typeof error === "object" &&
@@ -72,13 +106,14 @@ export default function BillingPage() {
           typeof (error as { status?: unknown }).status === "number"
             ? String((error as { status: number }).status)
             : "n/a";
+
         setState("error");
-        setDetail(`Subscription action failed (HTTP ${status}).`);
+        setDetail(`Billing action failed (HTTP ${status}).`);
       } finally {
         setBusyAction(null);
       }
     },
-    [loadData]
+    [loadData, subscription?.plan?.plan_code]
   );
 
   const metrics = useMemo(
@@ -86,14 +121,16 @@ export default function BillingPage() {
       { label: "Status", value: subscription?.status ?? "none" },
       { label: "Plan", value: subscription?.plan?.plan_code ?? "none" },
       { label: "Events", value: String(events.length) },
+      { label: "Dunning", value: String(dunningAttempts.length) },
+      { label: "Reconciled", value: reconciliation?.is_reconciled ? "yes" : "no" },
     ],
-    [events.length, subscription?.plan?.plan_code, subscription?.status]
+    [dunningAttempts.length, events.length, reconciliation?.is_reconciled, subscription?.plan?.plan_code, subscription?.status]
   );
 
   return (
     <WorkspaceShell
       title="Billing"
-      subtitle="Manage subscription lifecycle and inspect billing event history."
+      subtitle="Run self-serve checkout/portal flows and monitor automated dunning recovery."
       module="billing"
     >
       <div className="stack">
@@ -102,9 +139,27 @@ export default function BillingPage() {
         ))}
       </div>
 
-      <Panel title="Subscription Actions">
+      <Panel title="Self-Serve Actions">
         <div className="panel-content">
-          <p className="callout">Run baseline lifecycle transitions for plan management.</p>
+          <p className="callout">
+            Checkout and portal sessions are generated on demand and logged in tenant billing events.
+          </p>
+          <div className="row-inline">
+            <button className="btn-primary" onClick={() => runAction("checkout")} disabled={busyAction !== null}>
+              {busyAction === "checkout" ? "Opening..." : "Create Checkout Session"}
+            </button>
+            <button className="btn-secondary" onClick={() => runAction("portal")} disabled={busyAction !== null}>
+              {busyAction === "portal" ? "Opening..." : "Create Portal Session"}
+            </button>
+            <button className="btn-secondary" onClick={() => runAction("recover")} disabled={busyAction !== null}>
+              {busyAction === "recover" ? "Recovering..." : "Recover Past Due"}
+            </button>
+          </div>
+        </div>
+      </Panel>
+
+      <Panel title="Lifecycle Controls">
+        <div className="panel-content">
           <div className="row-inline">
             <button className="btn-primary" onClick={() => runAction("trial")} disabled={busyAction !== null}>
               {busyAction === "trial" ? "Starting..." : "Start Trial (plus)"}
@@ -122,6 +177,54 @@ export default function BillingPage() {
         </div>
       </Panel>
 
+      <Panel title="Recent Sessions">
+        <ul className="list">
+          {sessions.length === 0 ? (
+            <li className="list-row">
+              <div>
+                <strong>No local session actions yet</strong>
+                <p>Run checkout or portal action to create self-serve session records.</p>
+              </div>
+              <span className="pill">empty</span>
+            </li>
+          ) : (
+            sessions.map((session) => (
+              <li className="list-row" key={session.id}>
+                <div>
+                  <strong>{session.session_type}</strong>
+                  <p>{session.provider_session_id}</p>
+                </div>
+                <span className="pill">{session.status}</span>
+              </li>
+            ))
+          )}
+        </ul>
+      </Panel>
+
+      <Panel title="Dunning Attempts">
+        <ul className="list">
+          {dunningAttempts.length === 0 ? (
+            <li className="list-row">
+              <div>
+                <strong>No dunning attempts</strong>
+                <p>Attempts appear when past_due subscriptions are processed.</p>
+              </div>
+              <span className="pill">clear</span>
+            </li>
+          ) : (
+            dunningAttempts.map((attempt) => (
+              <li className="list-row" key={attempt.id}>
+                <div>
+                  <strong>Attempt #{attempt.attempt_number}</strong>
+                  <p>{attempt.channel}</p>
+                </div>
+                <span className="pill">{attempt.status}</span>
+              </li>
+            ))
+          )}
+        </ul>
+      </Panel>
+
       <Panel title="Billing Events">
         <ul className="list">
           {events.map((event) => (
@@ -134,6 +237,20 @@ export default function BillingPage() {
             </li>
           ))}
         </ul>
+      </Panel>
+
+      <Panel title="Audit Reconciliation">
+        <div className="panel-content">
+          <span className="pill">{reconciliation?.is_reconciled ? "reconciled" : "needs review"}</span>
+          <p className="callout">
+            Expected status event: {reconciliation?.events.status_event_expected ?? "n/a"} | Present:
+            {" "}
+            {reconciliation?.events.status_event_present ? "yes" : "no"}
+          </p>
+          <p className="mono-note">
+            Dunning attempts without event link: {reconciliation?.dunning.attempts_without_event_link ?? 0}
+          </p>
+        </div>
       </Panel>
 
       <Panel title="Billing API Status">

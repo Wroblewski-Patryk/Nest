@@ -185,6 +185,97 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
 
+  /v1/billing/checkout/session:
+    post:
+      tags: [Billing]
+      summary: Create self-serve checkout session
+      operationId: createBillingCheckoutSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingCheckoutSessionRequest'
+      responses:
+        '201':
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingSelfServeSessionResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/billing/portal/session:
+    post:
+      tags: [Billing]
+      summary: Create self-serve portal session
+      operationId: createBillingPortalSession
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingPortalSessionRequest'
+      responses:
+        '201':
+          description: Portal session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingSelfServeSessionResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/billing/subscription/recover:
+    post:
+      tags: [Billing]
+      summary: Recover past due subscription via self-serve flow
+      operationId: recoverBillingSubscription
+      responses:
+        '200':
+          description: Subscription recovered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingSubscriptionResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/billing/dunning/attempts:
+    get:
+      tags: [Billing]
+      summary: List tenant dunning attempts
+      operationId: listBillingDunningAttempts
+      parameters:
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+      responses:
+        '200':
+          description: Dunning attempts collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingDunningAttemptCollectionResponse'
+
+  /v1/billing/audit/reconciliation:
+    get:
+      tags: [Billing]
+      summary: Get billing audit reconciliation snapshot
+      operationId: getBillingAuditReconciliation
+      responses:
+        '200':
+          description: Billing reconciliation snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingAuditReconciliationResponse'
+
   /v1/analytics/events:
     post:
       tags: [Analytics]
@@ -1725,6 +1816,251 @@ components:
               type: integer
             total:
               type: integer
+
+    BillingCheckoutSessionRequest:
+      type: object
+      required: [plan_code]
+      properties:
+        plan_code:
+          type: string
+          maxLength: 64
+        success_url:
+          type: [string, 'null']
+          maxLength: 2048
+        cancel_url:
+          type: [string, 'null']
+          maxLength: 2048
+
+    BillingPortalSessionRequest:
+      type: object
+      properties:
+        return_url:
+          type: [string, 'null']
+          maxLength: 2048
+
+    BillingSubscriptionResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/BillingSubscriptionItem'
+            - type: 'null'
+
+    BillingSubscriptionItem:
+      type: object
+      required:
+        [id, tenant_id, plan_id, status, provider, trial_ends_at, current_period_starts_at, current_period_ends_at, canceled_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        tenant_id:
+          type: string
+          format: uuid
+        plan_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [trialing, active, past_due, canceled, paused, expired]
+        provider:
+          type: string
+        provider_subscription_id:
+          type: [string, 'null']
+        trial_ends_at:
+          type: [string, 'null']
+          format: date-time
+        current_period_starts_at:
+          type: [string, 'null']
+          format: date-time
+        current_period_ends_at:
+          type: [string, 'null']
+          format: date-time
+        canceled_at:
+          type: [string, 'null']
+          format: date-time
+        plan:
+          oneOf:
+            - $ref: '#/components/schemas/BillingPlanItem'
+            - type: 'null'
+
+    BillingPlanItem:
+      type: object
+      required: [id, plan_code, display_name, billing_interval, currency, price_minor, trial_days]
+      properties:
+        id:
+          type: string
+          format: uuid
+        plan_code:
+          type: string
+        display_name:
+          type: string
+        billing_interval:
+          type: string
+        currency:
+          type: string
+        price_minor:
+          type: integer
+        trial_days:
+          type: integer
+        entitlements:
+          type: array
+          items:
+            $ref: '#/components/schemas/BillingEntitlementItem'
+
+    BillingEntitlementItem:
+      type: object
+      required: [id, plan_id, entitlement_key, entitlement_value]
+      properties:
+        id:
+          type: string
+          format: uuid
+        plan_id:
+          type: string
+          format: uuid
+        entitlement_key:
+          type: string
+        entitlement_value:
+          type: string
+
+    BillingSelfServeSessionResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/BillingSelfServeSessionItem'
+
+    BillingSelfServeSessionItem:
+      type: object
+      required:
+        [id, session_type, provider, provider_session_id, plan_code, url, status, expires_at, billing_event_id]
+      properties:
+        id:
+          type: string
+          format: uuid
+        session_type:
+          type: string
+          enum: [checkout, portal]
+        provider:
+          type: string
+        provider_session_id:
+          type: string
+        plan_code:
+          type: [string, 'null']
+        url:
+          type: string
+          format: uri
+        status:
+          type: string
+        expires_at:
+          type: [string, 'null']
+          format: date-time
+        billing_event_id:
+          type: string
+          format: uuid
+
+    BillingDunningAttemptCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BillingDunningAttemptItem'
+        meta:
+          type: object
+          required: [total]
+          properties:
+            total:
+              type: integer
+
+    BillingDunningAttemptItem:
+      type: object
+      required:
+        [id, subscription_id, attempt_number, status, channel, failure_reason, scheduled_at, processed_at, recovered_at, billing_event_id]
+      properties:
+        id:
+          type: string
+          format: uuid
+        subscription_id:
+          type: string
+          format: uuid
+        attempt_number:
+          type: integer
+        status:
+          type: string
+        channel:
+          type: string
+        failure_reason:
+          type: [string, 'null']
+        scheduled_at:
+          type: [string, 'null']
+          format: date-time
+        processed_at:
+          type: [string, 'null']
+          format: date-time
+        recovered_at:
+          type: [string, 'null']
+          format: date-time
+        billing_event_id:
+          type: [string, 'null']
+          format: uuid
+
+    BillingAuditReconciliationResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/BillingAuditReconciliationItem'
+
+    BillingAuditReconciliationItem:
+      type: object
+      required: [subscription, events, dunning, is_reconciled]
+      properties:
+        subscription:
+          oneOf:
+            - type: object
+              required: [id, status, provider, provider_subscription_id, plan_code]
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                status:
+                  type: string
+                provider:
+                  type: string
+                provider_subscription_id:
+                  type: [string, 'null']
+                plan_code:
+                  type: [string, 'null']
+            - type: 'null'
+        events:
+          type: object
+          required:
+            [total, latest_event, latest_event_at, status_event_expected, status_event_present]
+          properties:
+            total:
+              type: integer
+            latest_event:
+              type: [string, 'null']
+            latest_event_at:
+              type: [string, 'null']
+              format: date-time
+            status_event_expected:
+              type: [string, 'null']
+            status_event_present:
+              type: boolean
+        dunning:
+          type: object
+          required: [attempts_total, attempts_without_event_link]
+          properties:
+            attempts_total:
+              type: integer
+            attempts_without_event_link:
+              type: integer
+        is_reconciled:
+          type: boolean
 
     IntegrationSyncResponse:
       type: object

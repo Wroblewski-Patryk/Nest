@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { BillingSubscriptionItem, UiAsyncState } from '@nest/shared-types';
+import type { BillingAuditReconciliationItem, BillingSubscriptionItem, UiAsyncState } from '@nest/shared-types';
 import { ModuleScreen } from '@/components/mvp/ModuleScreen';
 import { nestApiClient } from '@/constants/apiClient';
 import { billingData } from '@/constants/mvpData';
@@ -16,26 +16,39 @@ export default function BillingScreen() {
     Promise.all([
       nestApiClient.getBillingSubscription(),
       nestApiClient.getBillingEvents({ per_page: 10 }),
+      nestApiClient.getBillingDunningAttempts({ per_page: 10 }),
+      nestApiClient.getBillingAuditReconciliation(),
     ])
-      .then(([subscriptionResponse, eventsResponse]) => {
+      .then(([subscriptionResponse, eventsResponse, dunningResponse, reconciliationResponse]) => {
         if (!mounted) return;
 
         const subscription = subscriptionResponse.data as BillingSubscriptionItem | null;
         const events = eventsResponse.data ?? [];
+        const dunning = dunningResponse.data ?? [];
+        const reconciliation = reconciliationResponse.data as BillingAuditReconciliationItem | null;
 
         setApiState('success');
-        setApiDetail('Billing API calls succeeded.');
+        setApiDetail('Billing self-serve and dunning API calls succeeded.');
         setMetrics([
           { label: 'Status', value: subscription?.status ?? 'none' },
           { label: 'Plan', value: subscription?.plan?.plan_code ?? 'none' },
           { label: 'Events', value: String(events.length) },
+          { label: 'Dunning', value: String(dunning.length) },
+          { label: 'Reconciled', value: reconciliation?.is_reconciled ? 'yes' : 'no' },
         ]);
         setRows(
-          events.slice(0, 3).map((event) => ({
-            title: event.event_name,
-            detail: event.provider,
-            badge: subscription?.status ?? '-',
-          }))
+          [
+            ...events.slice(0, 2).map((event) => ({
+              title: event.event_name,
+              detail: event.provider,
+              badge: subscription?.status ?? '-',
+            })),
+            ...dunning.slice(0, 1).map((attempt) => ({
+              title: `dunning attempt #${attempt.attempt_number}`,
+              detail: attempt.channel,
+              badge: attempt.status,
+            })),
+          ]
         );
       })
       .catch((error) => {

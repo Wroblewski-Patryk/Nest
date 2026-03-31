@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AutomationRuleController;
 use App\Http\Controllers\Api\AutomationRunController;
 use App\Http\Controllers\Api\BillingEventController;
+use App\Http\Controllers\Api\BillingSelfServeController;
 use App\Http\Controllers\Api\BillingSubscriptionController;
 use App\Http\Controllers\Api\BillingWebhookController;
 use App\Http\Controllers\Api\CalendarEventController;
@@ -63,6 +64,11 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/billing/subscription/activate', [BillingSubscriptionController::class, 'activate']);
         Route::post('/billing/subscription/past-due', [BillingSubscriptionController::class, 'markPastDue']);
         Route::post('/billing/subscription/cancel', [BillingSubscriptionController::class, 'cancel']);
+        Route::post('/billing/subscription/recover', [BillingSelfServeController::class, 'recover']);
+        Route::post('/billing/checkout/session', [BillingSelfServeController::class, 'checkoutSession']);
+        Route::post('/billing/portal/session', [BillingSelfServeController::class, 'portalSession']);
+        Route::get('/billing/dunning/attempts', [BillingSelfServeController::class, 'dunningAttempts']);
+        Route::get('/billing/audit/reconciliation', [BillingSelfServeController::class, 'reconciliation']);
         Route::post('/analytics/events', [AnalyticsIngestionController::class, 'ingest']);
         Route::middleware('ai.surface')->group(function (): void {
             Route::get('/ai/context-graph', [AiContextGraphController::class, 'show']);

@@ -259,6 +259,24 @@ export function createNestApiClient(options) {
       }),
     getBillingSubscription: () => request("/billing/subscription"),
     getBillingEvents: (query = {}) => request("/billing/events", { query }),
+    createBillingCheckoutSession: (payload) =>
+      request("/billing/checkout/session", {
+        method: "POST",
+        body: payload,
+      }),
+    createBillingPortalSession: (payload = {}) =>
+      request("/billing/portal/session", {
+        method: "POST",
+        body: payload,
+      }),
+    recoverBillingSubscription: () =>
+      request("/billing/subscription/recover", {
+        method: "POST",
+      }),
+    getBillingDunningAttempts: (query = {}) =>
+      request("/billing/dunning/attempts", { query }),
+    getBillingAuditReconciliation: () =>
+      request("/billing/audit/reconciliation"),
     startBillingTrial: (planCode) =>
       request("/billing/subscription/start-trial", {
         method: "POST",

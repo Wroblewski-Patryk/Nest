@@ -643,6 +643,53 @@ export type BillingEventItem = {
   payload: Record<string, unknown> | null;
 };
 
+export type BillingSelfServeSessionItem = {
+  id: string;
+  session_type: "checkout" | "portal";
+  provider: string;
+  provider_session_id: string;
+  plan_code: string | null;
+  url: string;
+  status: string;
+  expires_at: string | null;
+  billing_event_id: string;
+};
+
+export type BillingDunningAttemptItem = {
+  id: string;
+  subscription_id: string;
+  attempt_number: number;
+  status: "notice_sent" | "recovered" | string;
+  channel: string;
+  failure_reason: string | null;
+  scheduled_at: string | null;
+  processed_at: string | null;
+  recovered_at: string | null;
+  billing_event_id: string | null;
+};
+
+export type BillingAuditReconciliationItem = {
+  subscription: {
+    id: string;
+    status: string;
+    provider: string;
+    provider_subscription_id: string | null;
+    plan_code: string | null;
+  } | null;
+  events: {
+    total: number;
+    latest_event: string | null;
+    latest_event_at: string | null;
+    status_event_expected: string | null;
+    status_event_present: boolean;
+  };
+  dunning: {
+    attempts_total: number;
+    attempts_without_event_link: number;
+  };
+  is_reconciled: boolean;
+};
+
 export type LocalizationOptionsResponse = {
   detected_language: SupportedLanguage;
   supported_languages: Array<{
@@ -830,6 +877,20 @@ export type NestApiClient = {
   replayAutomationRun(runId: string): Promise<{ data: AutomationRunItem }>;
   getBillingSubscription(): Promise<{ data: BillingSubscriptionItem | null }>;
   getBillingEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<BillingEventItem>>;
+  createBillingCheckoutSession(payload: {
+    plan_code: string;
+    success_url?: string | null;
+    cancel_url?: string | null;
+  }): Promise<{ data: BillingSelfServeSessionItem }>;
+  createBillingPortalSession(payload?: {
+    return_url?: string | null;
+  }): Promise<{ data: BillingSelfServeSessionItem }>;
+  recoverBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
+  getBillingDunningAttempts(query?: { per_page?: number }): Promise<{
+    data: BillingDunningAttemptItem[];
+    meta: { total: number };
+  }>;
+  getBillingAuditReconciliation(): Promise<{ data: BillingAuditReconciliationItem }>;
   startBillingTrial(planCode: string): Promise<{ data: BillingSubscriptionItem }>;
   activateBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
   markBillingSubscriptionPastDue(): Promise<{ data: BillingSubscriptionItem }>;

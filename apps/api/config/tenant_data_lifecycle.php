@@ -38,6 +38,16 @@ return [
             'retention_days' => 3650,
         ],
         [
+            'table' => 'billing_self_serve_sessions',
+            'timestamp_column' => 'created_at',
+            'retention_days' => 180,
+        ],
+        [
+            'table' => 'billing_dunning_attempts',
+            'timestamp_column' => 'processed_at',
+            'retention_days' => 365,
+        ],
+        [
             'table' => 'mobile_push_deliveries',
             'timestamp_column' => 'delivered_at',
             'retention_days' => 30,
@@ -90,6 +100,10 @@ return [
         'integration_event_ingestions',
         'integration_marketplace_audits',
         'integration_marketplace_installs',
+        'billing_dunning_attempts',
+        'billing_self_serve_sessions',
+        'tenant_billing_events',
+        'tenant_subscriptions',
         'integration_sync_audits',
         'integration_sync_failures',
         'sync_mappings',

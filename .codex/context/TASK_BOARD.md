@@ -1157,14 +1157,30 @@ Last updated: 2026-03-31
       `docs/modules/integration_health_center_remediation_playbooks_v2.md`,
       `docs/operations/integration_health_center_provider_incident_playbooks_v2.md`.
 
-- [ ] NEST-149 Expand billing to self-serve checkout/portal/dunning (V2)
-  - Status: BACKLOG
+- [x] NEST-149 Expand billing to self-serve checkout/portal/dunning (V2)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-129
   - Done when:
     - checkout and subscription self-management are production-ready,
     - dunning and payment recovery flows are automated,
     - financial event audit trail is complete and reconciled.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added self-serve billing endpoints and tenant-scoped dunning/audit APIs:
+      `POST /api/v1/billing/checkout/session`,
+      `POST /api/v1/billing/portal/session`,
+      `POST /api/v1/billing/subscription/recover`,
+      `GET /api/v1/billing/dunning/attempts`,
+      `GET /api/v1/billing/audit/reconciliation`.
+    - Added dunning command and persistence model:
+      `php artisan billing:dunning:run` with new tables
+      `billing_self_serve_sessions` and `billing_dunning_attempts`.
+    - Updated web/mobile billing surfaces and shared client contracts for
+      self-serve, recovery, dunning visibility, and reconciliation telemetry.
+    - Updated OpenAPI contract and module docs:
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
+      `docs/modules/billing_self_serve_checkout_portal_dunning_v2.md`.
 
 - [ ] NEST-150 Implement activation, retention, and monetization analytics loops
   - Status: BACKLOG
