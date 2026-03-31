@@ -98,6 +98,11 @@ Validation packet (2026-03-31):
 - [ ] Publish post-launch summary and follow-up backlog (`NEST-124`).
 - [ ] Confirm if release train cadence remains weekly or moves to hotfix mode (`NEST-124`).
 
+Stabilization summary (2026-03-31):
+- `docs/operations/week1_stabilization_summary_2026-03-31.md`
+- Current decision: temporary hotfix mode until live launch-window and Day0/Day1
+  closure evidence is completed.
+
 ## Post-V1 Handoff
 
 - V2 target execution backlog is maintained in

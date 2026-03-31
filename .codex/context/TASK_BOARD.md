@@ -505,6 +505,12 @@ Last updated: 2026-03-21
     - week1 post-launch summary is published with metrics and incidents,
     - release cadence decision (weekly vs hotfix mode) is recorded,
     - next prioritized backlog wave is explicitly defined.
+  - Notes:
+    - Week1 stabilization summary published:
+      `docs/operations/week1_stabilization_summary_2026-03-31.md`.
+    - Cadence decision recorded: temporary hotfix mode until live launch-window
+      and Day0/Day1 closure evidence is completed.
+    - Task remains open pending live post-launch metrics append and sign-off.
 
 - [x] NEST-153 Publish executor-ready V2 roundbook and task cards
   - Status: DONE
