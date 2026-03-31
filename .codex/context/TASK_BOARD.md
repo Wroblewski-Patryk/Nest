@@ -539,14 +539,21 @@ Last updated: 2026-03-21
     - top failure modes are quantified by frequency and impact,
     - V2 reliability priorities are published in operations docs.
 
-- [ ] NEST-126 Enforce SLO/error-budget workflow with automated gate checks
-  - Status: BACKLOG
+- [x] NEST-126 Enforce SLO/error-budget workflow with automated gate checks
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-125
   - Done when:
     - SLO checks can block risky releases on error-budget burn,
     - alert routing and escalation ownership are explicit,
     - runbook includes breach recovery flow per SLO.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added strict SLO gate mode for `integrations:sync-slo-check` and covered
+      warning/critical blocking behavior in feature tests.
+    - Made strict SLO gate mandatory in release-train workflow quality gates.
+    - Added SLO breach recovery flow and escalation routing to production
+      runbook.
 
 - [ ] NEST-127 Implement progressive delivery for API/web (canary or blue-green)
   - Status: BACKLOG

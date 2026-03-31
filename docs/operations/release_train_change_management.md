@@ -28,11 +28,13 @@
 - full backend suites (`Integration`, `Unit`, `Feature`)
 - security control verification:
   - `php artisan security:controls:verify --json`
+- integration sync SLO/error-budget gate (strict):
+  - `php artisan integrations:sync-slo-check --json --strict`
+  - release train is blocked on both `warning` and `critical` severity in strict
+    mode.
 
 ## Staging-Oriented Optional Gates
 
-- integration SLO snapshot:
-  - `php artisan integrations:sync-slo-check --json`
 - retention dry-run:
   - `php artisan tenants:retention-prune --dry-run --json`
 - secrets rotation dry-run:

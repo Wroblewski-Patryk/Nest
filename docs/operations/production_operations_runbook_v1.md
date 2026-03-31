@@ -48,7 +48,23 @@ Task: `NEST-119`
 - Post-deploy smoke suite pass recorded.
 - Mobile phone critical path checklist pass recorded.
 
-## 6. Post-Incident / Post-Release Actions
+## 6. SLO Breach Recovery Flow
+
+1. Run strict SLO gate snapshot:
+   - `php artisan integrations:sync-slo-check --json --strict`
+2. If `warning` or `critical`:
+   - freeze release promotion,
+   - page Incident Commander + API owner,
+   - add Web owner if user-facing latency/error impact is detected,
+   - add Mobile owner if sync degradation impacts phone critical path.
+3. Execute mitigation:
+   - reduce load on risky sync paths (pause non-critical scheduled sync jobs),
+   - apply configuration rollback or forward-fix for failing deployment,
+   - validate queue recovery and integration retry health.
+4. Re-run smoke + strict SLO gate before unfreezing deployment.
+5. Record breach window, root cause, and mitigation decision in incident log.
+
+## 7. Post-Incident / Post-Release Actions
 
 - Publish timeline and root cause summary.
 - Capture corrective/preventive actions with owners and deadlines.

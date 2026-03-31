@@ -51,11 +51,11 @@ jobs:
           php artisan test --testsuite=Unit --env=testing
           php artisan test --testsuite=Feature --env=testing
           php artisan security:controls:verify --json --env=testing
+          php artisan integrations:sync-slo-check --json --strict --env=testing
 
       - name: Run staging-oriented checks
         if: ${{ inputs.run_staging_checks }}
         run: |
-          php artisan integrations:sync-slo-check --json
           php artisan tenants:retention-prune --dry-run --json
           php artisan secrets:rotate --dry-run --json
 

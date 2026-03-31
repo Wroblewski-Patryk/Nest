@@ -16,9 +16,10 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Artisan::command('integrations:sync-slo-check {--json}', function (): int {
+Artisan::command('integrations:sync-slo-check {--json} {--strict}', function (): int {
     $snapshot = app(IntegrationSyncSloService::class)->evaluateCurrentWindow();
     $severity = (string) ($snapshot['alert']['severity'] ?? 'ok');
+    $strict = (bool) $this->option('strict');
 
     if ($severity === 'critical') {
         Log::error('Integration sync SLO critical alert', $snapshot);
@@ -32,6 +33,7 @@ Artisan::command('integrations:sync-slo-check {--json}', function (): int {
         $this->line((string) json_encode($snapshot, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     } else {
         $this->info("Integration sync SLO status: {$severity}");
+        $this->line('Strict mode: '.($strict ? 'enabled' : 'disabled'));
         $this->line('Success rate: '.$snapshot['current']['success_rate_percent'].'%');
         $this->line('P95 latency: '.$snapshot['current']['p95_latency_ms'].' ms');
         $this->line('Error budget burn: '.$snapshot['current']['error_budget_burn_percent'].'%');
@@ -42,7 +44,15 @@ Artisan::command('integrations:sync-slo-check {--json}', function (): int {
         }
     }
 
-    return $severity === 'critical' ? self::FAILURE : self::SUCCESS;
+    if ($severity === 'critical') {
+        return self::FAILURE;
+    }
+
+    if ($strict && $severity === 'warning') {
+        return self::FAILURE;
+    }
+
+    return self::SUCCESS;
 })->purpose('Evaluate current integration sync SLO window and emit alert signal');
 
 Artisan::command('notifications:send-mobile-reminders {--tenant=} {--json}', function (): int {

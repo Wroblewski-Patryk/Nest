@@ -303,6 +303,8 @@ Current workflow implementation:
   - `.github/workflows/release-train.yml`
 - Local release checklist helper:
   - `pwsh ./scripts/release/release-train-checklist.ps1 -ReleaseTag "<tag>" -ReleaseNotes "<notes>"`
+- Blocking SLO/error-budget gate:
+  - `php artisan integrations:sync-slo-check --json --strict`
 - Reference:
   - `docs/operations/release_train_change_management.md`
 

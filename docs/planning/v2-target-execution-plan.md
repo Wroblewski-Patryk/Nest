@@ -35,7 +35,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - top 10 failure modes are quantified with frequency and impact,
     - V2 reliability priorities are published in operations docs.
 
-- [ ] NEST-126 Enforce SLO/error-budget workflow with automated gate checks
+- [x] NEST-126 Enforce SLO/error-budget workflow with automated gate checks
   - Depends on: NEST-125
   - Done when:
     - SLO checks block risky releases on budget burn,
