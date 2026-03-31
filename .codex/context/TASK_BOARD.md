@@ -1016,6 +1016,22 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-172 Seed default admin account and publish local login instructions
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-170
+  - Done when:
+    - `migrate --seed` creates deterministic admin login credentials,
+    - repository README explains local startup and login entrypoints.
+  - Notes:
+    - Updated backend seeder default account to `admin@admin.com / password`:
+      `apps/api/database/seeders/DatabaseSeeder.php`.
+    - Added local run + login section in repository readme:
+      `README.md`.
+    - Validation:
+      `php artisan test --filter=AuthApiTest`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

@@ -30,13 +30,13 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $user = User::query()->firstOrCreate(
+        $adminUser = User::query()->firstOrCreate(
             [
                 'tenant_id' => $tenant->id,
-                'email' => 'test@example.com',
+                'email' => 'admin@admin.com',
             ],
             [
-                'name' => 'Test User',
+                'name' => 'Admin User',
                 'password' => 'password',
                 'timezone' => 'UTC',
                 'settings' => [],
@@ -60,7 +60,7 @@ class DatabaseSeeder extends Seeder
                 DB::table('life_areas')->insert([
                     'id' => (string) Str::uuid(),
                     'tenant_id' => $tenant->id,
-                    'user_id' => $user->id,
+                    'user_id' => $adminUser->id,
                     'name' => $template->name,
                     'color' => $template->color,
                     'weight' => $template->default_weight,
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
             DB::table('life_areas')
                 ->where('id', $existingLifeArea->id)
                 ->update([
-                    'user_id' => $user->id,
+                    'user_id' => $adminUser->id,
                     'color' => $template->color,
                     'weight' => $template->default_weight,
                     'is_archived' => false,

@@ -23,6 +23,30 @@ Primary documentation index: `docs/README.md`.
 - Mobile: Expo/React Native
 - Tenancy: multi-tenant architecture with single-user launch profile
 
+## Local Run (Web + API)
+
+1. Install dependencies:
+   - `pnpm install`
+   - `composer install --working-dir apps/api`
+2. Prepare backend environment:
+   - copy `apps/api/.env.example` to `apps/api/.env`
+   - create database (default local setup can use sqlite file or PostgreSQL, per `apps/api/.env`)
+3. Run migrations and seeders:
+   - `php artisan migrate --seed` (from `apps/api`)
+4. Start API:
+   - `php artisan serve --host=127.0.0.1 --port=9000` (from `apps/api`)
+5. Start web:
+   - `pnpm --dir apps/web dev`
+6. Open app:
+   - welcome page: `http://localhost:9001`
+   - auth module: `http://localhost:9001/auth`
+   - dashboard (after login): `http://localhost:9001/dashboard`
+
+Default seeded account after `migrate --seed`:
+
+- email: `admin@admin.com`
+- password: `password`
+
 ## License
 
 This project is proprietary software. See `LICENSE`.
