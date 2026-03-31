@@ -904,14 +904,37 @@ Last updated: 2026-03-31
       `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
       `docs/modules/ai_context_graph_v2.md`.
 
-- [ ] NEST-141 Deliver conversational copilot surface (web + mobile)
-  - Status: BACKLOG
+- [x] NEST-141 Deliver conversational copilot surface (web + mobile)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-140
   - Done when:
     - users can ask planning/execution questions in natural language,
     - responses include explainability and source references,
     - graceful fallback exists when AI provider is unavailable.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added conversational copilot endpoint:
+      `POST /api/v1/ai/copilot/conversation`.
+    - Implemented copilot conversation service with intent detection, response
+      explainability, and source reference payloads:
+      `apps/api/app/AI/Services/CopilotConversationService.php`.
+    - Added provider availability + fallback behavior using OpenAI env
+      configuration in `apps/api/config/services.php`.
+    - Added web copilot panel:
+      `apps/web/src/components/ai-copilot-card.tsx`,
+      `apps/web/src/app/page.tsx`.
+    - Added mobile copilot panel:
+      `apps/mobile/app/modal.tsx`.
+    - Added shared client/types and OpenAPI updates:
+      `packages/shared-types/src/client.js`,
+      `packages/shared-types/src/client.d.ts`,
+      `packages/shared-types/src/index.d.ts`,
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`.
+    - Added module documentation:
+      `docs/modules/conversational_copilot_surface_v2.md`.
+    - Added API regression coverage:
+      `apps/api/tests/Feature/AiCopilotConversationApiTest.php`.
 
 - [ ] NEST-142 Implement approval-gated AI actions (write operations)
   - Status: BACKLOG

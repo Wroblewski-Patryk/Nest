@@ -42,11 +42,16 @@ operations without compromising data integrity or security.
   - accepts explicit planning constraints,
   - returns scheduled proposal items with rationale, reason codes, source
     entity references, and confidence guardrail status.
+- `POST /api/v1/ai/copilot/conversation`
+  - natural-language conversational surface for planning/execution/reflection,
+  - response includes explainability metadata and source references,
+  - returns graceful fallback mode when provider is unavailable.
 - `POST /api/v1/ai/feedback`
   - captures user decision (`accept`, `reject`, `edit`) for recommendation
     quality tracking.
 - Detailed contract: `docs/modules/ai_weekly_planning_api.md`.
 - Context graph contract: `docs/modules/ai_context_graph_v2.md`.
+- Copilot surface contract: `docs/modules/conversational_copilot_surface_v2.md`.
 - Feedback contract: `docs/modules/ai_feedback_loop.md`.
 - Machine-readable API error envelope for tool/agent clients:
   `docs/modules/ai_tool_api_error_contract_v1.md`.

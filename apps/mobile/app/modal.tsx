@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { Platform, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
 import {
+  type AiCopilotConversationResponse,
   resolveLanguage,
   type InAppNotificationItem,
   type NotificationChannel,
@@ -122,6 +123,10 @@ export default function ModalScreen() {
     useState<NotificationPreferencesItem | null>(null);
   const [channelDeliveries, setChannelDeliveries] = useState<NotificationChannelDeliveryItem[]>([]);
   const [isSavingMatrix, setIsSavingMatrix] = useState(false);
+  const [copilotPrompt, setCopilotPrompt] = useState('Help me plan the next 3 high-impact actions.');
+  const [copilotDetail, setCopilotDetail] = useState('Ask copilot about planning, execution, or reflection.');
+  const [copilotResult, setCopilotResult] = useState<AiCopilotConversationResponse['data'] | null>(null);
+  const [isCopilotBusy, setIsCopilotBusy] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [scheduler, setScheduler] = useState<MobileOfflineSyncSchedulerState>(() =>
     loadOfflineSyncSchedulerState()
@@ -226,6 +231,35 @@ export default function ModalScreen() {
       setIsSavingMatrix(false);
     }
   }, [notificationPreferences]);
+
+  const askCopilot = useCallback(async () => {
+    if (!copilotPrompt.trim()) {
+      setCopilotDetail('Type a question before asking copilot.');
+      return;
+    }
+
+    setIsCopilotBusy(true);
+    setCopilotDetail('Generating copilot response...');
+    try {
+      const response = await nestApiClient.askAiCopilot({
+        message: copilotPrompt.trim(),
+        context: {
+          window_days: 14,
+          entity_limit: 10,
+        },
+      });
+      setCopilotResult(response.data);
+      setCopilotDetail(
+        response.data.provider.mode === 'fallback'
+          ? 'Provider unavailable, fallback response returned.'
+          : 'Primary provider response returned.'
+      );
+    } catch {
+      setCopilotDetail('Copilot request failed. Try again in a moment.');
+    } finally {
+      setIsCopilotBusy(false);
+    }
+  }, [copilotPrompt]);
 
   const toggleRead = useCallback(
     async (item: InAppNotificationItem) => {
@@ -695,6 +729,38 @@ export default function ModalScreen() {
           </Text>
         </View>
       ))}
+
+      <Text style={styles.title}>Copilot</Text>
+      <Text style={styles.description}>{copilotDetail}</Text>
+      <TextInput
+        style={styles.copilotInput}
+        value={copilotPrompt}
+        onChangeText={setCopilotPrompt}
+        editable={!isCopilotBusy}
+        multiline
+        placeholder="Ask about priorities, scheduling, habits, goals, or reflection."
+      />
+      <Pressable
+        style={[styles.languageButton, styles.languageButtonActive]}
+        onPress={() => void askCopilot()}
+        disabled={isCopilotBusy}
+      >
+        <Text style={styles.languageButtonText}>{isCopilotBusy ? 'Thinking...' : 'Ask Copilot'}</Text>
+      </Pressable>
+      {copilotResult ? (
+        <View style={styles.notificationCard}>
+          <Text style={styles.notificationTitle}>Answer</Text>
+          <Text style={styles.description}>{copilotResult.answer}</Text>
+          <Text style={styles.description}>
+            Intent: {copilotResult.intent} | Provider: {copilotResult.provider.mode}
+          </Text>
+          {copilotResult.source_references.slice(0, 5).map((reference, index) => (
+            <Text key={`${reference.entity_id ?? 'n-a'}-${index}`} style={styles.description}>
+              {reference.module} | {reference.entity_type} | {reference.title ?? 'Untitled'}
+            </Text>
+          ))}
+        </View>
+      ) : null}
       <EditScreenInfo path="app/modal.tsx" />
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
@@ -767,6 +833,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 8,
     backgroundColor: '#ffffff',
+  },
+  copilotInput: {
+    width: '100%',
+    minHeight: 86,
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    marginBottom: 8,
+    backgroundColor: '#ffffff',
+    textAlignVertical: 'top',
   },
   eventMatrixRow: {
     marginBottom: 8,

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AiRecommendationFeedbackController;
 use App\Http\Controllers\Api\AiContextGraphController;
+use App\Http\Controllers\Api\AiCopilotConversationController;
 use App\Http\Controllers\Api\AiWeeklyPlanController;
 use App\Http\Controllers\Api\AnalyticsIngestionController;
 use App\Http\Controllers\Api\AuthController;
@@ -59,6 +60,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/analytics/events', [AnalyticsIngestionController::class, 'ingest']);
         Route::middleware('ai.surface')->group(function (): void {
             Route::get('/ai/context-graph', [AiContextGraphController::class, 'show']);
+            Route::post('/ai/copilot/conversation', [AiCopilotConversationController::class, 'reply']);
             Route::post('/ai/weekly-plan/propose', [AiWeeklyPlanController::class, 'propose']);
             Route::post('/ai/feedback', [AiRecommendationFeedbackController::class, 'store']);
         });

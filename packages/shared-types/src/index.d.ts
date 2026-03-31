@@ -336,6 +336,38 @@ export type AiContextGraphResponse = {
   };
 };
 
+export type AiCopilotSourceReference = {
+  module: string;
+  entity_type: string;
+  entity_id: string | null;
+  title: string | null;
+};
+
+export type AiCopilotConversationResponse = {
+  data: {
+    conversation_id: string;
+    intent: "planning" | "execution" | "reflection" | "general" | string;
+    message: string;
+    answer: string;
+    provider: {
+      mode: "primary" | "fallback";
+      reason: string;
+    };
+    context_snapshot: {
+      schema_version: string;
+      as_of: string;
+      fingerprint: string;
+    };
+    explainability: {
+      strategy: string;
+      reason_codes: string[];
+      source_references: AiCopilotSourceReference[];
+    };
+    source_references: AiCopilotSourceReference[];
+    generated_at: string;
+  };
+};
+
 export type LifeAreaBalanceItem = {
   life_area_id: string;
   name: string;
@@ -534,6 +566,14 @@ export type NestApiClient = {
     locale?: string | null;
   }): Promise<{ data: Record<string, unknown> }>;
   getAiContextGraph(query?: { window_days?: number; entity_limit?: number; as_of?: string }): Promise<AiContextGraphResponse>;
+  askAiCopilot(payload: {
+    message: string;
+    context?: {
+      window_days?: number;
+      entity_limit?: number;
+      as_of?: string;
+    };
+  }): Promise<AiCopilotConversationResponse>;
   getCollaborationSpaces(): Promise<{ data: CollaborationSpaceItem[] }>;
   createCollaborationSpace(payload: { name: string }): Promise<{ data: CollaborationSpaceItem }>;
   getCollaborationSpaceMembers(spaceId: string): Promise<{ data: CollaborationSpaceMemberItem[] }>;

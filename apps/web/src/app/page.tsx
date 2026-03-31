@@ -4,6 +4,7 @@ import { NotificationChannelMatrixCard } from "@/components/notification-channel
 import { OfflineSyncCard } from "@/components/offline-sync-card";
 import { PreAuthLanguageSelector } from "@/components/pre-auth-language-selector";
 import { NotificationCenterCard } from "@/components/notification-center-card";
+import { AiCopilotCard } from "@/components/ai-copilot-card";
 import { moduleReadiness } from "@/lib/mvp-snapshot";
 
 export default function HomePage() {
@@ -50,6 +51,10 @@ export default function HomePage() {
 
       <Panel title="Notification Preferences">
         <NotificationChannelMatrixCard />
+      </Panel>
+
+      <Panel title="Copilot">
+        <AiCopilotCard />
       </Panel>
     </WorkspaceShell>
   );

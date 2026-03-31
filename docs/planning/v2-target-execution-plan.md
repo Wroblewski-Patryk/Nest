@@ -149,7 +149,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - retrieval payload is deterministic and versioned,
     - privacy and redaction rules are enforced in context assembly.
 
-- [ ] NEST-141 Deliver conversational copilot surface (web + mobile)
+- [x] NEST-141 Deliver conversational copilot surface (web + mobile)
   - Depends on: NEST-140
   - Done when:
     - users can ask planning/execution questions in natural language,
