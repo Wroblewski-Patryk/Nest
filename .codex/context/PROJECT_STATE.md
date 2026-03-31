@@ -177,7 +177,7 @@ Last updated: 2026-03-31
   `docs/planning/next_execution_wave_2026-03-21.md`
 - Auth/usability/AI-access remediation wave documented in
   `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md` with
-  execution queue `NEST-160` to `NEST-168`.
+  execution queue `NEST-160` to `NEST-169`.
 - `NEST-001` completed: monorepo structure approved and documented in
   `docs/engineering/monorepo_structure.md`
 - `NEST-002` completed: Laravel backend skeleton bootstrapped in `apps/api`
@@ -637,6 +637,12 @@ Last updated: 2026-03-31
   daily use with clearer quick-capture flow, deterministic zero-list Inbox
   fallback, and preserved authenticated CRUD behavior
   (`apps/web/src/app/tasks/page.tsx`)
+- `NEST-169` completed: journal usability baseline is now API-backed
+  (journal-entry + life-area create/list), insights actions are functional
+  (`refresh`/`export`), and auth screen no longer ships demo credentials
+  (`apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/insights/page.tsx`,
+  `apps/web/src/app/auth/page.tsx`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   AiBriefingItem,
   AnalyticsLoopDecisionDashboardResponse,
@@ -44,57 +44,7 @@ export default function InsightsPage() {
   const [goalTrend, setGoalTrend] = useState<InsightsTrendResponse>(EMPTY_TREND);
   const [briefing, setBriefing] = useState<AiBriefingItem | null>(null);
   const [growthLoops, setGrowthLoops] = useState<AnalyticsLoopDecisionDashboardResponse["data"] | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-    const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-    const briefingId = params?.get("briefing_id");
-    const briefingRequest = briefingId
-      ? nestApiClient.getAiBriefing(briefingId).then((response) => response.data).catch(() => null)
-      : nestApiClient
-          .getAiBriefings({ per_page: 1 })
-          .then((response) => response.data[0] ?? null)
-          .catch(() => null);
-
-    Promise.all([
-      nestApiClient.getLifeAreaBalance({ window_days: 30 }),
-      nestApiClient.getInsightsTrends("tasks", { period: "weekly", points: 6 }),
-      nestApiClient.getInsightsTrends("habits", { period: "weekly", points: 6 }),
-      nestApiClient.getInsightsTrends("goals", { period: "weekly", points: 6 }),
-      nestApiClient.getAnalyticsDecisionDashboard({ window_days: 28 }),
-      briefingRequest,
-    ])
-      .then(([balanceResponse, tasksResponse, habitsResponse, goalsResponse, dashboardResponse, briefingResponse]) => {
-        if (!mounted) return;
-
-        setBalance(balanceResponse);
-        setTaskTrend(tasksResponse);
-        setHabitTrend(habitsResponse);
-        setGoalTrend(goalsResponse);
-        setGrowthLoops(dashboardResponse.data);
-        setBriefing(briefingResponse);
-        setState("success");
-        setDetail("Insights API calls succeeded.");
-      })
-      .catch((error) => {
-        if (!mounted) return;
-
-        const status =
-          typeof error === "object" &&
-          error !== null &&
-          "status" in error &&
-          typeof (error as { status?: unknown }).status === "number"
-            ? String((error as { status: number }).status)
-            : "n/a";
-
-        setState("error");
-        setDetail(`Insights API calls failed (HTTP ${status}). Showing fallback snapshot.`);
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const activeBalance = useMemo(
     () =>
@@ -137,6 +87,80 @@ export default function InsightsPage() {
 
     return insightsSnapshot.trends;
   }, [state, taskTrend.meta.total, habitTrend.meta.total, goalTrend.meta.total]);
+
+  const loadInsights = useCallback(async () => {
+    setIsRefreshing(true);
+    setState("loading");
+    setDetail("Refreshing insights...");
+
+    const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const briefingId = params?.get("briefing_id");
+    const briefingRequest = briefingId
+      ? nestApiClient.getAiBriefing(briefingId).then((response) => response.data).catch(() => null)
+      : nestApiClient
+          .getAiBriefings({ per_page: 1 })
+          .then((response) => response.data[0] ?? null)
+          .catch(() => null);
+
+    try {
+      const [balanceResponse, tasksResponse, habitsResponse, goalsResponse, dashboardResponse, briefingResponse] =
+        await Promise.all([
+          nestApiClient.getLifeAreaBalance({ window_days: 30 }),
+          nestApiClient.getInsightsTrends("tasks", { period: "weekly", points: 6 }),
+          nestApiClient.getInsightsTrends("habits", { period: "weekly", points: 6 }),
+          nestApiClient.getInsightsTrends("goals", { period: "weekly", points: 6 }),
+          nestApiClient.getAnalyticsDecisionDashboard({ window_days: 28 }),
+          briefingRequest,
+        ]);
+
+      setBalance(balanceResponse);
+      setTaskTrend(tasksResponse);
+      setHabitTrend(habitsResponse);
+      setGoalTrend(goalsResponse);
+      setGrowthLoops(dashboardResponse.data);
+      setBriefing(briefingResponse);
+      setState("success");
+      setDetail("Insights API calls succeeded.");
+    } catch (error) {
+      const status =
+        typeof error === "object" &&
+        error !== null &&
+        "status" in error &&
+        typeof (error as { status?: unknown }).status === "number"
+          ? String((error as { status: number }).status)
+          : "n/a";
+
+      setState("error");
+      setDetail(`Insights API calls failed (HTTP ${status}). Showing fallback snapshot.`);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadInsights();
+  }, [loadInsights]);
+
+  function exportSnapshot() {
+    const payload = {
+      generated_at: new Date().toISOString(),
+      state,
+      balance: activeBalance,
+      trends,
+      growthLoops,
+      briefing,
+    };
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `nest-insights-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <WorkspaceShell
@@ -182,12 +206,16 @@ export default function InsightsPage() {
 
       <Panel
         title="Weekly Trends (6 buckets)"
-        actions={(
+        actions={
           <>
-            <button type="button" className="btn-primary">Refresh Trends</button>
-            <button type="button" className="btn-secondary">Export Snapshot</button>
+            <button type="button" className="btn-primary" onClick={() => void loadInsights()} disabled={isRefreshing}>
+              {isRefreshing ? "Refreshing..." : "Refresh Trends"}
+            </button>
+            <button type="button" className="btn-secondary" onClick={exportSnapshot}>
+              Export Snapshot
+            </button>
           </>
-        )}
+        }
       >
         <ul className="list">
           {trends.map((trend) => (

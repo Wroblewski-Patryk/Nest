@@ -28,8 +28,8 @@ export default function AuthPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [feedback, setFeedback] = useState("Sign in to access your private dashboard.");
 
-  const [loginEmail, setLoginEmail] = useState("test@example.com");
-  const [loginPassword, setLoginPassword] = useState("password");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
   const [registerName, setRegisterName] = useState("");
   const [registerEmail, setRegisterEmail] = useState("");

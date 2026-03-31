@@ -951,6 +951,27 @@ Last updated: 2026-03-31
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-03-31
 
+- [x] NEST-169 Activate journal usability baseline and remove dead web actions
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-167
+  - Done when:
+    - journal supports real create/list flow for entries and life areas,
+    - insights actions trigger real behavior (refresh/export),
+    - auth/login default input state is production-safe.
+  - Notes:
+    - Replaced journal snapshot surface with API-backed create/list UX:
+      `apps/web/src/app/journal/page.tsx`.
+    - Implemented functional refresh/export actions in insights:
+      `apps/web/src/app/insights/page.tsx`.
+    - Removed hardcoded auth demo credentials:
+      `apps/web/src/app/auth/page.tsx`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-03-31
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

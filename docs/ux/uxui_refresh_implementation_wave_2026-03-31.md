@@ -54,10 +54,18 @@ Additional Stitch-aligned usability remediation executed in web:
   pill nav) with updated tokenized aura styling.
 - Reworked `Tasks + Lists` into practical command surface with deterministic
   Inbox fallback when no list exists yet.
+- Replaced journal snapshot with API-backed create/list flow for journal entries
+  and life areas.
+- Converted Insights action buttons from placeholder to functional
+  refresh/export operations.
+- Removed default demo credentials from auth sign-in form.
 
 Updated files in this extension:
 
 - `apps/web/src/components/workspace-shell.tsx`
 - `apps/web/src/app/globals.css`
 - `apps/web/src/app/tasks/page.tsx`
+- `apps/web/src/app/journal/page.tsx`
+- `apps/web/src/app/insights/page.tsx`
+- `apps/web/src/app/auth/page.tsx`
 - `apps/web/src/lib/mvp-snapshot.ts`
