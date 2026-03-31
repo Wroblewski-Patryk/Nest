@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-03-31T02:31:03.753Z",
+  "suite": "offline-chaos-regression",
+  "tick_ms": 5000,
+  "results": [
+    {
+      "scenario": "Packet Loss 30%",
+      "id": "packet_loss_30",
+      "pass": true,
+      "queue_total": 9,
+      "queue_synced": 9,
+      "queue_remaining": 0,
+      "attempts": 10,
+      "failures": 1,
+      "max_retry": 1,
+      "max_lag_seconds": 17,
+      "packet_loss_rate": 0.3,
+      "latency_ms": 300
+    },
+    {
+      "scenario": "High Latency 2500ms",
+      "id": "high_latency_2500",
+      "pass": true,
+      "queue_total": 9,
+      "queue_synced": 9,
+      "queue_remaining": 0,
+      "attempts": 9,
+      "failures": 0,
+      "max_retry": 0,
+      "max_lag_seconds": 5,
+      "packet_loss_rate": 0.05,
+      "latency_ms": 2500
+    },
+    {
+      "scenario": "Reconnect Storm",
+      "id": "reconnect_storm",
+      "pass": true,
+      "queue_total": 9,
+      "queue_synced": 9,
+      "queue_remaining": 0,
+      "attempts": 12,
+      "failures": 3,
+      "max_retry": 3,
+      "max_lag_seconds": 120,
+      "packet_loss_rate": 0.15,
+      "latency_ms": 1200
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-03-21
+Last updated: 2026-03-31
 
 ## Product
 
@@ -519,6 +519,10 @@ Last updated: 2026-03-21
 - `NEST-133` completed: encrypted local cache profile and retention controls
   added for web/mobile offline queue + scheduler payloads with secure wipe path
   (`docs/modules/encrypted_local_cache_profile_v2.md`)
+- `NEST-134` completed: offline chaos/regression suite added with deterministic
+  packet-loss/high-latency/reconnect-storm scenarios, machine-readable run
+  matrix, and documented limitations/mitigations
+  (`docs/operations/offline_chaos_regression_report_2026-03-31.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

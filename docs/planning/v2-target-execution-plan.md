@@ -96,7 +96,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - cache retention/cleanup policy is configurable and documented,
     - secure wipe path exists for logout/account removal.
 
-- [ ] NEST-134 Ship offline chaos/regression suite for unstable network scenarios
+- [x] NEST-134 Ship offline chaos/regression suite for unstable network scenarios
   - Depends on: NEST-131, NEST-132, NEST-133
   - Done when:
     - automated test matrix covers packet loss, high latency, and reconnect storms,

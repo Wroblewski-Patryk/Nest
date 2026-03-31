@@ -1,6 +1,6 @@
 ﻿# TASK_BOARD
 
-Last updated: 2026-03-21
+Last updated: 2026-03-31
 
 ## Backlog
 
@@ -739,14 +739,24 @@ Last updated: 2026-03-21
     - Implementation and validation documented in:
       `docs/modules/encrypted_local_cache_profile_v2.md`.
 
-- [ ] NEST-134 Ship offline chaos/regression suite for unstable network scenarios
-  - Status: BACKLOG
+- [x] NEST-134 Ship offline chaos/regression suite for unstable network scenarios
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-131, NEST-132, NEST-133
   - Done when:
     - automated tests cover packet loss, high latency, and reconnect storms,
     - key user flows pass in offline-first scenarios,
     - known limitations are documented with mitigations.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added deterministic offline chaos matrix runner:
+      `scripts/testing/offline-chaos-regression.mjs`.
+    - Added PowerShell wrapper for regression execution:
+      `scripts/testing/run-offline-chaos-suite.ps1`.
+    - Published latest machine-readable matrix in
+      `docs/operations/offline_chaos_regression_matrix_2026-03-31.json`.
+    - Published scenario coverage, known limitations, and mitigation guidance in
+      `docs/operations/offline_chaos_regression_report_2026-03-31.md`.
 
 - [ ] NEST-135 Expand collaboration model to shared household/workspace operations
   - Status: BACKLOG
