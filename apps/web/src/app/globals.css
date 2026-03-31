@@ -281,6 +281,8 @@ body {
   padding: 1rem;
   display: grid;
   gap: 0.8rem;
+  width: min(1120px, 100%);
+  margin-inline: auto;
 }
 
 .workspace-brand {
@@ -362,6 +364,8 @@ body {
   gap: 0.8rem;
   grid-template-columns: 1fr;
   align-content: start;
+  width: min(1120px, 100%);
+  margin-inline: auto;
 }
 
 .stack {

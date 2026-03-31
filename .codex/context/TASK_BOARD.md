@@ -1122,6 +1122,21 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-176 Normalize module layout width for topbar and content grid
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-175
+  - Done when:
+    - module header (`workspace-topbar`) no longer stretches unnaturally on wide displays,
+    - module content grid uses consistent centered max-width across modules.
+  - Notes:
+    - Added centered max-width constraints for workspace topbar and grid:
+      `apps/web/src/app/globals.css`.
+    - Validation:
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent
