@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { resolveLanguage } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
+import { setOnboardingRequired } from "@/lib/auth-session";
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const [displayName, setDisplayName] = useState("");
   const [language, setLanguage] = useState<"en" | "pl">(resolveLanguage("en"));
   const [detail, setDetail] = useState("Complete onboarding with language and display name.");
@@ -55,7 +58,9 @@ export default function OnboardingPage() {
           language,
         },
       }).catch(() => undefined);
-      setDetail("Onboarding completed. Preferences applied immediately.");
+      setOnboardingRequired(false);
+      setDetail("Onboarding completed. Redirecting to dashboard...");
+      router.replace("/");
     } catch (error) {
       const status =
         typeof error === "object" &&
@@ -103,7 +108,12 @@ export default function OnboardingPage() {
             <option value="en">English</option>
             <option value="pl">Polski</option>
           </select>
-          <button type="button" className="btn-primary" onClick={() => void submit()} disabled={displayName.trim().length === 0}>
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => void submit()}
+            disabled={displayName.trim().length === 0}
+          >
             Continue
           </button>
           <p className="callout">{detail}</p>

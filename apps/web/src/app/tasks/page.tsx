@@ -1,14 +1,16 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
-import { clearAuthToken, getAuthToken, setAuthToken } from "@/lib/auth-session";
+import { clearAuthSession, getAuthToken, setAuthSession } from "@/lib/auth-session";
 
 type AuthUser = {
   id: string;
   name: string;
   email: string;
+  onboarding_required?: boolean;
 };
 
 type ListItem = {
@@ -76,6 +78,7 @@ function getErrorMessage(error: unknown): string {
 }
 
 export default function TasksPage() {
+  const router = useRouter();
   const [isBootstrapping, setIsBootstrapping] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -149,7 +152,7 @@ export default function TasksPage() {
       setIsAuthenticated(true);
       await refreshWorkspaceData();
     } catch {
-      clearAuthToken();
+      clearAuthSession();
       setIsAuthenticated(false);
       setUser(null);
     } finally {
@@ -176,9 +179,13 @@ export default function TasksPage() {
         },
       });
 
-      setAuthToken(response.data.token);
+      setAuthSession(response.data.token, Boolean(response.data.user.onboarding_required));
       setUser(response.data.user);
       setIsAuthenticated(true);
+      if (response.data.user.onboarding_required) {
+        router.replace("/onboarding");
+        return;
+      }
       await refreshWorkspaceData();
       setFeedback("Signed in. You can now add lists and tasks.");
     } catch (error) {
@@ -200,13 +207,14 @@ export default function TasksPage() {
       // no-op
     }
 
-    clearAuthToken();
+    clearAuthSession();
     setIsAuthenticated(false);
     setUser(null);
     setLists([]);
     setTasks([]);
     setSelectedListId("");
     setFeedback("Signed out.");
+    router.replace("/auth");
   }
 
   async function handleCreateList(event: FormEvent<HTMLFormElement>) {
@@ -234,7 +242,7 @@ export default function TasksPage() {
       setFeedback("List created.");
     } catch (error) {
       if (getErrorStatus(error) === 401) {
-        clearAuthToken();
+        clearAuthSession();
         setIsAuthenticated(false);
         setUser(null);
       }
@@ -278,7 +286,7 @@ export default function TasksPage() {
       setFeedback("Task added.");
     } catch (error) {
       if (getErrorStatus(error) === 401) {
-        clearAuthToken();
+        clearAuthSession();
         setIsAuthenticated(false);
         setUser(null);
       }
@@ -302,7 +310,7 @@ export default function TasksPage() {
       setFeedback(status === "done" ? "Task marked as done." : "Task reopened.");
     } catch (error) {
       if (getErrorStatus(error) === 401) {
-        clearAuthToken();
+        clearAuthSession();
         setIsAuthenticated(false);
         setUser(null);
       }

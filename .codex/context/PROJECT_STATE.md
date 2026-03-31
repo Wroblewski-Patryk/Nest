@@ -573,6 +573,12 @@ Last updated: 2026-03-31
   (`docs/ux/nest_159_life_management_ux_critical_audit_2026-03-31.md`,
   `docs/ux_audit_evidence/2026-03-31/nest-159/artifact-index.md`,
   `docs/ux/stitch_screen_registry_2026-03-21.md`)
+- `NEST-160` completed: web auth + onboarding gate now enforced for dashboard
+  and module routes with middleware guard, dedicated `/auth` entry flow, and
+  cookie-backed session gating signals (`apps/web/middleware.ts`,
+  `apps/web/src/app/auth/page.tsx`,
+  `apps/web/src/lib/route-guard.ts`,
+  `apps/web/src/lib/auth-session.ts`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for
@@ -627,8 +633,8 @@ Last updated: 2026-03-31
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute usability-critical auth and CRUD remediation
-  plus dual-actor AI-access foundation (`NEST-160` to `NEST-166`) in parallel
+- Current execution focus: execute usability-critical CRUD remediation and
+  dual-actor AI-access foundation (`NEST-161` to `NEST-166`) in parallel
   with ongoing V2 launch-window/live-evidence closures (`NEST-122`,
   `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`) and
   commercial/release continuation (`NEST-152` onward).

@@ -653,8 +653,8 @@ Last updated: 2026-03-31
     - Added canonical Stitch project URL reference in:
       `docs/ux/stitch_screen_registry_2026-03-21.md`.
 
-- [ ] NEST-160 Enforce auth gate and onboarding gate for dashboard/module access
-  - Status: BACKLOG
+- [x] NEST-160 Enforce auth gate and onboarding gate for dashboard/module access
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-159
   - Done when:
@@ -665,6 +665,22 @@ Last updated: 2026-03-31
   - Notes:
     - Execution plan:
       `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md`.
+    - Added middleware route guard with auth + onboarding gating:
+      `apps/web/middleware.ts`,
+      `apps/web/src/lib/route-guard.ts`.
+    - Added dedicated pre-auth entry surface with login/register:
+      `apps/web/src/app/auth/page.tsx`.
+    - Extended auth session storage with cookie-backed token/onboarding flags:
+      `apps/web/src/lib/auth-session.ts`.
+    - Onboarding completion now updates gate state and redirects to dashboard:
+      `apps/web/src/app/onboarding/page.tsx`.
+    - Added route-guard regression check:
+      `apps/web/scripts/route-guard-regression.mjs`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-03-31
 
 - [ ] NEST-161 Restore Tasks+Lists primary create/edit flows and remove blocked CTA states
   - Status: BACKLOG

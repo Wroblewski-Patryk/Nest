@@ -7,7 +7,7 @@
     "build": "next build --webpack",
     "start": "next start -p 9001",
     "lint": "eslint",
-    "test:unit": "node ./scripts/unit-contract.mjs",
+    "test:unit": "node --experimental-strip-types ./scripts/route-guard-regression.mjs && node ./scripts/unit-contract.mjs",
     "test:smoke": "pnpm build && node ./scripts/smoke-routes.mjs"
   },
   "dependencies": {
