@@ -738,8 +738,8 @@ Last updated: 2026-03-31
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-03-31
 
-- [ ] NEST-163 Introduce dual-actor identity model in backend policy/audit layer
-  - Status: BACKLOG
+- [x] NEST-163 Introduce dual-actor identity model in backend policy/audit layer
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-162
   - Done when:
@@ -750,6 +750,42 @@ Last updated: 2026-03-31
   - Notes:
     - Product direction source:
       `docs/modules/ai_layer.md`.
+    - Added actor context DTO + middleware resolution and route integration:
+      `apps/api/app/Actors/ActorContext.php`,
+      `apps/api/app/Http/Middleware/ResolveActorContext.php`,
+      `apps/api/bootstrap/app.php`,
+      `apps/api/routes/api.php`.
+    - Extended policy layer with actor-context validation helper and adopted it
+      in life-area/task/goal/integration policies:
+      `apps/api/app/Policies/Concerns/ResolvesActorContextForPolicy.php`,
+      `apps/api/app/Policies/LifeAreaPolicy.php`,
+      `apps/api/app/Policies/TaskPolicy.php`,
+      `apps/api/app/Policies/TaskListPolicy.php`,
+      `apps/api/app/Policies/GoalPolicy.php`,
+      `apps/api/app/Policies/IntegrationSyncConflictPolicy.php`,
+      `apps/api/app/Policies/IntegrationSyncFailurePolicy.php`.
+    - Propagated actor context through sync + marketplace controllers/services
+      into audit metadata and failure records:
+      `apps/api/app/Http/Controllers/Api/IntegrationSyncController.php`,
+      `apps/api/app/Http/Controllers/Api/IntegrationMarketplaceController.php`,
+      `apps/api/app/Integrations/Services/*IntegrationSyncService.php`,
+      `apps/api/app/Integrations/Services/IntegrationSyncService.php`,
+      `apps/api/app/Integrations/Services/IntegrationMarketplaceService.php`,
+      `apps/api/app/Jobs/ProcessIntegrationSyncJob.php`.
+    - Added/updated regression tests for delegated actor propagation and
+      policy behavior:
+      `apps/api/tests/Feature/IntegrationListTaskSyncApiTest.php`,
+      `apps/api/tests/Feature/IntegrationMarketplaceApiTest.php`,
+      `apps/api/tests/Unit/LifeAreaPolicyActorContextTest.php`.
+    - Validation:
+      `php artisan test --filter=IntegrationListTaskSyncApiTest`,
+      `php artisan test --filter=IntegrationMarketplaceApiTest`,
+      `php artisan test --filter=LifeAreaPolicyActorContextTest`,
+      `php artisan test --filter=IntegrationCalendarSyncApiTest`,
+      `php artisan test --filter=IntegrationJournalSyncApiTest`,
+      `php artisan test --filter=IntegrationSyncReplayApiTest`,
+      `php artisan test --filter=Policy`.
+  - Done on: 2026-03-31
 
 - [ ] NEST-164 Add scoped user-issued API credentials for delegated AI access
   - Status: BACKLOG

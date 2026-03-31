@@ -5,15 +5,22 @@ namespace App\Policies;
 use App\Collaboration\Services\CollaborationAccessService;
 use App\Models\TaskList;
 use App\Models\User;
+use App\Policies\Concerns\ResolvesActorContextForPolicy;
 
 class TaskListPolicy
 {
+    use ResolvesActorContextForPolicy;
+
     public function __construct(
         private readonly CollaborationAccessService $access
     ) {}
 
     public function view(User $user, TaskList $list): bool
     {
+        if (! $this->hasSupportedActorContext()) {
+            return false;
+        }
+
         if ($list->tenant_id !== $user->tenant_id) {
             return false;
         }
@@ -31,6 +38,10 @@ class TaskListPolicy
 
     public function update(User $user, TaskList $list): bool
     {
+        if (! $this->hasSupportedActorContext()) {
+            return false;
+        }
+
         if ($list->tenant_id !== $user->tenant_id) {
             return false;
         }

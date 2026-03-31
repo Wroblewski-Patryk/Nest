@@ -54,7 +54,7 @@ Route::prefix('v1')->group(function (): void {
     Route::post('/auth/orgs/{organizationSlug}/sso/{providerSlug}/exchange', [OrganizationSsoController::class, 'exchange']);
     Route::post('/billing/providers/stripe/webhook', [BillingWebhookController::class, 'stripe']);
 
-    Route::middleware(['auth:sanctum', 'tenant.usage', 'entitlements'])->group(function (): void {
+    Route::middleware(['auth:sanctum', 'actor.context', 'tenant.usage', 'entitlements'])->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::get('/auth/me', [UserSettingsController::class, 'me']);
         Route::patch('/auth/settings', [UserSettingsController::class, 'update']);

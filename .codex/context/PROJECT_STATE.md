@@ -591,6 +591,14 @@ Last updated: 2026-03-31
   `apps/web/src/app/goals/page.tsx`,
   `apps/web/src/app/targets/page.tsx`,
   `apps/web/src/app/calendar/page.tsx`)
+- `NEST-163` completed: dual-actor backend identity context is now active for
+  write-path policy and audit layers (`human_user`, `ai_agent`,
+  `delegated_agent`) with middleware propagation and actor-aware sync/
+  marketplace audit metadata (`apps/api/app/Actors/ActorContext.php`,
+  `apps/api/app/Http/Middleware/ResolveActorContext.php`,
+  `apps/api/app/Policies/Concerns/ResolvesActorContextForPolicy.php`,
+  `apps/api/app/Integrations/Services/IntegrationSyncService.php`,
+  `apps/api/app/Integrations/Services/IntegrationMarketplaceService.php`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for
@@ -646,7 +654,7 @@ Last updated: 2026-03-31
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: execute dual-actor AI-access foundation
-  (`NEST-163` to `NEST-166`) in parallel
+  (`NEST-164` to `NEST-166`) in parallel
   with ongoing V2 launch-window/live-evidence closures (`NEST-122`,
   `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`) and
   commercial/release continuation (`NEST-152` onward).

@@ -4,6 +4,7 @@ use App\Http\Middleware\AttachTraceId;
 use App\Http\Middleware\EnforceBillingEntitlements;
 use App\Http\Middleware\EnforceTenantUsageQuota;
 use App\Http\Middleware\EnsureAiSurfaceEnabled;
+use App\Http\Middleware\ResolveActorContext;
 use App\Tenancy\Exceptions\TenantQuotaExceededException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -32,6 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'ai.surface' => EnsureAiSurfaceEnabled::class,
             'entitlements' => EnforceBillingEntitlements::class,
             'tenant.usage' => EnforceTenantUsageQuota::class,
+            'actor.context' => ResolveActorContext::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

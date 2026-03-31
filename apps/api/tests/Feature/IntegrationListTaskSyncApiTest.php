@@ -396,6 +396,46 @@ class IntegrationListTaskSyncApiTest extends TestCase
         $this->assertCount(202, $response->json('data.job_references', []));
     }
 
+    public function test_sync_audit_captures_delegated_actor_context_in_testing_override_mode(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $list = TaskList::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        Task::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'list_id' => $list->id,
+        ]);
+
+        $this->withHeaders([
+            'X-Nest-Actor-Type' => 'delegated_agent',
+            'X-Nest-Delegator-User-Id' => $user->id,
+        ])->postJson('/api/v1/integrations/list-task-sync', [
+            'provider' => 'trello',
+        ])->assertOk()
+            ->assertHeader('X-Nest-Actor-Type', 'delegated_agent');
+
+        $this->drainIntegrationQueue();
+
+        $audit = IntegrationSyncAudit::query()
+            ->where('tenant_id', $tenant->id)
+            ->where('provider', 'trello')
+            ->orderByDesc('occurred_at')
+            ->first();
+
+        $this->assertNotNull($audit);
+        $this->assertIsArray($audit->metadata);
+        $this->assertSame('delegated_agent', data_get($audit->metadata, 'actor_context.actor_type'));
+        $this->assertSame($user->id, data_get($audit->metadata, 'actor_context.actor_user_id'));
+        $this->assertSame($user->id, data_get($audit->metadata, 'actor_context.delegator_user_id'));
+    }
+
     private function drainIntegrationQueue(): void
     {
         while ((int) DB::table('jobs')->count() > 0) {

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Actors\ActorContext;
 use App\Integrations\Services\IntegrationSyncService;
 use App\Models\IntegrationEventIngestion;
 use App\Models\IntegrationSyncAudit;
@@ -70,6 +71,7 @@ class ProcessIntegrationSyncJob implements ShouldQueue
             'metadata' => [
                 'error_message' => $exception->getMessage(),
                 'attempts' => $this->attempts(),
+                'actor_context' => $this->resolveActorContext(),
             ],
             'occurred_at' => now(),
         ]);
@@ -125,5 +127,31 @@ class ProcessIntegrationSyncJob implements ShouldQueue
             ->where('tenant_id', $tenantId)
             ->where('user_id', $userId)
             ->first();
+    }
+
+    /**
+     * @return array<string, string|null>
+     */
+    private function resolveActorContext(): array
+    {
+        $context = $this->payload['actor_context'] ?? null;
+        if (! is_array($context)) {
+            return [
+                'actor_type' => ActorContext::HUMAN_USER,
+                'actor_user_id' => isset($this->payload['user_id']) ? (string) $this->payload['user_id'] : null,
+                'delegator_user_id' => null,
+            ];
+        }
+
+        $actorType = isset($context['actor_type']) ? (string) $context['actor_type'] : ActorContext::HUMAN_USER;
+        if (! in_array($actorType, ActorContext::ALLOWED_TYPES, true)) {
+            $actorType = ActorContext::HUMAN_USER;
+        }
+
+        return [
+            'actor_type' => $actorType,
+            'actor_user_id' => isset($context['actor_user_id']) ? (string) $context['actor_user_id'] : null,
+            'delegator_user_id' => isset($context['delegator_user_id']) ? (string) $context['delegator_user_id'] : null,
+        ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Integrations\Services;
 
+use App\Actors\ActorContext;
 use App\Models\IntegrationMarketplaceAudit;
 use App\Models\IntegrationMarketplaceInstall;
 use App\Models\User;
@@ -120,7 +121,12 @@ class IntegrationMarketplaceService
      * @param  array<string, mixed>  $metadata
      * @return array<string, mixed>
      */
-    public function installForUser(User $user, string $provider, array $metadata = []): array
+    public function installForUser(
+        User $user,
+        string $provider,
+        array $metadata = [],
+        array $actorContext = []
+    ): array
     {
         $provider = $this->validateProvider($provider);
         $install = IntegrationMarketplaceInstall::query()->updateOrCreate(
@@ -150,6 +156,7 @@ class IntegrationMarketplaceService
                 'install_status' => (string) $install->status,
                 'connection_status' => (string) data_get($connectionMap[$provider] ?? [], 'status', 'not_connected'),
             ],
+            actorContext: $actorContext,
         );
 
         return $this->toCatalogItem(
@@ -163,7 +170,12 @@ class IntegrationMarketplaceService
     /**
      * @return array<string, mixed>
      */
-    public function uninstallForUser(User $user, string $provider, ?string $reason = null): array
+    public function uninstallForUser(
+        User $user,
+        string $provider,
+        ?string $reason = null,
+        array $actorContext = []
+    ): array
     {
         $provider = $this->validateProvider($provider);
 
@@ -193,6 +205,7 @@ class IntegrationMarketplaceService
                 'install_status' => (string) $install->status,
                 'connection_status' => (string) data_get($connectionMap[$provider] ?? [], 'status', 'not_connected'),
             ],
+            actorContext: $actorContext,
         );
 
         return $this->toCatalogItem(
@@ -221,6 +234,7 @@ class IntegrationMarketplaceService
                 'provider' => (string) $audit->provider,
                 'action' => (string) $audit->action,
                 'status' => (string) $audit->status,
+                'actor_type' => (string) data_get($audit->audit_payload, 'actor_context.actor_type', ActorContext::HUMAN_USER),
                 'reason' => $audit->reason !== null ? (string) $audit->reason : null,
                 'audit_payload' => is_array($audit->audit_payload) ? $audit->audit_payload : [],
                 'occurred_at' => $this->asIso($audit->occurred_at),
@@ -286,13 +300,19 @@ class IntegrationMarketplaceService
         string $provider,
         string $action,
         ?string $reason,
-        array $payload
+        array $payload,
+        array $actorContext = []
     ): void {
         if (! in_array($action, ['install', 'uninstall'], true)) {
             throw ValidationException::withMessages([
                 'action' => ['Unsupported marketplace action.'],
             ]);
         }
+
+        $payload['actor_context'] = $this->sanitizeActorContext(
+            actorContext: $actorContext,
+            fallbackUserId: (string) $user->id,
+        );
 
         IntegrationMarketplaceAudit::query()->create([
             'tenant_id' => $user->tenant_id,
@@ -304,6 +324,24 @@ class IntegrationMarketplaceService
             'audit_payload' => $payload,
             'occurred_at' => now(),
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $actorContext
+     * @return array<string, string|null>
+     */
+    private function sanitizeActorContext(array $actorContext, string $fallbackUserId): array
+    {
+        $actorType = isset($actorContext['actor_type']) ? (string) $actorContext['actor_type'] : ActorContext::HUMAN_USER;
+        if (! in_array($actorType, ActorContext::ALLOWED_TYPES, true)) {
+            $actorType = ActorContext::HUMAN_USER;
+        }
+
+        return [
+            'actor_type' => $actorType,
+            'actor_user_id' => isset($actorContext['actor_user_id']) ? (string) $actorContext['actor_user_id'] : $fallbackUserId,
+            'delegator_user_id' => isset($actorContext['delegator_user_id']) ? (string) $actorContext['delegator_user_id'] : null,
+        ];
     }
 
     private function asIso(?CarbonInterface $value): ?string

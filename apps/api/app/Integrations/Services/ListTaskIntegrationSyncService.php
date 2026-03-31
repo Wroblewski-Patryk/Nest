@@ -23,7 +23,12 @@ class ListTaskIntegrationSyncService
      *   job_references:array<int, array{job_reference:string,queue_job_id:mixed,internal_entity_type:string,internal_entity_id:string}>
      * }
      */
-    public function syncForUser(User $user, string $provider, ?string $syncRequestId = null): array
+    public function syncForUser(
+        User $user,
+        string $provider,
+        ?string $syncRequestId = null,
+        array $actorContext = []
+    ): array
     {
         $syncRequestId ??= (string) Str::ulid();
 
@@ -40,6 +45,7 @@ class ListTaskIntegrationSyncService
                 $user,
                 $provider,
                 $syncRequestId,
+                $actorContext,
                 &$processed,
                 &$skipped,
                 &$enqueued,
@@ -53,6 +59,7 @@ class ListTaskIntegrationSyncService
                         entityType: 'task_list',
                         entityId: $list->id,
                         syncRequestId: $syncRequestId,
+                        actorContext: $actorContext,
                         entityData: [
                             'name' => $list->name,
                             'color' => $list->color,
@@ -85,6 +92,7 @@ class ListTaskIntegrationSyncService
                 $user,
                 $provider,
                 $syncRequestId,
+                $actorContext,
                 &$processed,
                 &$skipped,
                 &$enqueued,
@@ -98,6 +106,7 @@ class ListTaskIntegrationSyncService
                         entityType: 'task',
                         entityId: $task->id,
                         syncRequestId: $syncRequestId,
+                        actorContext: $actorContext,
                         entityData: [
                             'title' => $task->title,
                             'description' => $task->description,
@@ -144,6 +153,7 @@ class ListTaskIntegrationSyncService
         string $entityType,
         string $entityId,
         string $syncRequestId,
+        array $actorContext,
         array $entityData
     ): array {
         $mapping = SyncMapping::query()
@@ -166,6 +176,7 @@ class ListTaskIntegrationSyncService
             'sync_request_id' => $syncRequestId,
             'job_reference' => (string) Str::ulid(),
             'trace_id' => (string) Str::uuid(),
+            'actor_context' => $actorContext,
         ];
     }
 

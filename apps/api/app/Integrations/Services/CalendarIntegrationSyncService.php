@@ -23,7 +23,12 @@ class CalendarIntegrationSyncService
      *   job_references:array<int, array{job_reference:string,queue_job_id:mixed,internal_entity_type:string,internal_entity_id:string}>
      * }
      */
-    public function syncForUser(User $user, string $provider, ?string $syncRequestId = null): array
+    public function syncForUser(
+        User $user,
+        string $provider,
+        ?string $syncRequestId = null,
+        array $actorContext = []
+    ): array
     {
         $syncRequestId ??= (string) Str::ulid();
 
@@ -40,6 +45,7 @@ class CalendarIntegrationSyncService
                 $user,
                 $provider,
                 $syncRequestId,
+                $actorContext,
                 &$processed,
                 &$skipped,
                 &$conflicts,
@@ -65,6 +71,7 @@ class CalendarIntegrationSyncService
                         provider: $provider,
                         entityId: $event->id,
                         syncRequestId: $syncRequestId,
+                        actorContext: $actorContext,
                         entityData: $entityPayload,
                     );
 
@@ -108,6 +115,7 @@ class CalendarIntegrationSyncService
         string $provider,
         string $entityId,
         string $syncRequestId,
+        array $actorContext,
         array $entityData,
     ): array {
         $mapping = SyncMapping::query()
@@ -135,6 +143,7 @@ class CalendarIntegrationSyncService
             'sync_request_id' => $syncRequestId,
             'job_reference' => (string) Str::ulid(),
             'trace_id' => (string) Str::uuid(),
+            'actor_context' => $actorContext,
             'conflict_fields' => $hasConflict
                 ? ['title', 'start_at', 'end_at', 'timezone', 'all_day']
                 : [],

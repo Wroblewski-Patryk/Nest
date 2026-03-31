@@ -2,6 +2,7 @@
 
 namespace App\Integrations\Services;
 
+use App\Actors\ActorContext;
 use App\Integrations\IntegrationAdapterRegistry;
 use App\Models\CalendarEvent;
 use App\Models\IntegrationSyncAudit;
@@ -237,6 +238,10 @@ class IntegrationSyncService
         ?string $syncHash = null,
         array $metadata = []
     ): void {
+        $metadata = array_merge($metadata, [
+            'actor_context' => $this->sanitizeActorContext($payload),
+        ]);
+
         $audit = IntegrationSyncAudit::query()->create([
             'tenant_id' => $payload['tenant_id'] ?? null,
             'user_id' => $payload['user_id'] ?? null,
@@ -257,6 +262,33 @@ class IntegrationSyncService
             metadata: $metadata,
             externalId: $externalId ?? $audit->external_id
         );
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array<string, string|null>
+     */
+    private function sanitizeActorContext(array $payload): array
+    {
+        $context = $payload['actor_context'] ?? null;
+        if (! is_array($context)) {
+            return [
+                'actor_type' => ActorContext::HUMAN_USER,
+                'actor_user_id' => isset($payload['user_id']) ? (string) $payload['user_id'] : null,
+                'delegator_user_id' => null,
+            ];
+        }
+
+        $actorType = isset($context['actor_type']) ? (string) $context['actor_type'] : ActorContext::HUMAN_USER;
+        if (! in_array($actorType, ActorContext::ALLOWED_TYPES, true)) {
+            $actorType = ActorContext::HUMAN_USER;
+        }
+
+        return [
+            'actor_type' => $actorType,
+            'actor_user_id' => isset($context['actor_user_id']) ? (string) $context['actor_user_id'] : null,
+            'delegator_user_id' => isset($context['delegator_user_id']) ? (string) $context['delegator_user_id'] : null,
+        ];
     }
 
     private function recordLatencyMetric(float $startedAt): void

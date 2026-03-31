@@ -91,4 +91,25 @@ class IntegrationMarketplaceApiTest extends TestCase
         $this->postJson('/api/v1/integrations/marketplace/providers/trello/uninstall')->assertUnauthorized();
         $this->getJson('/api/v1/integrations/marketplace/audits')->assertUnauthorized();
     }
+
+    public function test_marketplace_audit_exposes_actor_type_context(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $this->withHeaders([
+            'X-Nest-Actor-Type' => 'ai_agent',
+        ])->postJson('/api/v1/integrations/marketplace/providers/trello/install', [
+            'install_metadata' => ['source' => 'actor-context-test'],
+        ])->assertOk()
+            ->assertHeader('X-Nest-Actor-Type', 'ai_agent');
+
+        $this->getJson('/api/v1/integrations/marketplace/audits')
+            ->assertOk()
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.actor_type', 'ai_agent')
+            ->assertJsonPath('data.0.audit_payload.actor_context.actor_type', 'ai_agent')
+            ->assertJsonPath('data.0.audit_payload.actor_context.actor_user_id', $user->id);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actors\ActorContext;
 use App\Http\Controllers\Controller;
 use App\Integrations\Services\CalendarIntegrationSyncService;
 use App\Integrations\Services\JournalIntegrationSyncService;
@@ -24,7 +25,13 @@ class IntegrationSyncController extends Controller
             'provider' => ['required', Rule::in(['trello', 'google_tasks', 'todoist', 'clickup', 'microsoft_todo'])],
         ]);
 
-        $summary = $syncService->syncForUser($user, $payload['provider']);
+        $actorContext = $request->attributes->get(ActorContext::REQUEST_ATTRIBUTE);
+
+        $summary = $syncService->syncForUser(
+            user: $user,
+            provider: $payload['provider'],
+            actorContext: $actorContext instanceof ActorContext ? $actorContext->toArray() : []
+        );
 
         return response()->json([
             'data' => [
@@ -46,7 +53,13 @@ class IntegrationSyncController extends Controller
             'provider' => ['required', Rule::in(['google_calendar'])],
         ]);
 
-        $summary = $syncService->syncForUser($user, $payload['provider']);
+        $actorContext = $request->attributes->get(ActorContext::REQUEST_ATTRIBUTE);
+
+        $summary = $syncService->syncForUser(
+            user: $user,
+            provider: $payload['provider'],
+            actorContext: $actorContext instanceof ActorContext ? $actorContext->toArray() : []
+        );
 
         return response()->json([
             'data' => [
@@ -68,7 +81,13 @@ class IntegrationSyncController extends Controller
             'provider' => ['required', Rule::in(['obsidian'])],
         ]);
 
-        $summary = $syncService->syncForUser($user, $payload['provider']);
+        $actorContext = $request->attributes->get(ActorContext::REQUEST_ATTRIBUTE);
+
+        $summary = $syncService->syncForUser(
+            user: $user,
+            provider: $payload['provider'],
+            actorContext: $actorContext instanceof ActorContext ? $actorContext->toArray() : []
+        );
 
         return response()->json([
             'data' => [

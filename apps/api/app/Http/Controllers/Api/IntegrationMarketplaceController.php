@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actors\ActorContext;
 use App\Http\Controllers\Controller;
 use App\Integrations\Services\IntegrationMarketplaceService;
 use App\Models\User;
@@ -35,6 +36,7 @@ class IntegrationMarketplaceController extends Controller
     ): JsonResponse {
         /** @var User $user */
         $user = $request->user();
+        $context = $request->attributes->get(ActorContext::REQUEST_ATTRIBUTE);
         $payload = $request->validate([
             'install_metadata' => ['sometimes', 'array'],
         ]);
@@ -42,7 +44,8 @@ class IntegrationMarketplaceController extends Controller
         $item = $service->installForUser(
             user: $user,
             provider: $provider,
-            metadata: (array) ($payload['install_metadata'] ?? [])
+            metadata: (array) ($payload['install_metadata'] ?? []),
+            actorContext: $context instanceof ActorContext ? $context->toArray() : []
         );
 
         return response()->json([
@@ -57,6 +60,7 @@ class IntegrationMarketplaceController extends Controller
     ): JsonResponse {
         /** @var User $user */
         $user = $request->user();
+        $context = $request->attributes->get(ActorContext::REQUEST_ATTRIBUTE);
         $payload = $request->validate([
             'reason' => ['nullable', 'string', 'max:500'],
         ]);
@@ -64,7 +68,8 @@ class IntegrationMarketplaceController extends Controller
         $item = $service->uninstallForUser(
             user: $user,
             provider: $provider,
-            reason: isset($payload['reason']) ? (string) $payload['reason'] : null
+            reason: isset($payload['reason']) ? (string) $payload['reason'] : null,
+            actorContext: $context instanceof ActorContext ? $context->toArray() : []
         );
 
         return response()->json([

@@ -5,15 +5,22 @@ namespace App\Policies;
 use App\Collaboration\Services\CollaborationAccessService;
 use App\Models\Task;
 use App\Models\User;
+use App\Policies\Concerns\ResolvesActorContextForPolicy;
 
 class TaskPolicy
 {
+    use ResolvesActorContextForPolicy;
+
     public function __construct(
         private readonly CollaborationAccessService $access
     ) {}
 
     public function view(User $user, Task $task): bool
     {
+        if (! $this->hasSupportedActorContext()) {
+            return false;
+        }
+
         if ($task->tenant_id !== $user->tenant_id) {
             return false;
         }
@@ -37,6 +44,10 @@ class TaskPolicy
 
     public function update(User $user, Task $task): bool
     {
+        if (! $this->hasSupportedActorContext()) {
+            return false;
+        }
+
         if ($task->tenant_id !== $user->tenant_id) {
             return false;
         }
@@ -60,6 +71,10 @@ class TaskPolicy
 
     public function delete(User $user, Task $task): bool
     {
+        if (! $this->hasSupportedActorContext()) {
+            return false;
+        }
+
         if ($task->tenant_id !== $user->tenant_id) {
             return false;
         }

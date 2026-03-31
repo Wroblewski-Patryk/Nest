@@ -22,7 +22,12 @@ class JournalIntegrationSyncService
      *   job_references:array<int, array{job_reference:string,queue_job_id:mixed,internal_entity_type:string,internal_entity_id:string}>
      * }
      */
-    public function syncForUser(User $user, string $provider, ?string $syncRequestId = null): array
+    public function syncForUser(
+        User $user,
+        string $provider,
+        ?string $syncRequestId = null,
+        array $actorContext = []
+    ): array
     {
         $syncRequestId ??= (string) Str::ulid();
 
@@ -39,6 +44,7 @@ class JournalIntegrationSyncService
                 $user,
                 $provider,
                 $syncRequestId,
+                $actorContext,
                 &$processed,
                 &$skipped,
                 &$enqueued,
@@ -60,6 +66,7 @@ class JournalIntegrationSyncService
                         provider: $provider,
                         entityId: $entry->id,
                         syncRequestId: $syncRequestId,
+                        actorContext: $actorContext,
                         entityData: $entityPayload,
                     );
 
@@ -98,6 +105,7 @@ class JournalIntegrationSyncService
         string $provider,
         string $entityId,
         string $syncRequestId,
+        array $actorContext,
         array $entityData,
     ): array {
         $mapping = SyncMapping::query()
@@ -120,6 +128,7 @@ class JournalIntegrationSyncService
             'sync_request_id' => $syncRequestId,
             'job_reference' => (string) Str::ulid(),
             'trace_id' => (string) Str::uuid(),
+            'actor_context' => $actorContext,
         ];
     }
 

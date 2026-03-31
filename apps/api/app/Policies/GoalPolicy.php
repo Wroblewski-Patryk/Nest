@@ -5,15 +5,22 @@ namespace App\Policies;
 use App\Collaboration\Services\CollaborationAccessService;
 use App\Models\Goal;
 use App\Models\User;
+use App\Policies\Concerns\ResolvesActorContextForPolicy;
 
 class GoalPolicy
 {
+    use ResolvesActorContextForPolicy;
+
     public function __construct(
         private readonly CollaborationAccessService $access
     ) {}
 
     public function view(User $user, Goal $goal): bool
     {
+        if (! $this->hasSupportedActorContext()) {
+            return false;
+        }
+
         if ($goal->tenant_id !== $user->tenant_id) {
             return false;
         }
@@ -31,6 +38,10 @@ class GoalPolicy
 
     public function update(User $user, Goal $goal): bool
     {
+        if (! $this->hasSupportedActorContext()) {
+            return false;
+        }
+
         if ($goal->tenant_id !== $user->tenant_id) {
             return false;
         }
