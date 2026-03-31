@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-03-31
+Last updated: 2026-04-01
 
 ## Product
 
@@ -44,6 +44,8 @@ Last updated: 2026-03-31
   human+agent collaboration workflows without redesigning core domain entities.
 - Authentication gate policy (v1): dashboard and core module routes are private
   and require authenticated session; only pre-auth surfaces are public.
+- Public entrypoint policy (v1): `/` is always a public welcome page; private
+  product workspace starts at `/dashboard` after successful authentication.
 - Usability readiness policy (v1): core modules are not considered usable unless
   primary create/edit actions are functional and discoverable in GUI.
 - Dual-actor policy (v1+): Nest supports both `human_user` and `ai_agent`
@@ -177,7 +179,7 @@ Last updated: 2026-03-31
   `docs/planning/next_execution_wave_2026-03-21.md`
 - Auth/usability/AI-access remediation wave documented in
   `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md` with
-  execution queue `NEST-160` to `NEST-169`.
+  execution queue `NEST-160` to `NEST-170`.
 - `NEST-001` completed: monorepo structure approved and documented in
   `docs/engineering/monorepo_structure.md`
 - `NEST-002` completed: Laravel backend skeleton bootstrapped in `apps/api`
@@ -643,6 +645,12 @@ Last updated: 2026-03-31
   (`apps/web/src/app/journal/page.tsx`,
   `apps/web/src/app/insights/page.tsx`,
   `apps/web/src/app/auth/page.tsx`)
+- `NEST-170` completed: public/private app boundary now starts from public
+  welcome `/` and private `/dashboard`, with route-guard redirects enforcing
+  authenticated access for dashboard and module routes
+  (`apps/web/src/lib/route-guard.ts`,
+  `apps/web/scripts/route-guard-regression.mjs`,
+  `apps/web/src/app/dashboard/page.tsx`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

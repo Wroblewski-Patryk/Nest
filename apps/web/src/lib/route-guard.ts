@@ -2,7 +2,7 @@ export const AUTH_TOKEN_COOKIE_KEY = "nest.auth.token";
 export const ONBOARDING_REQUIRED_COOKIE_KEY = "nest.auth.onboarding_required";
 
 const PROTECTED_PREFIXES = [
-  "/",
+  "/dashboard",
   "/tasks",
   "/habits",
   "/routines",
@@ -16,7 +16,7 @@ const PROTECTED_PREFIXES = [
   "/settings",
 ] as const;
 
-const PUBLIC_PREFIXES = ["/auth"] as const;
+const PUBLIC_PREFIXES = ["/", "/auth"] as const;
 
 function normalizePath(pathname: string): string {
   if (!pathname) {
@@ -57,7 +57,7 @@ export function isProtectedPath(pathname: string): boolean {
 }
 
 type RouteGuardResult = {
-  redirectTo: "/auth" | "/onboarding" | "/" | null;
+  redirectTo: "/auth" | "/onboarding" | "/dashboard" | null;
 };
 
 export function resolveRouteAccess(params: {
@@ -85,7 +85,7 @@ export function resolveRouteAccess(params: {
   }
 
   if (isOnboardingPath(normalized) || isPublicPath(normalized)) {
-    return { redirectTo: "/" };
+    return { redirectTo: "/dashboard" };
   }
 
   return { redirectTo: null };

@@ -60,7 +60,7 @@ export default function OnboardingPage() {
       }).catch(() => undefined);
       setOnboardingRequired(false);
       setDetail("Onboarding completed. Redirecting to dashboard...");
-      router.replace("/");
+      router.replace("/dashboard");
     } catch (error) {
       const status =
         typeof error === "object" &&

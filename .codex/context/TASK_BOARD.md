@@ -1,6 +1,6 @@
 ﻿# TASK_BOARD
 
-Last updated: 2026-03-31
+Last updated: 2026-04-01
 
 ## Backlog
 
@@ -971,6 +971,27 @@ Last updated: 2026-03-31
       `pnpm --dir apps/web build`,
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-03-31
+
+- [x] NEST-170 Separate public welcome entry from private app dashboard flow
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-169
+  - Done when:
+    - `/` is public welcome surface for guests,
+    - authenticated users are redirected to `/dashboard`,
+    - private module routes remain fully auth-gated.
+  - Notes:
+    - Updated route-guard policy and regression checks:
+      `apps/web/src/lib/route-guard.ts`,
+      `apps/web/scripts/route-guard-regression.mjs`.
+    - Added dedicated private dashboard route:
+      `apps/web/src/app/dashboard/page.tsx`.
+    - Updated onboarding and auth redirects to `/dashboard`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
 
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG

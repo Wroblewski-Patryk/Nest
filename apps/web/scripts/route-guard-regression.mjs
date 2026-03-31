@@ -5,7 +5,8 @@ function expectRedirect(params) {
   return resolveRouteAccess(params).redirectTo;
 }
 
-assert.equal(expectRedirect({ pathname: "/", hasToken: false, onboardingRequired: null }), "/auth");
+assert.equal(expectRedirect({ pathname: "/", hasToken: false, onboardingRequired: null }), null);
+assert.equal(expectRedirect({ pathname: "/dashboard", hasToken: false, onboardingRequired: null }), "/auth");
 assert.equal(expectRedirect({ pathname: "/tasks", hasToken: false, onboardingRequired: null }), "/auth");
 assert.equal(expectRedirect({ pathname: "/settings", hasToken: false, onboardingRequired: null }), "/auth");
 assert.equal(expectRedirect({ pathname: "/auth", hasToken: false, onboardingRequired: null }), null);
@@ -24,8 +25,16 @@ assert.equal(
   null
 );
 
-assert.equal(expectRedirect({ pathname: "/auth", hasToken: true, onboardingRequired: false }), "/");
-assert.equal(expectRedirect({ pathname: "/onboarding", hasToken: true, onboardingRequired: false }), "/");
+assert.equal(expectRedirect({ pathname: "/", hasToken: true, onboardingRequired: false }), "/dashboard");
+assert.equal(
+  expectRedirect({ pathname: "/auth", hasToken: true, onboardingRequired: false }),
+  "/dashboard"
+);
+assert.equal(
+  expectRedirect({ pathname: "/onboarding", hasToken: true, onboardingRequired: false }),
+  "/dashboard"
+);
+assert.equal(expectRedirect({ pathname: "/dashboard", hasToken: true, onboardingRequired: false }), null);
 assert.equal(expectRedirect({ pathname: "/tasks", hasToken: true, onboardingRequired: false }), null);
 assert.equal(expectRedirect({ pathname: "/settings", hasToken: true, onboardingRequired: false }), null);
 
