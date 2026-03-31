@@ -513,6 +513,9 @@ Last updated: 2026-03-21
 - `NEST-131` completed: durable local sync scheduler state, queue deduplication,
   and stuck/lag monitoring signals added on web/mobile clients
   (`docs/modules/durable_local_sync_scheduler_v2.md`)
+- `NEST-132` completed: deterministic offline conflict merge policy surfaced in
+  API and web/mobile UI with regression coverage for repeated concurrent-style
+  updates (`docs/modules/deterministic_offline_merge_policy_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

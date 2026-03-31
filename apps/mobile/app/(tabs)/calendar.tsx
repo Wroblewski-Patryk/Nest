@@ -130,6 +130,8 @@ export default function CalendarScreen() {
           provider: conflict.provider,
           entityType: conflict.internal_entity_type,
           fields: conflict.conflict_fields,
+          mergeState: conflict.merge_state,
+          autoMergeFields: conflict.merge_policy?.auto_merge_fields ?? [],
           comparison: conflict.comparison,
         })),
         onResolve: resolveConflict,

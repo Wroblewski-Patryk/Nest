@@ -33,6 +33,16 @@ class IntegrationConflictController extends Controller
             $conflictFields = is_array($conflict->conflict_fields) ? $conflict->conflict_fields : [];
             $payload = is_array($conflict->resolution_payload) ? $conflict->resolution_payload : [];
             $comparison = is_array($payload['comparison'] ?? null) ? $payload['comparison'] : [];
+            $mergePolicy = is_array($payload['merge_policy'] ?? null) ? $payload['merge_policy'] : [];
+            $manualQueueFields = is_array($mergePolicy['manual_queue_fields'] ?? null)
+                ? $mergePolicy['manual_queue_fields']
+                : $conflictFields;
+            $autoMergeFields = is_array($mergePolicy['auto_merge_fields'] ?? null)
+                ? $mergePolicy['auto_merge_fields']
+                : [];
+            $mergeState = is_string($payload['merge_state'] ?? null)
+                ? $payload['merge_state']
+                : ($manualQueueFields === [] ? 'auto_merged' : 'manual_required');
 
             foreach ($conflictFields as $field) {
                 if (! isset($comparison[$field]) || ! is_array($comparison[$field])) {
@@ -46,6 +56,11 @@ class IntegrationConflictController extends Controller
 
             return array_merge($conflict->toArray(), [
                 'comparison' => $comparison,
+                'merge_state' => $mergeState,
+                'merge_policy' => [
+                    'manual_queue_fields' => array_values(array_unique($manualQueueFields)),
+                    'auto_merge_fields' => array_values(array_unique($autoMergeFields)),
+                ],
             ]);
         }, $conflicts->items());
 

@@ -63,5 +63,60 @@ class IntegrationConflictPolicyEnforcementTest extends TestCase
         /** @var IntegrationSyncConflict $conflict */
         $conflict = IntegrationSyncConflict::query()->firstOrFail();
         $this->assertSame(['title', 'start_at'], $conflict->conflict_fields);
+        $this->assertSame(
+            ['title', 'start_at'],
+            $conflict->resolution_payload['merge_policy']['manual_queue_fields'] ?? []
+        );
+        $this->assertSame(
+            ['description'],
+            $conflict->resolution_payload['merge_policy']['auto_merge_fields'] ?? []
+        );
+        $this->assertSame('manual_required', $conflict->resolution_payload['merge_state'] ?? null);
+    }
+
+    public function test_merge_policy_is_deterministic_across_repeated_conflict_updates(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+
+        $service = app(IntegrationConflictQueueService::class);
+
+        $payload = [
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'provider' => 'google_calendar',
+            'internal_entity_type' => 'calendar_event',
+            'internal_entity_id' => '019cf39d-8460-73ed-84fe-3aa85847e58a',
+        ];
+
+        $service->upsertFromSyncMetadata(
+            payload: $payload,
+            metadata: [
+                'conflict_detected' => true,
+                'conflict_fields' => ['title', 'description', 'start_at'],
+            ],
+            externalId: 'gcal-event-concurrent-1'
+        );
+
+        $service->upsertFromSyncMetadata(
+            payload: $payload,
+            metadata: [
+                'conflict_detected' => true,
+                'conflict_fields' => ['description', 'start_at', 'title', 'linked_entity_id'],
+            ],
+            externalId: 'gcal-event-concurrent-2'
+        );
+
+        /** @var IntegrationSyncConflict $conflict */
+        $conflict = IntegrationSyncConflict::query()->firstOrFail();
+        $this->assertSame(['title', 'start_at'], $conflict->conflict_fields);
+        $this->assertSame(
+            ['title', 'start_at'],
+            $conflict->resolution_payload['merge_policy']['manual_queue_fields'] ?? []
+        );
+        $this->assertSame(
+            ['description', 'linked_entity_id'],
+            $conflict->resolution_payload['merge_policy']['auto_merge_fields'] ?? []
+        );
     }
 }

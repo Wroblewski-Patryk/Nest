@@ -82,7 +82,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - sync jobs are deduplicated and persisted safely,
     - monitoring includes scheduler lag and stuck-job detection.
 
-- [ ] NEST-132 Implement deterministic merge policy for offline conflicts (V2)
+- [x] NEST-132 Implement deterministic merge policy for offline conflicts (V2)
   - Depends on: NEST-130
   - Done when:
     - module-level merge strategy is documented (auto vs manual fields),

@@ -116,6 +116,11 @@ export type IntegrationConflictItem = {
   external_id: string | null;
   status: "open" | "resolved";
   conflict_fields: string[];
+  merge_state?: "manual_required" | "auto_merged";
+  merge_policy?: {
+    manual_queue_fields: string[];
+    auto_merge_fields: string[];
+  };
   comparison?: Record<string, { base: string; local: string; remote: string }>;
   detected_at: string;
   last_seen_at: string;

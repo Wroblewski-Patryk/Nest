@@ -22,7 +22,9 @@ class IntegrationConflictQueueService
         $conflictFields = is_array($metadata['conflict_fields'] ?? null) ? $metadata['conflict_fields'] : [];
         $provider = (string) ($payload['provider'] ?? '');
         $entityType = (string) ($payload['internal_entity_type'] ?? '');
-        $queueFields = $this->policy->manualQueueFields($provider, $entityType, $conflictFields);
+        $partition = $this->policy->partitionConflictFields($provider, $entityType, $conflictFields);
+        $queueFields = $partition['manual_queue_fields'];
+        $autoMergeFields = $partition['auto_merge_fields'];
 
         if (! $conflictDetected || $queueFields === []) {
             return;
@@ -38,6 +40,7 @@ class IntegrationConflictQueueService
 
         if ($conflict !== null) {
             $existingFields = is_array($conflict->conflict_fields) ? $conflict->conflict_fields : [];
+            $existingPayload = is_array($conflict->resolution_payload) ? $conflict->resolution_payload : [];
             $conflict->update([
                 'conflict_fields' => array_values(array_unique([
                     ...$existingFields,
@@ -45,6 +48,11 @@ class IntegrationConflictQueueService
                 ])),
                 'last_seen_at' => now(),
                 'external_id' => $externalId ?? $conflict->external_id,
+                'resolution_payload' => $this->policy->mergeMergePolicyIntoPayload(
+                    existingPayload: $existingPayload,
+                    manualFields: $queueFields,
+                    autoFields: $autoMergeFields,
+                ),
             ]);
 
             return;
@@ -59,6 +67,10 @@ class IntegrationConflictQueueService
             'external_id' => $externalId,
             'status' => 'open',
             'conflict_fields' => array_values(array_unique($queueFields)),
+            'resolution_payload' => $this->policy->buildMergePolicyPayload(
+                manualFields: $queueFields,
+                autoFields: $autoMergeFields,
+            ),
             'detected_at' => now(),
             'last_seen_at' => now(),
         ]);

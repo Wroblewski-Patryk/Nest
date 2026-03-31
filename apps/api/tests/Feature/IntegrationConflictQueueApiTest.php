@@ -33,10 +33,13 @@ class IntegrationConflictQueueApiTest extends TestCase
             ->assertJsonPath('meta.total', 1)
             ->assertJsonPath('data.0.provider', 'google_calendar')
             ->assertJsonPath('data.0.status', 'open')
-            ->assertJsonPath('data.0.internal_entity_type', 'calendar_event');
+            ->assertJsonPath('data.0.internal_entity_type', 'calendar_event')
+            ->assertJsonPath('data.0.merge_state', 'manual_required');
 
         $conflictId = $response->json('data.0.id');
         $this->assertNotEmpty($conflictId);
+        $this->assertIsArray($response->json('data.0.merge_policy.manual_queue_fields'));
+        $this->assertIsArray($response->json('data.0.merge_policy.auto_merge_fields'));
 
         $this->assertDatabaseHas('integration_sync_conflicts', [
             'id' => $conflictId,

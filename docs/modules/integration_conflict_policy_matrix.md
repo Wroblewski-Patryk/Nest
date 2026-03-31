@@ -15,6 +15,18 @@ workflows are predictable and testable.
   By default, no system recommendation is provided for winner selection.
 - `auto_latest_timestamp`: conflict is not queued; latest sync update wins.
 
+## Merge States (V2)
+
+- `manual_required`:
+  - one or more fields are mapped to `manual_queue` and require user resolution.
+- `auto_merged`:
+  - conflict fields are mapped to `auto_latest_timestamp` and are resolved
+    automatically without queue action.
+- API conflict payload exposes:
+  - `merge_state`,
+  - `merge_policy.manual_queue_fields`,
+  - `merge_policy.auto_merge_fields`.
+
 ## Matrix
 
 ### Trello / Google Tasks / Todoist

@@ -79,8 +79,14 @@ export function ConflictQueueCard() {
                 <div>
                   <strong>{conflict.provider}</strong>
                   <p>
-                    {conflict.internal_entity_type} • fields: {conflict.conflict_fields.join(", ")}
+                    {conflict.internal_entity_type} - fields: {conflict.conflict_fields.join(", ")}
                   </p>
+                  <p className="mono-note">Merge state: {conflict.merge_state ?? "manual_required"}</p>
+                  {conflict.merge_policy?.auto_merge_fields?.length ? (
+                    <p className="mono-note">
+                      Auto-merged fields: {conflict.merge_policy.auto_merge_fields.join(", ")}
+                    </p>
+                  ) : null}
                   {conflict.conflict_fields[0] ? (
                     <p className="mono-note">
                       base/local/remote ({conflict.conflict_fields[0]}):{" "}

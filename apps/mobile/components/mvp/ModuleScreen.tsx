@@ -38,6 +38,8 @@ type ModuleScreenProps = {
       provider: string;
       entityType: string;
       fields: string[];
+      mergeState?: 'manual_required' | 'auto_merged';
+      autoMergeFields?: string[];
       comparison?: Record<string, { base: string; local: string; remote: string }>;
     }>;
     onResolve: (conflictId: string, action: 'accept' | 'override') => void;
@@ -215,6 +217,10 @@ export function ModuleScreen({
                     <Text style={styles.rowDetail}>
                       {conflict.entityType} - {conflict.fields.join(', ')}
                     </Text>
+                    <Text style={styles.rowDetail}>Merge state: {conflict.mergeState ?? 'manual_required'}</Text>
+                    {conflict.autoMergeFields && conflict.autoMergeFields.length > 0 ? (
+                      <Text style={styles.rowDetail}>Auto-merged: {conflict.autoMergeFields.join(', ')}</Text>
+                    ) : null}
                     {conflict.fields[0] ? (
                       <Text style={styles.rowDetail}>
                         base/local/remote ({conflict.fields[0]}):{' '}

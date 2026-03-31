@@ -637,14 +637,24 @@ Last updated: 2026-03-21
     - Implementation and verification documented in:
       `docs/modules/durable_local_sync_scheduler_v2.md`.
 
-- [ ] NEST-132 Implement deterministic merge policy for offline conflicts (V2)
-  - Status: BACKLOG
+- [x] NEST-132 Implement deterministic merge policy for offline conflicts (V2)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-130
   - Done when:
     - module-level merge strategy is documented (auto vs manual fields),
     - conflict UI supports auto-merged and manual-merge states,
     - regressions cover concurrent multi-device edits.
+  - Done on: 2026-03-31
+  - Notes:
+    - Conflict policy matrix now exposes deterministic field partitioning for
+      `manual_queue_fields` and `auto_merge_fields`.
+    - Conflict queue API exposes merge metadata (`merge_state`, `merge_policy`).
+    - Web/mobile conflict UI surfaces auto-merged vs manual-required states.
+    - Regression tests cover deterministic repeated conflict updates and API
+      merge metadata contract.
+    - Implementation and validation documented in:
+      `docs/modules/deterministic_offline_merge_policy_v2.md`.
 
 - [ ] NEST-133 Add encrypted local cache profile and retention controls
   - Status: BACKLOG
