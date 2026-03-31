@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Integrations\Services\IntegrationSyncService;
+use App\Models\IntegrationEventIngestion;
 use App\Models\IntegrationSyncAudit;
 use App\Models\IntegrationSyncFailure;
 use App\Observability\MetricCounter;
@@ -36,12 +37,22 @@ class ProcessIntegrationSyncJob implements ShouldQueue
      */
     public function handle(IntegrationSyncService $syncService): array
     {
-        return $syncService->sync($this->payload);
+        $result = $syncService->sync($this->payload);
+
+        $ingestion = $this->resolveEventIngestion();
+        if ($ingestion !== null) {
+            $ingestion->status = 'processed';
+            $ingestion->processed_at = now();
+            $ingestion->save();
+        }
+
+        return $result;
     }
 
     public function failed(Throwable $exception): void
     {
-        app(MetricCounter::class)->increment('integration.sync.failed');
+        $metrics = app(MetricCounter::class);
+        $metrics->increment('integration.sync.failed');
         $auditPayload = [
             'tenant_id' => $this->payload['tenant_id'] ?? null,
             'user_id' => $this->payload['user_id'] ?? null,
@@ -77,5 +88,42 @@ class ProcessIntegrationSyncJob implements ShouldQueue
                 'failed_at' => now(),
             ]
         );
+
+        $ingestion = $this->resolveEventIngestion();
+        if ($ingestion !== null) {
+            $ingestion->status = 'dropped';
+            $ingestion->drop_reason = 'queue_job_failed';
+            $ingestion->processed_at = now();
+            $ingestion->save();
+
+            $metrics->increment('integration.events.dropped');
+        }
+    }
+
+    private function resolveEventIngestion(): ?IntegrationEventIngestion
+    {
+        $syncRequestId = $this->payload['sync_request_id'] ?? null;
+        if (! is_string($syncRequestId) || $syncRequestId === '') {
+            return null;
+        }
+
+        $provider = $this->payload['provider'] ?? null;
+        $tenantId = $this->payload['tenant_id'] ?? null;
+        $userId = $this->payload['user_id'] ?? null;
+
+        if (
+            ! is_string($provider) || $provider === ''
+            || ! is_string($tenantId) || $tenantId === ''
+            || ! is_string($userId) || $userId === ''
+        ) {
+            return null;
+        }
+
+        return IntegrationEventIngestion::query()
+            ->whereKey($syncRequestId)
+            ->where('provider', $provider)
+            ->where('tenant_id', $tenantId)
+            ->where('user_id', $userId)
+            ->first();
     }
 }

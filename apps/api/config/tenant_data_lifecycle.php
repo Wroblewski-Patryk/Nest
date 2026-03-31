@@ -23,6 +23,11 @@ return [
             'retention_days' => 90,
         ],
         [
+            'table' => 'integration_event_ingestions',
+            'timestamp_column' => 'received_at',
+            'retention_days' => 30,
+        ],
+        [
             'table' => 'integration_marketplace_audits',
             'timestamp_column' => 'occurred_at',
             'retention_days' => 180,
@@ -82,6 +87,7 @@ return [
         'notification_preferences',
         'in_app_notifications',
         'integration_sync_conflicts',
+        'integration_event_ingestions',
         'integration_marketplace_audits',
         'integration_marketplace_installs',
         'integration_sync_audits',

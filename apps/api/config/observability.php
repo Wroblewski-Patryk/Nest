@@ -4,6 +4,18 @@ return [
     'ai_copilot_safety' => [
         'min_score_percent' => (float) env('AI_COPILOT_SAFETY_MIN_SCORE_PERCENT', 95.0),
     ],
+    'integration_event_ingestion' => [
+        'alerts' => [
+            'warning' => [
+                'drop_rate_above_percent' => (float) env('INTEGRATION_EVENT_ALERT_WARNING_DROP_RATE_ABOVE_PERCENT', 5.0),
+                'avg_lag_ms_above' => (int) env('INTEGRATION_EVENT_ALERT_WARNING_AVG_LAG_MS_ABOVE', 60000),
+            ],
+            'critical' => [
+                'drop_rate_above_percent' => (float) env('INTEGRATION_EVENT_ALERT_CRITICAL_DROP_RATE_ABOVE_PERCENT', 10.0),
+                'avg_lag_ms_above' => (int) env('INTEGRATION_EVENT_ALERT_CRITICAL_AVG_LAG_MS_ABOVE', 180000),
+            ],
+        ],
+    ],
     'integration_sync' => [
         'slo' => [
             'success_rate_percent' => (float) env('INTEGRATION_SYNC_SLO_SUCCESS_RATE_PERCENT', 99.0),

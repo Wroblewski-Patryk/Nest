@@ -56,6 +56,12 @@ Current status:
     `docs/modules/integration_marketplace_framework_v2.md`.
 - Next-wave provider rollout details (demand scoring, caveats, limits):
   - `docs/modules/next_wave_provider_rollout_v2.md`.
+- Near-real-time event ingestion is active via:
+  - `POST /api/v1/integrations/events/{provider}/ingest`
+  - `GET /api/v1/integrations/events/ingestions`
+  with deduplication/replay protection and ingestion lag/drop monitoring.
+  - Detailed contract:
+    `docs/modules/integration_near_real_time_sync_triggers_v2.md`.
 
 ## Integration Data Model
 
@@ -91,6 +97,8 @@ Each synchronized object stores:
   - `docs/modules/integration_sync_slos.md`
 - Runtime SLO evaluation command:
   - `php artisan integrations:sync-slo-check`
+- Near-real-time ingestion lag/drop monitoring command:
+  - `php artisan integrations:event-ingestion-stats`
 
 ## Security
 

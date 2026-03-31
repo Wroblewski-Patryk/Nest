@@ -1086,14 +1086,41 @@ Last updated: 2026-03-31
       `packages/shared-types/src/client.d.ts`,
       `packages/shared-types/src/index.d.ts`.
 
-- [ ] NEST-147 Add near-real-time sync triggers (webhooks/event ingestion)
-  - Status: BACKLOG
+- [x] NEST-147 Add near-real-time sync triggers (webhooks/event ingestion)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-146
   - Done when:
     - webhook/event-driven sync paths exist where provider supports them,
     - deduplication and replay protection are enforced,
     - monitoring tracks ingestion lag and dropped-event rates.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added near-real-time event ingestion API:
+      `POST /api/v1/integrations/events/{provider}/ingest`,
+      `GET /api/v1/integrations/events/ingestions`.
+    - Added ingestion persistence and service orchestration:
+      `apps/api/database/migrations/2026_03_31_220000_create_integration_event_ingestions_table.php`,
+      `apps/api/app/Models/IntegrationEventIngestion.php`,
+      `apps/api/app/Integrations/Services/IntegrationEventIngestionService.php`,
+      `apps/api/app/Http/Controllers/Api/IntegrationEventIngestionController.php`.
+    - Added deduplication/replay protection with unique
+      `(tenant_id, user_id, provider, event_id)` semantics.
+    - Added ingestion observability metrics, alert thresholds, and stats command:
+      `integrations:event-ingestion-stats`.
+    - Linked queue job completion/failure lifecycle to ingestion status updates
+      in `apps/api/app/Jobs/ProcessIntegrationSyncJob.php`.
+    - Added regression coverage:
+      `apps/api/tests/Feature/IntegrationEventIngestionApiTest.php`,
+      `apps/api/tests/Feature/IntegrationEventIngestionStatsCommandTest.php`.
+    - Updated shared runtime contracts and OpenAPI:
+      `packages/shared-types/src/client.js`,
+      `packages/shared-types/src/client.d.ts`,
+      `packages/shared-types/src/index.d.ts`,
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`.
+    - Documentation published in
+      `docs/modules/integration_near_real_time_sync_triggers_v2.md` and linked
+      from `docs/modules/integrations.md`.
 
 - [ ] NEST-148 Deliver integration health center and remediation playbooks
   - Status: BACKLOG

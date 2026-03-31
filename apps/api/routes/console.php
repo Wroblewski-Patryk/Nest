@@ -4,6 +4,7 @@ use App\AI\Evaluation\CopilotSafetyEvaluationService;
 use App\Jobs\DeleteTenantDataJob;
 use App\Notifications\Services\MobilePushReminderService;
 use App\Observability\IntegrationSyncSloService;
+use App\Observability\MetricCounter;
 use App\Security\Services\SecretRotationService;
 use App\Security\Services\SecurityControlVerificationService;
 use App\Tenancy\Services\TenantDataDeletionService;
@@ -92,6 +93,81 @@ Artisan::command('integrations:sync-slo-check {--json} {--strict}', function ():
 
     return self::SUCCESS;
 })->purpose('Evaluate current integration sync SLO window and emit alert signal');
+
+Artisan::command('integrations:event-ingestion-stats {--json} {--strict}', function (): int {
+    $strict = (bool) $this->option('strict');
+    $metrics = app(MetricCounter::class);
+    $received = $metrics->getCurrentCount('integration.events.received');
+    $duplicates = $metrics->getCurrentCount('integration.events.duplicate');
+    $dropped = $metrics->getCurrentCount('integration.events.dropped');
+    $lagCount = max(0, $metrics->getCurrentCount('integration.events.lag.count'));
+    $lagSumMs = max(0, $metrics->getCurrentCount('integration.events.lag.sum_ms'));
+    $avgLagMs = $lagCount > 0 ? (int) round($lagSumMs / $lagCount) : 0;
+    $totalSignals = $received + $duplicates;
+    $dropRate = $totalSignals > 0 ? round(($dropped / $totalSignals) * 100, 2) : 0.0;
+
+    $warning = (array) config('observability.integration_event_ingestion.alerts.warning', []);
+    $critical = (array) config('observability.integration_event_ingestion.alerts.critical', []);
+
+    $severity = 'ok';
+    $reasons = [];
+
+    if (
+        $dropRate > (float) ($critical['drop_rate_above_percent'] ?? 10.0)
+        || $avgLagMs > (int) ($critical['avg_lag_ms_above'] ?? 180000)
+    ) {
+        $severity = 'critical';
+    } elseif (
+        $dropRate > (float) ($warning['drop_rate_above_percent'] ?? 5.0)
+        || $avgLagMs > (int) ($warning['avg_lag_ms_above'] ?? 60000)
+    ) {
+        $severity = 'warning';
+    }
+
+    if ($dropRate > 0) {
+        $reasons[] = 'drop_rate_above_zero';
+    }
+    if ($avgLagMs > 0) {
+        $reasons[] = 'avg_lag_detected';
+    }
+
+    $snapshot = [
+        'window' => [
+            'received' => $received,
+            'duplicates' => $duplicates,
+            'dropped' => $dropped,
+            'lag_count' => $lagCount,
+            'lag_sum_ms' => $lagSumMs,
+        ],
+        'current' => [
+            'drop_rate_percent' => $dropRate,
+            'average_lag_ms' => $avgLagMs,
+        ],
+        'alert' => [
+            'severity' => $severity,
+            'reasons' => $reasons,
+        ],
+    ];
+
+    if ($this->option('json')) {
+        $this->line((string) json_encode($snapshot, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    } else {
+        $this->info("Integration event ingestion status: {$severity}");
+        $this->line('Strict mode: '.($strict ? 'enabled' : 'disabled'));
+        $this->line("Drop rate: {$dropRate}%");
+        $this->line("Average lag: {$avgLagMs} ms");
+    }
+
+    if ($severity === 'critical') {
+        return self::FAILURE;
+    }
+
+    if ($strict && $severity === 'warning') {
+        return self::FAILURE;
+    }
+
+    return self::SUCCESS;
+})->purpose('Evaluate near-real-time integration event ingestion lag and dropped-event rates');
 
 Artisan::command('notifications:send-mobile-reminders {--tenant=} {--json}', function (): int {
     $tenantId = $this->option('tenant');

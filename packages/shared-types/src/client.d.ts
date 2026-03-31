@@ -97,6 +97,24 @@ export type IntegrationConnectionItem = {
   updated_at: string | null;
 };
 
+export type IntegrationEventIngestionItem = {
+  id: string;
+  provider: "trello" | "todoist" | "google_calendar" | "clickup" | "microsoft_todo";
+  event_id: string;
+  event_type: string;
+  internal_entity_type: string;
+  internal_entity_id: string;
+  status: "queued" | "processed" | "dropped";
+  lag_ms: number | null;
+  drop_reason: string | null;
+  replay_count: number;
+  event_occurred_at: string | null;
+  received_at: string | null;
+  queued_at: string | null;
+  processed_at: string | null;
+  queue_job_id: string | null;
+};
+
 export type IntegrationMarketplaceProviderItem = {
   provider: string;
   display_name: string;
@@ -458,6 +476,37 @@ export type NestApiClient = {
   syncListTasks(provider: "trello" | "google_tasks" | "todoist" | "clickup" | "microsoft_todo"): Promise<{ data: Record<string, unknown> }>;
   syncCalendar(provider: "google_calendar"): Promise<{ data: Record<string, unknown> }>;
   syncJournal(provider: "obsidian"): Promise<{ data: Record<string, unknown> }>;
+  ingestIntegrationEvent(
+    provider: "trello" | "todoist" | "google_calendar" | "clickup" | "microsoft_todo",
+    payload: {
+      event_id: string;
+      event_type: string;
+      internal_entity_type: string;
+      internal_entity_id: string;
+      external_id?: string | null;
+      event_occurred_at: string;
+      entity_payload?: Record<string, unknown>;
+    }
+  ): Promise<{
+    data: {
+      status: "queued" | "duplicate";
+      provider: string;
+      event_id: string;
+      ingestion_id: string;
+      replay_protected: boolean;
+      queued: boolean;
+      lag_ms?: number;
+      queue_job_id?: string | null;
+    };
+  }>;
+  getIntegrationEventIngestions(query?: {
+    provider?: "trello" | "todoist" | "google_calendar" | "clickup" | "microsoft_todo";
+    status?: "queued" | "processed" | "dropped";
+    per_page?: number;
+  }): Promise<{
+    data: IntegrationEventIngestionItem[];
+    meta: { total: number };
+  }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
   getInAppNotifications(query?: {
     per_page?: number;

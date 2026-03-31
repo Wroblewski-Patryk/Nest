@@ -291,6 +291,13 @@ export function createNestApiClient(options) {
         method: "POST",
         body: { provider },
       }),
+    ingestIntegrationEvent: (provider, payload) =>
+      request(`/integrations/events/${provider}/ingest`, {
+        method: "POST",
+        body: payload,
+      }),
+    getIntegrationEventIngestions: (query = {}) =>
+      request("/integrations/events/ingestions", { query }),
     getIntegrationMarketplaceProviders: () =>
       request("/integrations/marketplace/providers"),
     installIntegrationMarketplaceProvider: (provider, payload = {}) =>

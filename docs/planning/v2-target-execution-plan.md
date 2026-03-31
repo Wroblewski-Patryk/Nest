@@ -1,6 +1,6 @@
 # V2 Target Execution Plan
 
-Last updated: 2026-03-21
+Last updated: 2026-03-31
 
 ## Goal
 
@@ -193,7 +193,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - each new provider meets sync/idempotency/conflict quality bars,
     - provider rollout docs include limits and known caveats.
 
-- [ ] NEST-147 Add near-real-time sync triggers (webhooks/event ingestion)
+- [x] NEST-147 Add near-real-time sync triggers (webhooks/event ingestion)
   - Depends on: NEST-146
   - Done when:
     - webhook/event-driven sync paths exist where provider supports them,

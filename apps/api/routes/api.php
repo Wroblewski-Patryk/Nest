@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\InAppNotificationController;
 use App\Http\Controllers\Api\InsightsTrendController;
 use App\Http\Controllers\Api\IntegrationConflictController;
 use App\Http\Controllers\Api\IntegrationConnectionController;
+use App\Http\Controllers\Api\IntegrationEventIngestionController;
 use App\Http\Controllers\Api\IntegrationMarketplaceController;
 use App\Http\Controllers\Api\IntegrationSyncController;
 use App\Http\Controllers\Api\IntegrationSyncReplayController;
@@ -170,6 +171,8 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/integrations/list-task-sync', [IntegrationSyncController::class, 'syncListsAndTasks']);
         Route::post('/integrations/calendar-sync', [IntegrationSyncController::class, 'syncCalendar']);
         Route::post('/integrations/journal-sync', [IntegrationSyncController::class, 'syncJournal']);
+        Route::post('/integrations/events/{provider}/ingest', [IntegrationEventIngestionController::class, 'ingest']);
+        Route::get('/integrations/events/ingestions', [IntegrationEventIngestionController::class, 'index']);
         Route::get('/integrations/marketplace/providers', [IntegrationMarketplaceController::class, 'index']);
         Route::post('/integrations/marketplace/providers/{provider}/install', [IntegrationMarketplaceController::class, 'install']);
         Route::post('/integrations/marketplace/providers/{provider}/uninstall', [IntegrationMarketplaceController::class, 'uninstall']);
