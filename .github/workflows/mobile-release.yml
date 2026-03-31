@@ -11,6 +11,25 @@ on:
         options:
           - preview
           - production
+      channel:
+        description: Mobile rollout channel
+        required: true
+        default: internal
+        type: choice
+        options:
+          - internal
+          - beta
+          - production
+      rollout_percent:
+        description: Staged rollout percentage for beta/production channels
+        required: true
+        default: "10"
+        type: string
+      rollback_on_failure:
+        description: Rollback staged rollout when halt criteria are breached
+        required: true
+        default: true
+        type: boolean
       dry_run:
         description: Run release in dry-run mode
         required: true
@@ -41,7 +60,7 @@ jobs:
         shell: pwsh
         run: |
           if ("${{ inputs.dry_run }}" -eq "true") {
-            ./scripts/release/mobile-release.ps1 -Profile "${{ inputs.profile }}" -DryRun
+            ./scripts/release/mobile-release.ps1 -Profile "${{ inputs.profile }}" -Channel "${{ inputs.channel }}" -RolloutPercent "${{ inputs.rollout_percent }}" -RollbackOnFailure "${{ inputs.rollback_on_failure }}" -DryRun
           } else {
-            ./scripts/release/mobile-release.ps1 -Profile "${{ inputs.profile }}"
+            ./scripts/release/mobile-release.ps1 -Profile "${{ inputs.profile }}" -Channel "${{ inputs.channel }}" -RolloutPercent "${{ inputs.rollout_percent }}" -RollbackOnFailure "${{ inputs.rollback_on_failure }}"
           }

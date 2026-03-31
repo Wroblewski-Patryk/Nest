@@ -579,6 +579,14 @@ Last updated: 2026-03-21
     - internal/beta/prod channels are documented and automated,
     - staged rollout percentages and halt criteria are defined,
     - rollback procedure is tested on physical devices.
+  - Notes:
+    - Mobile release pipeline extended with channel-aware staged rollout
+      (`internal`/`beta`/`production`), rollout percentages, halt criteria, and
+      rollback-on-failure path.
+    - Rehearsal evidence published:
+      `docs/operations/mobile_staged_rollout_rehearsal_2026-03-31.md`.
+    - Task remains open until physical-device rollback procedure is validated in
+      non-dry-run path.
 
 - [ ] NEST-129 Close V1.1 stabilization wave and open V2 execution gate
   - Status: BACKLOG

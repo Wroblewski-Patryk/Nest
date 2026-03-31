@@ -12,13 +12,21 @@ Task: `NEST-117`
 
 - `preview`: internal distribution for physical-device testing.
 - `production`: signed release candidate profile.
+- Rollout channels:
+  - `internal`: internal tester distribution,
+  - `beta`: staged rollout to limited audience,
+  - `production`: staged/full production rollout.
 
 ## Internal Distribution Flow
 
 1. Trigger workflow in `preview` profile.
 2. Generate iOS/Android builds through EAS profile.
-3. Share install links with internal phone test group.
-4. Run artifact verification checklist before sign-off.
+3. Select rollout channel and staged percentage when channel is `beta` or
+   `production`.
+4. Share install links / rollout exposure based on channel.
+5. Run artifact verification checklist before sign-off.
+6. Evaluate halt criteria and trigger rollback path when thresholds are
+   breached.
 
 ## Release Checklist Additions
 
@@ -30,4 +38,8 @@ Task: `NEST-117`
 ## Validation
 
 - Dry-run execution is supported:
-  - `powershell -ExecutionPolicy Bypass -File scripts/release/mobile-release.ps1 -Profile preview -DryRun`
+  - `powershell -ExecutionPolicy Bypass -File scripts/release/mobile-release.ps1 -Profile preview -Channel beta -RolloutPercent 10 -RollbackOnFailure true -DryRun`
+- Halt criteria (configurable in script params):
+  - crash rate threshold,
+  - install failure threshold,
+  - API error rate threshold.
