@@ -450,6 +450,7 @@ export default function SettingsPage() {
     <WorkspaceShell
       title="Access Control"
       subtitle="Manage delegated credentials, AI agents, and access-boundary audit visibility."
+      module="insights"
     >
       <div className="stack">
         <MetricCard label="Delegated active" value={String(activeDelegatedCount)} />
@@ -769,4 +770,3 @@ export default function SettingsPage() {
     </WorkspaceShell>
   );
 }
-

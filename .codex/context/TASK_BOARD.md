@@ -910,6 +910,26 @@ Last updated: 2026-03-31
       `php artisan route:list --path=api/v1/auth/ai-agents`.
   - Done on: 2026-03-31
 
+- [x] NEST-167 Implement Stitch-driven web shell refresh for core module navigation
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-159, NEST-166
+  - Done when:
+    - web app shell reflects Stitch visual hierarchy (rail + topbar + tonal cards),
+    - module navigation is coherent on desktop and mobile breakpoints,
+    - style tokens support aura variants without breaking existing routes.
+  - Notes:
+    - Rebuilt workspace shell layout + nav model in:
+      `apps/web/src/components/workspace-shell.tsx`.
+    - Replaced global CSS contract with Stitch-inspired layout/token treatment:
+      `apps/web/src/app/globals.css`.
+    - Expanded module readiness navigation scope for insights:
+      `apps/web/src/lib/mvp-snapshot.ts`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`.
+  - Done on: 2026-03-31
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

@@ -58,11 +58,19 @@ export const moduleReadiness: Array<{
   },
   {
     href: "/journal",
-    label: "Journal + Life Areas",
+    label: "Journal",
     key: "journal",
     focus: "Reflect on mood and life-area balance.",
     state: "success",
     telemetry: "screen.journal.view",
+  },
+  {
+    href: "/insights",
+    label: "Insights",
+    key: "insights",
+    focus: "Read trends and adjust weekly priorities.",
+    state: "success",
+    telemetry: "screen.insights.view",
   },
 ];
 

@@ -45,3 +45,16 @@ These are tracked as follow-up execution tasks in planning/context artifacts.
 - `apps/mobile/components/mvp/ModuleScreen.tsx`
 - `apps/mobile/app/(tabs)/_layout.tsx`
 - `apps/mobile/constants/uiTokens.ts`
+
+## Wave Extension (2026-03-31)
+
+Additional Stitch-aligned usability remediation executed in web:
+
+- Rebuilt desktop/mobile web shell navigation hierarchy (rail + topbar + mobile
+  pill nav) with updated tokenized aura styling.
+
+Updated files in this extension:
+
+- `apps/web/src/components/workspace-shell.tsx`
+- `apps/web/src/app/globals.css`
+- `apps/web/src/lib/mvp-snapshot.ts`
