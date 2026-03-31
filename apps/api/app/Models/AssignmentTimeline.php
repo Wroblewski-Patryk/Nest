@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CalendarEvent extends Model
+class AssignmentTimeline extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use HasFactory, HasUuids;
 
     public $incrementing = false;
 
@@ -21,18 +20,14 @@ class CalendarEvent extends Model
      */
     protected $fillable = [
         'tenant_id',
-        'user_id',
-        'assignee_user_id',
-        'reminder_owner_user_id',
-        'title',
-        'description',
-        'start_at',
-        'end_at',
-        'timezone',
-        'all_day',
-        'source',
-        'linked_entity_type',
-        'linked_entity_id',
+        'entity_type',
+        'entity_id',
+        'action',
+        'from_user_id',
+        'to_user_id',
+        'changed_by_user_id',
+        'note',
+        'occurred_at',
     ];
 
     /**
@@ -41,9 +36,7 @@ class CalendarEvent extends Model
     protected function casts(): array
     {
         return [
-            'start_at' => 'datetime',
-            'end_at' => 'datetime',
-            'all_day' => 'boolean',
+            'occurred_at' => 'datetime',
         ];
     }
 
@@ -58,24 +51,24 @@ class CalendarEvent extends Model
     /**
      * @return BelongsTo<User, $this>
      */
-    public function user(): BelongsTo
+    public function fromUser(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'from_user_id');
     }
 
     /**
      * @return BelongsTo<User, $this>
      */
-    public function assignee(): BelongsTo
+    public function toUser(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'assignee_user_id');
+        return $this->belongsTo(User::class, 'to_user_id');
     }
 
     /**
      * @return BelongsTo<User, $this>
      */
-    public function reminderOwner(): BelongsTo
+    public function changedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'reminder_owner_user_id');
+        return $this->belongsTo(User::class, 'changed_by_user_id');
     }
 }

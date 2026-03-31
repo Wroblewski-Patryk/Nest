@@ -25,7 +25,7 @@ class TaskPolicy
         }
 
         if ($list->visibility !== 'shared') {
-            return $task->user_id === $user->id;
+            return $task->user_id === $user->id || $task->assignee_user_id === $user->id;
         }
 
         if ($list->collaboration_space_id === null) {
@@ -48,7 +48,7 @@ class TaskPolicy
         }
 
         if ($list->visibility !== 'shared') {
-            return $task->user_id === $user->id;
+            return $task->user_id === $user->id || $task->assignee_user_id === $user->id;
         }
 
         if ($list->collaboration_space_id === null) {
@@ -60,6 +60,10 @@ class TaskPolicy
 
     public function delete(User $user, Task $task): bool
     {
-        return $this->update($user, $task);
+        if ($task->tenant_id !== $user->tenant_id) {
+            return false;
+        }
+
+        return $task->user_id === $user->id;
     }
 }

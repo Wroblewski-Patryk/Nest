@@ -245,6 +245,22 @@ paths:
           description: Task archived
         '404':
           $ref: '#/components/responses/NotFound'
+  /v1/tasks/{taskId}/assignment-timeline:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    get:
+      tags: [Tasks]
+      summary: Get assignment and handoff timeline for task
+      operationId: getTaskAssignmentTimeline
+      responses:
+        '200':
+          description: Task assignment timeline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentTimelineResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /v1/tasks/{taskId}/complete:
     parameters:
       - $ref: '#/components/parameters/TaskId'
@@ -442,6 +458,12 @@ components:
         list_id:
           type: string
           format: uuid
+        assignee_user_id:
+          type: [string, 'null']
+          format: uuid
+        reminder_owner_user_id:
+          type: [string, 'null']
+          format: uuid
         title:
           type: string
           minLength: 1
@@ -525,6 +547,15 @@ components:
         due_date:
           type: [string, 'null']
           format: date
+        assignee_user_id:
+          type: [string, 'null']
+          format: uuid
+        reminder_owner_user_id:
+          type: [string, 'null']
+          format: uuid
+        handoff_note:
+          type: [string, 'null']
+          maxLength: 500
         notes:
           type: [string, 'null']
           maxLength: 5000
@@ -550,9 +581,63 @@ components:
         due_date:
           type: [string, 'null']
           format: date
+        assignee_user_id:
+          type: [string, 'null']
+          format: uuid
+        reminder_owner_user_id:
+          type: [string, 'null']
+          format: uuid
+        handoff_note:
+          type: [string, 'null']
+          maxLength: 500
         notes:
           type: [string, 'null']
           maxLength: 5000
+
+    AssignmentTimelineEntry:
+      type: object
+      required:
+        - id
+        - entity_type
+        - entity_id
+        - action
+        - occurred_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        entity_type:
+          type: string
+          enum: [task, calendar_event]
+        entity_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum: [assigned, handoff, reminder_owner_changed]
+        from_user_id:
+          type: [string, 'null']
+          format: uuid
+        to_user_id:
+          type: [string, 'null']
+          format: uuid
+        changed_by_user_id:
+          type: [string, 'null']
+          format: uuid
+        note:
+          type: [string, 'null']
+        occurred_at:
+          type: string
+          format: date-time
+
+    AssignmentTimelineResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignmentTimelineEntry'
 
     PaginationMeta:
       type: object

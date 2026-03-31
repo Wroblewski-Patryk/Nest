@@ -782,14 +782,30 @@ Last updated: 2026-03-31
     - Published implementation and boundary-audit notes in
       `docs/modules/shared_household_workspace_operations_v2.md`.
 
-- [ ] NEST-136 Add shared planning workflows (assignment, handoff, reminders)
-  - Status: BACKLOG
+- [x] NEST-136 Add shared planning workflows (assignment, handoff, reminders)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-135
   - Done when:
     - tasks/events can be assigned and handed over between members,
     - reminder ownership and visibility are explicit,
     - timeline/history captures assignment changes.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added assignment/reminder ownership fields to `tasks` and
+      `calendar_events` with auditable timeline history table
+      `assignment_timelines`.
+    - Added assignment timeline API endpoints:
+      `GET /api/v1/tasks/{taskId}/assignment-timeline` and
+      `GET /api/v1/calendar-events/{eventId}/assignment-timeline`.
+    - Enforced assignment boundary rules for shared tasks (active space members)
+      and private tasks (owner-only assignment).
+    - Updated reminder delivery routing to honor explicit
+      `reminder_owner_user_id` with legacy-safe fallback behavior.
+    - Updated OpenAPI contracts and shared runtime client/types for assignment
+      workflow payloads.
+    - Implementation + validation summary documented in:
+      `docs/modules/shared_planning_assignment_handoff_reminder_ownership_v2.md`.
 
 - [ ] NEST-137 Deliver in-app notification center with actionable events
   - Status: BACKLOG

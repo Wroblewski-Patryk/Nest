@@ -527,6 +527,9 @@ Last updated: 2026-03-31
   operations (`owner/editor/viewer`), with policy-enforced shared task/list/
   goal permissions, member lifecycle APIs, and boundary regression coverage
   (`docs/modules/shared_household_workspace_operations_v2.md`)
+- `NEST-136` completed: shared planning assignment/handoff workflows delivered
+  for tasks and calendar events with explicit reminder ownership and auditable
+  timeline history endpoints (`docs/modules/shared_planning_assignment_handoff_reminder_ownership_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

@@ -90,7 +90,19 @@ class MobilePushReminderService
 
         $dueTask = Task::query()
             ->where('tenant_id', $device->tenant_id)
-            ->where('user_id', $device->user_id)
+            ->where(function ($query) use ($device): void {
+                $query->where('reminder_owner_user_id', $device->user_id)
+                    ->orWhere(function ($fallback) use ($device): void {
+                        $fallback->whereNull('reminder_owner_user_id')
+                            ->where(function ($legacy) use ($device): void {
+                                $legacy->where('assignee_user_id', $device->user_id)
+                                    ->orWhere(function ($ownerOnly) use ($device): void {
+                                        $ownerOnly->whereNull('assignee_user_id')
+                                            ->where('user_id', $device->user_id);
+                                    });
+                            });
+                    });
+            })
             ->whereDate('due_date', $today)
             ->whereNotIn('status', ['done', 'canceled'])
             ->orderBy('due_date')
@@ -105,13 +117,27 @@ class MobilePushReminderService
                 'payload' => [
                     'module' => 'tasks',
                     'task_id' => $dueTask->id,
+                    'assignee_user_id' => $dueTask->assignee_user_id,
+                    'reminder_owner_user_id' => $dueTask->reminder_owner_user_id,
                 ],
             ];
         }
 
         $upcomingEvent = CalendarEvent::query()
             ->where('tenant_id', $device->tenant_id)
-            ->where('user_id', $device->user_id)
+            ->where(function ($query) use ($device): void {
+                $query->where('reminder_owner_user_id', $device->user_id)
+                    ->orWhere(function ($fallback) use ($device): void {
+                        $fallback->whereNull('reminder_owner_user_id')
+                            ->where(function ($legacy) use ($device): void {
+                                $legacy->where('assignee_user_id', $device->user_id)
+                                    ->orWhere(function ($ownerOnly) use ($device): void {
+                                        $ownerOnly->whereNull('assignee_user_id')
+                                            ->where('user_id', $device->user_id);
+                                    });
+                            });
+                    });
+            })
             ->whereBetween('start_at', [$now, $upcomingBoundary])
             ->orderBy('start_at')
             ->first();
@@ -124,6 +150,8 @@ class MobilePushReminderService
                 'payload' => [
                     'module' => 'calendar',
                     'event_id' => $upcomingEvent->id,
+                    'assignee_user_id' => $upcomingEvent->assignee_user_id,
+                    'reminder_owner_user_id' => $upcomingEvent->reminder_owner_user_id,
                 ],
             ];
         }

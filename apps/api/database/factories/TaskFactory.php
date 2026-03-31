@@ -26,6 +26,8 @@ class TaskFactory extends Factory
             'user_id' => function (array $attributes): ?string {
                 return TaskList::query()->find($attributes['list_id'])?->user_id;
             },
+            'assignee_user_id' => null,
+            'reminder_owner_user_id' => null,
             'project_id' => null,
             'life_area_id' => null,
             'title' => fake()->sentence(4),

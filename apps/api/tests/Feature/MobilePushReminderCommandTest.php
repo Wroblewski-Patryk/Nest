@@ -70,4 +70,69 @@ class MobilePushReminderCommandTest extends TestCase
         $metrics = app(MetricCounter::class);
         $this->assertSame(2, $metrics->getCurrentCount('notifications.push.sent'));
     }
+
+    public function test_reminder_delivery_follows_explicit_reminder_owner_for_task_and_event(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $owner = User::factory()->create(['tenant_id' => $tenant->id]);
+        $teammate = User::factory()->create(['tenant_id' => $tenant->id]);
+
+        app(MobilePushDeviceService::class)->registerForUser(
+            user: $owner,
+            platform: 'android',
+            deviceToken: 'expo-owner-token-123',
+            deviceLabel: 'Owner phone',
+        );
+
+        app(MobilePushDeviceService::class)->registerForUser(
+            user: $teammate,
+            platform: 'ios',
+            deviceToken: 'expo-teammate-token-123',
+            deviceLabel: 'Teammate phone',
+        );
+
+        Task::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $owner->id,
+            'assignee_user_id' => $teammate->id,
+            'reminder_owner_user_id' => $teammate->id,
+            'title' => 'Shared task reminder',
+            'status' => 'todo',
+            'due_date' => now()->toDateString(),
+        ]);
+
+        CalendarEvent::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $owner->id,
+            'assignee_user_id' => $teammate->id,
+            'reminder_owner_user_id' => $teammate->id,
+            'title' => 'Shared calendar reminder',
+            'start_at' => now()->addMinutes(30),
+            'end_at' => now()->addMinutes(60),
+        ]);
+
+        $this->artisan('notifications:send-mobile-reminders --json')
+            ->expectsOutputToContain('"processed_devices": 2')
+            ->assertExitCode(0);
+
+        $this->assertDatabaseMissing('mobile_push_deliveries', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $owner->id,
+            'notification_type' => 'task_due_today',
+        ]);
+
+        $this->assertDatabaseHas('mobile_push_deliveries', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $teammate->id,
+            'notification_type' => 'task_due_today',
+            'status' => 'sent',
+        ]);
+
+        $this->assertDatabaseHas('mobile_push_deliveries', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $teammate->id,
+            'notification_type' => 'calendar_upcoming',
+            'status' => 'sent',
+        ]);
+    }
 }

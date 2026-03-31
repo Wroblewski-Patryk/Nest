@@ -112,7 +112,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - cross-user task/list/goal permissions are policy-enforced,
     - collaboration audits confirm tenant and membership boundaries.
 
-- [ ] NEST-136 Add shared planning workflows (assignment, handoff, reminders)
+- [x] NEST-136 Add shared planning workflows (assignment, handoff, reminders)
   - Depends on: NEST-135
   - Done when:
     - tasks/events can be assigned and handed over between members,

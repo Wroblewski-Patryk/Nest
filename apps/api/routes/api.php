@@ -100,6 +100,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/tasks', [TaskController::class, 'store']);
         Route::get('/tasks/{taskId}', [TaskController::class, 'show']);
         Route::patch('/tasks/{taskId}', [TaskController::class, 'update']);
+        Route::get('/tasks/{taskId}/assignment-timeline', [TaskController::class, 'assignmentTimeline']);
         Route::delete('/tasks/{taskId}', [TaskController::class, 'destroy']);
 
         Route::get('/habits', [HabitController::class, 'index']);
@@ -143,6 +144,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/calendar-events', [CalendarEventController::class, 'store']);
         Route::get('/calendar-events/{eventId}', [CalendarEventController::class, 'show']);
         Route::patch('/calendar-events/{eventId}', [CalendarEventController::class, 'update']);
+        Route::get('/calendar-events/{eventId}/assignment-timeline', [CalendarEventController::class, 'assignmentTimeline']);
         Route::delete('/calendar-events/{eventId}', [CalendarEventController::class, 'destroy']);
 
         Route::post('/integrations/list-task-sync', [IntegrationSyncController::class, 'syncListsAndTasks']);

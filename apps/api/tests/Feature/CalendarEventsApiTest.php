@@ -94,6 +94,49 @@ class CalendarEventsApiTest extends TestCase
         $this->getJson("/api/v1/calendar-events/{$eventB->id}")->assertNotFound();
     }
 
+    public function test_calendar_event_assignment_handoff_and_timeline_workflow(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $owner = User::factory()->create(['tenant_id' => $tenant->id]);
+        $assignee = User::factory()->create(['tenant_id' => $tenant->id]);
+
+        Sanctum::actingAs($owner);
+        $create = $this->postJson('/api/v1/calendar-events', [
+            'title' => 'Household planning',
+            'start_at' => '2026-03-16 09:00:00',
+            'end_at' => '2026-03-16 10:00:00',
+            'assignee_user_id' => $assignee->id,
+            'reminder_owner_user_id' => $assignee->id,
+            'handoff_note' => 'Please lead this session.',
+        ])->assertCreated();
+
+        $eventId = (string) $create->json('data.id');
+
+        Sanctum::actingAs($assignee);
+        $this->getJson("/api/v1/calendar-events/{$eventId}")->assertOk();
+        $this->patchJson("/api/v1/calendar-events/{$eventId}", [
+            'assignee_user_id' => $owner->id,
+            'reminder_owner_user_id' => $owner->id,
+            'handoff_note' => 'Agenda prepared, handing back.',
+        ])->assertOk()
+            ->assertJsonPath('data.assignee_user_id', $owner->id)
+            ->assertJsonPath('data.reminder_owner_user_id', $owner->id);
+
+        Sanctum::actingAs($owner);
+        $timeline = $this->getJson("/api/v1/calendar-events/{$eventId}/assignment-timeline")
+            ->assertOk()
+            ->json('data');
+
+        $this->assertIsArray($timeline);
+        $actions = array_values(array_filter(array_map(
+            static fn (mixed $entry): ?string => is_array($entry) ? ($entry['action'] ?? null) : null,
+            $timeline
+        )));
+
+        $this->assertContains('assigned', $actions);
+        $this->assertContains('handoff', $actions);
+    }
+
     public function test_guest_cannot_access_calendar_events_routes(): void
     {
         $this->getJson('/api/v1/calendar-events')->assertUnauthorized();

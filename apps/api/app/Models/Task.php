@@ -22,6 +22,8 @@ class Task extends Model
     protected $fillable = [
         'tenant_id',
         'user_id',
+        'assignee_user_id',
+        'reminder_owner_user_id',
         'list_id',
         'project_id',
         'life_area_id',
@@ -63,6 +65,22 @@ class Task extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assignee_user_id');
+    }
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function reminderOwner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reminder_owner_user_id');
     }
 
     /**

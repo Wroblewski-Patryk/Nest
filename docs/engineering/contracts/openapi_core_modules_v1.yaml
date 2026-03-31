@@ -492,6 +492,68 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '422':
           $ref: '#/components/responses/ValidationError'
+  /v1/calendar-events/{eventId}:
+    parameters:
+      - $ref: '#/components/parameters/EventId'
+    get:
+      tags: [Calendar]
+      summary: Get calendar event
+      operationId: getCalendarEvent
+      responses:
+        '200':
+          description: Calendar event details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Calendar]
+      summary: Update calendar event
+      operationId: updateCalendarEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCalendarEventRequest'
+      responses:
+        '200':
+          description: Calendar event updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Calendar]
+      summary: Delete calendar event
+      operationId: deleteCalendarEvent
+      responses:
+        '204':
+          description: Calendar event deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/calendar-events/{eventId}/assignment-timeline:
+    parameters:
+      - $ref: '#/components/parameters/EventId'
+    get:
+      tags: [Calendar]
+      summary: Get calendar event assignment timeline
+      operationId: getCalendarEventAssignmentTimeline
+      responses:
+        '200':
+          description: Calendar event assignment timeline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentTimelineResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 components:
   securitySchemes:
@@ -532,6 +594,13 @@ components:
         format: uuid
     GoalId:
       name: goalId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    EventId:
+      name: eventId
       in: path
       required: true
       schema:
@@ -674,6 +743,8 @@ components:
       required: [id, title, start_at, end_at, created_at, updated_at]
       properties:
         id: { type: string, format: uuid }
+        assignee_user_id: { type: [string, 'null'], format: uuid }
+        reminder_owner_user_id: { type: [string, 'null'], format: uuid }
         title: { type: string, maxLength: 255 }
         description: { type: [string, 'null'], maxLength: 5000 }
         start_at: { type: string, format: date-time }
@@ -804,6 +875,52 @@ components:
           type: [string, 'null']
           enum: [task, goal, routine, null]
         linked_entity_id: { type: [string, 'null'], format: uuid }
+        assignee_user_id: { type: [string, 'null'], format: uuid }
+        reminder_owner_user_id: { type: [string, 'null'], format: uuid }
+        handoff_note: { type: [string, 'null'], maxLength: 500 }
+
+    UpdateCalendarEventRequest:
+      type: object
+      minProperties: 1
+      properties:
+        title: { type: string, maxLength: 255 }
+        description: { type: [string, 'null'], maxLength: 5000 }
+        start_at: { type: string, format: date-time }
+        end_at: { type: string, format: date-time }
+        linked_entity_type:
+          type: [string, 'null']
+          enum: [task, goal, routine, null]
+        linked_entity_id: { type: [string, 'null'], format: uuid }
+        assignee_user_id: { type: [string, 'null'], format: uuid }
+        reminder_owner_user_id: { type: [string, 'null'], format: uuid }
+        handoff_note: { type: [string, 'null'], maxLength: 500 }
+
+    AssignmentTimelineEntry:
+      type: object
+      required:
+        - id
+        - entity_type
+        - entity_id
+        - action
+        - occurred_at
+      properties:
+        id: { type: string, format: uuid }
+        entity_type: { type: string, enum: [task, calendar_event] }
+        entity_id: { type: string, format: uuid }
+        action: { type: string, enum: [assigned, handoff, reminder_owner_changed] }
+        from_user_id: { type: [string, 'null'], format: uuid }
+        to_user_id: { type: [string, 'null'], format: uuid }
+        changed_by_user_id: { type: [string, 'null'], format: uuid }
+        note: { type: [string, 'null'] }
+        occurred_at: { type: string, format: date-time }
+
+    AssignmentTimelineResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/AssignmentTimelineEntry' }
 
     PaginationMeta:
       type: object

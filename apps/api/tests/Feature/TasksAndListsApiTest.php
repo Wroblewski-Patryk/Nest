@@ -160,6 +160,69 @@ class TasksAndListsApiTest extends TestCase
         $this->getJson("/api/v1/tasks/{$taskB->id}")->assertNotFound();
     }
 
+    public function test_shared_task_assignment_handoff_and_timeline_are_recorded(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $owner = User::factory()->create(['tenant_id' => $tenant->id, 'email' => 'owner-task-assignment@example.com']);
+        $member = User::factory()->create(['tenant_id' => $tenant->id, 'email' => 'member-task-assignment@example.com']);
+
+        Sanctum::actingAs($owner);
+        $list = TaskList::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $owner->id,
+            'visibility' => 'private',
+            'collaboration_space_id' => null,
+        ]);
+
+        $spaceId = (string) $this->postJson('/api/v1/collaboration/spaces', [
+            'name' => 'Shared Planning',
+        ])->assertCreated()->json('data.id');
+
+        $inviteToken = (string) $this->postJson("/api/v1/collaboration/spaces/{$spaceId}/invites", [
+            'email' => $member->email,
+            'role' => 'editor',
+        ])->assertCreated()->json('data.token');
+
+        $this->postJson("/api/v1/collaboration/spaces/{$spaceId}/share/lists/{$list->id}")
+            ->assertOk();
+
+        Sanctum::actingAs($member);
+        $this->postJson("/api/v1/collaboration/invites/{$inviteToken}/accept")->assertOk();
+
+        Sanctum::actingAs($owner);
+        $taskId = (string) $this->postJson('/api/v1/tasks', [
+            'list_id' => $list->id,
+            'title' => 'Prepare weekly handoff',
+            'assignee_user_id' => $member->id,
+            'reminder_owner_user_id' => $member->id,
+            'handoff_note' => 'Initial assignment to teammate.',
+        ])->assertCreated()->json('data.id');
+
+        Sanctum::actingAs($member);
+        $this->patchJson("/api/v1/tasks/{$taskId}", [
+            'status' => 'in_progress',
+            'assignee_user_id' => $owner->id,
+            'reminder_owner_user_id' => $owner->id,
+            'handoff_note' => 'Handing back after draft complete.',
+        ])->assertOk()
+            ->assertJsonPath('data.assignee_user_id', $owner->id)
+            ->assertJsonPath('data.reminder_owner_user_id', $owner->id);
+
+        Sanctum::actingAs($owner);
+        $timeline = $this->getJson("/api/v1/tasks/{$taskId}/assignment-timeline")
+            ->assertOk()
+            ->json('data');
+
+        $this->assertIsArray($timeline);
+        $actions = array_values(array_filter(array_map(
+            static fn (mixed $entry): ?string => is_array($entry) ? ($entry['action'] ?? null) : null,
+            $timeline
+        )));
+
+        $this->assertContains('assigned', $actions);
+        $this->assertContains('handoff', $actions);
+    }
+
     public function test_guest_cannot_access_tasks_and_lists_routes(): void
     {
         $this->getJson('/api/v1/lists')->assertUnauthorized();

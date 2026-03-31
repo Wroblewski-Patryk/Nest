@@ -27,6 +27,8 @@ class CalendarEventFactory extends Factory
         return [
             'tenant_id' => $tenant,
             'user_id' => $user,
+            'assignee_user_id' => null,
+            'reminder_owner_user_id' => null,
             'title' => fake()->sentence(3),
             'description' => fake()->optional()->paragraph(),
             'start_at' => $start,

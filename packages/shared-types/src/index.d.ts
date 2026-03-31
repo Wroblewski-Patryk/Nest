@@ -81,6 +81,8 @@ export type TaskItem = {
   title: string;
   status: string;
   priority: string;
+  assignee_user_id?: string | null;
+  reminder_owner_user_id?: string | null;
 };
 
 export type HabitItem = {
@@ -150,6 +152,20 @@ export type CalendarEventItem = {
   title: string;
   start_at: string;
   end_at: string;
+  assignee_user_id?: string | null;
+  reminder_owner_user_id?: string | null;
+};
+
+export type AssignmentTimelineItem = {
+  id: string;
+  entity_type: "task" | "calendar_event";
+  entity_id: string;
+  action: "assigned" | "handoff" | "reminder_owner_changed";
+  from_user_id: string | null;
+  to_user_id: string | null;
+  changed_by_user_id: string | null;
+  note: string | null;
+  occurred_at: string;
 };
 
 export type IntegrationConflictItem = {
@@ -396,10 +412,12 @@ export type NestApiClient = {
   shareGoalToCollaborationSpace(spaceId: string, goalId: string): Promise<{ data: GoalItem }>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
   getTasks(query?: Record<string, unknown>): Promise<ApiCollectionResponse<TaskItem>>;
+  getTaskAssignmentTimeline(taskId: string): Promise<{ data: AssignmentTimelineItem[] }>;
   getHabits(query?: Record<string, unknown>): Promise<ApiCollectionResponse<HabitItem>>;
   getGoals(query?: Record<string, unknown>): Promise<ApiCollectionResponse<GoalItem>>;
   getJournalEntries(query?: Record<string, unknown>): Promise<ApiCollectionResponse<JournalEntryItem>>;
   getCalendarEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<CalendarEventItem>>;
+  getCalendarEventAssignmentTimeline(eventId: string): Promise<{ data: AssignmentTimelineItem[] }>;
   getLifeAreaBalance(query?: {
     window_days?: number;
   }): Promise<LifeAreaBalanceResponse>;
