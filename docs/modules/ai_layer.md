@@ -67,6 +67,8 @@ operations without compromising data integrity or security.
 - Approval-gated action contract:
   `docs/modules/ai_approval_gated_write_actions_v2.md`.
 - Proactive briefing contract: `docs/modules/ai_proactive_briefings_v2.md`.
+- Copilot safety evaluation harness contract:
+  `docs/modules/ai_copilot_safety_evaluation_harness_v2.md`.
 - Feedback contract: `docs/modules/ai_feedback_loop.md`.
 - Machine-readable API error envelope for tool/agent clients:
   `docs/modules/ai_tool_api_error_contract_v1.md`.

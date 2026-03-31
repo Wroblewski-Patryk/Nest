@@ -26,6 +26,10 @@
 
 - code style check (`pint --test`)
 - full backend suites (`Integration`, `Unit`, `Feature`)
+- AI copilot safety evaluation gate (strict):
+  - `php artisan ai:copilot-safety-eval --json --strict`
+  - release train is blocked below minimum safety score threshold and on strict
+    category failures.
 - security control verification:
   - `php artisan security:controls:verify --json`
 - integration sync SLO/error-budget gate (strict):

@@ -11,6 +11,7 @@ Write-Host "Release Notes: $ReleaseNotes"
 
 $checks = @(
     "Backend tests passed",
+    "AI copilot safety scorecard passed minimum threshold",
     "Security controls verification passed",
     "Retention and secret-rotation dry-runs reviewed",
     "Resilience drill outcomes reviewed",

@@ -1,5 +1,6 @@
 <?php
 
+use App\AI\Evaluation\CopilotSafetyEvaluationService;
 use App\Jobs\DeleteTenantDataJob;
 use App\Notifications\Services\MobilePushReminderService;
 use App\Observability\IntegrationSyncSloService;
@@ -15,6 +16,43 @@ use Illuminate\Support\Facades\Log;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('ai:copilot-safety-eval {--json} {--strict} {--min-score=}', function (): int {
+    $rawMinScore = $this->option('min-score');
+    $minScore = is_numeric($rawMinScore) ? (float) $rawMinScore : null;
+    $strict = (bool) $this->option('strict');
+    $scorecard = app(CopilotSafetyEvaluationService::class)->evaluate($minScore);
+    $status = (string) data_get($scorecard, 'summary.status', 'fail');
+    $score = (float) data_get($scorecard, 'summary.score_percent', 0);
+    $threshold = (float) data_get($scorecard, 'threshold.min_score_percent', 0);
+
+    if ($this->option('json')) {
+        $this->line((string) json_encode($scorecard, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    } else {
+        $this->info("AI copilot safety eval status: {$status}");
+        $this->line("Score: {$score}%");
+        $this->line("Minimum required score: {$threshold}%");
+        $this->line('Strict mode: '.($strict ? 'enabled' : 'disabled'));
+        $this->line('Policy score: '.data_get($scorecard, 'categories.policy.score_percent', 0).'%');
+        $this->line('Hallucination score: '.data_get($scorecard, 'categories.hallucination.score_percent', 0).'%');
+        $this->line('Action safety score: '.data_get($scorecard, 'categories.action_safety.score_percent', 0).'%');
+    }
+
+    if ($status !== 'pass') {
+        return self::FAILURE;
+    }
+
+    if ($strict) {
+        $allCategoriesAtHundred = collect((array) data_get($scorecard, 'categories', []))
+            ->every(static fn (array $category): bool => (float) ($category['score_percent'] ?? 0) >= 100.0);
+
+        if (! $allCategoriesAtHundred) {
+            return self::FAILURE;
+        }
+    }
+
+    return self::SUCCESS;
+})->purpose('Evaluate policy, hallucination grounding, and action safety for AI copilot release gates');
 
 Artisan::command('integrations:sync-slo-check {--json} {--strict}', function (): int {
     $snapshot = app(IntegrationSyncSloService::class)->evaluateCurrentWindow();

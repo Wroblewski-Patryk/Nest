@@ -1000,14 +1000,28 @@ Last updated: 2026-03-31
       `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
       `docs/modules/ai_proactive_briefings_v2.md`.
 
-- [ ] NEST-144 Deliver AI safety/evaluation harness for V2 copilot behaviors
-  - Status: BACKLOG
-  - Owner: Review Agent
+- [x] NEST-144 Deliver AI safety/evaluation harness for V2 copilot behaviors
+  - Status: DONE
+  - Owner: Execution Agent
   - Depends on: NEST-142, NEST-143
   - Done when:
     - regression suite covers policy, hallucination, and action-safety checks,
     - quality scorecard is produced for each release candidate,
     - release gate blocks promotion below safety threshold.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added deterministic AI safety evaluation service:
+      `apps/api/app/AI/Evaluation/CopilotSafetyEvaluationService.php`.
+    - Added release-gate command:
+      `php artisan ai:copilot-safety-eval --json --strict`.
+    - Added command regression coverage:
+      `apps/api/tests/Feature/AiCopilotSafetyEvaluationCommandTest.php`.
+    - Wired release gate into release train workflow:
+      `.github/workflows/release-train.yml`.
+    - Updated release checklist and module docs:
+      `scripts/release/release-train-checklist.ps1`,
+      `docs/modules/ai_copilot_safety_evaluation_harness_v2.md`,
+      `docs/operations/release_train_change_management.md`.
 
 - [ ] NEST-145 Implement integration marketplace framework
   - Status: BACKLOG

@@ -170,7 +170,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - briefing cadence and content scope are user-configurable,
     - notifications link directly to briefing summaries.
 
-- [ ] NEST-144 Deliver AI safety/evaluation harness for V2 copilot behaviors
+- [x] NEST-144 Deliver AI safety/evaluation harness for V2 copilot behaviors
   - Depends on: NEST-142, NEST-143
   - Done when:
     - regression suite covers policy, hallucination, and action-safety checks,

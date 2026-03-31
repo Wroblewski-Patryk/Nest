@@ -43,6 +43,7 @@ jobs:
           cp .env.example .env
           php artisan key:generate --force
           touch database/database.sqlite
+          php artisan migrate --force
 
       - name: Run quality gates
         run: |
@@ -50,6 +51,7 @@ jobs:
           php artisan test --testsuite=Integration --env=testing
           php artisan test --testsuite=Unit --env=testing
           php artisan test --testsuite=Feature --env=testing
+          php artisan ai:copilot-safety-eval --json --strict --env=testing
           php artisan security:controls:verify --json --env=testing
           php artisan integrations:sync-slo-check --json --strict --env=testing
 

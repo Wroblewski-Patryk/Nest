@@ -560,11 +560,15 @@ Last updated: 2026-03-31
 - `NEST-143` completed: proactive daily/weekly briefing generation delivered
   with user cadence/scope preferences and in-app notification deep-link context
   to insights summaries (`docs/modules/ai_proactive_briefings_v2.md`)
+- `NEST-144` completed: AI copilot safety/evaluation harness delivered with
+  deterministic policy/hallucination/action-safety scorecard command and
+  release-train threshold gate enforcement
+  (`docs/modules/ai_copilot_safety_evaluation_harness_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute V2 AI wave continuation
-  (`NEST-144` onward) while launch-window/live-evidence closure tasks
+- Current execution focus: execute V2 integrations wave continuation
+  (`NEST-145` onward) while launch-window/live-evidence closure tasks
   (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`)
   remain tracked for non-dry-run operations.
 

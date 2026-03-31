@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'ai_copilot_safety' => [
+        'min_score_percent' => (float) env('AI_COPILOT_SAFETY_MIN_SCORE_PERCENT', 95.0),
+    ],
     'integration_sync' => [
         'slo' => [
             'success_rate_percent' => (float) env('INTEGRATION_SYNC_SLO_SUCCESS_RATE_PERCENT', 99.0),
