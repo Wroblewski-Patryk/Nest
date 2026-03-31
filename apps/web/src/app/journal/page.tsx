@@ -79,6 +79,18 @@ export default function JournalPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreatingEntry, setIsCreatingEntry] = useState(false);
   const [isCreatingArea, setIsCreatingArea] = useState(false);
+  const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
+  const [editEntryTitle, setEditEntryTitle] = useState("");
+  const [editEntryBody, setEditEntryBody] = useState("");
+  const [editEntryMood, setEditEntryMood] = useState<"low" | "neutral" | "good" | "great">("good");
+  const [editEntryDate, setEditEntryDate] = useState("");
+  const [editEntryLifeAreaIds, setEditEntryLifeAreaIds] = useState<string[]>([]);
+  const [busyEntryId, setBusyEntryId] = useState<string | null>(null);
+  const [editingAreaId, setEditingAreaId] = useState<string | null>(null);
+  const [editAreaName, setEditAreaName] = useState("");
+  const [editAreaColor, setEditAreaColor] = useState("#789262");
+  const [editAreaWeight, setEditAreaWeight] = useState("50");
+  const [busyAreaId, setBusyAreaId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("Dodaj refleksje i oznacz obszary zycia, aby latwiej zobaczyc balans.");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -213,6 +225,149 @@ export default function JournalPage() {
       setErrorMessage(getErrorMessage(error));
     } finally {
       setIsCreatingArea(false);
+    }
+  }
+
+  function startEntryEdit(entry: JournalEntryItem) {
+    const linkedAreas = entry.life_areas ?? entry.lifeAreas ?? [];
+    setEditingEntryId(entry.id);
+    setEditEntryTitle(entry.title);
+    setEditEntryBody(entry.body);
+    setEditEntryMood(entry.mood ?? "neutral");
+    setEditEntryDate(entry.entry_date ? entry.entry_date.slice(0, 10) : "");
+    setEditEntryLifeAreaIds(linkedAreas.map((area) => area.id));
+  }
+
+  async function saveEntryEdit(entryId: string) {
+    if (!editEntryTitle.trim()) {
+      setErrorMessage("Entry title is required.");
+      return;
+    }
+    if (!editEntryBody.trim()) {
+      setErrorMessage("Reflection body is required.");
+      return;
+    }
+
+    setBusyEntryId(entryId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/journal-entries/${entryId}`, {
+        method: "PATCH",
+        body: {
+          title: editEntryTitle.trim(),
+          body: editEntryBody.trim(),
+          mood: editEntryMood,
+          entry_date: editEntryDate || undefined,
+          life_area_ids: editEntryLifeAreaIds,
+        },
+      });
+      setEditingEntryId(null);
+      await loadData();
+      setFeedback("Journal entry updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyEntryId(null);
+    }
+  }
+
+  async function deleteEntry(entryId: string) {
+    if (!window.confirm("Delete this journal entry?")) {
+      return;
+    }
+
+    setBusyEntryId(entryId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/journal-entries/${entryId}`, {
+        method: "DELETE",
+      });
+      if (editingEntryId === entryId) {
+        setEditingEntryId(null);
+      }
+      await loadData();
+      setFeedback("Journal entry deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyEntryId(null);
+    }
+  }
+
+  function startLifeAreaEdit(area: LifeAreaItem) {
+    setEditingAreaId(area.id);
+    setEditAreaName(area.name);
+    setEditAreaColor(area.color);
+    setEditAreaWeight(String(area.weight));
+  }
+
+  async function saveLifeAreaEdit(areaId: string) {
+    if (!editAreaName.trim()) {
+      setErrorMessage("Life area name is required.");
+      return;
+    }
+
+    setBusyAreaId(areaId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/life-areas/${areaId}`, {
+        method: "PATCH",
+        body: {
+          name: editAreaName.trim(),
+          color: editAreaColor,
+          weight: Number(editAreaWeight) || 0,
+        },
+      });
+      setEditingAreaId(null);
+      await loadData();
+      setFeedback("Life area updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyAreaId(null);
+    }
+  }
+
+  async function deleteLifeArea(areaId: string) {
+    if (!window.confirm("Delete this life area?")) {
+      return;
+    }
+
+    setBusyAreaId(areaId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/life-areas/${areaId}`, {
+        method: "DELETE",
+      });
+      if (editingAreaId === areaId) {
+        setEditingAreaId(null);
+      }
+      await loadData();
+      setFeedback("Life area deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyAreaId(null);
     }
   }
 
@@ -366,13 +521,90 @@ export default function JournalPage() {
           ) : (
             lifeAreas.map((area) => (
               <li key={area.id} className="list-row">
-                <div>
-                  <div className="row-inline">
-                    <span className="dot" style={{ backgroundColor: area.color }} />
-                    <strong>{area.name}</strong>
+                {editingAreaId === area.id ? (
+                  <div className="form-grid">
+                    <label className="field">
+                      <span>Name</span>
+                      <input
+                        className="list-row"
+                        type="text"
+                        value={editAreaName}
+                        onChange={(event) => setEditAreaName(event.target.value)}
+                        disabled={busyAreaId === area.id}
+                      />
+                    </label>
+                    <div className="row-inline">
+                      <label className="field">
+                        <span>Color</span>
+                        <input
+                          className="list-row"
+                          type="color"
+                          value={editAreaColor}
+                          onChange={(event) => setEditAreaColor(event.target.value)}
+                          disabled={busyAreaId === area.id}
+                        />
+                      </label>
+                      <label className="field">
+                        <span>Weight</span>
+                        <input
+                          className="list-row"
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={editAreaWeight}
+                          onChange={(event) => setEditAreaWeight(event.target.value)}
+                          disabled={busyAreaId === area.id}
+                        />
+                      </label>
+                    </div>
+                    <div className="row-inline">
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void saveLifeAreaEdit(area.id)}
+                        disabled={busyAreaId === area.id}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => setEditingAreaId(null)}
+                        disabled={busyAreaId === area.id}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
-                  <p>Weight: {area.weight}%</p>
-                </div>
+                ) : (
+                  <>
+                    <div>
+                      <div className="row-inline">
+                        <span className="dot" style={{ backgroundColor: area.color }} />
+                        <strong>{area.name}</strong>
+                      </div>
+                      <p>Weight: {area.weight}%</p>
+                    </div>
+                    <div className="row-inline">
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => startLifeAreaEdit(area)}
+                        disabled={busyAreaId === area.id}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void deleteLifeArea(area.id)}
+                        disabled={busyAreaId === area.id}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))
           )}
@@ -390,16 +622,129 @@ export default function JournalPage() {
               const linkedAreas = entry.life_areas ?? entry.lifeAreas ?? [];
               return (
                 <li key={entry.id} className="list-row">
-                  <div>
-                    <strong>{entry.title}</strong>
-                    <p>
-                      {entry.entry_date?.slice(0, 10)} | mood: {formatMood(entry.mood)}
-                    </p>
-                    <p>{entry.body.slice(0, 140)}</p>
-                    {linkedAreas.length > 0 ? (
-                      <p>Areas: {linkedAreas.map((area) => area.name).join(", ")}</p>
-                    ) : null}
-                  </div>
+                  {editingEntryId === entry.id ? (
+                    <div className="form-grid">
+                      <label className="field">
+                        <span>Title</span>
+                        <input
+                          className="list-row"
+                          type="text"
+                          value={editEntryTitle}
+                          onChange={(event) => setEditEntryTitle(event.target.value)}
+                          disabled={busyEntryId === entry.id}
+                        />
+                      </label>
+                      <label className="field">
+                        <span>Reflection</span>
+                        <textarea
+                          className="list-row"
+                          rows={4}
+                          value={editEntryBody}
+                          onChange={(event) => setEditEntryBody(event.target.value)}
+                          disabled={busyEntryId === entry.id}
+                        />
+                      </label>
+                      <div className="row-inline">
+                        <label className="field">
+                          <span>Mood</span>
+                          <select
+                            className="list-row"
+                            value={editEntryMood}
+                            onChange={(event) =>
+                              setEditEntryMood(event.target.value as "low" | "neutral" | "good" | "great")
+                            }
+                            disabled={busyEntryId === entry.id}
+                          >
+                            <option value="low">Low</option>
+                            <option value="neutral">Neutral</option>
+                            <option value="good">Good</option>
+                            <option value="great">Great</option>
+                          </select>
+                        </label>
+                        <label className="field">
+                          <span>Entry date</span>
+                          <input
+                            className="list-row"
+                            type="date"
+                            value={editEntryDate}
+                            onChange={(event) => setEditEntryDate(event.target.value)}
+                            disabled={busyEntryId === entry.id}
+                          />
+                        </label>
+                      </div>
+                      <div className="field">
+                        <span>Life areas</span>
+                        <div className="row-inline">
+                          {lifeAreas.map((area) => (
+                            <label key={`edit-${entry.id}-${area.id}`} className="pill-link">
+                              <input
+                                type="checkbox"
+                                checked={editEntryLifeAreaIds.includes(area.id)}
+                                onChange={() =>
+                                  setEditEntryLifeAreaIds((current) =>
+                                    current.includes(area.id)
+                                      ? current.filter((id) => id !== area.id)
+                                      : [...current, area.id]
+                                  )
+                                }
+                                disabled={busyEntryId === entry.id}
+                              />{" "}
+                              {area.name}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="row-inline">
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void saveEntryEdit(entry.id)}
+                          disabled={busyEntryId === entry.id}
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => setEditingEntryId(null)}
+                          disabled={busyEntryId === entry.id}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <strong>{entry.title}</strong>
+                        <p>
+                          {entry.entry_date?.slice(0, 10)} | mood: {formatMood(entry.mood)}
+                        </p>
+                        <p>{entry.body.slice(0, 140)}</p>
+                        {linkedAreas.length > 0 ? (
+                          <p>Areas: {linkedAreas.map((area) => area.name).join(", ")}</p>
+                        ) : null}
+                      </div>
+                      <div className="row-inline">
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => startEntryEdit(entry)}
+                          disabled={busyEntryId === entry.id}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void deleteEntry(entry.id)}
+                          disabled={busyEntryId === entry.id}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </li>
               );
             })

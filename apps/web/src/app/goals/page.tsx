@@ -59,6 +59,11 @@ export default function GoalsPage() {
   const [newGoalTargetDate, setNewGoalTargetDate] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
+  const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
+  const [editGoalTitle, setEditGoalTitle] = useState("");
+  const [editGoalTargetDate, setEditGoalTargetDate] = useState("");
+  const [editGoalStatus, setEditGoalStatus] = useState<GoalItem["status"]>("active");
+  const [busyGoalId, setBusyGoalId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("Create a goal first, then attach targets in the Targets module.");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -136,6 +141,73 @@ export default function GoalsPage() {
     }
   }
 
+  function startGoalEdit(goal: GoalItem) {
+    setEditingGoalId(goal.id);
+    setEditGoalTitle(goal.title);
+    setEditGoalTargetDate(goal.target_date ? goal.target_date.slice(0, 10) : "");
+    setEditGoalStatus(goal.status);
+  }
+
+  async function saveGoalEdit(goalId: string) {
+    if (!editGoalTitle.trim()) {
+      setErrorMessage("Goal title is required.");
+      return;
+    }
+
+    setBusyGoalId(goalId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/goals/${goalId}`, {
+        method: "PATCH",
+        body: {
+          title: editGoalTitle.trim(),
+          status: editGoalStatus,
+          target_date: editGoalTargetDate || null,
+        },
+      });
+      setEditingGoalId(null);
+      await loadData();
+      setFeedback("Goal updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyGoalId(null);
+    }
+  }
+
+  async function deleteGoal(goalId: string) {
+    if (!window.confirm("Delete this goal?")) {
+      return;
+    }
+
+    setBusyGoalId(goalId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/goals/${goalId}`, {
+        method: "DELETE",
+      });
+      if (editingGoalId === goalId) {
+        setEditingGoalId(null);
+      }
+      await loadData();
+      setFeedback("Goal deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyGoalId(null);
+    }
+  }
+
   return (
     <WorkspaceShell
       title="Goals"
@@ -192,14 +264,93 @@ export default function GoalsPage() {
           ) : (
             goals.map((goal) => (
               <li className="list-row" key={goal.id}>
-                <div>
-                  <strong>{goal.title}</strong>
-                  <p>
-                    status: {goal.status}
-                    {goal.target_date ? ` | target ${goal.target_date.slice(0, 10)}` : ""}
-                  </p>
-                </div>
-                <span className="pill">{goal.status}</span>
+                {editingGoalId === goal.id ? (
+                  <div className="form-grid">
+                    <label className="field">
+                      <span>Title</span>
+                      <input
+                        className="list-row"
+                        type="text"
+                        value={editGoalTitle}
+                        onChange={(event) => setEditGoalTitle(event.target.value)}
+                        disabled={busyGoalId === goal.id}
+                      />
+                    </label>
+                    <div className="row-inline">
+                      <label className="field">
+                        <span>Status</span>
+                        <select
+                          className="list-row"
+                          value={editGoalStatus}
+                          onChange={(event) => setEditGoalStatus(event.target.value as GoalItem["status"])}
+                          disabled={busyGoalId === goal.id}
+                        >
+                          <option value="active">Active</option>
+                          <option value="paused">Paused</option>
+                          <option value="completed">Completed</option>
+                          <option value="archived">Archived</option>
+                        </select>
+                      </label>
+                      <label className="field">
+                        <span>Target date</span>
+                        <input
+                          className="list-row"
+                          type="date"
+                          value={editGoalTargetDate}
+                          onChange={(event) => setEditGoalTargetDate(event.target.value)}
+                          disabled={busyGoalId === goal.id}
+                        />
+                      </label>
+                    </div>
+                    <div className="row-inline">
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void saveGoalEdit(goal.id)}
+                        disabled={busyGoalId === goal.id}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => setEditingGoalId(null)}
+                        disabled={busyGoalId === goal.id}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <strong>{goal.title}</strong>
+                      <p>
+                        status: {goal.status}
+                        {goal.target_date ? ` | target ${goal.target_date.slice(0, 10)}` : ""}
+                      </p>
+                    </div>
+                    <div className="row-inline">
+                      <span className="pill">{goal.status}</span>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => startGoalEdit(goal)}
+                        disabled={busyGoalId === goal.id}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void deleteGoal(goal.id)}
+                        disabled={busyGoalId === goal.id}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))
           )}

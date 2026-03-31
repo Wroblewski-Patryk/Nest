@@ -66,6 +66,10 @@ export default function RoutinesPage() {
   const [newRoutineStepDuration, setNewRoutineStepDuration] = useState("15");
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
+  const [editingRoutineId, setEditingRoutineId] = useState<string | null>(null);
+  const [editRoutineTitle, setEditRoutineTitle] = useState("");
+  const [editRoutineIsActive, setEditRoutineIsActive] = useState(true);
+  const [busyRoutineId, setBusyRoutineId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("Add first routine with one step and expand later.");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -155,6 +159,93 @@ export default function RoutinesPage() {
     }
   }
 
+  function startRoutineEdit(routine: RoutineItem) {
+    setEditingRoutineId(routine.id);
+    setEditRoutineTitle(routine.title);
+    setEditRoutineIsActive(routine.is_active);
+  }
+
+  async function saveRoutineEdit(routineId: string) {
+    if (!editRoutineTitle.trim()) {
+      setErrorMessage("Routine title is required.");
+      return;
+    }
+
+    setBusyRoutineId(routineId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/routines/${routineId}`, {
+        method: "PATCH",
+        body: {
+          title: editRoutineTitle.trim(),
+          is_active: editRoutineIsActive,
+        },
+      });
+      setEditingRoutineId(null);
+      await loadData();
+      setFeedback("Routine updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyRoutineId(null);
+    }
+  }
+
+  async function toggleRoutineActive(routine: RoutineItem) {
+    setBusyRoutineId(routine.id);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/routines/${routine.id}`, {
+        method: "PATCH",
+        body: { is_active: !routine.is_active },
+      });
+      await loadData();
+      setFeedback(routine.is_active ? "Routine paused." : "Routine reactivated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyRoutineId(null);
+    }
+  }
+
+  async function deleteRoutine(routineId: string) {
+    if (!window.confirm("Delete this routine?")) {
+      return;
+    }
+
+    setBusyRoutineId(routineId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/routines/${routineId}`, {
+        method: "DELETE",
+      });
+      if (editingRoutineId === routineId) {
+        setEditingRoutineId(null);
+      }
+      await loadData();
+      setFeedback("Routine deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyRoutineId(null);
+    }
+  }
+
   const avgSteps = useMemo(() => {
     if (routines.length === 0) {
       return 0;
@@ -229,13 +320,83 @@ export default function RoutinesPage() {
           ) : (
             routines.map((routine) => (
               <li className="list-row" key={routine.id}>
-                <div>
-                  <strong>{routine.title}</strong>
-                  <p>{routine.steps.length} steps configured</p>
-                </div>
-                <span className={`pill ${routine.is_active ? "state-success" : ""}`}>
-                  {routine.is_active ? "active" : "inactive"}
-                </span>
+                {editingRoutineId === routine.id ? (
+                  <div className="form-grid">
+                    <label className="field">
+                      <span>Title</span>
+                      <input
+                        className="list-row"
+                        type="text"
+                        value={editRoutineTitle}
+                        onChange={(event) => setEditRoutineTitle(event.target.value)}
+                        disabled={busyRoutineId === routine.id}
+                      />
+                    </label>
+                    <label className="field">
+                      <span>Active</span>
+                      <input
+                        type="checkbox"
+                        checked={editRoutineIsActive}
+                        onChange={(event) => setEditRoutineIsActive(event.target.checked)}
+                        disabled={busyRoutineId === routine.id}
+                      />
+                    </label>
+                    <div className="row-inline">
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void saveRoutineEdit(routine.id)}
+                        disabled={busyRoutineId === routine.id}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => setEditingRoutineId(null)}
+                        disabled={busyRoutineId === routine.id}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <strong>{routine.title}</strong>
+                      <p>{routine.steps.length} steps configured</p>
+                    </div>
+                    <div className="row-inline">
+                      <span className={`pill ${routine.is_active ? "state-success" : ""}`}>
+                        {routine.is_active ? "active" : "inactive"}
+                      </span>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => startRoutineEdit(routine)}
+                        disabled={busyRoutineId === routine.id}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void toggleRoutineActive(routine)}
+                        disabled={busyRoutineId === routine.id}
+                      >
+                        {routine.is_active ? "Pause" : "Activate"}
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void deleteRoutine(routine.id)}
+                        disabled={busyRoutineId === routine.id}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))
           )}

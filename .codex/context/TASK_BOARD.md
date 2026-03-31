@@ -1100,6 +1100,28 @@ Last updated: 2026-04-01
       `php artisan test --filter=AuthApiTest`.
   - Done on: 2026-04-01
 
+- [x] NEST-175 Deliver full CRUD flows for goals/habits/routines/targets/journal
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-174
+  - Done when:
+    - each listed module supports create/read/update/delete from GUI,
+    - edit and delete actions are exposed inline in module lists,
+    - routines and habits include practical active/pause update controls,
+    - journal supports editing/deleting both entries and life areas.
+  - Notes:
+    - Added full edit/delete flows in:
+      `apps/web/src/app/goals/page.tsx`,
+      `apps/web/src/app/habits/page.tsx`,
+      `apps/web/src/app/routines/page.tsx`,
+      `apps/web/src/app/targets/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

@@ -19,6 +19,7 @@ type TargetItem = {
   value_target: number;
   value_current: number;
   unit: string | null;
+  due_date: string | null;
   status: "active" | "paused" | "completed" | "archived";
 };
 
@@ -76,6 +77,15 @@ export default function TargetsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [isCreatingGoal, setIsCreatingGoal] = useState(false);
+  const [editingTargetId, setEditingTargetId] = useState<string | null>(null);
+  const [editTargetTitle, setEditTargetTitle] = useState("");
+  const [editTargetMetricType, setEditTargetMetricType] = useState("count");
+  const [editTargetValueTarget, setEditTargetValueTarget] = useState("1");
+  const [editTargetValueCurrent, setEditTargetValueCurrent] = useState("0");
+  const [editTargetUnit, setEditTargetUnit] = useState("items");
+  const [editTargetDueDate, setEditTargetDueDate] = useState("");
+  const [editTargetStatus, setEditTargetStatus] = useState<TargetItem["status"]>("active");
+  const [busyTargetId, setBusyTargetId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("Create target checkpoints linked to a goal.");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -204,6 +214,81 @@ export default function TargetsPage() {
     }
   }
 
+  function startTargetEdit(target: TargetItem) {
+    setEditingTargetId(target.id);
+    setEditTargetTitle(target.title);
+    setEditTargetMetricType(target.metric_type);
+    setEditTargetValueTarget(String(target.value_target));
+    setEditTargetValueCurrent(String(target.value_current));
+    setEditTargetUnit(target.unit ?? "");
+    setEditTargetDueDate(target.due_date ? target.due_date.slice(0, 10) : "");
+    setEditTargetStatus(target.status);
+  }
+
+  async function saveTargetEdit(targetId: string) {
+    if (!editTargetTitle.trim()) {
+      setErrorMessage("Target title is required.");
+      return;
+    }
+
+    setBusyTargetId(targetId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/targets/${targetId}`, {
+        method: "PATCH",
+        body: {
+          title: editTargetTitle.trim(),
+          metric_type: editTargetMetricType,
+          value_target: Number(editTargetValueTarget) || 0,
+          value_current: Number(editTargetValueCurrent) || 0,
+          unit: editTargetUnit.trim() || null,
+          due_date: editTargetDueDate || null,
+          status: editTargetStatus,
+        },
+      });
+      setEditingTargetId(null);
+      await loadData();
+      setFeedback("Target updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyTargetId(null);
+    }
+  }
+
+  async function deleteTarget(targetId: string) {
+    if (!window.confirm("Delete this target?")) {
+      return;
+    }
+
+    setBusyTargetId(targetId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/targets/${targetId}`, {
+        method: "DELETE",
+      });
+      if (editingTargetId === targetId) {
+        setEditingTargetId(null);
+      }
+      await loadData();
+      setFeedback("Target deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyTargetId(null);
+    }
+  }
+
   return (
     <WorkspaceShell
       title="Targets"
@@ -316,13 +401,135 @@ export default function TargetsPage() {
           ) : (
             targets.map((target) => (
               <li className="list-row" key={target.id}>
-                <div>
-                  <strong>{target.title}</strong>
-                  <p>
-                    {target.value_current}/{target.value_target} {target.unit ?? ""}
-                  </p>
-                </div>
-                <span className="pill">{target.status}</span>
+                {editingTargetId === target.id ? (
+                  <div className="form-grid">
+                    <label className="field">
+                      <span>Title</span>
+                      <input
+                        className="list-row"
+                        type="text"
+                        value={editTargetTitle}
+                        onChange={(event) => setEditTargetTitle(event.target.value)}
+                        disabled={busyTargetId === target.id}
+                      />
+                    </label>
+                    <div className="row-inline">
+                      <label className="field">
+                        <span>Metric type</span>
+                        <input
+                          className="list-row"
+                          type="text"
+                          value={editTargetMetricType}
+                          onChange={(event) => setEditTargetMetricType(event.target.value)}
+                          disabled={busyTargetId === target.id}
+                        />
+                      </label>
+                      <label className="field">
+                        <span>Status</span>
+                        <select
+                          className="list-row"
+                          value={editTargetStatus}
+                          onChange={(event) => setEditTargetStatus(event.target.value as TargetItem["status"])}
+                          disabled={busyTargetId === target.id}
+                        >
+                          <option value="active">Active</option>
+                          <option value="paused">Paused</option>
+                          <option value="completed">Completed</option>
+                          <option value="archived">Archived</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div className="row-inline">
+                      <label className="field">
+                        <span>Current</span>
+                        <input
+                          className="list-row"
+                          type="number"
+                          value={editTargetValueCurrent}
+                          onChange={(event) => setEditTargetValueCurrent(event.target.value)}
+                          disabled={busyTargetId === target.id}
+                        />
+                      </label>
+                      <label className="field">
+                        <span>Target</span>
+                        <input
+                          className="list-row"
+                          type="number"
+                          value={editTargetValueTarget}
+                          onChange={(event) => setEditTargetValueTarget(event.target.value)}
+                          disabled={busyTargetId === target.id}
+                        />
+                      </label>
+                      <label className="field">
+                        <span>Unit</span>
+                        <input
+                          className="list-row"
+                          type="text"
+                          value={editTargetUnit}
+                          onChange={(event) => setEditTargetUnit(event.target.value)}
+                          disabled={busyTargetId === target.id}
+                        />
+                      </label>
+                      <label className="field">
+                        <span>Due date</span>
+                        <input
+                          className="list-row"
+                          type="date"
+                          value={editTargetDueDate}
+                          onChange={(event) => setEditTargetDueDate(event.target.value)}
+                          disabled={busyTargetId === target.id}
+                        />
+                      </label>
+                    </div>
+                    <div className="row-inline">
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void saveTargetEdit(target.id)}
+                        disabled={busyTargetId === target.id}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => setEditingTargetId(null)}
+                        disabled={busyTargetId === target.id}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <strong>{target.title}</strong>
+                      <p>
+                        {target.value_current}/{target.value_target} {target.unit ?? ""}
+                        {target.due_date ? ` | due ${target.due_date.slice(0, 10)}` : ""}
+                      </p>
+                    </div>
+                    <div className="row-inline">
+                      <span className="pill">{target.status}</span>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => startTargetEdit(target)}
+                        disabled={busyTargetId === target.id}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void deleteTarget(target.id)}
+                        disabled={busyTargetId === target.id}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))
           )}

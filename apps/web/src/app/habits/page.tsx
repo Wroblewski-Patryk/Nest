@@ -61,6 +61,12 @@ export default function HabitsPage() {
   const [newHabitCadence, setNewHabitCadence] = useState<"daily" | "weekly">("daily");
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
+  const [editingHabitId, setEditingHabitId] = useState<string | null>(null);
+  const [editHabitTitle, setEditHabitTitle] = useState("");
+  const [editHabitType, setEditHabitType] = useState<HabitItem["type"]>("boolean");
+  const [editHabitCadence, setEditHabitCadence] = useState<"daily" | "weekly">("daily");
+  const [editHabitIsActive, setEditHabitIsActive] = useState(true);
+  const [busyHabitId, setBusyHabitId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("Add your first habit to start consistency tracking.");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -140,6 +146,104 @@ export default function HabitsPage() {
     }
   }
 
+  function startHabitEdit(habit: HabitItem) {
+    setEditingHabitId(habit.id);
+    setEditHabitTitle(habit.title);
+    setEditHabitType(habit.type);
+    const cadenceType: "daily" | "weekly" =
+      typeof habit.cadence === "object" &&
+      habit.cadence !== null &&
+      "type" in habit.cadence &&
+      (habit.cadence as { type?: unknown }).type === "weekly"
+        ? "weekly"
+        : "daily";
+    setEditHabitCadence(cadenceType);
+    setEditHabitIsActive(habit.is_active);
+  }
+
+  async function saveHabitEdit(habitId: string) {
+    if (!editHabitTitle.trim()) {
+      setErrorMessage("Habit title is required.");
+      return;
+    }
+
+    setBusyHabitId(habitId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/habits/${habitId}`, {
+        method: "PATCH",
+        body: {
+          title: editHabitTitle.trim(),
+          type: editHabitType,
+          cadence: { type: editHabitCadence },
+          is_active: editHabitIsActive,
+        },
+      });
+      setEditingHabitId(null);
+      await loadData();
+      setFeedback("Habit updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyHabitId(null);
+    }
+  }
+
+  async function toggleHabitActive(habit: HabitItem) {
+    setBusyHabitId(habit.id);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/habits/${habit.id}`, {
+        method: "PATCH",
+        body: { is_active: !habit.is_active },
+      });
+      await loadData();
+      setFeedback(habit.is_active ? "Habit paused." : "Habit reactivated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyHabitId(null);
+    }
+  }
+
+  async function deleteHabit(habitId: string) {
+    if (!window.confirm("Delete this habit?")) {
+      return;
+    }
+
+    setBusyHabitId(habitId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/habits/${habitId}`, {
+        method: "DELETE",
+      });
+      if (editingHabitId === habitId) {
+        setEditingHabitId(null);
+      }
+      await loadData();
+      setFeedback("Habit deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyHabitId(null);
+    }
+  }
+
   const activeHabits = useMemo(() => habits.filter((habit) => habit.is_active).length, [habits]);
 
   return (
@@ -207,15 +311,112 @@ export default function HabitsPage() {
           ) : (
             habits.map((habit) => (
               <li className="list-row" key={habit.id}>
-                <div>
-                  <strong>{habit.title}</strong>
-                  <p>
-                    {habit.type} | cadence: {String(habit.cadence?.type ?? "custom")}
-                  </p>
-                </div>
-                <span className={`pill ${habit.is_active ? "state-success" : ""}`}>
-                  {habit.is_active ? "active" : "inactive"}
-                </span>
+                {editingHabitId === habit.id ? (
+                  <div className="form-grid">
+                    <label className="field">
+                      <span>Title</span>
+                      <input
+                        className="list-row"
+                        type="text"
+                        value={editHabitTitle}
+                        onChange={(event) => setEditHabitTitle(event.target.value)}
+                        disabled={busyHabitId === habit.id}
+                      />
+                    </label>
+                    <div className="row-inline">
+                      <label className="field">
+                        <span>Type</span>
+                        <select
+                          className="list-row"
+                          value={editHabitType}
+                          onChange={(event) => setEditHabitType(event.target.value as HabitItem["type"])}
+                          disabled={busyHabitId === habit.id}
+                        >
+                          <option value="boolean">Boolean</option>
+                          <option value="numeric">Numeric</option>
+                          <option value="duration">Duration</option>
+                        </select>
+                      </label>
+                      <label className="field">
+                        <span>Cadence</span>
+                        <select
+                          className="list-row"
+                          value={editHabitCadence}
+                          onChange={(event) => setEditHabitCadence(event.target.value as "daily" | "weekly")}
+                          disabled={busyHabitId === habit.id}
+                        >
+                          <option value="daily">Daily</option>
+                          <option value="weekly">Weekly</option>
+                        </select>
+                      </label>
+                    </div>
+                    <label className="field">
+                      <span>Active</span>
+                      <input
+                        type="checkbox"
+                        checked={editHabitIsActive}
+                        onChange={(event) => setEditHabitIsActive(event.target.checked)}
+                        disabled={busyHabitId === habit.id}
+                      />
+                    </label>
+                    <div className="row-inline">
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void saveHabitEdit(habit.id)}
+                        disabled={busyHabitId === habit.id}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => setEditingHabitId(null)}
+                        disabled={busyHabitId === habit.id}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <strong>{habit.title}</strong>
+                      <p>
+                        {habit.type} | cadence: {String(habit.cadence?.type ?? "custom")}
+                      </p>
+                    </div>
+                    <div className="row-inline">
+                      <span className={`pill ${habit.is_active ? "state-success" : ""}`}>
+                        {habit.is_active ? "active" : "inactive"}
+                      </span>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => startHabitEdit(habit)}
+                        disabled={busyHabitId === habit.id}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void toggleHabitActive(habit)}
+                        disabled={busyHabitId === habit.id}
+                      >
+                        {habit.is_active ? "Pause" : "Activate"}
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void deleteHabit(habit.id)}
+                        disabled={busyHabitId === habit.id}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))
           )}
