@@ -154,6 +154,7 @@ export function createNestApiClient(options) {
         method: "POST",
         body: payload,
       }),
+    getAiContextGraph: (query = {}) => request("/ai/context-graph", { query }),
     getCollaborationSpaces: () => request("/collaboration/spaces"),
     createCollaborationSpace: (payload) =>
       request("/collaboration/spaces", {

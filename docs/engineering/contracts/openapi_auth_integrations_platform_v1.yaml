@@ -234,6 +234,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+  /v1/ai/context-graph:
+    get:
+      tags: [AI]
+      summary: Build deterministic AI context graph for retrieval
+      operationId: getAiContextGraph
+      parameters:
+        - in: query
+          name: window_days
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 60
+        - in: query
+          name: entity_limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+        - in: query
+          name: as_of
+          required: false
+          description: Optional fixed snapshot anchor for deterministic replay.
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Context graph payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiContextGraphResponse'
+
   /v1/ai/feedback:
     post:
       tags: [AI]
@@ -1483,6 +1518,203 @@ components:
               type: integer
             per_page:
               type: integer
+
+    AiContextGraphResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [schema_version, snapshot, privacy, signals, entities]
+          properties:
+            schema_version:
+              type: string
+              example: ai-context.v1
+            snapshot:
+              type: object
+              required: [as_of, window_days, window_start, window_end, fingerprint]
+              properties:
+                as_of:
+                  type: string
+                  format: date-time
+                window_days:
+                  type: integer
+                window_start:
+                  type: string
+                  format: date-time
+                window_end:
+                  type: string
+                  format: date-time
+                fingerprint:
+                  type: string
+                  description: Deterministic hash of the context payload.
+            privacy:
+              type: object
+              required: [redaction_policy_version, mode, redacted_fields]
+              properties:
+                redaction_policy_version:
+                  type: string
+                mode:
+                  type: string
+                  enum: [strict]
+                redacted_fields:
+                  type: object
+                  additionalProperties:
+                    type: array
+                    items:
+                      type: string
+            signals:
+              type: object
+              additionalProperties:
+                type: object
+                additionalProperties: true
+            entities:
+              type: object
+              required: [tasks, calendar_events, habits, goals, journal_entries]
+              properties:
+                tasks:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AiContextTaskEntity'
+                calendar_events:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AiContextCalendarEventEntity'
+                habits:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AiContextHabitEntity'
+                goals:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AiContextGoalEntity'
+                journal_entries:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AiContextJournalEntryEntity'
+
+    AiContextTaskEntity:
+      type: object
+      required: [id, title, status, priority, has_description]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+        priority:
+          type: string
+        due_date:
+          type: [string, 'null']
+          format: date
+        starts_at:
+          type: [string, 'null']
+          format: date-time
+        assignee_user_id:
+          type: [string, 'null']
+          format: uuid
+        reminder_owner_user_id:
+          type: [string, 'null']
+          format: uuid
+        has_description:
+          type: boolean
+
+    AiContextCalendarEventEntity:
+      type: object
+      required: [id, title, timezone, all_day, has_description]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        start_at:
+          type: [string, 'null']
+          format: date-time
+        end_at:
+          type: [string, 'null']
+          format: date-time
+        timezone:
+          type: string
+        all_day:
+          type: boolean
+        linked_entity_type:
+          type: [string, 'null']
+        linked_entity_id:
+          type: [string, 'null']
+          format: uuid
+        assignee_user_id:
+          type: [string, 'null']
+          format: uuid
+        reminder_owner_user_id:
+          type: [string, 'null']
+          format: uuid
+        has_description:
+          type: boolean
+
+    AiContextHabitEntity:
+      type: object
+      required: [id, title, type, is_active, cadence_type, window_log_count, has_description]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        type:
+          type: string
+        is_active:
+          type: boolean
+        cadence_type:
+          type: string
+        window_log_count:
+          type: integer
+        last_logged_at:
+          type: [string, 'null']
+          format: date-time
+        has_description:
+          type: boolean
+
+    AiContextGoalEntity:
+      type: object
+      required: [id, title, status, has_description]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+        target_date:
+          type: [string, 'null']
+          format: date
+        has_description:
+          type: boolean
+
+    AiContextJournalEntryEntity:
+      type: object
+      required: [id, title, life_area_ids, has_body]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        mood:
+          type: [string, 'null']
+        entry_date:
+          type: [string, 'null']
+          format: date
+        life_area_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        has_body:
+          type: boolean
 
     ErrorResponse:
       type: object

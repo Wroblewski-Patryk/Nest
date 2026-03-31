@@ -150,6 +150,92 @@ export type NotificationChannelDeliveryItem = {
   updated_at: string;
 };
 
+export type AiContextGraphTaskEntity = {
+  id: string;
+  title: string;
+  status: string;
+  priority: string;
+  due_date: string | null;
+  starts_at: string | null;
+  assignee_user_id: string | null;
+  reminder_owner_user_id: string | null;
+  has_description: boolean;
+};
+
+export type AiContextGraphCalendarEventEntity = {
+  id: string;
+  title: string;
+  start_at: string | null;
+  end_at: string | null;
+  timezone: string;
+  all_day: boolean;
+  linked_entity_type: string | null;
+  linked_entity_id: string | null;
+  assignee_user_id: string | null;
+  reminder_owner_user_id: string | null;
+  has_description: boolean;
+};
+
+export type AiContextGraphHabitEntity = {
+  id: string;
+  title: string;
+  type: string;
+  is_active: boolean;
+  cadence_type: string;
+  window_log_count: number;
+  last_logged_at: string | null;
+  has_description: boolean;
+};
+
+export type AiContextGraphGoalEntity = {
+  id: string;
+  title: string;
+  status: string;
+  target_date: string | null;
+  has_description: boolean;
+};
+
+export type AiContextGraphJournalEntryEntity = {
+  id: string;
+  title: string;
+  mood: string | null;
+  entry_date: string | null;
+  life_area_ids: string[];
+  has_body: boolean;
+};
+
+export type AiContextGraphResponse = {
+  data: {
+    schema_version: string;
+    snapshot: {
+      as_of: string;
+      window_days: number;
+      window_start: string;
+      window_end: string;
+      fingerprint: string;
+    };
+    privacy: {
+      redaction_policy_version: string;
+      mode: "strict";
+      redacted_fields: Record<string, string[]>;
+    };
+    signals: {
+      tasks: Record<string, unknown>;
+      calendar_events: Record<string, unknown>;
+      habits: Record<string, unknown>;
+      goals: Record<string, unknown>;
+      journal_entries: Record<string, unknown>;
+    };
+    entities: {
+      tasks: AiContextGraphTaskEntity[];
+      calendar_events: AiContextGraphCalendarEventEntity[];
+      habits: AiContextGraphHabitEntity[];
+      goals: AiContextGraphGoalEntity[];
+      journal_entries: AiContextGraphJournalEntryEntity[];
+    };
+  };
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLocalizationOptions(): Promise<{ data: LocalizationOptionsResponse }>;
@@ -158,6 +244,7 @@ export type NestApiClient = {
     language: SupportedLanguage;
     locale?: string | null;
   }): Promise<{ data: Record<string, unknown> }>;
+  getAiContextGraph(query?: { window_days?: number; entity_limit?: number; as_of?: string }): Promise<AiContextGraphResponse>;
   getCollaborationSpaces(): Promise<{ data: CollaborationSpaceItem[] }>;
   createCollaborationSpace(payload: { name: string }): Promise<{ data: CollaborationSpaceItem }>;
   getCollaborationSpaceMembers(spaceId: string): Promise<{ data: CollaborationSpaceMemberItem[] }>;

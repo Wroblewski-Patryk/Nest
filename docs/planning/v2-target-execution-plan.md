@@ -142,7 +142,7 @@ Execution of this plan starts after launch closure tasks are complete:
 
 ## Workstream D: AI Copilot V2 (`NEST-140..NEST-144`)
 
-- [ ] NEST-140 Build AI context graph across tasks/calendar/habits/goals/journal
+- [x] NEST-140 Build AI context graph across tasks/calendar/habits/goals/journal
   - Depends on: NEST-129
   - Done when:
     - context model unifies key entities and recent behavior signals,

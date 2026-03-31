@@ -878,14 +878,31 @@ Last updated: 2026-03-31
     - Published certification packet in:
       `docs/operations/collaboration_safety_ux_regression_certification_2026-03-31.md`.
 
-- [ ] NEST-140 Build AI context graph across key product modules
-  - Status: BACKLOG
+- [x] NEST-140 Build AI context graph across key product modules
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-129
   - Done when:
     - context model unifies tasks/calendar/habits/goals/journal signals,
     - retrieval payload is deterministic and versioned,
     - privacy/redaction rules are enforced in context assembly.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added deterministic AI context endpoint:
+      `GET /api/v1/ai/context-graph` protected by `ai.surface`.
+    - Implemented unified context builder service across
+      tasks/calendar/habits/goals/journal with stable payload fingerprinting
+      (`apps/api/app/AI/Services/AiContextGraphService.php`).
+    - Enforced explicit redaction policy for long-form sensitive fields
+      (`description`, `body`) with metadata in response payload.
+    - Added API regression coverage in:
+      `apps/api/tests/Feature/AiContextGraphApiTest.php`.
+    - Updated shared client/types + OpenAPI + module docs:
+      `packages/shared-types/src/client.js`,
+      `packages/shared-types/src/client.d.ts`,
+      `packages/shared-types/src/index.d.ts`,
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
+      `docs/modules/ai_context_graph_v2.md`.
 
 - [ ] NEST-141 Deliver conversational copilot surface (web + mobile)
   - Status: BACKLOG

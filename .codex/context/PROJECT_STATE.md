@@ -546,12 +546,17 @@ Last updated: 2026-03-31
   screen set executed with capture artifacts, deviation classification
   (`intentional|follow-up`), and attached readability/accessibility checks
   (`docs/ux/nest_157_visual_parity_pass_2026-03-31.md`)
+- `NEST-140` completed: AI context graph foundation delivered with deterministic
+  snapshot fingerprinting, cross-module context assembly
+  (tasks/calendar/habits/goals/journal), and strict redaction policy for
+  sensitive long-form fields (`docs/modules/ai_context_graph_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: complete launch-window and immediate post-launch
-  closure (`NEST-122`, `NEST-123`, `NEST-124`) while preparing V2 execution
-  gate dependencies (`NEST-128`, `NEST-129`).
+- Current execution focus: execute V2 AI wave continuation
+  (`NEST-141` onward) while launch-window/live-evidence closure tasks
+  (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`)
+  remain tracked for non-dry-run operations.
 
 ## Auth, AI, Offline, Notifications
 

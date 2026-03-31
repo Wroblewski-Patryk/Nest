@@ -31,6 +31,12 @@ operations without compromising data integrity or security.
 
 ## Phase 3 Baseline API
 
+- `GET /api/v1/ai/context-graph`
+  - deterministic, versioned retrieval payload (`ai-context.v1`) built from
+    tasks/calendar/habits/goals/journal,
+  - tenant/user scoped with explicit redaction policy for sensitive long-form
+    fields,
+  - supports fixed `as_of` snapshots for replay-stable context fingerprints.
 - `POST /api/v1/ai/weekly-plan/propose`
   - tenant/user scoped,
   - accepts explicit planning constraints,
@@ -40,6 +46,7 @@ operations without compromising data integrity or security.
   - captures user decision (`accept`, `reject`, `edit`) for recommendation
     quality tracking.
 - Detailed contract: `docs/modules/ai_weekly_planning_api.md`.
+- Context graph contract: `docs/modules/ai_context_graph_v2.md`.
 - Feedback contract: `docs/modules/ai_feedback_loop.md`.
 - Machine-readable API error envelope for tool/agent clients:
   `docs/modules/ai_tool_api_error_contract_v1.md`.
