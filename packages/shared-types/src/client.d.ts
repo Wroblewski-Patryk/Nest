@@ -97,6 +97,23 @@ export type IntegrationConnectionItem = {
   updated_at: string | null;
 };
 
+export type InAppNotificationItem = {
+  id: string;
+  event_type: string;
+  title: string;
+  body: string;
+  module: string | null;
+  entity_type: string | null;
+  entity_id: string | null;
+  deep_link: string | null;
+  payload: Record<string, unknown> | null;
+  is_read: boolean;
+  read_at: string | null;
+  snoozed_until: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLocalizationOptions(): Promise<{ data: LocalizationOptionsResponse }>;
@@ -172,6 +189,22 @@ export type NestApiClient = {
   syncCalendar(provider: "google_calendar"): Promise<{ data: Record<string, unknown> }>;
   syncJournal(provider: "obsidian"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
+  getInAppNotifications(query?: {
+    per_page?: number;
+    unread_only?: boolean;
+    include_snoozed?: boolean;
+    module?: string;
+  }): Promise<{
+    data: InAppNotificationItem[];
+    meta: { total: number; unread: number };
+    groups: Array<{ group: string; total: number; unread: number }>;
+  }>;
+  markInAppNotificationRead(notificationId: string): Promise<{ data: InAppNotificationItem }>;
+  markInAppNotificationUnread(notificationId: string): Promise<{ data: InAppNotificationItem }>;
+  snoozeInAppNotification(
+    notificationId: string,
+    payload: { snoozed_until: string }
+  ): Promise<{ data: InAppNotificationItem }>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;
   upsertIntegrationConnection(
     provider: "trello" | "google_tasks" | "todoist" | "google_calendar" | "obsidian",

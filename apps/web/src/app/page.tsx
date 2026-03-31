@@ -2,6 +2,7 @@ import Link from "next/link";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { OfflineSyncCard } from "@/components/offline-sync-card";
 import { PreAuthLanguageSelector } from "@/components/pre-auth-language-selector";
+import { NotificationCenterCard } from "@/components/notification-center-card";
 import { moduleReadiness } from "@/lib/mvp-snapshot";
 
 export default function HomePage() {
@@ -40,6 +41,10 @@ export default function HomePage() {
 
       <Panel title="Sync Options">
         <OfflineSyncCard />
+      </Panel>
+
+      <Panel title="Notification Center">
+        <NotificationCenterCard />
       </Panel>
     </WorkspaceShell>
   );

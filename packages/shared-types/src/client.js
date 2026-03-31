@@ -257,6 +257,20 @@ export function createNestApiClient(options) {
         method: "POST",
         body: { provider },
       }),
+    getInAppNotifications: (query = {}) => request("/notifications/in-app", { query }),
+    markInAppNotificationRead: (notificationId) =>
+      request(`/notifications/in-app/${notificationId}/read`, {
+        method: "POST",
+      }),
+    markInAppNotificationUnread: (notificationId) =>
+      request(`/notifications/in-app/${notificationId}/unread`, {
+        method: "POST",
+      }),
+    snoozeInAppNotification: (notificationId, payload) =>
+      request(`/notifications/in-app/${notificationId}/snooze`, {
+        method: "POST",
+        body: payload,
+      }),
     getIntegrationConnections: () => request("/integrations/connections"),
     upsertIntegrationConnection: (provider, payload) =>
       request(`/integrations/connections/${provider}`, {

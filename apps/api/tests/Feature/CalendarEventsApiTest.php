@@ -135,6 +135,19 @@ class CalendarEventsApiTest extends TestCase
 
         $this->assertContains('assigned', $actions);
         $this->assertContains('handoff', $actions);
+
+        $this->assertDatabaseHas('in_app_notifications', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $assignee->id,
+            'event_type' => 'calendar_event_assigned',
+            'module' => 'calendar',
+        ]);
+        $this->assertDatabaseHas('in_app_notifications', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $owner->id,
+            'event_type' => 'calendar_event_handoff',
+            'module' => 'calendar',
+        ]);
     }
 
     public function test_guest_cannot_access_calendar_events_routes(): void

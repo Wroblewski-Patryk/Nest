@@ -119,7 +119,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - reminder ownership and visibility are explicit,
     - timeline/history captures assignment changes.
 
-- [ ] NEST-137 Deliver in-app notification center with actionable events
+- [x] NEST-137 Deliver in-app notification center with actionable events
   - Depends on: NEST-136
   - Done when:
     - users can view grouped activity and pending actions in-app,

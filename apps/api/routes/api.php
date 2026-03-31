@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\IntegrationConflictController;
 use App\Http\Controllers\Api\IntegrationConnectionController;
 use App\Http\Controllers\Api\IntegrationSyncController;
 use App\Http\Controllers\Api\IntegrationSyncReplayController;
+use App\Http\Controllers\Api\InAppNotificationController;
 use App\Http\Controllers\Api\JournalEntryController;
 use App\Http\Controllers\Api\LifeAreaBalanceScoreController;
 use App\Http\Controllers\Api\LifeAreaController;
@@ -161,5 +162,9 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/notifications/mobile/devices', [MobilePushDeviceController::class, 'index']);
         Route::post('/notifications/mobile/devices', [MobilePushDeviceController::class, 'store']);
         Route::delete('/notifications/mobile/devices/{deviceId}', [MobilePushDeviceController::class, 'destroy']);
+        Route::get('/notifications/in-app', [InAppNotificationController::class, 'index']);
+        Route::post('/notifications/in-app/{notificationId}/read', [InAppNotificationController::class, 'markRead']);
+        Route::post('/notifications/in-app/{notificationId}/unread', [InAppNotificationController::class, 'markUnread']);
+        Route::post('/notifications/in-app/{notificationId}/snooze', [InAppNotificationController::class, 'snooze']);
     });
 });

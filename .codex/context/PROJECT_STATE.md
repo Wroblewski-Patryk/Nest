@@ -530,6 +530,10 @@ Last updated: 2026-03-31
 - `NEST-136` completed: shared planning assignment/handoff workflows delivered
   for tasks and calendar events with explicit reminder ownership and auditable
   timeline history endpoints (`docs/modules/shared_planning_assignment_handoff_reminder_ownership_v2.md`)
+- `NEST-137` completed: in-app notification center delivered across API/web/mobile
+  with grouped activity feed, read/unread/snooze actions, actionable deep-link
+  routing, and shared contract updates
+  (`docs/modules/in_app_notification_center_actionable_events_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

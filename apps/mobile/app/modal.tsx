@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
 import { Platform, ScrollView, StyleSheet } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
-import { resolveLanguage } from '@nest/shared-types';
+import { resolveLanguage, type InAppNotificationItem } from '@nest/shared-types';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
@@ -26,6 +27,47 @@ import {
 const AUTO_SYNC_INTERVAL_MS = 15000;
 const BASE_RETRY_SECONDS = 15;
 const MAX_RETRY_SECONDS = 300;
+
+type NotificationRoute =
+  | '/(tabs)'
+  | '/(tabs)/calendar'
+  | '/(tabs)/habits'
+  | '/(tabs)/goals'
+  | '/(tabs)/journal'
+  | '/(tabs)/insights'
+  | '/(tabs)/billing';
+
+function resolveMobileNotificationRoute(item: InAppNotificationItem): NotificationRoute | null {
+  const normalize = (value: string | null): NotificationRoute | null => {
+    if (value === '/tasks') return '/(tabs)';
+    if (value === '/calendar') return '/(tabs)/calendar';
+    if (value === '/habits') return '/(tabs)/habits';
+    if (value === '/goals') return '/(tabs)/goals';
+    if (value === '/journal') return '/(tabs)/journal';
+    if (value === '/insights') return '/(tabs)/insights';
+    if (value === '/billing') return '/(tabs)/billing';
+    if (
+      value === '/(tabs)' ||
+      value === '/(tabs)/calendar' ||
+      value === '/(tabs)/habits' ||
+      value === '/(tabs)/goals' ||
+      value === '/(tabs)/journal' ||
+      value === '/(tabs)/insights' ||
+      value === '/(tabs)/billing'
+    ) {
+      return value;
+    }
+
+    return null;
+  };
+
+  const fromDeepLink = normalize(item.deep_link);
+  if (fromDeepLink) {
+    return fromDeepLink;
+  }
+
+  return normalize(item.module ? `/${item.module}` : null);
+}
 
 function computeJitterSeconds(seed: string, retryCount: number): number {
   let hash = 0;
@@ -56,15 +98,88 @@ function isRetryDue(item: MobileOfflineQueueItem, nowMs: number): boolean {
 }
 
 export default function ModalScreen() {
+  const router = useRouter();
   const [selected, setSelected] = useState<'en' | 'pl'>('en');
   const [queue, setQueue] = useState<MobileOfflineQueueItem[]>([]);
   const [detail, setDetail] = useState('Queue offline changes and run manual force sync.');
+  const [notificationDetail, setNotificationDetail] = useState('Loading in-app notifications...');
+  const [notifications, setNotifications] = useState<InAppNotificationItem[]>([]);
+  const [notificationBusyId, setNotificationBusyId] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [scheduler, setScheduler] = useState<MobileOfflineSyncSchedulerState>(() =>
     loadOfflineSyncSchedulerState()
   );
 
   const autoSyncEnabled = scheduler.auto_sync_enabled;
+
+  const updateScheduler = useCallback(
+    (updater: (previous: MobileOfflineSyncSchedulerState) => MobileOfflineSyncSchedulerState) => {
+      setScheduler((previous) => {
+        const next = updater(previous);
+        saveOfflineSyncSchedulerState(next);
+        return next;
+      });
+    },
+    []
+  );
+
+  const refreshNotifications = useCallback(async () => {
+    try {
+      const response = await nestApiClient.getInAppNotifications({
+        per_page: 12,
+        include_snoozed: false,
+      });
+      setNotifications(response.data);
+      setNotificationDetail(`Loaded ${response.data.length} notifications.`);
+    } catch {
+      setNotificationDetail('Could not load notification center.');
+    }
+  }, []);
+
+  const toggleRead = useCallback(
+    async (item: InAppNotificationItem) => {
+      setNotificationBusyId(item.id);
+      try {
+        if (item.is_read) {
+          await nestApiClient.markInAppNotificationUnread(item.id);
+        } else {
+          await nestApiClient.markInAppNotificationRead(item.id);
+        }
+        await refreshNotifications();
+      } finally {
+        setNotificationBusyId(null);
+      }
+    },
+    [refreshNotifications]
+  );
+
+  const snoozeNotification = useCallback(
+    async (item: InAppNotificationItem) => {
+      setNotificationBusyId(item.id);
+      try {
+        await nestApiClient.snoozeInAppNotification(item.id, {
+          snoozed_until: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        });
+        await refreshNotifications();
+      } finally {
+        setNotificationBusyId(null);
+      }
+    },
+    [refreshNotifications]
+  );
+
+  const openNotificationContext = useCallback(
+    (item: InAppNotificationItem) => {
+      const route = resolveMobileNotificationRoute(item);
+      if (!route) {
+        setNotificationDetail('No navigation target is available for this notification.');
+        return;
+      }
+
+      router.push(route);
+    },
+    [router]
+  );
 
   useEffect(() => {
     nestApiClient
@@ -78,18 +193,8 @@ export default function ModalScreen() {
 
     setQueue(loadOfflineQueue());
     setScheduler(loadOfflineSyncSchedulerState());
-  }, []);
-
-  const updateScheduler = useCallback(
-    (updater: (previous: MobileOfflineSyncSchedulerState) => MobileOfflineSyncSchedulerState) => {
-      setScheduler((previous) => {
-        const next = updater(previous);
-        saveOfflineSyncSchedulerState(next);
-        return next;
-      });
-    },
-    []
-  );
+    void refreshNotifications();
+  }, [refreshNotifications]);
 
   const enqueue = (action: 'sync_list_tasks' | 'sync_calendar' | 'sync_journal') => {
     const duplicatePending = queue.some(
@@ -316,6 +421,44 @@ export default function ModalScreen() {
       {scheduler.stuck_detected ? (
         <Text style={styles.description}>Scheduler alert: stuck queue ({scheduler.stuck_reason ?? 'unknown'}).</Text>
       ) : null}
+
+      <Text style={styles.title}>Notification Center</Text>
+      <Text style={styles.description}>{notificationDetail}</Text>
+      {notifications.length === 0 ? (
+        <Text style={styles.description}>No pending in-app notifications.</Text>
+      ) : null}
+      {notifications.map((item) => (
+        <View key={item.id} style={styles.notificationCard}>
+          <Text style={styles.notificationTitle}>{item.title}</Text>
+          <Text style={styles.description}>{item.body}</Text>
+          <Text style={styles.description}>
+            {item.module ?? 'general'} | {item.is_read ? 'read' : 'unread'}
+          </Text>
+          <View style={styles.actionRow}>
+            <Pressable
+              style={styles.languageButton}
+              onPress={() => openNotificationContext(item)}
+              disabled={notificationBusyId === item.id}
+            >
+              <Text style={styles.languageButtonText}>Open</Text>
+            </Pressable>
+            <Pressable
+              style={styles.languageButton}
+              onPress={() => void toggleRead(item)}
+              disabled={notificationBusyId === item.id}
+            >
+              <Text style={styles.languageButtonText}>{item.is_read ? 'Mark Unread' : 'Mark Read'}</Text>
+            </Pressable>
+            <Pressable
+              style={styles.languageButton}
+              onPress={() => void snoozeNotification(item)}
+              disabled={notificationBusyId === item.id}
+            >
+              <Text style={styles.languageButtonText}>Snooze 1h</Text>
+            </Pressable>
+          </View>
+        </View>
+      ))}
       <EditScreenInfo path="app/modal.tsx" />
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
@@ -365,5 +508,19 @@ const styles = StyleSheet.create({
   languageButtonText: {
     fontSize: 13,
     fontWeight: '600',
+  },
+  notificationCard: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 8,
+    backgroundColor: '#ffffff',
+  },
+  notificationTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 4,
   },
 });

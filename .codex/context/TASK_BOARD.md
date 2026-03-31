@@ -807,14 +807,31 @@ Last updated: 2026-03-31
     - Implementation + validation summary documented in:
       `docs/modules/shared_planning_assignment_handoff_reminder_ownership_v2.md`.
 
-- [ ] NEST-137 Deliver in-app notification center with actionable events
-  - Status: BACKLOG
+- [x] NEST-137 Deliver in-app notification center with actionable events
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-136
   - Done when:
     - users can view grouped activity and pending actions in-app,
     - notification items deep-link to module context,
     - read/unread and snooze behavior is consistent across clients.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added in-app notification center data model + service/controller:
+      `in_app_notifications`, `InAppNotification`, and
+      `InAppNotificationController`.
+    - Added notification center API endpoints:
+      `GET /api/v1/notifications/in-app`,
+      `POST /api/v1/notifications/in-app/{notificationId}/read`,
+      `POST /api/v1/notifications/in-app/{notificationId}/unread`,
+      `POST /api/v1/notifications/in-app/{notificationId}/snooze`.
+    - Wired actionable event generation from assignment workflows and reminder
+      delivery paths (tasks, calendar events, mobile push reminders).
+    - Delivered web/mobile notification center UI with read/unread/snooze
+      actions and module deep-link behavior.
+    - Updated shared client/types and OpenAPI notification contract.
+    - Implementation and validation summary documented in:
+      `docs/modules/in_app_notification_center_actionable_events_v2.md`.
 
 - [ ] NEST-138 Implement notification channel matrix (push/email/in-app)
   - Status: BACKLOG

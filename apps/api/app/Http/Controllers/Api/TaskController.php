@@ -9,6 +9,7 @@ use App\Models\CollaborationSpaceMember;
 use App\Models\Task;
 use App\Models\TaskList;
 use App\Models\User;
+use App\Notifications\Services\InAppNotificationService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -70,7 +71,11 @@ class TaskController extends Controller
         ]);
     }
 
-    public function store(Request $request, AssignmentTimelineService $timeline): JsonResponse
+    public function store(
+        Request $request,
+        AssignmentTimelineService $timeline,
+        InAppNotificationService $inAppNotifications
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
@@ -125,6 +130,20 @@ class TaskController extends Controller
                 changedByUserId: $user->id,
                 note: array_key_exists('handoff_note', $payload) ? (string) ($payload['handoff_note'] ?? '') : null,
             );
+
+            $inAppNotifications->create(
+                tenantId: $user->tenant_id,
+                userId: $assigneeUserId,
+                eventType: 'task_assigned',
+                title: 'Task assigned',
+                body: "You were assigned a task: {$task->title}",
+                payload: [
+                    'module' => 'tasks',
+                    'entity_type' => 'task',
+                    'entity_id' => (string) $task->id,
+                    'deep_link' => '/tasks',
+                ],
+            );
         }
 
         if ($reminderOwnerUserId !== $assigneeUserId) {
@@ -136,6 +155,20 @@ class TaskController extends Controller
                 fromUserId: $assigneeUserId,
                 toUserId: $reminderOwnerUserId,
                 changedByUserId: $user->id,
+            );
+
+            $inAppNotifications->create(
+                tenantId: $user->tenant_id,
+                userId: $reminderOwnerUserId,
+                eventType: 'task_reminder_owner_changed',
+                title: 'Task reminder ownership updated',
+                body: "Reminder owner was set for task: {$task->title}",
+                payload: [
+                    'module' => 'tasks',
+                    'entity_type' => 'task',
+                    'entity_id' => (string) $task->id,
+                    'deep_link' => '/tasks',
+                ],
             );
         }
 
@@ -155,7 +188,12 @@ class TaskController extends Controller
         return response()->json(['data' => $task]);
     }
 
-    public function update(Request $request, string $taskId, AssignmentTimelineService $timeline): JsonResponse
+    public function update(
+        Request $request,
+        string $taskId,
+        AssignmentTimelineService $timeline,
+        InAppNotificationService $inAppNotifications
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
@@ -227,6 +265,20 @@ class TaskController extends Controller
                 changedByUserId: $user->id,
                 note: $handoffNote,
             );
+
+            $inAppNotifications->create(
+                tenantId: $user->tenant_id,
+                userId: $currentAssignee,
+                eventType: $action === 'assigned' ? 'task_assigned' : 'task_handoff',
+                title: $action === 'assigned' ? 'Task assigned' : 'Task handed off',
+                body: "You are now responsible for task: {$task->title}",
+                payload: [
+                    'module' => 'tasks',
+                    'entity_type' => 'task',
+                    'entity_id' => (string) $task->id,
+                    'deep_link' => '/tasks',
+                ],
+            );
         }
 
         if ($previousReminderOwner !== $currentReminderOwner) {
@@ -238,6 +290,20 @@ class TaskController extends Controller
                 fromUserId: $previousReminderOwner,
                 toUserId: $currentReminderOwner,
                 changedByUserId: $user->id,
+            );
+
+            $inAppNotifications->create(
+                tenantId: $user->tenant_id,
+                userId: $currentReminderOwner,
+                eventType: 'task_reminder_owner_changed',
+                title: 'Task reminder ownership updated',
+                body: "Reminder ownership changed for task: {$task->title}",
+                payload: [
+                    'module' => 'tasks',
+                    'entity_type' => 'task',
+                    'entity_id' => (string) $task->id,
+                    'deep_link' => '/tasks',
+                ],
             );
         }
 

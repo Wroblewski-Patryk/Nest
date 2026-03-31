@@ -66,6 +66,16 @@ class MobilePushReminderCommandTest extends TestCase
             'notification_type' => 'calendar_upcoming',
             'status' => 'sent',
         ]);
+        $this->assertDatabaseHas('in_app_notifications', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'event_type' => 'task_due_today',
+        ]);
+        $this->assertDatabaseHas('in_app_notifications', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'event_type' => 'calendar_upcoming',
+        ]);
 
         $metrics = app(MetricCounter::class);
         $this->assertSame(2, $metrics->getCurrentCount('notifications.push.sent'));
@@ -133,6 +143,16 @@ class MobilePushReminderCommandTest extends TestCase
             'user_id' => $teammate->id,
             'notification_type' => 'calendar_upcoming',
             'status' => 'sent',
+        ]);
+        $this->assertDatabaseHas('in_app_notifications', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $teammate->id,
+            'event_type' => 'task_due_today',
+        ]);
+        $this->assertDatabaseHas('in_app_notifications', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $teammate->id,
+            'event_type' => 'calendar_upcoming',
         ]);
     }
 }

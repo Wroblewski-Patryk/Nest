@@ -9,6 +9,7 @@ use App\Models\Goal;
 use App\Models\Routine;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\Services\InAppNotificationService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -53,7 +54,11 @@ class CalendarEventController extends Controller
         ]);
     }
 
-    public function store(Request $request, AssignmentTimelineService $timeline): JsonResponse
+    public function store(
+        Request $request,
+        AssignmentTimelineService $timeline,
+        InAppNotificationService $inAppNotifications
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
@@ -114,6 +119,20 @@ class CalendarEventController extends Controller
                 changedByUserId: $user->id,
                 note: array_key_exists('handoff_note', $payload) ? (string) ($payload['handoff_note'] ?? '') : null,
             );
+
+            $inAppNotifications->create(
+                tenantId: $user->tenant_id,
+                userId: $assigneeUserId,
+                eventType: 'calendar_event_assigned',
+                title: 'Calendar event assigned',
+                body: "You were assigned an event: {$event->title}",
+                payload: [
+                    'module' => 'calendar',
+                    'entity_type' => 'calendar_event',
+                    'entity_id' => (string) $event->id,
+                    'deep_link' => '/calendar',
+                ],
+            );
         }
 
         if ($reminderOwnerUserId !== $assigneeUserId) {
@@ -125,6 +144,20 @@ class CalendarEventController extends Controller
                 fromUserId: $assigneeUserId,
                 toUserId: $reminderOwnerUserId,
                 changedByUserId: $user->id,
+            );
+
+            $inAppNotifications->create(
+                tenantId: $user->tenant_id,
+                userId: $reminderOwnerUserId,
+                eventType: 'calendar_reminder_owner_changed',
+                title: 'Calendar reminder ownership updated',
+                body: "Reminder owner was set for event: {$event->title}",
+                payload: [
+                    'module' => 'calendar',
+                    'entity_type' => 'calendar_event',
+                    'entity_id' => (string) $event->id,
+                    'deep_link' => '/calendar',
+                ],
             );
         }
 
@@ -141,7 +174,12 @@ class CalendarEventController extends Controller
         return response()->json(['data' => $event]);
     }
 
-    public function update(Request $request, string $eventId, AssignmentTimelineService $timeline): JsonResponse
+    public function update(
+        Request $request,
+        string $eventId,
+        AssignmentTimelineService $timeline,
+        InAppNotificationService $inAppNotifications
+    ): JsonResponse
     {
         /** @var User $user */
         $user = $request->user();
@@ -220,6 +258,20 @@ class CalendarEventController extends Controller
                 changedByUserId: $user->id,
                 note: $handoffNote,
             );
+
+            $inAppNotifications->create(
+                tenantId: $user->tenant_id,
+                userId: $currentAssignee,
+                eventType: $action === 'assigned' ? 'calendar_event_assigned' : 'calendar_event_handoff',
+                title: $action === 'assigned' ? 'Calendar event assigned' : 'Calendar event handed off',
+                body: "You are now responsible for event: {$event->title}",
+                payload: [
+                    'module' => 'calendar',
+                    'entity_type' => 'calendar_event',
+                    'entity_id' => (string) $event->id,
+                    'deep_link' => '/calendar',
+                ],
+            );
         }
 
         if ($previousReminderOwner !== $currentReminderOwner) {
@@ -231,6 +283,20 @@ class CalendarEventController extends Controller
                 fromUserId: $previousReminderOwner,
                 toUserId: $currentReminderOwner,
                 changedByUserId: $user->id,
+            );
+
+            $inAppNotifications->create(
+                tenantId: $user->tenant_id,
+                userId: $currentReminderOwner,
+                eventType: 'calendar_reminder_owner_changed',
+                title: 'Calendar reminder ownership updated',
+                body: "Reminder ownership changed for event: {$event->title}",
+                payload: [
+                    'module' => 'calendar',
+                    'entity_type' => 'calendar_event',
+                    'entity_id' => (string) $event->id,
+                    'deep_link' => '/calendar',
+                ],
             );
         }
 

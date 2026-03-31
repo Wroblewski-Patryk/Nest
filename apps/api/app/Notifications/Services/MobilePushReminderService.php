@@ -15,6 +15,7 @@ class MobilePushReminderService
     public function __construct(
         private readonly MobilePushGateway $gateway,
         private readonly MetricCounter $metrics,
+        private readonly InAppNotificationService $inAppNotifications,
     ) {}
 
     /**
@@ -64,6 +65,28 @@ class MobilePushReminderService
                 if ($isSent) {
                     $sent++;
                     $this->metrics->increment('notifications.push.sent');
+
+                    $entityType = isset($reminder['payload']['task_id'])
+                        ? 'task'
+                        : (isset($reminder['payload']['event_id']) ? 'calendar_event' : null);
+                    $entityId = isset($reminder['payload']['task_id'])
+                        ? (string) $reminder['payload']['task_id']
+                        : (isset($reminder['payload']['event_id']) ? (string) $reminder['payload']['event_id'] : null);
+
+                    $this->inAppNotifications->create(
+                        tenantId: (string) $device->tenant_id,
+                        userId: (string) $device->user_id,
+                        eventType: (string) $reminder['notification_type'],
+                        title: (string) $reminder['title'],
+                        body: (string) $reminder['body'],
+                        payload: [
+                            'module' => isset($reminder['payload']['module']) ? (string) $reminder['payload']['module'] : null,
+                            'entity_type' => $entityType,
+                            'entity_id' => $entityId,
+                            'deep_link' => isset($reminder['payload']['module']) ? '/'.(string) $reminder['payload']['module'] : null,
+                            ...$reminder['payload'],
+                        ],
+                    );
                 } else {
                     $failed++;
                     $this->metrics->increment('notifications.push.failed');

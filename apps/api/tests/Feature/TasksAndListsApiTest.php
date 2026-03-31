@@ -221,6 +221,19 @@ class TasksAndListsApiTest extends TestCase
 
         $this->assertContains('assigned', $actions);
         $this->assertContains('handoff', $actions);
+
+        $this->assertDatabaseHas('in_app_notifications', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $member->id,
+            'event_type' => 'task_assigned',
+            'module' => 'tasks',
+        ]);
+        $this->assertDatabaseHas('in_app_notifications', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $owner->id,
+            'event_type' => 'task_handoff',
+            'module' => 'tasks',
+        ]);
     }
 
     public function test_guest_cannot_access_tasks_and_lists_routes(): void
