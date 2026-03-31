@@ -603,14 +603,22 @@ Last updated: 2026-03-21
       evidence gaps (`NEST-122`, `NEST-123`, `NEST-128`) and pending real
       traffic baseline (`NEST-125`).
 
-- [ ] NEST-130 Deliver automatic background sync with adaptive retry/backoff
-  - Status: BACKLOG
+- [x] NEST-130 Deliver automatic background sync with adaptive retry/backoff
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-129
   - Done when:
     - sync can run automatically in background on supported clients,
     - retry/backoff rules are deterministic,
     - user can still force manual sync and inspect recent results.
+  - Done on: 2026-03-31
+  - Notes:
+    - Implemented background auto-sync loops on web/mobile offline queue
+      surfaces with adaptive retry/backoff and deterministic jitter.
+    - Manual `Force Sync` and `Retry Sync` controls remain available and
+      unchanged in behavior intent.
+    - Implementation and validation documented in:
+      `docs/modules/background_auto_sync_adaptive_retry_v2.md`.
 
 - [ ] NEST-131 Add durable local sync scheduler for web/mobile
   - Status: BACKLOG

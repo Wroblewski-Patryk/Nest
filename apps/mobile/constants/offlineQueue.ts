@@ -7,6 +7,8 @@ export type MobileOfflineQueueItem = {
   action: OfflineAction;
   status: QueueStatus;
   last_error?: string;
+  retry_count?: number;
+  next_retry_at?: string;
 };
 
 const STORAGE_KEY = 'nest.offlineQueue.v1';

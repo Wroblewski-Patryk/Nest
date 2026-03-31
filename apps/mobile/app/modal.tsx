@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { Platform, ScrollView, StyleSheet } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { resolveLanguage } from '@nest/shared-types';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
@@ -9,11 +9,44 @@ import { nestApiClient } from '@/constants/apiClient';
 import { Pressable } from 'react-native';
 import { enqueueOfflineAction, loadOfflineQueue, saveOfflineQueue, type MobileOfflineQueueItem } from '@/constants/offlineQueue';
 
+const AUTO_SYNC_INTERVAL_MS = 15000;
+const BASE_RETRY_SECONDS = 15;
+const MAX_RETRY_SECONDS = 300;
+
+function computeJitterSeconds(seed: string, retryCount: number): number {
+  let hash = 0;
+  for (let index = 0; index < seed.length; index += 1) {
+    hash = (hash * 31 + seed.charCodeAt(index)) | 0;
+  }
+
+  return Math.abs(hash + retryCount * 17) % 5;
+}
+
+function computeRetryDelaySeconds(retryCount: number, seed: string): number {
+  const delay = BASE_RETRY_SECONDS * Math.pow(2, Math.max(0, retryCount - 1));
+  const withJitter = delay + computeJitterSeconds(seed, retryCount);
+  return Math.min(MAX_RETRY_SECONDS, withJitter);
+}
+
+function isRetryDue(item: MobileOfflineQueueItem, nowMs: number): boolean {
+  if (!item.next_retry_at) {
+    return true;
+  }
+
+  const nextAt = Date.parse(item.next_retry_at);
+  if (Number.isNaN(nextAt)) {
+    return true;
+  }
+
+  return nextAt <= nowMs;
+}
+
 export default function ModalScreen() {
   const [selected, setSelected] = useState<'en' | 'pl'>('en');
   const [queue, setQueue] = useState<MobileOfflineQueueItem[]>([]);
   const [detail, setDetail] = useState('Queue offline changes and run manual force sync.');
   const [isSyncing, setIsSyncing] = useState(false);
+  const [autoSyncEnabled, setAutoSyncEnabled] = useState(true);
 
   useEffect(() => {
     nestApiClient
@@ -32,52 +65,115 @@ export default function ModalScreen() {
     setQueue(enqueueOfflineAction(action));
   };
 
-  const forceSync = async (queueSource: MobileOfflineQueueItem[] = queue) => {
-    setIsSyncing(true);
-    const nextQueue = [...queueSource].sort((a, b) => a.created_at.localeCompare(b.created_at));
-
-    try {
-      for (const item of nextQueue) {
-        if (item.status !== 'pending') continue;
-
-        try {
-          if (item.action === 'sync_list_tasks') await nestApiClient.syncListTasks('todoist');
-          if (item.action === 'sync_calendar') await nestApiClient.syncCalendar('google_calendar');
-          if (item.action === 'sync_journal') await nestApiClient.syncJournal('obsidian');
-          item.status = 'synced';
-          delete item.last_error;
-          setDetail(`Synced ${item.action} from ${item.created_at}.`);
-        } catch (error) {
-          const status =
-            typeof error === 'object' &&
-            error !== null &&
-            'status' in error &&
-            typeof (error as { status?: unknown }).status === 'number'
-              ? String((error as { status: number }).status)
-              : 'n/a';
-          item.status = 'failed';
-          item.last_error = `HTTP ${status}`;
-          setDetail(`Force sync stopped on first error at ${item.action} (HTTP ${status}).`);
-          break;
-        }
+  const forceSync = useCallback(
+    async (
+      queueSource: MobileOfflineQueueItem[] = queue,
+      options: { stopOnError: boolean; source: 'manual' | 'auto' } = {
+        stopOnError: true,
+        source: 'manual',
       }
-    } finally {
-      saveOfflineQueue(nextQueue);
-      setQueue(nextQueue);
-      setIsSyncing(false);
-    }
-  };
+    ) => {
+      setIsSyncing(true);
+      const nextQueue = [...queueSource].sort((a, b) => a.created_at.localeCompare(b.created_at));
 
-  const retrySync = async () => {
+      try {
+        for (const item of nextQueue) {
+          if (item.status !== 'pending') continue;
+
+          try {
+            if (item.action === 'sync_list_tasks') await nestApiClient.syncListTasks('todoist');
+            if (item.action === 'sync_calendar') await nestApiClient.syncCalendar('google_calendar');
+            if (item.action === 'sync_journal') await nestApiClient.syncJournal('obsidian');
+            item.status = 'synced';
+            delete item.last_error;
+            delete item.retry_count;
+            delete item.next_retry_at;
+            setDetail(`Synced ${item.action} from ${item.created_at}.`);
+          } catch (error) {
+            const status =
+              typeof error === 'object' &&
+              error !== null &&
+              'status' in error &&
+              typeof (error as { status?: unknown }).status === 'number'
+                ? String((error as { status: number }).status)
+                : 'n/a';
+            const retryCount = (item.retry_count ?? 0) + 1;
+            const retryDelaySeconds = computeRetryDelaySeconds(retryCount, item.id);
+            item.status = 'failed';
+            item.retry_count = retryCount;
+            item.next_retry_at = new Date(Date.now() + retryDelaySeconds * 1000).toISOString();
+            item.last_error = `HTTP ${status}`;
+            setDetail(
+              `${options.source === 'auto' ? 'Auto' : 'Force'} sync error at ${item.action} (HTTP ${status}); retry in ${retryDelaySeconds}s.`
+            );
+            if (options.stopOnError) {
+              break;
+            }
+          }
+        }
+      } finally {
+        saveOfflineQueue(nextQueue);
+        setQueue(nextQueue);
+        setIsSyncing(false);
+      }
+    },
+    [queue]
+  );
+
+  const retrySync = useCallback(async () => {
     const retriable = queue.map((item) =>
       item.status === 'failed'
-        ? { ...item, status: 'pending' as const, last_error: undefined }
+        ? {
+            ...item,
+            status: 'pending' as const,
+            last_error: undefined,
+            next_retry_at: undefined,
+          }
         : item
     );
     setQueue(retriable);
     saveOfflineQueue(retriable);
     await forceSync(retriable);
-  };
+  }, [forceSync, queue]);
+
+  useEffect(() => {
+    if (!autoSyncEnabled) {
+      return;
+    }
+
+    const interval = globalThis.setInterval(() => {
+      if (isSyncing) {
+        return;
+      }
+
+      const nowMs = Date.now();
+      const hasPending = queue.some((item) => item.status === 'pending');
+      const hasDueRetries = queue.some(
+        (item) => item.status === 'failed' && isRetryDue(item, nowMs)
+      );
+
+      if (!hasPending && !hasDueRetries) {
+        return;
+      }
+
+      const autoPrepared = queue.map((item) =>
+        item.status === 'failed' && isRetryDue(item, nowMs)
+          ? { ...item, status: 'pending' as const }
+          : item
+      );
+
+      if (hasDueRetries) {
+        setQueue(autoPrepared);
+        saveOfflineQueue(autoPrepared);
+      }
+
+      void forceSync(autoPrepared, { stopOnError: false, source: 'auto' });
+    }, AUTO_SYNC_INTERVAL_MS);
+
+    return () => {
+      globalThis.clearInterval(interval);
+    };
+  }, [autoSyncEnabled, forceSync, isSyncing, queue]);
 
   const pending = queue.filter((item) => item.status === 'pending').length;
 
@@ -124,7 +220,14 @@ export default function ModalScreen() {
       >
         <Text style={styles.languageButtonText}>Retry Sync</Text>
       </Pressable>
-      <Text style={styles.description}>Pending: {pending} | Total: {queue.length}</Text>
+      <Pressable
+        style={styles.languageButton}
+        onPress={() => setAutoSyncEnabled((value) => !value)}
+        disabled={isSyncing}
+      >
+        <Text style={styles.languageButtonText}>{autoSyncEnabled ? 'Pause Auto Sync' : 'Resume Auto Sync'}</Text>
+      </Pressable>
+      <Text style={styles.description}>Pending: {pending} | Total: {queue.length} | Auto: {autoSyncEnabled ? 'on' : 'off'}</Text>
       <EditScreenInfo path="app/modal.tsx" />
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}

@@ -68,7 +68,7 @@ Execution of this plan starts after launch closure tasks are complete:
 
 ## Workstream B: Offline-First and Cross-Device Continuity (`NEST-130..NEST-134`)
 
-- [ ] NEST-130 Deliver automatic background sync with adaptive retry/backoff
+- [x] NEST-130 Deliver automatic background sync with adaptive retry/backoff
   - Depends on: NEST-129
   - Done when:
     - sync can run automatically in background on supported clients,
