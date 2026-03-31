@@ -163,7 +163,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - destructive or high-impact actions require explicit user approval,
     - audit trail records proposal, approval, and execution result.
 
-- [ ] NEST-143 Add proactive briefings (daily + weekly) with user controls
+- [x] NEST-143 Add proactive briefings (daily + weekly) with user controls
   - Depends on: NEST-141
   - Done when:
     - daily and weekly briefing templates are generated reliably,

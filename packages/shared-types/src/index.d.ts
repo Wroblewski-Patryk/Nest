@@ -388,6 +388,28 @@ export type AiActionProposalItem = {
   updated_at: string | null;
 };
 
+export type AiBriefingPreferenceItem = {
+  id: string;
+  daily_enabled: boolean;
+  weekly_enabled: boolean;
+  scope_modules: string[];
+  timezone: string;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+export type AiBriefingItem = {
+  id: string;
+  cadence: "daily" | "weekly";
+  scope_modules: string[];
+  summary: string;
+  sections: Array<Record<string, unknown>>;
+  context_fingerprint: string | null;
+  generated_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
 export type LifeAreaBalanceItem = {
   life_area_id: string;
   name: string;
@@ -608,6 +630,24 @@ export type NestApiClient = {
     proposalId: string,
     payload?: { reason?: string }
   ): Promise<{ data: AiActionProposalItem }>;
+  getAiBriefingPreferences(): Promise<{ data: AiBriefingPreferenceItem }>;
+  updateAiBriefingPreferences(payload: {
+    daily_enabled?: boolean;
+    weekly_enabled?: boolean;
+    scope_modules?: string[];
+    timezone?: string;
+  }): Promise<{ data: AiBriefingPreferenceItem }>;
+  getAiBriefings(query?: {
+    cadence?: "daily" | "weekly";
+    per_page?: number;
+  }): Promise<{ data: AiBriefingItem[]; meta: { total: number; per_page: number } }>;
+  getAiBriefing(briefingId: string): Promise<{ data: AiBriefingItem }>;
+  generateAiBriefing(payload: {
+    cadence: "daily" | "weekly";
+    scope_modules?: string[];
+    window_days?: number;
+    as_of?: string;
+  }): Promise<{ data: AiBriefingItem }>;
   getCollaborationSpaces(): Promise<{ data: CollaborationSpaceItem[] }>;
   createCollaborationSpace(payload: { name: string }): Promise<{ data: CollaborationSpaceItem }>;
   getCollaborationSpaceMembers(spaceId: string): Promise<{ data: CollaborationSpaceMemberItem[] }>;

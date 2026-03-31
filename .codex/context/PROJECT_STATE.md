@@ -557,11 +557,14 @@ Last updated: 2026-03-31
 - `NEST-142` completed: approval-gated AI write actions delivered with explicit
   proposal/approve/reject lifecycle, no-write-before-approval enforcement, and
   persisted execution audit trail (`docs/modules/ai_approval_gated_write_actions_v2.md`)
+- `NEST-143` completed: proactive daily/weekly briefing generation delivered
+  with user cadence/scope preferences and in-app notification deep-link context
+  to insights summaries (`docs/modules/ai_proactive_briefings_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: execute V2 AI wave continuation
-  (`NEST-143` onward) while launch-window/live-evidence closure tasks
+  (`NEST-144` onward) while launch-window/live-evidence closure tasks
   (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`)
   remain tracked for non-dry-run operations.
 

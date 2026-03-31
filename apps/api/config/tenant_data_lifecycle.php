@@ -43,12 +43,24 @@ return [
             'retention_days' => 180,
         ],
         [
+            'table' => 'ai_briefings',
+            'timestamp_column' => 'generated_at',
+            'retention_days' => 180,
+        ],
+        [
+            'table' => 'ai_briefing_preferences',
+            'timestamp_column' => 'updated_at',
+            'retention_days' => 3650,
+        ],
+        [
             'table' => 'automation_runs',
             'timestamp_column' => 'created_at',
             'retention_days' => 180,
         ],
     ],
     'deletion_tables' => [
+        'ai_briefings',
+        'ai_briefing_preferences',
         'ai_action_proposals',
         'ai_recommendation_feedback',
         'automation_runs',

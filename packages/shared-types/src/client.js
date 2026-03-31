@@ -175,6 +175,19 @@ export function createNestApiClient(options) {
         method: "POST",
         body: payload,
       }),
+    getAiBriefingPreferences: () => request("/ai/briefings/preferences"),
+    updateAiBriefingPreferences: (payload) =>
+      request("/ai/briefings/preferences", {
+        method: "PATCH",
+        body: payload,
+      }),
+    getAiBriefings: (query = {}) => request("/ai/briefings", { query }),
+    getAiBriefing: (briefingId) => request(`/ai/briefings/${briefingId}`),
+    generateAiBriefing: (payload) =>
+      request("/ai/briefings/generate", {
+        method: "POST",
+        body: payload,
+      }),
     getCollaborationSpaces: () => request("/collaboration/spaces"),
     createCollaborationSpace: (payload) =>
       request("/collaboration/spaces", {

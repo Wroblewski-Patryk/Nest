@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { LifeAreaBalanceResponse, UiAsyncState } from '@nest/shared-types';
+import type { AiBriefingItem, LifeAreaBalanceResponse, UiAsyncState } from '@nest/shared-types';
 import { ModuleScreen } from '@/components/mvp/ModuleScreen';
 import { nestApiClient } from '@/constants/apiClient';
 import { insightsData } from '@/constants/mvpData';
@@ -19,6 +19,7 @@ export default function InsightsScreen() {
   const [apiDetail, setApiDetail] = useState('Loading life-area balance + trends...');
   const [metrics, setMetrics] = useState(insightsData.metrics);
   const [rows, setRows] = useState(insightsData.rows);
+  const [briefing, setBriefing] = useState<AiBriefingItem | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -28,8 +29,9 @@ export default function InsightsScreen() {
       nestApiClient.getInsightsTrends('tasks', { period: 'weekly', points: 6 }),
       nestApiClient.getInsightsTrends('habits', { period: 'weekly', points: 6 }),
       nestApiClient.getInsightsTrends('goals', { period: 'weekly', points: 6 }),
+      nestApiClient.getAiBriefings({ per_page: 1 }).then((response) => response.data[0] ?? null).catch(() => null),
     ])
-      .then(([balance, taskTrend, habitTrend, goalTrend]) => {
+      .then(([balance, taskTrend, habitTrend, goalTrend, latestBriefing]) => {
         if (!mounted) return;
 
         const balancePayload = balance ?? emptyBalance;
@@ -37,6 +39,7 @@ export default function InsightsScreen() {
 
         setApiState('success');
         setApiDetail('Insights API calls succeeded.');
+        setBriefing(latestBriefing);
         setMetrics([
           { label: 'Balance', value: balancePayload.meta.global_balance_score.toFixed(1) },
           { label: 'Window', value: `${balancePayload.meta.window_days}d` },
@@ -53,6 +56,15 @@ export default function InsightsScreen() {
             detail: 'weekly trend totals',
             badge: `${taskTrend.meta.total}/${habitTrend.meta.total}/${goalTrend.meta.total}`,
           },
+          ...(latestBriefing
+            ? [
+                {
+                  title: `AI ${latestBriefing.cadence} briefing`,
+                  detail: latestBriefing.summary,
+                  badge: latestBriefing.generated_at ? new Date(latestBriefing.generated_at).toLocaleDateString() : 'ready',
+                },
+              ]
+            : []),
         ]);
       })
       .catch((error) => {
@@ -93,7 +105,7 @@ export default function InsightsScreen() {
       ]}
       connectivity={{
         state: apiState,
-        detail: apiDetail,
+        detail: briefing ? `${apiDetail} Latest briefing: ${briefing.cadence}.` : apiDetail,
       }}
     />
   );

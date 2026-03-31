@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { InsightsTrendResponse, LifeAreaBalanceResponse, UiAsyncState } from "@nest/shared-types";
+import type { AiBriefingItem, InsightsTrendResponse, LifeAreaBalanceResponse, UiAsyncState } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
 import { insightsSnapshot } from "@/lib/mvp-snapshot";
@@ -36,23 +36,34 @@ export default function InsightsPage() {
   const [taskTrend, setTaskTrend] = useState<InsightsTrendResponse>(EMPTY_TREND);
   const [habitTrend, setHabitTrend] = useState<InsightsTrendResponse>(EMPTY_TREND);
   const [goalTrend, setGoalTrend] = useState<InsightsTrendResponse>(EMPTY_TREND);
+  const [briefing, setBriefing] = useState<AiBriefingItem | null>(null);
 
   useEffect(() => {
     let mounted = true;
+    const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const briefingId = params?.get("briefing_id");
+    const briefingRequest = briefingId
+      ? nestApiClient.getAiBriefing(briefingId).then((response) => response.data).catch(() => null)
+      : nestApiClient
+          .getAiBriefings({ per_page: 1 })
+          .then((response) => response.data[0] ?? null)
+          .catch(() => null);
 
     Promise.all([
       nestApiClient.getLifeAreaBalance({ window_days: 30 }),
       nestApiClient.getInsightsTrends("tasks", { period: "weekly", points: 6 }),
       nestApiClient.getInsightsTrends("habits", { period: "weekly", points: 6 }),
       nestApiClient.getInsightsTrends("goals", { period: "weekly", points: 6 }),
+      briefingRequest,
     ])
-      .then(([balanceResponse, tasksResponse, habitsResponse, goalsResponse]) => {
+      .then(([balanceResponse, tasksResponse, habitsResponse, goalsResponse, briefingResponse]) => {
         if (!mounted) return;
 
         setBalance(balanceResponse);
         setTaskTrend(tasksResponse);
         setHabitTrend(habitsResponse);
         setGoalTrend(goalsResponse);
+        setBriefing(briefingResponse);
         setState("success");
         setDetail("Insights API calls succeeded.");
       })
@@ -176,6 +187,19 @@ export default function InsightsPage() {
             </li>
           ))}
         </ul>
+      </Panel>
+
+      <Panel title="AI Briefing">
+        {briefing ? (
+          <div className="panel-content">
+            <p className="callout">{briefing.summary}</p>
+            <p className="mono-note">
+              {briefing.cadence} | {briefing.generated_at ? new Date(briefing.generated_at).toLocaleString() : "n/a"}
+            </p>
+          </div>
+        ) : (
+          <p className="callout">No generated briefing yet. Trigger one from copilot flow.</p>
+        )}
       </Panel>
     </WorkspaceShell>
   );

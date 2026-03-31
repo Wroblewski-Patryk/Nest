@@ -967,14 +967,38 @@ Last updated: 2026-03-31
       `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
       `docs/modules/ai_approval_gated_write_actions_v2.md`.
 
-- [ ] NEST-143 Add proactive briefings (daily + weekly) with user controls
-  - Status: BACKLOG
+- [x] NEST-143 Add proactive briefings (daily + weekly) with user controls
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-141
   - Done when:
     - daily and weekly briefing templates are generated reliably,
     - cadence and content scope are user-configurable,
     - notifications deep-link to briefing summaries.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added proactive briefing APIs:
+      `GET/PATCH /api/v1/ai/briefings/preferences`,
+      `GET /api/v1/ai/briefings`,
+      `POST /api/v1/ai/briefings/generate`,
+      `GET /api/v1/ai/briefings/{briefingId}`.
+    - Added briefing preference and briefing storage models/migrations:
+      `ai_briefing_preferences`, `ai_briefings`,
+      `apps/api/app/Models/AiBriefingPreference.php`,
+      `apps/api/app/Models/AiBriefing.php`.
+    - Implemented generation + notification integration in
+      `apps/api/app/AI/Services/AiBriefingService.php`.
+    - Briefing generation now emits in-app notification with insights deep-link
+      context payload (`briefing_id`).
+    - Added regression coverage:
+      `apps/api/tests/Feature/AiBriefingApiTest.php`.
+    - Updated insights surfaces to display latest briefing summary on web/mobile.
+    - Updated shared client/types, OpenAPI, and module docs:
+      `packages/shared-types/src/client.js`,
+      `packages/shared-types/src/client.d.ts`,
+      `packages/shared-types/src/index.d.ts`,
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
+      `docs/modules/ai_proactive_briefings_v2.md`.
 
 - [ ] NEST-144 Deliver AI safety/evaluation harness for V2 copilot behaviors
   - Status: BACKLOG

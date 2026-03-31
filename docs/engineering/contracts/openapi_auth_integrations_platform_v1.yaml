@@ -381,6 +381,101 @@ paths:
         '422':
           $ref: '#/components/responses/ValidationError'
 
+  /v1/ai/briefings/preferences:
+    get:
+      tags: [AI]
+      summary: Get AI briefing preferences
+      operationId: getAiBriefingPreferences
+      responses:
+        '200':
+          description: Briefing preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiBriefingPreferenceResponse'
+    patch:
+      tags: [AI]
+      summary: Update AI briefing preferences
+      operationId: updateAiBriefingPreferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AiBriefingPreferenceUpdateRequest'
+      responses:
+        '200':
+          description: Updated briefing preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiBriefingPreferenceResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/ai/briefings:
+    get:
+      tags: [AI]
+      summary: List generated AI briefings
+      operationId: listAiBriefings
+      parameters:
+        - in: query
+          name: cadence
+          required: false
+          schema:
+            type: string
+            enum: [daily, weekly]
+        - in: query
+          name: per_page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Briefing collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiBriefingCollectionResponse'
+
+  /v1/ai/briefings/generate:
+    post:
+      tags: [AI]
+      summary: Generate daily or weekly AI briefing
+      operationId: generateAiBriefing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AiBriefingGenerateRequest'
+      responses:
+        '201':
+          description: Briefing generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiBriefingResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/ai/briefings/{briefingId}:
+    get:
+      tags: [AI]
+      summary: Get one generated AI briefing
+      operationId: getAiBriefing
+      parameters:
+        - $ref: '#/components/parameters/BriefingId'
+      responses:
+        '200':
+          description: Briefing payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiBriefingResponse'
+
   /v1/ai/feedback:
     post:
       tags: [AI]
@@ -1305,6 +1400,13 @@ components:
       schema:
         type: string
         format: uuid
+    BriefingId:
+      name: briefingId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
 
   responses:
     Unauthorized:
@@ -2018,6 +2120,130 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AiActionProposalItem'
+        meta:
+          type: object
+          required: [total, per_page]
+          properties:
+            total:
+              type: integer
+            per_page:
+              type: integer
+
+    AiBriefingPreferenceUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        daily_enabled:
+          type: boolean
+        weekly_enabled:
+          type: boolean
+        scope_modules:
+          type: array
+          items:
+            type: string
+            enum: [tasks, calendar, habits, goals, journal, insights]
+        timezone:
+          type: string
+
+    AiBriefingPreferenceItem:
+      type: object
+      required: [id, daily_enabled, weekly_enabled, scope_modules, timezone]
+      properties:
+        id:
+          type: string
+          format: uuid
+        daily_enabled:
+          type: boolean
+        weekly_enabled:
+          type: boolean
+        scope_modules:
+          type: array
+          items:
+            type: string
+        timezone:
+          type: string
+        created_at:
+          type: [string, 'null']
+          format: date-time
+        updated_at:
+          type: [string, 'null']
+          format: date-time
+
+    AiBriefingPreferenceResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/AiBriefingPreferenceItem'
+
+    AiBriefingGenerateRequest:
+      type: object
+      required: [cadence]
+      properties:
+        cadence:
+          type: string
+          enum: [daily, weekly]
+        scope_modules:
+          type: array
+          items:
+            type: string
+            enum: [tasks, calendar, habits, goals, journal, insights]
+        window_days:
+          type: integer
+          minimum: 1
+          maximum: 30
+        as_of:
+          type: string
+          format: date-time
+
+    AiBriefingItem:
+      type: object
+      required: [id, cadence, scope_modules, summary, sections]
+      properties:
+        id:
+          type: string
+          format: uuid
+        cadence:
+          type: string
+          enum: [daily, weekly]
+        scope_modules:
+          type: array
+          items:
+            type: string
+        summary:
+          type: string
+        sections:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        context_fingerprint:
+          type: [string, 'null']
+        generated_at:
+          type: [string, 'null']
+          format: date-time
+        created_at:
+          type: [string, 'null']
+          format: date-time
+        updated_at:
+          type: [string, 'null']
+          format: date-time
+
+    AiBriefingResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/AiBriefingItem'
+
+    AiBriefingCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AiBriefingItem'
         meta:
           type: object
           required: [total, per_page]
