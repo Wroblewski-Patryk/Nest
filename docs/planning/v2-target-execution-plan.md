@@ -89,7 +89,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - conflict resolution UI handles auto-merged and manual-merge states,
     - regressions cover multi-device concurrent edits.
 
-- [ ] NEST-133 Add encrypted local cache profile and retention controls
+- [x] NEST-133 Add encrypted local cache profile and retention controls
   - Depends on: NEST-131
   - Done when:
     - local offline data is encrypted at rest on supported clients,

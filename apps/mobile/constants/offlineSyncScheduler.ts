@@ -1,3 +1,8 @@
+import {
+  decryptOfflineCachePayload,
+  encryptOfflineCachePayload,
+} from '@/constants/offlineCacheCrypto';
+
 type QueueStatus = 'pending' | 'synced' | 'failed';
 
 export type MobileOfflineQueueSchedulerItem = {
@@ -42,15 +47,11 @@ export function loadOfflineSyncSchedulerState(): MobileOfflineSyncSchedulerState
     return getDefaultState(true);
   }
 
-  try {
-    const parsed = JSON.parse(raw) as Partial<MobileOfflineSyncSchedulerState>;
-    return {
-      ...getDefaultState(true),
-      ...parsed,
-    };
-  } catch {
-    return getDefaultState(true);
-  }
+  const parsed = decryptOfflineCachePayload<Partial<MobileOfflineSyncSchedulerState>>(raw, {});
+  return {
+    ...getDefaultState(true),
+    ...parsed,
+  };
 }
 
 export function saveOfflineSyncSchedulerState(state: MobileOfflineSyncSchedulerState): void {
@@ -60,7 +61,17 @@ export function saveOfflineSyncSchedulerState(state: MobileOfflineSyncSchedulerS
     return;
   }
 
-  storage.setItem(STORAGE_KEY, JSON.stringify(state));
+  storage.setItem(STORAGE_KEY, encryptOfflineCachePayload(state));
+}
+
+export function clearOfflineSyncSchedulerState(): void {
+  memoryState = null;
+  const storage = (globalThis as { localStorage?: Storage }).localStorage;
+  if (!storage) {
+    return;
+  }
+
+  storage.removeItem(STORAGE_KEY);
 }
 
 export function evaluateOfflineSyncSchedulerHealth(

@@ -14,6 +14,11 @@
 - Default local ports:
   - API: `9000`
   - Web: `9001`
+- Optional offline-cache security env vars:
+  - Web: `NEXT_PUBLIC_NEST_OFFLINE_CACHE_SECRET`,
+  - Mobile: `EXPO_PUBLIC_NEST_OFFLINE_CACHE_SECRET`,
+  - Retention (days): `NEXT_PUBLIC_NEST_OFFLINE_CACHE_RETENTION_DAYS`,
+    `EXPO_PUBLIC_NEST_OFFLINE_CACHE_RETENTION_DAYS`.
 
 ### Local Backend Bring-up (PostgreSQL + Redis)
 

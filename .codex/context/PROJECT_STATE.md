@@ -516,6 +516,9 @@ Last updated: 2026-03-21
 - `NEST-132` completed: deterministic offline conflict merge policy surfaced in
   API and web/mobile UI with regression coverage for repeated concurrent-style
   updates (`docs/modules/deterministic_offline_merge_policy_v2.md`)
+- `NEST-133` completed: encrypted local cache profile and retention controls
+  added for web/mobile offline queue + scheduler payloads with secure wipe path
+  (`docs/modules/encrypted_local_cache_profile_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

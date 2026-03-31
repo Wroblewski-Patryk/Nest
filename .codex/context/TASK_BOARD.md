@@ -720,14 +720,24 @@ Last updated: 2026-03-21
     - Implementation and validation documented in:
       `docs/modules/deterministic_offline_merge_policy_v2.md`.
 
-- [ ] NEST-133 Add encrypted local cache profile and retention controls
-  - Status: BACKLOG
+- [x] NEST-133 Add encrypted local cache profile and retention controls
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-131
   - Done when:
     - local offline data is encrypted at rest on supported clients,
     - cache retention/cleanup policy is documented and enforced,
     - secure wipe path exists for logout/account removal.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added encrypted local cache profile for web/mobile offline queue and
+      scheduler state payloads.
+    - Added configurable retention cleanup policy and queue-size cap for local
+      cache hygiene.
+    - Added secure wipe action in web/mobile sync surfaces to remove local
+      cache payloads.
+    - Implementation and validation documented in:
+      `docs/modules/encrypted_local_cache_profile_v2.md`.
 
 - [ ] NEST-134 Ship offline chaos/regression suite for unstable network scenarios
   - Status: BACKLOG

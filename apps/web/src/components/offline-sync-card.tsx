@@ -3,11 +3,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { nestApiClient } from "@/lib/api-client";
 import {
+  clearOfflineSyncSchedulerState,
   evaluateOfflineSyncSchedulerHealth,
   loadOfflineSyncSchedulerState,
   saveOfflineSyncSchedulerState,
   type OfflineSyncSchedulerState,
 } from "@/lib/offline-sync-scheduler";
+import {
+  decryptOfflineCachePayload,
+  encryptOfflineCachePayload,
+} from "@/lib/offline-cache-crypto";
 
 type OfflineAction = "sync_list_tasks" | "sync_calendar" | "sync_journal";
 type QueueStatus = "pending" | "synced" | "failed";
@@ -26,6 +31,44 @@ const STORAGE_KEY = "nest.offlineQueue.v1";
 const AUTO_SYNC_INTERVAL_MS = 15000;
 const BASE_RETRY_SECONDS = 15;
 const MAX_RETRY_SECONDS = 300;
+const DEFAULT_RETENTION_DAYS = 30;
+const MAX_QUEUE_ITEMS = 500;
+
+function retentionDays(): number {
+  const raw = Number(process.env.NEXT_PUBLIC_NEST_OFFLINE_CACHE_RETENTION_DAYS ?? DEFAULT_RETENTION_DAYS);
+  if (!Number.isFinite(raw)) {
+    return DEFAULT_RETENTION_DAYS;
+  }
+
+  return Math.min(365, Math.max(1, Math.floor(raw)));
+}
+
+function sanitizeQueue(queue: QueueItem[]): QueueItem[] {
+  const parsed = queue.filter((item) =>
+    typeof item.id === "string" &&
+    typeof item.created_at === "string" &&
+    typeof item.action === "string" &&
+    typeof item.status === "string"
+  );
+
+  const cutoffMs = Date.now() - retentionDays() * 24 * 60 * 60 * 1000;
+  const retained = parsed.filter((item) => {
+    const createdAtMs = Date.parse(item.created_at);
+    if (Number.isNaN(createdAtMs)) {
+      return false;
+    }
+
+    return createdAtMs >= cutoffMs;
+  });
+
+  if (retained.length <= MAX_QUEUE_ITEMS) {
+    return retained;
+  }
+
+  return retained
+    .sort((left, right) => left.created_at.localeCompare(right.created_at))
+    .slice(retained.length - MAX_QUEUE_ITEMS);
+}
 
 function loadQueue(): QueueItem[] {
   if (typeof window === "undefined") {
@@ -33,19 +76,38 @@ function loadQueue(): QueueItem[] {
   }
 
   const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) return [];
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
+  if (!raw) {
     return [];
   }
+
+  const parsed = decryptOfflineCachePayload<unknown>(raw, []);
+  if (!Array.isArray(parsed)) {
+    return [];
+  }
+
+  const sanitized = sanitizeQueue(parsed as QueueItem[]);
+  if (sanitized.length !== parsed.length) {
+    window.localStorage.setItem(STORAGE_KEY, encryptOfflineCachePayload(sanitized));
+  }
+
+  return sanitized;
 }
 
 function saveQueue(queue: QueueItem[]): void {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const sanitized = sanitizeQueue(queue);
+  window.localStorage.setItem(STORAGE_KEY, encryptOfflineCachePayload(sanitized));
+}
+
+function clearQueueStorage(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.removeItem(STORAGE_KEY);
 }
 
 function computeJitterSeconds(seed: string, retryCount: number): number {
@@ -194,25 +256,25 @@ export function OfflineSyncCard() {
             }
           }
         }
-    } finally {
-      saveQueue(nextQueue);
-      setQueue(nextQueue);
-      const health = evaluateOfflineSyncSchedulerHealth(nextQueue);
-      updateScheduler((previous) => ({
-        ...previous,
-        ...health,
-        last_run_at: runStartedAt,
-        last_success_at: hadSuccess ? new Date().toISOString() : previous.last_success_at,
-        consecutive_failures: hadFailure
-          ? previous.consecutive_failures + 1
-          : hadSuccess
-            ? 0
-            : previous.consecutive_failures,
-        last_error: hadFailure ? lastError : undefined,
-      }));
-      setIsSyncing(false);
-    }
-  },
+      } finally {
+        saveQueue(nextQueue);
+        setQueue(nextQueue);
+        const health = evaluateOfflineSyncSchedulerHealth(nextQueue);
+        updateScheduler((previous) => ({
+          ...previous,
+          ...health,
+          last_run_at: runStartedAt,
+          last_success_at: hadSuccess ? new Date().toISOString() : previous.last_success_at,
+          consecutive_failures: hadFailure
+            ? previous.consecutive_failures + 1
+            : hadSuccess
+              ? 0
+              : previous.consecutive_failures,
+          last_error: hadFailure ? lastError : undefined,
+        }));
+        setIsSyncing(false);
+      }
+    },
     [queue, updateScheduler]
   );
 
@@ -231,6 +293,14 @@ export function OfflineSyncCard() {
     saveQueue(retriable);
     await forceSync(retriable);
   }, [forceSync, queue]);
+
+  const secureWipeCache = useCallback(() => {
+    clearQueueStorage();
+    clearOfflineSyncSchedulerState();
+    setQueue([]);
+    setScheduler(loadOfflineSyncSchedulerState());
+    setDetail("Encrypted offline cache wiped from this device.");
+  }, []);
 
   useEffect(() => {
     if (!autoSyncEnabled || typeof window === "undefined") {
@@ -305,10 +375,18 @@ export function OfflineSyncCard() {
         >
           {autoSyncEnabled ? "Pause Auto Sync" : "Resume Auto Sync"}
         </button>
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={secureWipeCache}
+          disabled={isSyncing}
+        >
+          Secure Wipe Cache
+        </button>
       </div>
       <p className="mono-note">
         Pending: {pendingCount} | Total: {queue.length} | Auto: {autoSyncEnabled ? "on" : "off"} |
-        Lag: {scheduler.scheduler_lag_seconds}s
+        Lag: {scheduler.scheduler_lag_seconds}s | Retention: {retentionDays()}d
       </p>
       {scheduler.stuck_detected ? (
         <p className="mono-note">Scheduler alert: stuck queue ({scheduler.stuck_reason ?? "unknown"}).</p>

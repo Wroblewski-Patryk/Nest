@@ -7,8 +7,16 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { nestApiClient } from '@/constants/apiClient';
 import { Pressable } from 'react-native';
-import { enqueueOfflineAction, loadOfflineQueue, saveOfflineQueue, type MobileOfflineQueueItem } from '@/constants/offlineQueue';
 import {
+  clearOfflineQueue,
+  enqueueOfflineAction,
+  getOfflineQueueRetentionDays,
+  loadOfflineQueue,
+  saveOfflineQueue,
+  type MobileOfflineQueueItem,
+} from '@/constants/offlineQueue';
+import {
+  clearOfflineSyncSchedulerState,
   evaluateOfflineSyncSchedulerHealth,
   loadOfflineSyncSchedulerState,
   saveOfflineSyncSchedulerState,
@@ -191,6 +199,14 @@ export default function ModalScreen() {
     await forceSync(retriable);
   }, [forceSync, queue]);
 
+  const secureWipeCache = useCallback(() => {
+    clearOfflineQueue();
+    clearOfflineSyncSchedulerState();
+    setQueue([]);
+    setScheduler(loadOfflineSyncSchedulerState());
+    setDetail('Encrypted offline cache wiped from this device.');
+  }, []);
+
   useEffect(() => {
     if (!autoSyncEnabled) {
       return;
@@ -287,8 +303,15 @@ export default function ModalScreen() {
       >
         <Text style={styles.languageButtonText}>{autoSyncEnabled ? 'Pause Auto Sync' : 'Resume Auto Sync'}</Text>
       </Pressable>
+      <Pressable
+        style={styles.languageButton}
+        onPress={secureWipeCache}
+        disabled={isSyncing}
+      >
+        <Text style={styles.languageButtonText}>Secure Wipe Cache</Text>
+      </Pressable>
       <Text style={styles.description}>
-        Pending: {pending} | Total: {queue.length} | Auto: {autoSyncEnabled ? 'on' : 'off'} | Lag: {scheduler.scheduler_lag_seconds}s
+        Pending: {pending} | Total: {queue.length} | Auto: {autoSyncEnabled ? 'on' : 'off'} | Lag: {scheduler.scheduler_lag_seconds}s | Retention: {getOfflineQueueRetentionDays()}d
       </Text>
       {scheduler.stuck_detected ? (
         <Text style={styles.description}>Scheduler alert: stuck queue ({scheduler.stuck_reason ?? 'unknown'}).</Text>
