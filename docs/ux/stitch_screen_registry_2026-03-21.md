@@ -8,6 +8,7 @@ cycle, including screen IDs, ownership intent, and update scope.
 ## Active Project
 
 - Stitch project: `projects/11122321523690086751`
+- Stitch URL: `https://stitch.withgoogle.com/projects/11122321523690086751`
 - Project title: `Nest LifeOS Unified UX Mix Ideal v2`
 - Baseline style source:
   `docs/ux/nest_os_design_system_mix_ideal_v1.md`

@@ -556,6 +556,12 @@ Last updated: 2026-03-31
   (`apps/web/src/app/tasks/page.tsx`,
   `apps/web/src/lib/auth-session.ts`,
   `apps/web/src/components/workspace-shell.tsx`)
+- `NEST-159` completed: critical click-path UX audit executed for life-management
+  usability with screenshot evidence pack, per-view good/bad/why/fix analysis,
+  and explicit Stitch project URL reference for continued parity iterations
+  (`docs/ux/nest_159_life_management_ux_critical_audit_2026-03-31.md`,
+  `docs/ux_audit_evidence/2026-03-31/nest-159/artifact-index.md`,
+  `docs/ux/stitch_screen_registry_2026-03-21.md`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

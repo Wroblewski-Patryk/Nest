@@ -1,0 +1,141 @@
+{
+  "generated_at": "2026-03-31T20:12:25.301Z",
+  "base_url": "http://127.0.0.1:9001",
+  "captures": [
+    {
+      "step": "home-dashboard",
+      "file": "01-home-dashboard.png",
+      "note": "Start page with module map and first-action guidance."
+    },
+    {
+      "step": "tasks-before-login",
+      "file": "02-tasks-before-login.png",
+      "note": "Tasks view before auth."
+    },
+    {
+      "step": "tasks-after-login",
+      "file": "03-tasks-after-login.png",
+      "note": "Authenticated task workspace."
+    },
+    {
+      "step": "tasks-list-created",
+      "file": "04-tasks-list-created.png",
+      "note": "Create list action result."
+    },
+    {
+      "step": "tasks-active-list-selected",
+      "file": "05-tasks-active-list-selected.png",
+      "note": "Active list selected."
+    },
+    {
+      "step": "tasks-create-task-error",
+      "file": "06-tasks-create-task-error.png",
+      "note": "Create task action result. ERROR: locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('Task title')\u001b[22m\n\u001b[2m    - locator resolved to <input value=\"\" disabled type=\"text\" class=\"list-row\" placeholder=\"Example: Plan Thursday top 3\"/>\u001b[22m\n\u001b[2m    - fill(\"UX audit task: verify calm daily flow\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+    },
+    {
+      "step": "habits-module",
+      "file": "07-habits-module.png",
+      "note": "Habits module snapshot."
+    },
+    {
+      "step": "routines-module",
+      "file": "08-routines-module.png",
+      "note": "Routines module snapshot."
+    },
+    {
+      "step": "goals-module",
+      "file": "09-goals-module.png",
+      "note": "Goals module snapshot."
+    },
+    {
+      "step": "targets-module",
+      "file": "10-targets-module.png",
+      "note": "Targets module snapshot."
+    },
+    {
+      "step": "calendar-module",
+      "file": "11-calendar-module.png",
+      "note": "Calendar with integrations panels."
+    },
+    {
+      "step": "journal-module",
+      "file": "12-journal-module.png",
+      "note": "Journal module snapshot."
+    },
+    {
+      "step": "insights-module",
+      "file": "13-insights-module.png",
+      "note": "Insights module loaded."
+    },
+    {
+      "step": "insights-refresh-export-clicked",
+      "file": "14-insights-refresh-export-clicked.png",
+      "note": "Insights action buttons interaction (currently visual only)."
+    },
+    {
+      "step": "automations-module",
+      "file": "15-automations-module.png",
+      "note": "Automations module loaded."
+    },
+    {
+      "step": "automations-create-rule",
+      "file": "16-automations-create-rule.png",
+      "note": "Create automation rule action."
+    },
+    {
+      "step": "automations-run-rule",
+      "file": "17-automations-run-rule.png",
+      "note": "Manual rule run action."
+    },
+    {
+      "step": "automations-inspect-run",
+      "file": "18-automations-inspect-run.png",
+      "note": "Inspect automation run details."
+    },
+    {
+      "step": "automations-replay-run",
+      "file": "19-automations-replay-run.png",
+      "note": "Replay automation run."
+    },
+    {
+      "step": "billing-module",
+      "file": "20-billing-module.png",
+      "note": "Billing module loaded."
+    },
+    {
+      "step": "billing-start-trial",
+      "file": "21-billing-start-trial.png",
+      "note": "Start trial lifecycle action."
+    },
+    {
+      "step": "billing-mark-past-due",
+      "file": "22-billing-mark-past-due.png",
+      "note": "Mark past due lifecycle action."
+    },
+    {
+      "step": "billing-recover-past-due",
+      "file": "23-billing-recover-past-due.png",
+      "note": "Recover subscription action."
+    },
+    {
+      "step": "billing-checkout-session",
+      "file": "24-billing-checkout-session.png",
+      "note": "Create checkout session action."
+    },
+    {
+      "step": "billing-portal-session",
+      "file": "25-billing-portal-session.png",
+      "note": "Create portal session action."
+    },
+    {
+      "step": "onboarding-module",
+      "file": "26-onboarding-module.png",
+      "note": "Onboarding form loaded."
+    },
+    {
+      "step": "onboarding-submit",
+      "file": "27-onboarding-submit.png",
+      "note": "Onboarding submit interaction."
+    }
+  ]
+}

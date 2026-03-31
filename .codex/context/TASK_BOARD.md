@@ -627,6 +627,32 @@ Last updated: 2026-03-31
     - Removed non-functional calendar placeholder command buttons:
       `apps/web/src/app/calendar/page.tsx`.
 
+- [x] NEST-159 Run critical life-management UX audit with click-path evidence
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-158
+  - Done when:
+    - all currently exposed web user capabilities are click-tested with
+      screenshot evidence per interaction step,
+    - each audited view answers the key UX question
+      ("does this make life management easier?") with explicit good/bad/why/fix
+      analysis,
+    - Stitch project URL/reference is explicitly documented for future parity
+      iterations.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added automated click-path capture script:
+      `scripts/ux-audit/capture-web-ux-flow.mjs`.
+    - Published screenshot evidence and manifest:
+      `docs/ux_audit_evidence/2026-03-31/nest-159/web/*`,
+      `docs/ux_audit_evidence/2026-03-31/nest-159/web/manifest.json`.
+    - Published artifact index:
+      `docs/ux_audit_evidence/2026-03-31/nest-159/artifact-index.md`.
+    - Published critical UX review and remediation plan:
+      `docs/ux/nest_159_life_management_ux_critical_audit_2026-03-31.md`.
+    - Added canonical Stitch project URL reference in:
+      `docs/ux/stitch_screen_registry_2026-03-21.md`.
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent
