@@ -10,6 +10,7 @@ const PROTECTED_PREFIXES = [
   "/targets",
   "/calendar",
   "/journal",
+  "/life-areas",
   "/insights",
   "/automations",
   "/billing",

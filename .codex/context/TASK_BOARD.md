@@ -1154,6 +1154,29 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-178 Add dedicated Life Areas module and surface balance context
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-177
+  - Done when:
+    - Life Areas are available as a first-class module in main navigation,
+    - `/life-areas` route is auth-guarded and available in web routing,
+    - module supports full CRUD for life areas directly in GUI,
+    - module shows life-balance context (global score + per-area alignment).
+  - Notes:
+    - Added dedicated module page:
+      `apps/web/src/app/life-areas/page.tsx`.
+    - Added nav icon/entry for Life Areas:
+      `apps/web/src/components/workspace-shell.tsx`.
+    - Added route guard coverage and regression assertions:
+      `apps/web/src/lib/route-guard.ts`,
+      `apps/web/scripts/route-guard-regression.mjs`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

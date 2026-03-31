@@ -21,6 +21,7 @@ type NavIconName =
   | "targets"
   | "calendar"
   | "journal"
+  | "life_areas"
   | "insights"
   | "settings";
 
@@ -38,6 +39,7 @@ const NAV_ITEMS: Array<{
   { href: "/targets", label: "Targets", key: "targets", icon: "targets" },
   { href: "/calendar", label: "Calendar", key: "calendar", icon: "calendar" },
   { href: "/journal", label: "Journal", key: "journal", icon: "journal" },
+  { href: "/life-areas", label: "Life Areas", key: "life_areas", icon: "life_areas" },
   { href: "/insights", label: "Insights", key: "insights", icon: "insights" },
   { href: "/settings", label: "Settings", key: "settings", icon: "settings" },
 ];
@@ -116,6 +118,20 @@ function MenuIcon({ name }: { name: NavIconName }) {
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M6 5.5A2.5 2.5 0 0 1 8.5 3H19v18H8.5A2.5 2.5 0 0 0 6 23V5.5Z" stroke="currentColor" strokeWidth="1.7" />
         <path d="M9.5 8.5H16M9.5 12H16M9.5 15.5H14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (name === "life_areas") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M4.5 15.5c1.2-4.5 4.3-7.7 9.1-9.2 1.6 2.2 2.3 4.3 2.2 6.4-.2 3.7-2.7 6.3-6.5 6.3-2.9 0-4.8-1.5-4.8-3.5Z"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinejoin="round"
+        />
+        <path d="M8.2 14.5c1.7-.4 3.1-1.3 4.2-2.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
       </svg>
     );
   }

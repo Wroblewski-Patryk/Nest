@@ -8,6 +8,7 @@ function expectRedirect(params) {
 assert.equal(expectRedirect({ pathname: "/", hasToken: false, onboardingRequired: null }), null);
 assert.equal(expectRedirect({ pathname: "/dashboard", hasToken: false, onboardingRequired: null }), "/auth");
 assert.equal(expectRedirect({ pathname: "/tasks", hasToken: false, onboardingRequired: null }), "/auth");
+assert.equal(expectRedirect({ pathname: "/life-areas", hasToken: false, onboardingRequired: null }), "/auth");
 assert.equal(expectRedirect({ pathname: "/settings", hasToken: false, onboardingRequired: null }), "/auth");
 assert.equal(expectRedirect({ pathname: "/auth", hasToken: false, onboardingRequired: null }), null);
 assert.equal(
@@ -30,6 +31,7 @@ assert.equal(
 );
 assert.equal(expectRedirect({ pathname: "/dashboard", hasToken: true, onboardingRequired: false }), null);
 assert.equal(expectRedirect({ pathname: "/tasks", hasToken: true, onboardingRequired: false }), null);
+assert.equal(expectRedirect({ pathname: "/life-areas", hasToken: true, onboardingRequired: false }), null);
 assert.equal(expectRedirect({ pathname: "/settings", hasToken: true, onboardingRequired: false }), null);
 
 console.log("Route guard regression check passed.");
