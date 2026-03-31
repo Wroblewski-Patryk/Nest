@@ -1137,6 +1137,23 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-177 Enable full calendar CRUD controls in web GUI
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-176
+  - Done when:
+    - calendar timeline rows expose `Edit` and `Delete`,
+    - users can update title/start/end directly from GUI,
+    - users can remove calendar events without leaving module.
+  - Notes:
+    - Added inline edit/delete flows for calendar events:
+      `apps/web/src/app/calendar/page.tsx`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

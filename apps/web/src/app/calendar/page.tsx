@@ -67,6 +67,14 @@ function formatWhen(value: string): string {
   return new Date(value).toLocaleString();
 }
 
+function toLocalDateTimeInput(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+}
+
 export default function CalendarPage() {
   const router = useRouter();
   const [events, setEvents] = useState<CalendarEventItem[]>([]);
@@ -75,6 +83,11 @@ export default function CalendarPage() {
   const [newEventEndAt, setNewEventEndAt] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [editEventTitle, setEditEventTitle] = useState("");
+  const [editEventStartAt, setEditEventStartAt] = useState("");
+  const [editEventEndAt, setEditEventEndAt] = useState("");
+  const [busyEventId, setBusyEventId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("Create your first time block.");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -162,6 +175,81 @@ export default function CalendarPage() {
     }
   }
 
+  function startEventEdit(entry: CalendarEventItem) {
+    setEditingEventId(entry.id);
+    setEditEventTitle(entry.title);
+    setEditEventStartAt(toLocalDateTimeInput(entry.start_at));
+    setEditEventEndAt(toLocalDateTimeInput(entry.end_at));
+  }
+
+  async function saveEventEdit(eventId: string) {
+    if (!editEventTitle.trim()) {
+      setErrorMessage("Event title is required.");
+      return;
+    }
+
+    const startAt = toIso(editEventStartAt);
+    const endAt = toIso(editEventEndAt);
+    if (!startAt || !endAt) {
+      setErrorMessage("Start and end date-time are required.");
+      return;
+    }
+
+    setBusyEventId(eventId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/calendar-events/${eventId}`, {
+        method: "PATCH",
+        body: {
+          title: editEventTitle.trim(),
+          start_at: startAt,
+          end_at: endAt,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+        },
+      });
+      setEditingEventId(null);
+      await loadData();
+      setFeedback("Calendar event updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyEventId(null);
+    }
+  }
+
+  async function deleteEvent(eventId: string) {
+    if (!window.confirm("Delete this calendar event?")) {
+      return;
+    }
+
+    setBusyEventId(eventId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/calendar-events/${eventId}`, {
+        method: "DELETE",
+      });
+      if (editingEventId === eventId) {
+        setEditingEventId(null);
+      }
+      await loadData();
+      setFeedback("Calendar event deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyEventId(null);
+    }
+  }
+
   return (
     <WorkspaceShell
       title="Calendar"
@@ -228,13 +316,88 @@ export default function CalendarPage() {
           ) : (
             events.map((entry) => (
               <li className="list-row" key={entry.id}>
-                <div>
-                  <strong>{entry.title}</strong>
-                  <p>
-                    {formatWhen(entry.start_at)} - {formatWhen(entry.end_at)}
-                  </p>
-                </div>
-                <span className="pill">{entry.linked_entity_type ?? "standalone"}</span>
+                {editingEventId === entry.id ? (
+                  <div className="form-grid">
+                    <label className="field">
+                      <span>Title</span>
+                      <input
+                        className="list-row"
+                        type="text"
+                        value={editEventTitle}
+                        onChange={(event) => setEditEventTitle(event.target.value)}
+                        disabled={busyEventId === entry.id}
+                      />
+                    </label>
+                    <div className="row-inline">
+                      <label className="field">
+                        <span>Start</span>
+                        <input
+                          className="list-row"
+                          type="datetime-local"
+                          value={editEventStartAt}
+                          onChange={(event) => setEditEventStartAt(event.target.value)}
+                          disabled={busyEventId === entry.id}
+                        />
+                      </label>
+                      <label className="field">
+                        <span>End</span>
+                        <input
+                          className="list-row"
+                          type="datetime-local"
+                          value={editEventEndAt}
+                          onChange={(event) => setEditEventEndAt(event.target.value)}
+                          disabled={busyEventId === entry.id}
+                        />
+                      </label>
+                    </div>
+                    <div className="row-inline">
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void saveEventEdit(entry.id)}
+                        disabled={busyEventId === entry.id}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => setEditingEventId(null)}
+                        disabled={busyEventId === entry.id}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <strong>{entry.title}</strong>
+                      <p>
+                        {formatWhen(entry.start_at)} - {formatWhen(entry.end_at)}
+                      </p>
+                    </div>
+                    <div className="row-inline">
+                      <span className="pill">{entry.linked_entity_type ?? "standalone"}</span>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => startEventEdit(entry)}
+                        disabled={busyEventId === entry.id}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void deleteEvent(entry.id)}
+                        disabled={busyEventId === entry.id}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))
           )}
