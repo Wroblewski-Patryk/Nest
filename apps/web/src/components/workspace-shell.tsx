@@ -1,9 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { formatLocalizedDateTime, resolveAuraVariant, resolveLanguage, translate, type ModuleKey } from "@nest/shared-types";
-import { moduleReadiness } from "@/lib/mvp-snapshot";
 
-type WorkspaceNavKey = ModuleKey | "dashboard";
+type WorkspaceNavKey = ModuleKey | "dashboard" | "settings";
 
 type WorkspaceShellProps = {
   title: string;
@@ -22,7 +21,8 @@ type NavIconName =
   | "targets"
   | "calendar"
   | "journal"
-  | "insights";
+  | "insights"
+  | "settings";
 
 const NAV_ITEMS: Array<{
   href: string;
@@ -39,6 +39,7 @@ const NAV_ITEMS: Array<{
   { href: "/calendar", label: "Calendar", key: "calendar", icon: "calendar" },
   { href: "/journal", label: "Journal", key: "journal", icon: "journal" },
   { href: "/insights", label: "Insights", key: "insights", icon: "insights" },
+  { href: "/settings", label: "Settings", key: "settings", icon: "settings" },
 ];
 
 function MenuIcon({ name }: { name: NavIconName }) {
@@ -119,6 +120,20 @@ function MenuIcon({ name }: { name: NavIconName }) {
     );
   }
 
+  if (name === "settings") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 8.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5Z" stroke="currentColor" strokeWidth="1.7" />
+        <path
+          d="M4.7 13.3V10.7l2.1-.5c.2-.6.4-1.1.8-1.6L6.3 6.8l1.9-1.9 1.8 1.3c.5-.3 1-.6 1.6-.8l.5-2.1h2.6l.5 2.1c.6.2 1.1.4 1.6.8l1.8-1.3 1.9 1.9-1.3 1.8c.3.5.6 1 .8 1.6l2.1.5v2.6l-2.1.5c-.2.6-.4 1.1-.8 1.6l1.3 1.8-1.9 1.9-1.8-1.3c-.5.3-1 .6-1.6.8l-.5 2.1h-2.6l-.5-2.1c-.6-.2-1.1-.4-1.6-.8l-1.8 1.3-1.9-1.9 1.3-1.8c-.3-.5-.6-1-.8-1.6l-2.1-.5Z"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M4 19h16M7 15h3M11 11h3M15 7h2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
@@ -156,7 +171,7 @@ export function WorkspaceShell({ title, subtitle, module, navKey, children }: Wo
         </nav>
 
         <div className="workspace-rail-footer">
-          <Link href="/settings" className="workspace-settings-link">
+          <Link href="/settings?tab=access" className="workspace-settings-link">
             Access Control
           </Link>
         </div>
@@ -179,23 +194,12 @@ export function WorkspaceShell({ title, subtitle, module, navKey, children }: Wo
           </div>
         </header>
 
-        <nav className="workspace-nav" aria-label="Current cycle modules">
-          {moduleReadiness.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`workspace-tab ${activeNavKey === item.key ? "is-active" : ""}`}
-            >
-              <span>{item.label}</span>
-              <small>{item.state}</small>
-            </Link>
-          ))}
-        </nav>
-
         <main className="workspace-grid">{children}</main>
 
         <nav className="workspace-mobile-nav" aria-label="Mobile modules">
-          {NAV_ITEMS.slice(0, 5).map((item) => (
+          {NAV_ITEMS.filter((item) =>
+            ["dashboard", "tasks", "habits", "calendar", "settings"].includes(item.key)
+          ).map((item) => (
             <Link
               key={`mobile-${item.href}`}
               href={item.href}

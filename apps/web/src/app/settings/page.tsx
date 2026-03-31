@@ -4,17 +4,20 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
-import {
-  clearAuthSession,
-  getAuthToken,
-  setOnboardingRequired,
-} from "@/lib/auth-session";
+import { clearAuthSession, getAuthToken, setOnboardingRequired } from "@/lib/auth-session";
+
+type SettingsTab = "profile" | "access";
+type ProfileLanguage = "en" | "pl";
 
 type AuthUser = {
   id: string;
   name: string;
   email: string;
+  timezone?: string | null;
+  language?: ProfileLanguage;
+  locale?: string | null;
   onboarding_required?: boolean;
+  settings?: Record<string, unknown>;
 };
 
 type DelegatedCredential = {
@@ -61,6 +64,10 @@ type ApiRequestInit = Omit<RequestInit, "body"> & {
 };
 
 const FALLBACK_SCOPES = ["tasks:read", "tasks:write", "lists:read", "lists:write"];
+
+function detectSettingsTab(value: string | null): SettingsTab {
+  return value === "access" ? "access" : "profile";
+}
 
 async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
   const requestFn = nestApiClient.request as unknown as (
@@ -128,15 +135,18 @@ function formatDateTime(value: string | null): string {
 export default function SettingsPage() {
   const router = useRouter();
 
+  const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
   const [isBootstrapping, setIsBootstrapping] = useState(true);
   const [user, setUser] = useState<AuthUser | null>(null);
+
+  const [profileName, setProfileName] = useState("");
+  const [profileLanguage, setProfileLanguage] = useState<ProfileLanguage>("en");
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   const [scopeOptions, setScopeOptions] = useState<string[]>(FALLBACK_SCOPES);
   const [delegatedCredentials, setDelegatedCredentials] = useState<DelegatedCredential[]>([]);
   const [aiAgents, setAiAgents] = useState<AiAgent[]>([]);
-  const [aiAgentCredentials, setAiAgentCredentials] = useState<Record<string, DelegatedCredential[]>>(
-    {}
-  );
+  const [aiAgentCredentials, setAiAgentCredentials] = useState<Record<string, DelegatedCredential[]>>({});
   const [accessAudits, setAccessAudits] = useState<AccessAudit[]>([]);
 
   const [delegatedName, setDelegatedName] = useState("Telegram Delegated Agent");
@@ -145,12 +155,8 @@ export default function SettingsPage() {
   const [latestDelegatedToken, setLatestDelegatedToken] = useState("");
 
   const [newAgentName, setNewAgentName] = useState("Life Copilot");
-  const [agentCredentialDrafts, setAgentCredentialDrafts] = useState<
-    Record<string, AgentCredentialDraft>
-  >({});
-  const [latestAgentToken, setLatestAgentToken] = useState<{ agentName: string; token: string } | null>(
-    null
-  );
+  const [agentCredentialDrafts, setAgentCredentialDrafts] = useState<Record<string, AgentCredentialDraft>>({});
+  const [latestAgentToken, setLatestAgentToken] = useState<{ agentName: string; token: string } | null>(null);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -162,6 +168,33 @@ export default function SettingsPage() {
     setUser(null);
     router.replace("/auth");
   }, [router]);
+
+  const selectTab = useCallback((tab: SettingsTab) => {
+    setActiveTab(tab);
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const current = new URL(window.location.href);
+    if (tab === "profile") {
+      current.searchParams.delete("tab");
+    } else {
+      current.searchParams.set("tab", tab);
+    }
+
+    const nextPath = `${current.pathname}${current.search}${current.hash}`;
+    window.history.replaceState({}, "", nextPath);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const query = new URLSearchParams(window.location.search);
+    setActiveTab(detectSettingsTab(query.get("tab")));
+  }, []);
 
   const ensureAgentDrafts = useCallback((agents: AiAgent[], scopes: string[]) => {
     setAgentCredentialDrafts((current) => {
@@ -228,14 +261,11 @@ export default function SettingsPage() {
 
     try {
       const meResponse = await apiRequest<{ data: AuthUser }>("/auth/me");
-      if (meResponse.data.onboarding_required) {
-        setOnboardingRequired(true);
-        router.replace("/onboarding");
-        return;
-      }
-
-      setOnboardingRequired(false);
-      setUser(meResponse.data);
+      const me = meResponse.data;
+      setOnboardingRequired(Boolean(me.onboarding_required));
+      setUser(me);
+      setProfileName(me.name ?? "");
+      setProfileLanguage(me.language === "pl" ? "pl" : "en");
       await refreshData();
     } catch (error) {
       if (getErrorStatus(error) === 401) {
@@ -246,7 +276,7 @@ export default function SettingsPage() {
     } finally {
       setIsBootstrapping(false);
     }
-  }, [handleUnauthorized, refreshData, router]);
+  }, [handleUnauthorized, refreshData]);
 
   useEffect(() => {
     void bootstrapSession();
@@ -278,6 +308,43 @@ export default function SettingsPage() {
     }));
   }
 
+  async function saveProfilePreferences(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!profileName.trim()) {
+      setErrorMessage("Display name is required.");
+      return;
+    }
+
+    setIsSavingProfile(true);
+    setErrorMessage("");
+    setFeedback("");
+
+    try {
+      const normalizedLanguage = profileLanguage === "pl" ? "pl" : "en";
+      const response = await apiRequest<{ data: AuthUser }>("/auth/settings", {
+        method: "PATCH",
+        body: {
+          name: profileName.trim(),
+          language: normalizedLanguage,
+          locale: normalizedLanguage === "pl" ? "pl-PL" : "en-US",
+        },
+      });
+
+      setUser(response.data);
+      setProfileName(response.data.name ?? profileName.trim());
+      setProfileLanguage(response.data.language === "pl" ? "pl" : normalizedLanguage);
+      setFeedback("Profile preferences updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setIsSavingProfile(false);
+    }
+  }
+
   async function handleLogout() {
     try {
       await apiRequest("/auth/logout", { method: "POST" });
@@ -305,9 +372,7 @@ export default function SettingsPage() {
       const response = await nestApiClient.createDelegatedCredential({
         name: delegatedName.trim(),
         scopes: delegatedScopes,
-        ...(toIsoDateTime(delegatedExpiresAtLocal)
-          ? { expires_at: toIsoDateTime(delegatedExpiresAtLocal) }
-          : {}),
+        ...(toIsoDateTime(delegatedExpiresAtLocal) ? { expires_at: toIsoDateTime(delegatedExpiresAtLocal) } : {}),
       });
 
       setLatestDelegatedToken(response.data.plain_text_token);
@@ -385,9 +450,7 @@ export default function SettingsPage() {
       const response = await nestApiClient.createAiAgentCredential(agent.id, {
         name: draft.name.trim(),
         scopes: draft.scopes,
-        ...(toIsoDateTime(draft.expiresAtLocal)
-          ? { expires_at: toIsoDateTime(draft.expiresAtLocal) }
-          : {}),
+        ...(toIsoDateTime(draft.expiresAtLocal) ? { expires_at: toIsoDateTime(draft.expiresAtLocal) } : {}),
       });
       setLatestAgentToken({
         agentName: agent.name,
@@ -448,25 +511,22 @@ export default function SettingsPage() {
 
   return (
     <WorkspaceShell
-      title="Access Control"
-      subtitle="Manage delegated credentials, AI agents, and access-boundary audit visibility."
-      navKey="none"
+      title="Settings"
+      subtitle="Personal preferences for your account, plus advanced AI and delegated access control."
+      navKey="settings"
+      module="insights"
     >
       <div className="stack">
+        <MetricCard label="Signed user" value={user?.name ?? "..."} />
+        <MetricCard label="Language" value={(user?.language ?? profileLanguage).toUpperCase()} />
         <MetricCard label="Delegated active" value={String(activeDelegatedCount)} />
         <MetricCard label="AI agents" value={String(aiAgents.length)} />
-        <MetricCard label="Audit events" value={String(accessAudits.length)} />
       </div>
 
       <Panel
         title="Session"
         actions={
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={handleLogout}
-            disabled={isBootstrapping}
-          >
+          <button type="button" className="btn-secondary" onClick={handleLogout} disabled={isBootstrapping}>
             Sign out
           </button>
         }
@@ -476,284 +536,343 @@ export default function SettingsPage() {
         </p>
       </Panel>
 
-      <Panel
-        title="Delegated Credentials"
-        actions={
+      <Panel title="Settings Tabs">
+        <div className="settings-tabs">
           <button
             type="button"
-            className="btn-secondary"
-            onClick={() => void refreshData()}
-            disabled={isRefreshing || isBootstrapping}
+            className={`settings-tab ${activeTab === "profile" ? "is-active" : ""}`}
+            onClick={() => selectTab("profile")}
           >
-            {isRefreshing ? "Refreshing..." : "Refresh"}
+            Profile
           </button>
-        }
-      >
-        <form className="form-grid" onSubmit={createDelegatedCredential}>
-          <label className="field">
-            <span>Credential name</span>
-            <input
-              className="list-row"
-              type="text"
-              value={delegatedName}
-              onChange={(event) => setDelegatedName(event.target.value)}
-              disabled={isBootstrapping}
-            />
-          </label>
-          <label className="field">
-            <span>Expires at (optional)</span>
-            <input
-              className="list-row"
-              type="datetime-local"
-              value={delegatedExpiresAtLocal}
-              onChange={(event) => setDelegatedExpiresAtLocal(event.target.value)}
-              disabled={isBootstrapping}
-            />
-          </label>
-          <div className="field">
-            <span>Scopes</span>
-            <div className="row-inline">
-              {scopeOptions.map((scope) => (
-                <label key={scope} className="pill-link">
-                  <input
-                    type="checkbox"
-                    checked={delegatedScopes.includes(scope)}
-                    onChange={() => setDelegatedScopes((current) => toggleScope(current, scope))}
-                    disabled={isBootstrapping}
-                  />{" "}
-                  {scope}
-                </label>
-              ))}
-            </div>
-          </div>
-          <button type="submit" className="btn-primary" disabled={isBootstrapping}>
-            Issue delegated credential
+          <button
+            type="button"
+            className={`settings-tab ${activeTab === "access" ? "is-active" : ""}`}
+            onClick={() => selectTab("access")}
+          >
+            Access Control
           </button>
-        </form>
-
-        <ul className="list">
-          {delegatedCredentials.length === 0 ? (
-            <li className="list-row">
-              <p>No delegated credentials yet.</p>
-            </li>
-          ) : (
-            delegatedCredentials.map((credential) => (
-              <li className="list-row" key={credential.id}>
-                <div>
-                  <strong>{credential.name}</strong>
-                  <p>
-                    {credential.status} | scopes: {credential.scopes.join(", ")}
-                  </p>
-                  <p>
-                    last used: {formatDateTime(credential.last_used_at)} | expires:{" "}
-                    {formatDateTime(credential.expires_at)}
-                  </p>
-                </div>
-                <div className="row-inline">
-                  <span className={`pill ${credential.status === "active" ? "state-success" : ""}`}>
-                    {credential.status}
-                  </span>
-                  <button
-                    type="button"
-                    className="pill-link"
-                    disabled={credential.status !== "active"}
-                    onClick={() => void revokeDelegatedCredential(credential.id)}
-                  >
-                    Revoke
-                  </button>
-                </div>
-              </li>
-            ))
-          )}
-        </ul>
+        </div>
       </Panel>
 
-      <Panel title="AI Agents">
-        <form className="form-grid" onSubmit={createAiAgent}>
-          <label className="field">
-            <span>New AI agent name</span>
-            <input
-              className="list-row"
-              type="text"
-              value={newAgentName}
-              onChange={(event) => setNewAgentName(event.target.value)}
-              disabled={isBootstrapping}
-            />
-          </label>
-          <button type="submit" className="btn-secondary" disabled={isBootstrapping}>
-            Create AI agent
-          </button>
-        </form>
+      {activeTab === "profile" ? (
+        <>
+          <Panel title="User Profile">
+            <form className="form-grid" onSubmit={saveProfilePreferences}>
+              <label className="field">
+                <span>Your name / nickname</span>
+                <input
+                  className="list-row"
+                  type="text"
+                  value={profileName}
+                  onChange={(event) => setProfileName(event.target.value)}
+                  disabled={isSavingProfile || isBootstrapping}
+                />
+              </label>
+              <label className="field">
+                <span>App language</span>
+                <select
+                  className="list-row"
+                  value={profileLanguage}
+                  onChange={(event) => setProfileLanguage(event.target.value as ProfileLanguage)}
+                  disabled={isSavingProfile || isBootstrapping}
+                >
+                  <option value="en">English</option>
+                  <option value="pl">Polski</option>
+                </select>
+              </label>
+              <button type="submit" className="btn-primary" disabled={isSavingProfile || isBootstrapping}>
+                {isSavingProfile ? "Saving..." : "Save preferences"}
+              </button>
+            </form>
+          </Panel>
 
-        <ul className="list">
-          {aiAgents.length === 0 ? (
-            <li className="list-row">
-              <p>No AI agents configured.</p>
-            </li>
-          ) : (
-            aiAgents.map((agent) => {
-              const draft = agentCredentialDrafts[agent.id];
-              const credentials = aiAgentCredentials[agent.id] ?? [];
+          <Panel title="Preference Scope">
+            <p className="callout">
+              Profile tab is dedicated to daily user preferences. Security tokens and AI agent permissions are placed in
+              the <strong> Access Control</strong> tab.
+            </p>
+          </Panel>
+        </>
+      ) : null}
 
-              return (
-                <li className="list-row" key={agent.id}>
-                  <div className="form-grid">
+      {activeTab === "access" ? (
+        <>
+          <Panel
+            title="Delegated Credentials"
+            actions={
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => void refreshData()}
+                disabled={isRefreshing || isBootstrapping}
+              >
+                {isRefreshing ? "Refreshing..." : "Refresh"}
+              </button>
+            }
+          >
+            <form className="form-grid" onSubmit={createDelegatedCredential}>
+              <label className="field">
+                <span>Credential name</span>
+                <input
+                  className="list-row"
+                  type="text"
+                  value={delegatedName}
+                  onChange={(event) => setDelegatedName(event.target.value)}
+                  disabled={isBootstrapping}
+                />
+              </label>
+              <label className="field">
+                <span>Expires at (optional)</span>
+                <input
+                  className="list-row"
+                  type="datetime-local"
+                  value={delegatedExpiresAtLocal}
+                  onChange={(event) => setDelegatedExpiresAtLocal(event.target.value)}
+                  disabled={isBootstrapping}
+                />
+              </label>
+              <div className="field">
+                <span>Scopes</span>
+                <div className="row-inline">
+                  {scopeOptions.map((scope) => (
+                    <label key={scope} className="pill-link">
+                      <input
+                        type="checkbox"
+                        checked={delegatedScopes.includes(scope)}
+                        onChange={() => setDelegatedScopes((current) => toggleScope(current, scope))}
+                        disabled={isBootstrapping}
+                      />{" "}
+                      {scope}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <button type="submit" className="btn-primary" disabled={isBootstrapping}>
+                Issue delegated credential
+              </button>
+            </form>
+
+            <ul className="list">
+              {delegatedCredentials.length === 0 ? (
+                <li className="list-row">
+                  <p>No delegated credentials yet.</p>
+                </li>
+              ) : (
+                delegatedCredentials.map((credential) => (
+                  <li className="list-row" key={credential.id}>
                     <div>
-                      <strong>{agent.name}</strong>
+                      <strong>{credential.name}</strong>
                       <p>
-                        {agent.email} | status: {agent.agent_status}
+                        {credential.status} | scopes: {credential.scopes.join(", ")}
                       </p>
                       <p>
-                        created: {formatDateTime(agent.created_at)} | last used:{" "}
-                        {formatDateTime(agent.last_used_at)}
+                        last used: {formatDateTime(credential.last_used_at)} | expires: {formatDateTime(credential.expires_at)}
                       </p>
                     </div>
+                    <div className="row-inline">
+                      <span className={`pill ${credential.status === "active" ? "state-success" : ""}`}>{credential.status}</span>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        disabled={credential.status !== "active"}
+                        onClick={() => void revokeDelegatedCredential(credential.id)}
+                      >
+                        Revoke
+                      </button>
+                    </div>
+                  </li>
+                ))
+              )}
+            </ul>
+          </Panel>
 
-                    <div className="form-grid">
-                      <label className="field">
-                        <span>Credential name</span>
-                        <input
-                          className="list-row"
-                          type="text"
-                          value={draft?.name ?? ""}
-                          onChange={(event) =>
-                            updateAgentDraft(agent.id, (current) => ({
-                              ...current,
-                              name: event.target.value,
-                            }))
-                          }
-                          disabled={agent.agent_status !== "active"}
-                        />
-                      </label>
-                      <label className="field">
-                        <span>Expires at (optional)</span>
-                        <input
-                          className="list-row"
-                          type="datetime-local"
-                          value={draft?.expiresAtLocal ?? ""}
-                          onChange={(event) =>
-                            updateAgentDraft(agent.id, (current) => ({
-                              ...current,
-                              expiresAtLocal: event.target.value,
-                            }))
-                          }
-                          disabled={agent.agent_status !== "active"}
-                        />
-                      </label>
-                      <div className="field">
-                        <span>Scopes</span>
-                        <div className="row-inline">
-                          {scopeOptions.map((scope) => (
-                            <label key={`${agent.id}-${scope}`} className="pill-link">
-                              <input
-                                type="checkbox"
-                                checked={draft?.scopes?.includes(scope) ?? false}
-                                onChange={() =>
-                                  updateAgentDraft(agent.id, (current) => ({
-                                    ...current,
-                                    scopes: toggleScope(current.scopes, scope),
-                                  }))
-                                }
-                                disabled={agent.agent_status !== "active"}
-                              />{" "}
-                              {scope}
-                            </label>
-                          ))}
+          <Panel title="AI Agents">
+            <form className="form-grid" onSubmit={createAiAgent}>
+              <label className="field">
+                <span>New AI agent name</span>
+                <input
+                  className="list-row"
+                  type="text"
+                  value={newAgentName}
+                  onChange={(event) => setNewAgentName(event.target.value)}
+                  disabled={isBootstrapping}
+                />
+              </label>
+              <button type="submit" className="btn-secondary" disabled={isBootstrapping}>
+                Create AI agent
+              </button>
+            </form>
+
+            <ul className="list">
+              {aiAgents.length === 0 ? (
+                <li className="list-row">
+                  <p>No AI agents configured.</p>
+                </li>
+              ) : (
+                aiAgents.map((agent) => {
+                  const draft = agentCredentialDrafts[agent.id];
+                  const credentials = aiAgentCredentials[agent.id] ?? [];
+
+                  return (
+                    <li className="list-row" key={agent.id}>
+                      <div className="form-grid">
+                        <div>
+                          <strong>{agent.name}</strong>
+                          <p>
+                            {agent.email} | status: {agent.agent_status}
+                          </p>
+                          <p>
+                            created: {formatDateTime(agent.created_at)} | last used: {formatDateTime(agent.last_used_at)}
+                          </p>
                         </div>
-                      </div>
-                      <div className="row-inline">
-                        <button
-                          type="button"
-                          className="btn-secondary"
-                          disabled={agent.agent_status !== "active"}
-                          onClick={() => void issueAiAgentCredential(agent)}
-                        >
-                          Issue credential
-                        </button>
-                        <button
-                          type="button"
-                          className="pill-link"
-                          disabled={agent.agent_status !== "active"}
-                          onClick={() => void deactivateAiAgent(agent)}
-                        >
-                          Deactivate agent
-                        </button>
-                      </div>
-                    </div>
 
-                    <ul className="list">
-                      {credentials.length === 0 ? (
-                        <li className="list-row">
-                          <p>No credentials for this agent.</p>
-                        </li>
-                      ) : (
-                        credentials.map((credential) => (
-                          <li className="list-row" key={credential.id}>
-                            <div>
-                              <strong>{credential.name}</strong>
-                              <p>
-                                {credential.status} | scopes: {credential.scopes.join(", ")}
-                              </p>
-                              <p>
-                                last used: {formatDateTime(credential.last_used_at)} | expires:{" "}
-                                {formatDateTime(credential.expires_at)}
-                              </p>
+                        <div className="form-grid">
+                          <label className="field">
+                            <span>Credential name</span>
+                            <input
+                              className="list-row"
+                              type="text"
+                              value={draft?.name ?? ""}
+                              onChange={(event) =>
+                                updateAgentDraft(agent.id, (current) => ({
+                                  ...current,
+                                  name: event.target.value,
+                                }))
+                              }
+                              disabled={agent.agent_status !== "active"}
+                            />
+                          </label>
+                          <label className="field">
+                            <span>Expires at (optional)</span>
+                            <input
+                              className="list-row"
+                              type="datetime-local"
+                              value={draft?.expiresAtLocal ?? ""}
+                              onChange={(event) =>
+                                updateAgentDraft(agent.id, (current) => ({
+                                  ...current,
+                                  expiresAtLocal: event.target.value,
+                                }))
+                              }
+                              disabled={agent.agent_status !== "active"}
+                            />
+                          </label>
+                          <div className="field">
+                            <span>Scopes</span>
+                            <div className="row-inline">
+                              {scopeOptions.map((scope) => (
+                                <label key={`${agent.id}-${scope}`} className="pill-link">
+                                  <input
+                                    type="checkbox"
+                                    checked={draft?.scopes?.includes(scope) ?? false}
+                                    onChange={() =>
+                                      updateAgentDraft(agent.id, (current) => ({
+                                        ...current,
+                                        scopes: toggleScope(current.scopes, scope),
+                                      }))
+                                    }
+                                    disabled={agent.agent_status !== "active"}
+                                  />{" "}
+                                  {scope}
+                                </label>
+                              ))}
                             </div>
+                          </div>
+                          <div className="row-inline">
+                            <button
+                              type="button"
+                              className="btn-secondary"
+                              disabled={agent.agent_status !== "active"}
+                              onClick={() => void issueAiAgentCredential(agent)}
+                            >
+                              Issue credential
+                            </button>
                             <button
                               type="button"
                               className="pill-link"
-                              disabled={credential.status !== "active"}
-                              onClick={() => void revokeAiAgentCredential(agent.id, credential.id)}
+                              disabled={agent.agent_status !== "active"}
+                              onClick={() => void deactivateAiAgent(agent)}
                             >
-                              Revoke
+                              Deactivate agent
                             </button>
-                          </li>
-                        ))
-                      )}
-                    </ul>
-                  </div>
+                          </div>
+                        </div>
+
+                        <ul className="list">
+                          {credentials.length === 0 ? (
+                            <li className="list-row">
+                              <p>No credentials for this agent.</p>
+                            </li>
+                          ) : (
+                            credentials.map((credential) => (
+                              <li className="list-row" key={credential.id}>
+                                <div>
+                                  <strong>{credential.name}</strong>
+                                  <p>
+                                    {credential.status} | scopes: {credential.scopes.join(", ")}
+                                  </p>
+                                  <p>
+                                    last used: {formatDateTime(credential.last_used_at)} | expires: {formatDateTime(credential.expires_at)}
+                                  </p>
+                                </div>
+                                <button
+                                  type="button"
+                                  className="pill-link"
+                                  disabled={credential.status !== "active"}
+                                  onClick={() => void revokeAiAgentCredential(agent.id, credential.id)}
+                                >
+                                  Revoke
+                                </button>
+                              </li>
+                            ))
+                          )}
+                        </ul>
+                      </div>
+                    </li>
+                  );
+                })
+              )}
+            </ul>
+          </Panel>
+
+          <Panel title="Access Audits">
+            <ul className="list">
+              {accessAudits.length === 0 ? (
+                <li className="list-row">
+                  <p>No access-boundary audit events yet.</p>
                 </li>
-              );
-            })
-          )}
-        </ul>
-      </Panel>
+              ) : (
+                accessAudits.map((audit) => (
+                  <li className="list-row" key={audit.id}>
+                    <div>
+                      <strong>
+                        {audit.reason} ({audit.principal_type}/{audit.token_mode ?? "unknown"})
+                      </strong>
+                      <p>
+                        {audit.method} {audit.route}
+                        {audit.required_scope ? ` | required: ${audit.required_scope}` : ""}
+                      </p>
+                    </div>
+                    <span className="mono-note">{formatDateTime(audit.occurred_at)}</span>
+                  </li>
+                ))
+              )}
+            </ul>
+          </Panel>
 
-      <Panel title="Access Audits">
-        <ul className="list">
-          {accessAudits.length === 0 ? (
-            <li className="list-row">
-              <p>No access-boundary audit events yet.</p>
-            </li>
-          ) : (
-            accessAudits.map((audit) => (
-              <li className="list-row" key={audit.id}>
-                <div>
-                  <strong>
-                    {audit.reason} ({audit.principal_type}/{audit.token_mode ?? "unknown"})
-                  </strong>
-                  <p>
-                    {audit.method} {audit.route}
-                    {audit.required_scope ? ` | required: ${audit.required_scope}` : ""}
-                  </p>
-                </div>
-                <span className="mono-note">{formatDateTime(audit.occurred_at)}</span>
-              </li>
-            ))
-          )}
-        </ul>
-      </Panel>
+          {latestDelegatedToken ? (
+            <Panel title="New Delegated Token">
+              <p className="callout">{latestDelegatedToken}</p>
+            </Panel>
+          ) : null}
 
-      {latestDelegatedToken ? (
-        <Panel title="New Delegated Token">
-          <p className="callout">{latestDelegatedToken}</p>
-        </Panel>
-      ) : null}
-
-      {latestAgentToken ? (
-        <Panel title={`New AI Agent Token (${latestAgentToken.agentName})`}>
-          <p className="callout">{latestAgentToken.token}</p>
-        </Panel>
+          {latestAgentToken ? (
+            <Panel title={`New AI Agent Token (${latestAgentToken.agentName})`}>
+              <p className="callout">{latestAgentToken.token}</p>
+            </Panel>
+          ) : null}
+        </>
       ) : null}
 
       {feedback ? (

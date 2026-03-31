@@ -1032,6 +1032,37 @@ Last updated: 2026-04-01
       `php artisan test --filter=AuthApiTest`.
   - Done on: 2026-04-01
 
+- [x] NEST-173 Simplify module chrome and split Settings into profile/access tabs
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-171, NEST-172
+  - Done when:
+    - top `workspace-nav` cycle pills are removed from all module views,
+    - settings appears in main left navigation with outline icon,
+    - Settings module is tabbed (`Profile`, `Access Control`) and supports
+      updating user display name + language,
+    - inconsistent per-module redirect behavior is removed by making middleware
+      session/onboarding checks deterministic for guarded routes.
+  - Notes:
+    - Removed secondary module pills from shell and promoted Settings as
+      primary nav item:
+      `apps/web/src/components/workspace-shell.tsx`.
+    - Added Settings tabs and profile preference save flow via
+      `PATCH /api/v1/auth/settings`:
+      `apps/web/src/app/settings/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Eliminated stale onboarding-cookie drift by resolving session state from
+      API for guarded routes in middleware:
+      `apps/web/middleware.ts`.
+    - Removed page-local onboarding redirect from tasks to avoid module-specific
+      jump behavior:
+      `apps/web/src/app/tasks/page.tsx`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

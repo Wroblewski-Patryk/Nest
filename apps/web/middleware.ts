@@ -107,7 +107,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     request.cookies.get(ONBOARDING_REQUIRED_COOKIE_KEY)?.value
   );
 
-  if (hasToken && onboardingRequired === null && token) {
+  if (hasToken && token) {
     const resolved = await resolveSessionFromApi(token);
     if (!resolved.authenticated) {
       const unauthenticatedResult = resolveRouteAccess({

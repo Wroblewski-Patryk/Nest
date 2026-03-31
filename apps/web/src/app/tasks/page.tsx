@@ -192,13 +192,7 @@ export default function TasksPage() {
 
     try {
       const meResponse = await apiRequest<{ data: AuthUser }>("/auth/me");
-      if (meResponse.data.onboarding_required) {
-        setOnboardingRequired(true);
-        router.replace("/onboarding");
-        return;
-      }
-
-      setOnboardingRequired(false);
+      setOnboardingRequired(Boolean(meResponse.data.onboarding_required));
       setUser(meResponse.data);
       await refreshWorkspaceData();
     } catch (error) {
