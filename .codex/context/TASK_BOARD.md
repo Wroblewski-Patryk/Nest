@@ -490,6 +490,12 @@ Last updated: 2026-03-21
     - Day0 monitoring checklist is executed and logged,
     - Day1 incident + regression review is completed,
     - first stabilization patch decision is documented.
+  - Notes:
+    - Validation packet prepared:
+      `docs/operations/day0_day1_operational_validation_packet_2026-03-31.md`.
+    - Current packet includes dry-run production smoke evidence, web smoke pass,
+      and API feature-suite regression review.
+    - Task remains open pending live post-launch Day0/Day1 evidence capture.
 
 - [ ] NEST-124 Publish Week1 stabilization summary and next backlog wave
   - Status: BACKLOG

@@ -485,6 +485,10 @@ Last updated: 2026-03-21
   runbook evidence in dry-run mode; live environment and device pass evidence is
   still required to close the task
   (`docs/operations/production_launch_window_execution_2026-03-21.md`)
+- `NEST-123` Day0/Day1 validation packet prepared with monitoring/regression
+  evidence and first stabilization patch decision; live post-launch evidence is
+  still required for task closure
+  (`docs/operations/day0_day1_operational_validation_packet_2026-03-31.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

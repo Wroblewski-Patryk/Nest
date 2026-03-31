@@ -79,11 +79,19 @@ Execution evidence (2026-03-21):
 - [ ] Validate first real user loops (tasks/calendar/habits/journal) (`NEST-123`).
 - [ ] Validate notification and localization behavior (`NEST-123`).
 
+Validation packet (2026-03-31):
+- `docs/operations/day0_day1_operational_validation_packet_2026-03-31.md`
+- Packet contains dry-run and regression-review evidence; live post-launch
+  Day0 evidence is still required.
+
 ### Day 1
 
 - [ ] Review incident log and unresolved warnings (`NEST-123`).
 - [ ] Review parity/a11y/regression follow-up items (`NEST-123`).
 - [ ] Decide on first stabilization patch release (`NEST-123`).
+
+Validation packet (2026-03-31):
+- `docs/operations/day0_day1_operational_validation_packet_2026-03-31.md`
 
 ### Week 1
 
