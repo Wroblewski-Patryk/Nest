@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AiCopilotConversationController;
 use App\Http\Controllers\Api\AiRecommendationFeedbackController;
 use App\Http\Controllers\Api\AiWeeklyPlanController;
 use App\Http\Controllers\Api\AnalyticsIngestionController;
+use App\Http\Controllers\Api\AnalyticsLoopController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AutomationRuleController;
 use App\Http\Controllers\Api\AutomationRunController;
@@ -70,6 +71,8 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/billing/dunning/attempts', [BillingSelfServeController::class, 'dunningAttempts']);
         Route::get('/billing/audit/reconciliation', [BillingSelfServeController::class, 'reconciliation']);
         Route::post('/analytics/events', [AnalyticsIngestionController::class, 'ingest']);
+        Route::post('/analytics/experiments/hook', [AnalyticsLoopController::class, 'trackExperimentHook']);
+        Route::get('/analytics/loops/decision-dashboard', [AnalyticsLoopController::class, 'decisionDashboard']);
         Route::middleware('ai.surface')->group(function (): void {
             Route::get('/ai/context-graph', [AiContextGraphController::class, 'show']);
             Route::post('/ai/copilot/conversation', [AiCopilotConversationController::class, 'reply']);

@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { AiBriefingItem, InsightsTrendResponse, LifeAreaBalanceResponse, UiAsyncState } from "@nest/shared-types";
+import type {
+  AiBriefingItem,
+  AnalyticsLoopDecisionDashboardResponse,
+  InsightsTrendResponse,
+  LifeAreaBalanceResponse,
+  UiAsyncState,
+} from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
 import { insightsSnapshot } from "@/lib/mvp-snapshot";
@@ -37,6 +43,7 @@ export default function InsightsPage() {
   const [habitTrend, setHabitTrend] = useState<InsightsTrendResponse>(EMPTY_TREND);
   const [goalTrend, setGoalTrend] = useState<InsightsTrendResponse>(EMPTY_TREND);
   const [briefing, setBriefing] = useState<AiBriefingItem | null>(null);
+  const [growthLoops, setGrowthLoops] = useState<AnalyticsLoopDecisionDashboardResponse["data"] | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -54,15 +61,17 @@ export default function InsightsPage() {
       nestApiClient.getInsightsTrends("tasks", { period: "weekly", points: 6 }),
       nestApiClient.getInsightsTrends("habits", { period: "weekly", points: 6 }),
       nestApiClient.getInsightsTrends("goals", { period: "weekly", points: 6 }),
+      nestApiClient.getAnalyticsDecisionDashboard({ window_days: 28 }),
       briefingRequest,
     ])
-      .then(([balanceResponse, tasksResponse, habitsResponse, goalsResponse, briefingResponse]) => {
+      .then(([balanceResponse, tasksResponse, habitsResponse, goalsResponse, dashboardResponse, briefingResponse]) => {
         if (!mounted) return;
 
         setBalance(balanceResponse);
         setTaskTrend(tasksResponse);
         setHabitTrend(habitsResponse);
         setGoalTrend(goalsResponse);
+        setGrowthLoops(dashboardResponse.data);
         setBriefing(briefingResponse);
         setState("success");
         setDetail("Insights API calls succeeded.");
@@ -142,6 +151,10 @@ export default function InsightsPage() {
           label="Trend events"
           value={String(trends.reduce((sum, trend) => sum + trend.total, 0))}
         />
+        <MetricCard
+          label="7d retention"
+          value={growthLoops ? `${growthLoops.retention.retention_rate_percent.toFixed(1)}%` : "n/a"}
+        />
       </div>
 
       <Panel title="API Status">
@@ -187,6 +200,38 @@ export default function InsightsPage() {
             </li>
           ))}
         </ul>
+      </Panel>
+
+      <Panel title="Growth Loops Dashboard">
+        {growthLoops ? (
+          <div className="panel-content">
+            <p className="callout">
+              Funnel: {growthLoops.funnel.signups} signups, {growthLoops.funnel.onboarding_completed} onboarding
+              complete, {growthLoops.funnel.trial_started} trials, {growthLoops.funnel.activated} activations.
+            </p>
+            <p className="callout">
+              Retention: {growthLoops.retention.retained_users}/{growthLoops.retention.previous_active_users} retained
+              users ({growthLoops.retention.retention_rate_percent.toFixed(1)}%).
+            </p>
+            <p className="callout">
+              Monetization: MRR {(growthLoops.monetization.estimated_mrr_minor / 100).toFixed(2)} with
+              {" "}
+              {growthLoops.monetization.active_subscriptions} active subscriptions.
+            </p>
+            <ul className="list">
+              {growthLoops.weekly_actions.map((action) => (
+                <li key={action} className="list-row">
+                  <div>
+                    <strong>Weekly action</strong>
+                    <p>{action}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p className="callout">Growth loop dashboard unavailable. Check analytics loop endpoint health.</p>
+        )}
       </Panel>
 
       <Panel title="AI Briefing">

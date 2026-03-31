@@ -18,7 +18,7 @@ Every event must include:
 - `user_id`
 - `session_id` (nullable for server-originated events)
 - `platform` (`web` | `mobile` | `api` | `system`)
-- `module` (`tasks` | `habits` | `goals` | `journal` | `calendar` | `integrations`)
+- `module` (`tasks` | `habits` | `goals` | `journal` | `calendar` | `integrations` | `billing` | `onboarding` | `analytics`)
 - `trace_id` (optional, propagated when available)
 - `properties` (object, event-specific payload)
 
@@ -79,6 +79,18 @@ Every event must include:
 - `integrations.sync.failed`
 - `integrations.conflict.detected`
 - `integrations.conflict.resolved`
+
+### Billing / Onboarding / Growth Loops
+
+- `billing.checkout.session_created`
+- `billing.portal.session_created`
+- `billing.subscription.recovered`
+- `onboarding.flow.started`
+- `onboarding.flow.completed`
+- `experiments.onboarding.exposed`
+- `experiments.onboarding.converted`
+- `experiments.pricing.exposed`
+- `experiments.pricing.converted`
 
 ## Event Quality Constraints
 

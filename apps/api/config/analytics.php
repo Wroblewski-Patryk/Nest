@@ -4,7 +4,7 @@ return [
     'retention_days' => (int) env('ANALYTICS_RETENTION_DAYS', 180),
     'max_batch_size' => (int) env('ANALYTICS_INGEST_MAX_BATCH_SIZE', 100),
     'allowed_platforms' => ['web', 'mobile', 'api', 'system'],
-    'allowed_modules' => ['tasks', 'habits', 'goals', 'journal', 'calendar', 'integrations'],
+    'allowed_modules' => ['tasks', 'habits', 'goals', 'journal', 'calendar', 'integrations', 'billing', 'onboarding', 'analytics'],
     'allowed_event_names' => [
         'tasks.list.created',
         'tasks.list.updated',
@@ -36,5 +36,14 @@ return [
         'integrations.sync.failed',
         'integrations.conflict.detected',
         'integrations.conflict.resolved',
+        'billing.checkout.session_created',
+        'billing.portal.session_created',
+        'billing.subscription.recovered',
+        'onboarding.flow.started',
+        'onboarding.flow.completed',
+        'experiments.onboarding.exposed',
+        'experiments.onboarding.converted',
+        'experiments.pricing.exposed',
+        'experiments.pricing.converted',
     ],
 ];

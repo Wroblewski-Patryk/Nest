@@ -26,6 +26,21 @@ export default function BillingPage() {
   const [reconciliation, setReconciliation] = useState<BillingAuditReconciliationItem | null>(null);
   const [sessions, setSessions] = useState<BillingSelfServeSessionItem[]>([]);
   const [busyAction, setBusyAction] = useState<BillingAction | null>(null);
+  const pricingExperiment = useMemo(() => {
+    if (typeof window === "undefined") {
+      return {
+        experimentKey: "pricing-paywall-v3",
+        variantKey: "control",
+      };
+    }
+
+    const query = new URLSearchParams(window.location.search);
+
+    return {
+      experimentKey: query.get("pricing_experiment") ?? "pricing-paywall-v3",
+      variantKey: query.get("pricing_variant") ?? "control",
+    };
+  }, []);
 
   const loadData = useCallback(async () => {
     const [subscriptionResponse, eventResponse, dunningResponse, reconciliationResponse] = await Promise.all([
@@ -43,6 +58,17 @@ export default function BillingPage() {
 
   useEffect(() => {
     let mounted = true;
+
+    void nestApiClient.trackAnalyticsExperimentHook({
+      context: "pricing",
+      action: "exposed",
+      experiment_key: pricingExperiment.experimentKey,
+      variant_key: pricingExperiment.variantKey,
+      platform: "web",
+      properties: {
+        surface: "billing_page",
+      },
+    }).catch(() => undefined);
 
     loadData()
       .then(() => {
@@ -68,7 +94,7 @@ export default function BillingPage() {
     return () => {
       mounted = false;
     };
-  }, [loadData]);
+  }, [loadData, pricingExperiment.experimentKey, pricingExperiment.variantKey]);
 
   const runAction = useCallback(
     async (action: BillingAction) => {
@@ -86,6 +112,17 @@ export default function BillingPage() {
             success_url: "https://nest.local/billing/success",
             cancel_url: "https://nest.local/billing/cancel",
           });
+          void nestApiClient.trackAnalyticsExperimentHook({
+            context: "pricing",
+            action: "converted",
+            experiment_key: pricingExperiment.experimentKey,
+            variant_key: pricingExperiment.variantKey,
+            platform: "web",
+            properties: {
+              surface: "billing_page",
+              event: "checkout_session_created",
+            },
+          }).catch(() => undefined);
           setSessions((current) => [response.data, ...current].slice(0, 6));
         }
         if (action === "portal") {
@@ -113,7 +150,7 @@ export default function BillingPage() {
         setBusyAction(null);
       }
     },
-    [loadData, subscription?.plan?.plan_code]
+    [loadData, pricingExperiment.experimentKey, pricingExperiment.variantKey, subscription?.plan?.plan_code]
   );
 
   const metrics = useMemo(

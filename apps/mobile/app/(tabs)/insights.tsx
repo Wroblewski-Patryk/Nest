@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { AiBriefingItem, LifeAreaBalanceResponse, UiAsyncState } from '@nest/shared-types';
+import type { AiBriefingItem, AnalyticsLoopDecisionDashboardResponse, LifeAreaBalanceResponse, UiAsyncState } from '@nest/shared-types';
 import { ModuleScreen } from '@/components/mvp/ModuleScreen';
 import { nestApiClient } from '@/constants/apiClient';
 import { insightsData } from '@/constants/mvpData';
@@ -29,13 +29,15 @@ export default function InsightsScreen() {
       nestApiClient.getInsightsTrends('tasks', { period: 'weekly', points: 6 }),
       nestApiClient.getInsightsTrends('habits', { period: 'weekly', points: 6 }),
       nestApiClient.getInsightsTrends('goals', { period: 'weekly', points: 6 }),
+      nestApiClient.getAnalyticsDecisionDashboard({ window_days: 28 }),
       nestApiClient.getAiBriefings({ per_page: 1 }).then((response) => response.data[0] ?? null).catch(() => null),
     ])
-      .then(([balance, taskTrend, habitTrend, goalTrend, latestBriefing]) => {
+      .then(([balance, taskTrend, habitTrend, goalTrend, dashboardResponse, latestBriefing]) => {
         if (!mounted) return;
 
         const balancePayload = balance ?? emptyBalance;
         const trendTotal = taskTrend.meta.total + habitTrend.meta.total + goalTrend.meta.total;
+        const dashboard = dashboardResponse.data as AnalyticsLoopDecisionDashboardResponse['data'];
 
         setApiState('success');
         setApiDetail('Insights API calls succeeded.');
@@ -44,6 +46,7 @@ export default function InsightsScreen() {
           { label: 'Balance', value: balancePayload.meta.global_balance_score.toFixed(1) },
           { label: 'Window', value: `${balancePayload.meta.window_days}d` },
           { label: 'Trends', value: String(trendTotal) },
+          { label: 'Retention', value: `${dashboard.retention.retention_rate_percent.toFixed(1)}%` },
         ]);
         setRows([
           ...balancePayload.data.slice(0, 2).map((row) => ({
@@ -55,6 +58,11 @@ export default function InsightsScreen() {
             title: 'Tasks/Habits/Goals',
             detail: 'weekly trend totals',
             badge: `${taskTrend.meta.total}/${habitTrend.meta.total}/${goalTrend.meta.total}`,
+          },
+          {
+            title: 'Growth loops',
+            detail: `${dashboard.funnel.activated} activations | MRR ${(dashboard.monetization.estimated_mrr_minor / 100).toFixed(2)}`,
+            badge: `${dashboard.retention.retention_rate_percent.toFixed(1)}%`,
           },
           ...(latestBriefing
             ? [

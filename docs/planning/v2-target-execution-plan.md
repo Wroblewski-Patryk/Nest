@@ -216,7 +216,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - dunning and payment recovery flows are automated,
     - financial event audit trail is complete and reconciled.
 
-- [ ] NEST-150 Implement activation, retention, and monetization analytics loops
+- [x] NEST-150 Implement activation, retention, and monetization analytics loops
   - Depends on: NEST-149
   - Done when:
     - funnel and retention metrics are tracked end-to-end,

@@ -583,11 +583,15 @@ Last updated: 2026-03-31
   automated dunning delivered with reconciliation visibility, command-driven
   dunning execution, and updated web/mobile billing surfaces
   (`docs/modules/billing_self_serve_checkout_portal_dunning_v2.md`)
+- `NEST-150` completed: activation/retention/monetization analytics loops
+  delivered with decision dashboard APIs, onboarding/pricing experiment hooks,
+  and web/mobile growth-loop visibility in insights surfaces
+  (`docs/modules/analytics_activation_retention_monetization_loops_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: execute V2 commercial + release wave continuation
-  (`NEST-150` onward) while launch-window/live-evidence closure tasks
+  (`NEST-151` onward) while launch-window/live-evidence closure tasks
   (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`)
   remain tracked for non-dry-run operations.
 

@@ -1,4 +1,6 @@
 import type {
+  AnalyticsExperimentHookItem,
+  AnalyticsLoopDecisionDashboardResponse,
   ApiCollectionMeta,
   AutomationRuleItem,
   AutomationRunItem,
@@ -516,6 +518,18 @@ export type NestApiClient = {
     module: "tasks" | "habits" | "goals",
     query?: { period?: "weekly" | "monthly"; points?: number }
   ): Promise<InsightsTrendResponse>;
+  getAnalyticsDecisionDashboard(query?: { window_days?: number }): Promise<AnalyticsLoopDecisionDashboardResponse>;
+  trackAnalyticsExperimentHook(payload: {
+    context: "onboarding" | "pricing";
+    action: "exposed" | "converted";
+    experiment_key: string;
+    variant_key: string;
+    platform?: "web" | "mobile" | "api" | "system";
+    session_id?: string | null;
+    trace_id?: string | null;
+    occurred_at?: string | null;
+    properties?: Record<string, unknown>;
+  }): Promise<{ data: AnalyticsExperimentHookItem }>;
   getAutomationRules(query?: Record<string, unknown>): Promise<ApiCollectionResponse<AutomationRuleItem>>;
   createAutomationRule(payload: {
     name: string;

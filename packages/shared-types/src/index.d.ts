@@ -577,6 +577,67 @@ export type InsightsTrendResponse = {
   };
 };
 
+export type AnalyticsExperimentHookItem = {
+  id: string;
+  event_name: "experiments.onboarding.exposed" | "experiments.onboarding.converted" | "experiments.pricing.exposed" | "experiments.pricing.converted";
+  context: "onboarding" | "pricing";
+  action: "exposed" | "converted";
+  experiment_key: string;
+  variant_key: string;
+  platform: "web" | "mobile" | "api" | "system";
+  occurred_at: string;
+};
+
+export type AnalyticsExperimentVariantSummary = {
+  variant_key: string;
+  exposed: number;
+  converted: number;
+  conversion_rate_percent: number;
+};
+
+export type AnalyticsExperimentSummary = {
+  context: "onboarding" | "pricing" | string;
+  experiment_key: string;
+  variants: AnalyticsExperimentVariantSummary[];
+  winner_variant_key: string | null;
+};
+
+export type AnalyticsLoopDecisionDashboardResponse = {
+  data: {
+    generated_at: string;
+    window_days: number;
+    window_start: string;
+    window_end: string;
+    funnel: {
+      signups: number;
+      onboarding_completed: number;
+      trial_started: number;
+      activated: number;
+      onboarding_completion_rate_percent: number;
+      trial_conversion_rate_percent: number;
+      activation_rate_percent: number;
+    };
+    retention: {
+      current_active_users: number;
+      previous_active_users: number;
+      retained_users: number;
+      churned_users: number;
+      retention_rate_percent: number;
+    };
+    monetization: {
+      active_subscriptions: number;
+      past_due_subscriptions: number;
+      canceled_subscriptions: number;
+      estimated_mrr_minor: number;
+      past_due_events: number;
+      recovered_events: number;
+      recovery_rate_percent: number;
+    };
+    experiments: AnalyticsExperimentSummary[];
+    weekly_actions: string[];
+  };
+};
+
 export type AutomationRuleItem = {
   id: string;
   name: string;
@@ -849,6 +910,18 @@ export type NestApiClient = {
     module: "tasks" | "habits" | "goals",
     query?: { period?: "weekly" | "monthly"; points?: number }
   ): Promise<InsightsTrendResponse>;
+  getAnalyticsDecisionDashboard(query?: { window_days?: number }): Promise<AnalyticsLoopDecisionDashboardResponse>;
+  trackAnalyticsExperimentHook(payload: {
+    context: "onboarding" | "pricing";
+    action: "exposed" | "converted";
+    experiment_key: string;
+    variant_key: string;
+    platform?: "web" | "mobile" | "api" | "system";
+    session_id?: string | null;
+    trace_id?: string | null;
+    occurred_at?: string | null;
+    properties?: Record<string, unknown>;
+  }): Promise<{ data: AnalyticsExperimentHookItem }>;
   getAutomationRules(query?: Record<string, unknown>): Promise<ApiCollectionResponse<AutomationRuleItem>>;
   createAutomationRule(payload: {
     name: string;

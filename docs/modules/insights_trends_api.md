@@ -44,3 +44,5 @@ Query parameters:
 - Weekly buckets start on Monday.
 - This API is a baseline feeding insights UI (`NEST-050`) and AI planning
   signals (`NEST-051+`).
+- V2 growth-loop dashboard extension (`NEST-150`):
+  - `docs/modules/analytics_activation_retention_monetization_loops_v2.md`

@@ -301,7 +301,51 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                $ref: '#/components/schemas/AnalyticsIngestionResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/analytics/experiments/hook:
+    post:
+      tags: [Analytics]
+      summary: Track onboarding/pricing experiment hook event
+      operationId: trackAnalyticsExperimentHook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyticsExperimentHookRequest'
+      responses:
+        '201':
+          description: Experiment hook event tracked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsExperimentHookResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/analytics/loops/decision-dashboard:
+    get:
+      tags: [Analytics]
+      summary: Return activation/retention/monetization decision dashboard snapshot
+      operationId: getAnalyticsDecisionDashboard
+      parameters:
+        - name: window_days
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 7
+            maximum: 90
+      responses:
+        '200':
+          description: Growth loops decision dashboard snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsLoopDecisionDashboardResponse'
         '422':
           $ref: '#/components/responses/ValidationError'
 
@@ -2061,6 +2105,195 @@ components:
               type: integer
         is_reconciled:
           type: boolean
+
+    AnalyticsIngestionResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [accepted, rejected]
+          properties:
+            accepted:
+              type: integer
+            rejected:
+              type: integer
+
+    AnalyticsExperimentHookRequest:
+      type: object
+      required: [context, action, experiment_key, variant_key]
+      properties:
+        context:
+          type: string
+          enum: [onboarding, pricing]
+        action:
+          type: string
+          enum: [exposed, converted]
+        experiment_key:
+          type: string
+          maxLength: 120
+        variant_key:
+          type: string
+          maxLength: 64
+        platform:
+          type: string
+          enum: [web, mobile, api, system]
+        session_id:
+          type: [string, 'null']
+          maxLength: 120
+        trace_id:
+          type: [string, 'null']
+          maxLength: 120
+        occurred_at:
+          type: [string, 'null']
+          format: date-time
+        properties:
+          type: object
+          additionalProperties: true
+
+    AnalyticsExperimentHookResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/AnalyticsExperimentHookItem'
+
+    AnalyticsExperimentHookItem:
+      type: object
+      required: [id, event_name, context, action, experiment_key, variant_key, platform, occurred_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_name:
+          type: string
+          enum:
+            [
+              experiments.onboarding.exposed,
+              experiments.onboarding.converted,
+              experiments.pricing.exposed,
+              experiments.pricing.converted,
+            ]
+        context:
+          type: string
+          enum: [onboarding, pricing]
+        action:
+          type: string
+          enum: [exposed, converted]
+        experiment_key:
+          type: string
+        variant_key:
+          type: string
+        platform:
+          type: string
+          enum: [web, mobile, api, system]
+        occurred_at:
+          type: string
+          format: date-time
+
+    AnalyticsLoopDecisionDashboardResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required:
+            [generated_at, window_days, window_start, window_end, funnel, retention, monetization, experiments, weekly_actions]
+          properties:
+            generated_at:
+              type: string
+              format: date-time
+            window_days:
+              type: integer
+            window_start:
+              type: string
+              format: date-time
+            window_end:
+              type: string
+              format: date-time
+            funnel:
+              type: object
+              required:
+                [signups, onboarding_completed, trial_started, activated, onboarding_completion_rate_percent, trial_conversion_rate_percent, activation_rate_percent]
+              properties:
+                signups:
+                  type: integer
+                onboarding_completed:
+                  type: integer
+                trial_started:
+                  type: integer
+                activated:
+                  type: integer
+                onboarding_completion_rate_percent:
+                  type: number
+                trial_conversion_rate_percent:
+                  type: number
+                activation_rate_percent:
+                  type: number
+            retention:
+              type: object
+              required:
+                [current_active_users, previous_active_users, retained_users, churned_users, retention_rate_percent]
+              properties:
+                current_active_users:
+                  type: integer
+                previous_active_users:
+                  type: integer
+                retained_users:
+                  type: integer
+                churned_users:
+                  type: integer
+                retention_rate_percent:
+                  type: number
+            monetization:
+              type: object
+              required:
+                [active_subscriptions, past_due_subscriptions, canceled_subscriptions, estimated_mrr_minor, past_due_events, recovered_events, recovery_rate_percent]
+              properties:
+                active_subscriptions:
+                  type: integer
+                past_due_subscriptions:
+                  type: integer
+                canceled_subscriptions:
+                  type: integer
+                estimated_mrr_minor:
+                  type: integer
+                past_due_events:
+                  type: integer
+                recovered_events:
+                  type: integer
+                recovery_rate_percent:
+                  type: number
+            experiments:
+              type: array
+              items:
+                type: object
+                required: [context, experiment_key, variants]
+                properties:
+                  context:
+                    type: string
+                  experiment_key:
+                    type: string
+                  variants:
+                    type: array
+                    items:
+                      type: object
+                      required: [variant_key, exposed, converted, conversion_rate_percent]
+                      properties:
+                        variant_key:
+                          type: string
+                        exposed:
+                          type: integer
+                        converted:
+                          type: integer
+                        conversion_rate_percent:
+                          type: number
+                  winner_variant_key:
+                    type: [string, 'null']
+            weekly_actions:
+              type: array
+              items:
+                type: string
 
     IntegrationSyncResponse:
       type: object

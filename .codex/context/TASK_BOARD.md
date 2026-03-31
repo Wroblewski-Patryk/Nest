@@ -1182,14 +1182,29 @@ Last updated: 2026-03-31
       `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
       `docs/modules/billing_self_serve_checkout_portal_dunning_v2.md`.
 
-- [ ] NEST-150 Implement activation, retention, and monetization analytics loops
-  - Status: BACKLOG
+- [x] NEST-150 Implement activation, retention, and monetization analytics loops
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-149
   - Done when:
     - funnel and retention metrics are tracked end-to-end,
     - experiment hooks support onboarding and pricing tests,
     - decision dashboard exists for weekly product iterations.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added growth-loop analytics APIs:
+      `GET /api/v1/analytics/loops/decision-dashboard`,
+      `POST /api/v1/analytics/experiments/hook`.
+    - Implemented decision dashboard aggregation service covering:
+      funnel (`signups/onboarding/trial/activation`),
+      retention (`current/previous/retained/churned`),
+      monetization (`MRR/past_due/recovery`),
+      and experiment winner summaries.
+    - Added onboarding/pricing experiment hooks in web flows and surfaced
+      dashboard metrics in web/mobile insights screens.
+    - Updated OpenAPI + module docs:
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
+      `docs/modules/analytics_activation_retention_monetization_loops_v2.md`.
 
 - [ ] NEST-151 Execute V2 production readiness review (perf/security/cost/ops)
   - Status: BACKLOG

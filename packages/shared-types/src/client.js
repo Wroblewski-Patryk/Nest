@@ -231,6 +231,13 @@ export function createNestApiClient(options) {
     getCalendarEventAssignmentTimeline: (eventId) => request(`/calendar-events/${eventId}/assignment-timeline`),
     getLifeAreaBalance: (query = {}) => request("/insights/life-area-balance", { query }),
     getInsightsTrends: (module, query = {}) => request(`/insights/trends/${module}`, { query }),
+    getAnalyticsDecisionDashboard: (query = {}) =>
+      request("/analytics/loops/decision-dashboard", { query }),
+    trackAnalyticsExperimentHook: (payload) =>
+      request("/analytics/experiments/hook", {
+        method: "POST",
+        body: payload,
+      }),
     getAutomationRules: (query = {}) => request("/automations/rules", { query }),
     createAutomationRule: (payload) =>
       request("/automations/rules", {
