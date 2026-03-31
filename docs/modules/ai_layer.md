@@ -12,6 +12,11 @@ operations without compromising data integrity or security.
 - V1 product/data workflows are intentionally designed as groundwork for a
   future conversational AI agent that can coordinate life management actions
   together with the user.
+- AI architecture direction uses dual actor support:
+  - Human User principal (interactive owner),
+  - AI Agent principal (automation/collaboration operator),
+  - delegated "act on behalf of user" mode via scoped user-issued API
+    credentials.
 
 ## Capability Areas
 
@@ -77,8 +82,29 @@ operations without compromising data integrity or security.
 
 - AI can only execute documented tool actions.
 - Tool calls require auth context and scope checks.
+- Agent-originated writes must include clear actor metadata (`human_user`,
+  `ai_agent`, `delegated_agent`) and stable trace identifiers.
+- Delegated credentials must be scope-limited, revocable, and time-bounded;
+  default policy is least privilege.
+- Delegated mode cannot silently escalate to broad tenant permissions beyond
+  issued scopes.
 - Sensitive actions need explicit user confirmation policy.
 - All AI writes are logged with actor, timestamp, and diff summary.
+
+## Identity and Access Model (Target)
+
+- Mode A: AI agent own account
+  - AI agent has its own principal and permissions.
+  - Agent can manage its own goals/tasks/habits/workflows in the same domain
+    model as human users, subject to tenant policy.
+- Mode B: delegated access from human user
+  - Human user creates API credentials dedicated to AI automation.
+  - Credential scopes map to domain actions (for example `tasks:write`,
+    `calendar:write`, `habits:read`).
+  - Backend authorizes each call against both scope and object-level
+    ownership/policy checks.
+  - Audit trail must preserve both delegator (human) and executor (agent)
+    context for each mutation.
 
 ## Delivery Phases
 

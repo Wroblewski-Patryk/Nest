@@ -653,6 +653,94 @@ Last updated: 2026-03-31
     - Added canonical Stitch project URL reference in:
       `docs/ux/stitch_screen_registry_2026-03-21.md`.
 
+- [ ] NEST-160 Enforce auth gate and onboarding gate for dashboard/module access
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-159
+  - Done when:
+    - dashboard and module routes are inaccessible to unauthenticated sessions,
+    - unauthenticated users are redirected to pre-auth flow,
+    - users without completed onboarding are redirected to onboarding flow,
+    - route-guard behavior is covered by regression tests.
+  - Notes:
+    - Execution plan:
+      `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md`.
+
+- [ ] NEST-161 Restore Tasks+Lists primary create/edit flows and remove blocked CTA states
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-160
+  - Done when:
+    - authenticated users can create/update/complete/delete tasks and lists in
+      web flow,
+    - known client/API contract mismatches that block CRUD are fixed,
+    - disabled/non-functional create CTA states are removed or replaced with
+      clear actionable feedback.
+  - Notes:
+    - Source audit evidence:
+      `docs/ux/nest_159_life_management_ux_critical_audit_2026-03-31.md`.
+
+- [ ] NEST-162 Deliver module-level create-flow parity for core life-management modules
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-161
+  - Done when:
+    - each core module (`habits`, `routines`, `goals`, `targets`, `calendar`)
+      has at least one working first-create flow in web app,
+    - IA labels and CTA wording match practical life-management intent,
+    - refreshed click-path evidence is published for all create flows.
+  - Notes:
+    - Follow-up UX evidence pack required after implementation.
+
+- [ ] NEST-163 Introduce dual-actor identity model in backend policy/audit layer
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-162
+  - Done when:
+    - actor model supports `human_user`, `ai_agent`, and `delegated_agent`
+      contexts,
+    - write-path audit records include actor type and stable trace metadata,
+    - policy and regression tests validate actor-context propagation.
+  - Notes:
+    - Product direction source:
+      `docs/modules/ai_layer.md`.
+
+- [ ] NEST-164 Add scoped user-issued API credentials for delegated AI access
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-163
+  - Done when:
+    - user can create scoped credentials with expiry and revoke controls,
+    - API middleware/policy layer enforces least-privilege scopes,
+    - revoked/expired credentials are denied with deterministic error contract.
+  - Notes:
+    - API and contract docs must be updated with credential lifecycle flows.
+
+- [ ] NEST-165 Implement AI Agent account lifecycle and capability boundaries
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-164
+  - Done when:
+    - AI agent principal lifecycle is available in tenant context,
+    - boundaries between agent-owned operations and delegated user operations
+      are enforced,
+    - unauthorized cross-boundary actions are denied and audited.
+  - Notes:
+    - Product direction source:
+      `docs/product/overview.md`.
+
+- [ ] NEST-166 Deliver GUI+API access-control surface for AI integration management
+  - Status: BACKLOG
+  - Owner: Execution Agent
+  - Depends on: NEST-165
+  - Done when:
+    - settings surface allows API credential generation/revocation and agent
+      access review,
+    - access usage/audit visibility is available to user,
+    - OpenAPI and user docs reflect finalized management flows.
+  - Notes:
+    - Closing evidence includes click-path screenshots and policy regressions.
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

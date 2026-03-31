@@ -42,6 +42,14 @@ Last updated: 2026-03-31
   one connected lifecycle.
 - V1 foundation policy: product and data model decisions must support future
   human+agent collaboration workflows without redesigning core domain entities.
+- Authentication gate policy (v1): dashboard and core module routes are private
+  and require authenticated session; only pre-auth surfaces are public.
+- Usability readiness policy (v1): core modules are not considered usable unless
+  primary create/edit actions are functional and discoverable in GUI.
+- Dual-actor policy (v1+): Nest supports both `human_user` and `ai_agent`
+  principals in one domain model and policy layer.
+- Delegated AI access policy (v1+): user-issued scoped API credentials are the
+  required mechanism for AI agents acting on behalf of user-owned data.
 - Feature integration policy (v1): every new capability must integrate cleanly
   with existing modules and shared contracts before release.
 - Client parity policy (v1): no functional differences between web and mobile
@@ -167,6 +175,9 @@ Last updated: 2026-03-31
 - Planning baseline complete for MVP, full-product roadmap, and V2 target wave
 - Next execution wave plan documented in
   `docs/planning/next_execution_wave_2026-03-21.md`
+- Auth/usability/AI-access remediation wave documented in
+  `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md` with
+  execution queue `NEST-160` to `NEST-166`.
 - `NEST-001` completed: monorepo structure approved and documented in
   `docs/engineering/monorepo_structure.md`
 - `NEST-002` completed: Laravel backend skeleton bootstrapped in `apps/api`
@@ -616,16 +627,20 @@ Last updated: 2026-03-31
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute V2 commercial + release wave continuation
-  (`NEST-152` onward) while launch-window/live-evidence closure tasks
-  (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`)
-  remain tracked for non-dry-run operations.
+- Current execution focus: execute usability-critical auth and CRUD remediation
+  plus dual-actor AI-access foundation (`NEST-160` to `NEST-166`) in parallel
+  with ongoing V2 launch-window/live-evidence closures (`NEST-122`,
+  `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`) and
+  commercial/release continuation (`NEST-152` onward).
 
 ## Auth, AI, Offline, Notifications
 
 - MVP auth: email + password
 - OAuth providers: post-MVP
 - AI: post-MVP rollout, default ON when introduced
+- Access direction: human-first GUI with strict auth gate now; dual-actor
+  Human+AI account/delegation model is active planning baseline for next
+  execution wave.
 - Offline: local offline queue with manual force-sync in settings/options
 - Notifications: mostly post-MVP, simplest mobile push can be first
 
@@ -642,6 +657,8 @@ Last updated: 2026-03-31
 - V2 target execution backlog: `docs/planning/v2-target-execution-plan.md`
 - V2 execution roundbook: `docs/planning/v2-execution-roundbook.md`
 - V2 task cards: `docs/planning/v2-task-cards.md`
+- Human+AI dual-actor execution wave:
+  `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md`
 - UX/UI refresh implementation wave: `docs/ux/uxui_refresh_implementation_wave_2026-03-31.md`
 - Roadmap overview: `docs/product/roadmap.md`
 - Next execution wave: `docs/planning/next_execution_wave_2026-03-21.md`

@@ -43,8 +43,18 @@ capture, review, and daily execution.
 - SaaS-ready, multi-tenant from day one.
 - Initial operation model: single active user (founder) on top of
   multi-tenant architecture.
+- Authentication-first navigation policy: dashboard and all core module routes
+  are private and require authenticated session; unauthenticated users can
+  access only pre-auth surfaces (landing, login, register, password reset,
+  language selection).
 - API-first with explicit contracts.
 - AI-friendly data model and tool interface.
+- Dual-actor foundation policy: Nest domain model and permission layer must
+  support both Human User and AI Agent principals without duplicating module
+  logic.
+- Delegated-access policy: user can issue scoped API credentials for
+  approved AI automation flows acting on user-owned data, with explicit
+  revocation and audit traceability.
 - Online-first with caching and robust synchronization, including offline
   change capture with manual sync trigger from settings/options and oldest-
   first queue processing; v1 manual sync runs globally for all pending changes
@@ -72,6 +82,9 @@ capture, review, and daily execution.
   scalable design choices that allow later AI expansion without major rewrites.
 - v1 release decisions prioritize stability, tests, security, and compatibility
   with existing modules when adding new functionality.
+- v1 usability gate: no module can be treated as "ready" unless primary create
+  and edit actions are available and usable (for example add task/list, add
+  habit, add routine, add goal, add target, add calendar event).
 - Core day-to-day product value combines three equal outcomes: lower stress and
   chaos, better execution consistency, and strong planning control.
 - UX direction follows a balanced approach: simple by default, with enough

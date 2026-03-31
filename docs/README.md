@@ -48,6 +48,7 @@ This is the canonical index for repository documentation.
 - `mvp-next-commits.md`
 - `v1-live-release-plan.md`
 - `open-decisions.md`
+- `human_ai_dual_actor_execution_plan_2026-03-31.md`
 - architecture/programming audit records
 
 ## Operations (`docs/operations/`)
