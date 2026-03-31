@@ -154,6 +154,39 @@ export function createNestApiClient(options) {
         method: "POST",
         body: payload,
       }),
+    getCollaborationSpaces: () => request("/collaboration/spaces"),
+    createCollaborationSpace: (payload) =>
+      request("/collaboration/spaces", {
+        method: "POST",
+        body: payload,
+      }),
+    getCollaborationSpaceMembers: (spaceId) => request(`/collaboration/spaces/${spaceId}/members`),
+    inviteCollaborationMember: (spaceId, payload) =>
+      request(`/collaboration/spaces/${spaceId}/invites`, {
+        method: "POST",
+        body: payload,
+      }),
+    acceptCollaborationInvite: (token) =>
+      request(`/collaboration/invites/${token}/accept`, {
+        method: "POST",
+      }),
+    updateCollaborationMemberRole: (spaceId, memberUserId, payload) =>
+      request(`/collaboration/spaces/${spaceId}/members/${memberUserId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
+    removeCollaborationMember: (spaceId, memberUserId) =>
+      request(`/collaboration/spaces/${spaceId}/members/${memberUserId}`, {
+        method: "DELETE",
+      }),
+    shareListToCollaborationSpace: (spaceId, listId) =>
+      request(`/collaboration/spaces/${spaceId}/share/lists/${listId}`, {
+        method: "POST",
+      }),
+    shareGoalToCollaborationSpace: (spaceId, goalId) =>
+      request(`/collaboration/spaces/${spaceId}/share/goals/${goalId}`, {
+        method: "POST",
+      }),
     getLists: (query = {}) => request("/lists", { query }),
     getTasks: (query = {}) => request("/tasks", { query }),
     getHabits: (query = {}) => request("/habits", { query }),

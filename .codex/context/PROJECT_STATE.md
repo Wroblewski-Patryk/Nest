@@ -523,6 +523,10 @@ Last updated: 2026-03-31
   packet-loss/high-latency/reconnect-storm scenarios, machine-readable run
   matrix, and documented limitations/mitigations
   (`docs/operations/offline_chaos_regression_report_2026-03-31.md`)
+- `NEST-135` completed: collaboration role model expanded for shared household
+  operations (`owner/editor/viewer`), with policy-enforced shared task/list/
+  goal permissions, member lifecycle APIs, and boundary regression coverage
+  (`docs/modules/shared_household_workspace_operations_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

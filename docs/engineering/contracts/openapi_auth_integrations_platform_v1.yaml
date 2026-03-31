@@ -547,14 +547,75 @@ paths:
           application/json:
             schema:
               type: object
-              additionalProperties: true
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+                role:
+                  type: string
+                  enum: [editor, viewer]
       responses:
-        '202':
+        '201':
           description: Invite created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
+
+  /v1/collaboration/spaces/{spaceId}/members:
+    get:
+      tags: [Collaboration]
+      summary: List active collaboration space members
+      operationId: listCollaborationSpaceMembers
+      parameters:
+        - $ref: '#/components/parameters/SpaceId'
+      responses:
+        '200':
+          description: Member collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCollectionResponse'
+
+  /v1/collaboration/spaces/{spaceId}/members/{memberUserId}:
+    patch:
+      tags: [Collaboration]
+      summary: Update collaboration member role
+      operationId: updateCollaborationMemberRole
+      parameters:
+        - $ref: '#/components/parameters/SpaceId'
+        - $ref: '#/components/parameters/MemberUserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [role]
+              properties:
+                role:
+                  type: string
+                  enum: [editor, viewer]
+      responses:
+        '200':
+          description: Member role updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Collaboration]
+      summary: Remove collaboration member from space
+      operationId: removeCollaborationMember
+      parameters:
+        - $ref: '#/components/parameters/SpaceId'
+        - $ref: '#/components/parameters/MemberUserId'
+      responses:
+        '204':
+          description: Member removed
 
   /v1/collaboration/invites/{token}/accept:
     post:

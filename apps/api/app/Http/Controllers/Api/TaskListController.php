@@ -99,6 +99,8 @@ class TaskListController extends Controller
             })
             ->findOrFail($listId);
 
+        $this->authorize('view', $list);
+
         return response()->json(['data' => $list]);
     }
 
@@ -107,22 +109,6 @@ class TaskListController extends Controller
         /** @var User $user */
         $user = $request->user();
         $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
-
-        $payload = $request->validate([
-            'name' => [
-                'sometimes',
-                'string',
-                'max:120',
-                Rule::unique('task_lists', 'name')
-                    ->where('tenant_id', $user->tenant_id)
-                    ->where('user_id', $user->id)
-                    ->whereNull('deleted_at')
-                    ->ignore($listId),
-            ],
-            'color' => ['sometimes', 'regex:/^#[0-9A-Fa-f]{6}$/'],
-            'position' => ['sometimes', 'integer', 'min:0'],
-            'is_archived' => ['sometimes', 'boolean'],
-        ]);
 
         $list = TaskList::query()
             ->where('tenant_id', $user->tenant_id)
@@ -136,6 +122,24 @@ class TaskListController extends Controller
                 }
             })
             ->findOrFail($listId);
+
+        $this->authorize('update', $list);
+
+        $payload = $request->validate([
+            'name' => [
+                'sometimes',
+                'string',
+                'max:120',
+                Rule::unique('task_lists', 'name')
+                    ->where('tenant_id', $user->tenant_id)
+                    ->where('user_id', $list->user_id)
+                    ->whereNull('deleted_at')
+                    ->ignore($list->id),
+            ],
+            'color' => ['sometimes', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'position' => ['sometimes', 'integer', 'min:0'],
+            'is_archived' => ['sometimes', 'boolean'],
+        ]);
 
         $list->fill($payload);
         $list->save();
@@ -161,6 +165,8 @@ class TaskListController extends Controller
                 }
             })
             ->findOrFail($listId);
+
+        $this->authorize('delete', $list);
 
         $list->is_archived = true;
         $list->save();

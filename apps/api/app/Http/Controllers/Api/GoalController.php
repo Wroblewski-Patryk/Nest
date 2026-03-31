@@ -101,6 +101,8 @@ class GoalController extends Controller
             })
             ->findOrFail($goalId);
 
+        $this->authorize('view', $goal);
+
         return response()->json(['data' => $goal]);
     }
 
@@ -130,6 +132,8 @@ class GoalController extends Controller
             })
             ->findOrFail($goalId);
 
+        $this->authorize('update', $goal);
+
         $goal->fill($payload);
         $goal->save();
 
@@ -154,6 +158,8 @@ class GoalController extends Controller
                 }
             })
             ->findOrFail($goalId);
+
+        $this->authorize('delete', $goal);
 
         $goal->status = 'archived';
         $goal->save();

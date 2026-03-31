@@ -4,6 +4,10 @@ import type {
   AutomationRunItem,
   BillingEventItem,
   BillingSubscriptionItem,
+  CollaborationInviteItem,
+  CollaborationMemberRole,
+  CollaborationSpaceItem,
+  CollaborationSpaceMemberItem,
   InsightsTrendResponse,
   LifeAreaBalanceResponse,
   LocalizationOptionsResponse,
@@ -85,6 +89,22 @@ export type NestApiClient = {
     language: SupportedLanguage;
     locale?: string | null;
   }): Promise<{ data: Record<string, unknown> }>;
+  getCollaborationSpaces(): Promise<{ data: CollaborationSpaceItem[] }>;
+  createCollaborationSpace(payload: { name: string }): Promise<{ data: CollaborationSpaceItem }>;
+  getCollaborationSpaceMembers(spaceId: string): Promise<{ data: CollaborationSpaceMemberItem[] }>;
+  inviteCollaborationMember(
+    spaceId: string,
+    payload: { email: string; role?: Exclude<CollaborationMemberRole, "owner" | "member"> }
+  ): Promise<{ data: CollaborationInviteItem }>;
+  acceptCollaborationInvite(token: string): Promise<{ data: { space_id: string; status: "accepted" } }>;
+  updateCollaborationMemberRole(
+    spaceId: string,
+    memberUserId: string,
+    payload: { role: Exclude<CollaborationMemberRole, "owner" | "member"> }
+  ): Promise<{ data: CollaborationSpaceMemberItem }>;
+  removeCollaborationMember(spaceId: string, memberUserId: string): Promise<void>;
+  shareListToCollaborationSpace(spaceId: string, listId: string): Promise<{ data: ListItem }>;
+  shareGoalToCollaborationSpace(spaceId: string, goalId: string): Promise<{ data: GoalItem }>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
   getTasks(query?: Record<string, unknown>): Promise<ApiCollectionResponse<TaskItem>>;
   getHabits(query?: Record<string, unknown>): Promise<ApiCollectionResponse<HabitItem>>;

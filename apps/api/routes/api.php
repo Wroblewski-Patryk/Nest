@@ -74,6 +74,9 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/collaboration/spaces', [CollaborationSpaceController::class, 'index']);
         Route::post('/collaboration/spaces', [CollaborationSpaceController::class, 'store']);
         Route::post('/collaboration/spaces/{spaceId}/invites', [CollaborationSpaceController::class, 'invite']);
+        Route::get('/collaboration/spaces/{spaceId}/members', [CollaborationSpaceController::class, 'members']);
+        Route::patch('/collaboration/spaces/{spaceId}/members/{memberUserId}', [CollaborationSpaceController::class, 'updateMemberRole']);
+        Route::delete('/collaboration/spaces/{spaceId}/members/{memberUserId}', [CollaborationSpaceController::class, 'removeMember']);
         Route::post('/collaboration/invites/{token}/accept', [CollaborationInviteController::class, 'accept']);
         Route::post('/collaboration/spaces/{spaceId}/share/lists/{listId}', [CollaborationSpaceController::class, 'shareList']);
         Route::post('/collaboration/spaces/{spaceId}/share/goals/{goalId}', [CollaborationSpaceController::class, 'shareGoal']);

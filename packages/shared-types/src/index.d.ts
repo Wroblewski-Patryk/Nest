@@ -95,6 +95,50 @@ export type GoalItem = {
   status: string;
 };
 
+export type CollaborationMemberRole = "owner" | "editor" | "viewer" | "member";
+
+export type CollaborationSpaceMemberItem = {
+  id: string;
+  tenant_id: string;
+  space_id: string;
+  user_id: string;
+  role: CollaborationMemberRole;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+  };
+};
+
+export type CollaborationSpaceItem = {
+  id: string;
+  tenant_id: string;
+  owner_user_id: string;
+  name: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  members?: CollaborationSpaceMemberItem[];
+};
+
+export type CollaborationInviteItem = {
+  id: string;
+  tenant_id: string;
+  space_id: string;
+  invited_by_user_id: string;
+  accepted_by_user_id: string | null;
+  email: string;
+  role: CollaborationMemberRole;
+  status: "pending" | "accepted" | "expired" | "revoked";
+  token: string;
+  expires_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type JournalEntryItem = {
   id: string;
   title: string;
@@ -334,6 +378,22 @@ export type NestApiClient = {
     language: SupportedLanguage;
     locale?: string | null;
   }): Promise<{ data: Record<string, unknown> }>;
+  getCollaborationSpaces(): Promise<{ data: CollaborationSpaceItem[] }>;
+  createCollaborationSpace(payload: { name: string }): Promise<{ data: CollaborationSpaceItem }>;
+  getCollaborationSpaceMembers(spaceId: string): Promise<{ data: CollaborationSpaceMemberItem[] }>;
+  inviteCollaborationMember(
+    spaceId: string,
+    payload: { email: string; role?: Exclude<CollaborationMemberRole, "owner" | "member"> }
+  ): Promise<{ data: CollaborationInviteItem }>;
+  acceptCollaborationInvite(token: string): Promise<{ data: { space_id: string; status: "accepted" } }>;
+  updateCollaborationMemberRole(
+    spaceId: string,
+    memberUserId: string,
+    payload: { role: Exclude<CollaborationMemberRole, "owner" | "member"> }
+  ): Promise<{ data: CollaborationSpaceMemberItem }>;
+  removeCollaborationMember(spaceId: string, memberUserId: string): Promise<void>;
+  shareListToCollaborationSpace(spaceId: string, listId: string): Promise<{ data: ListItem }>;
+  shareGoalToCollaborationSpace(spaceId: string, goalId: string): Promise<{ data: GoalItem }>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
   getTasks(query?: Record<string, unknown>): Promise<ApiCollectionResponse<TaskItem>>;
   getHabits(query?: Record<string, unknown>): Promise<ApiCollectionResponse<HabitItem>>;

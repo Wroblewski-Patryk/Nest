@@ -105,7 +105,7 @@ Execution of this plan starts after launch closure tasks are complete:
 
 ## Workstream C: Collaboration and Communication V2 (`NEST-135..NEST-139`)
 
-- [ ] NEST-135 Expand collaboration model to shared household/workspace operations
+- [x] NEST-135 Expand collaboration model to shared household/workspace operations
   - Depends on: NEST-129
   - Done when:
     - shared ownership and role model supports family/friends workflows,

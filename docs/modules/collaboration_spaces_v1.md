@@ -1,5 +1,9 @@
 # Collaboration Spaces v1 (NEST-064)
 
+Follow-up expansion:
+- `NEST-135` role and policy extension is documented in
+  `docs/modules/shared_household_workspace_operations_v2.md`.
+
 ## Scope
 
 `NEST-064` introduces invite-based family/friends collaboration spaces with

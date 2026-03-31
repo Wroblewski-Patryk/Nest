@@ -106,6 +106,8 @@ class TaskController extends Controller
             })
             ->findOrFail($payload['list_id']);
 
+        $this->authorize('update', $list);
+
         $task = Task::query()->create([
             'tenant_id' => $user->tenant_id,
             'user_id' => $user->id,
@@ -142,6 +144,8 @@ class TaskController extends Controller
             })
             ->findOrFail($taskId);
 
+        $this->authorize('view', $task);
+
         return response()->json(['data' => $task]);
     }
 
@@ -175,6 +179,8 @@ class TaskController extends Controller
             })
             ->findOrFail($taskId);
 
+        $this->authorize('update', $task);
+
         if (array_key_exists('list_id', $payload)) {
             $list = TaskList::query()
                 ->where('tenant_id', $user->tenant_id)
@@ -188,6 +194,8 @@ class TaskController extends Controller
                     }
                 })
                 ->findOrFail($payload['list_id']);
+
+            $this->authorize('update', $list);
 
             $payload['list_id'] = $list->id;
         }
@@ -216,6 +224,8 @@ class TaskController extends Controller
                 }
             })
             ->findOrFail($taskId);
+
+        $this->authorize('delete', $task);
 
         $task->delete();
 

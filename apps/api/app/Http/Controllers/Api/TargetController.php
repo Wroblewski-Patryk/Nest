@@ -89,6 +89,8 @@ class TargetController extends Controller
             })
             ->findOrFail($payload['goal_id']);
 
+        $this->authorize('update', $goal);
+
         $target = Target::query()->create([
             'tenant_id' => $user->tenant_id,
             'goal_id' => $goal->id,
@@ -126,6 +128,11 @@ class TargetController extends Controller
             })
             ->findOrFail($targetId);
 
+        $target->loadMissing('goal');
+        if ($target->goal !== null) {
+            $this->authorize('view', $target->goal);
+        }
+
         return response()->json(['data' => $target]);
     }
 
@@ -161,6 +168,11 @@ class TargetController extends Controller
             })
             ->findOrFail($targetId);
 
+        $target->loadMissing('goal');
+        if ($target->goal !== null) {
+            $this->authorize('update', $target->goal);
+        }
+
         $target->fill($payload);
         $target->save();
 
@@ -188,6 +200,11 @@ class TargetController extends Controller
                     });
             })
             ->findOrFail($targetId);
+
+        $target->loadMissing('goal');
+        if ($target->goal !== null) {
+            $this->authorize('update', $target->goal);
+        }
 
         $target->status = 'archived';
         $target->save();

@@ -76,7 +76,7 @@ class CollaborationSpaceController extends Controller
 
         $payload = $request->validate([
             'email' => ['required', 'email', 'max:255'],
-            'role' => ['nullable', 'in:member'],
+            'role' => ['nullable', 'in:editor,viewer'],
         ]);
 
         $invite = CollaborationInvite::query()->updateOrCreate(
@@ -88,13 +88,101 @@ class CollaborationSpaceController extends Controller
             ],
             [
                 'invited_by_user_id' => $user->id,
-                'role' => $payload['role'] ?? 'member',
+                'role' => $payload['role'] ?? 'editor',
                 'token' => Str::random(48),
                 'expires_at' => now()->addDays(7),
             ]
         );
 
         return response()->json(['data' => $invite], 201);
+    }
+
+    public function members(
+        Request $request,
+        string $spaceId,
+        CollaborationAccessService $access
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $request->user();
+        if (! $access->canViewSpace($user, $spaceId)) {
+            abort(404);
+        }
+
+        $members = CollaborationSpaceMember::query()
+            ->with('user')
+            ->where('tenant_id', $user->tenant_id)
+            ->where('space_id', $spaceId)
+            ->where('status', 'active')
+            ->orderBy('created_at')
+            ->get();
+
+        return response()->json(['data' => $members]);
+    }
+
+    public function updateMemberRole(
+        Request $request,
+        string $spaceId,
+        string $memberUserId,
+        CollaborationAccessService $access
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $request->user();
+        if (! $access->isSpaceOwner($user, $spaceId)) {
+            abort(404);
+        }
+
+        $payload = $request->validate([
+            'role' => ['required', 'in:editor,viewer'],
+        ]);
+
+        $member = CollaborationSpaceMember::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('space_id', $spaceId)
+            ->where('user_id', $memberUserId)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        if ($member->role === 'owner') {
+            return response()->json([
+                'message' => 'Owner role cannot be changed.',
+            ], 422);
+        }
+
+        $member->role = $payload['role'];
+        $member->save();
+
+        return response()->json(['data' => $member->fresh('user')]);
+    }
+
+    public function removeMember(
+        Request $request,
+        string $spaceId,
+        string $memberUserId,
+        CollaborationAccessService $access
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $request->user();
+        if (! $access->isSpaceOwner($user, $spaceId)) {
+            abort(404);
+        }
+
+        $member = CollaborationSpaceMember::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('space_id', $spaceId)
+            ->where('user_id', $memberUserId)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        if ($member->role === 'owner') {
+            return response()->json([
+                'message' => 'Owner cannot be removed from space.',
+            ], 422);
+        }
+
+        $member->status = 'removed';
+        $member->save();
+
+        return response()->json([], 204);
     }
 
     public function shareList(
@@ -105,7 +193,7 @@ class CollaborationSpaceController extends Controller
     ): JsonResponse {
         /** @var User $user */
         $user = $request->user();
-        if (! $access->isSpaceOwner($user, $spaceId)) {
+        if (! $access->canEditSpace($user, $spaceId)) {
             abort(404);
         }
 
@@ -129,7 +217,7 @@ class CollaborationSpaceController extends Controller
     ): JsonResponse {
         /** @var User $user */
         $user = $request->user();
-        if (! $access->isSpaceOwner($user, $spaceId)) {
+        if (! $access->canEditSpace($user, $spaceId)) {
             abort(404);
         }
 

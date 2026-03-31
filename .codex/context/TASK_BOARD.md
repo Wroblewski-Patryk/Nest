@@ -758,14 +758,29 @@ Last updated: 2026-03-31
     - Published scenario coverage, known limitations, and mitigation guidance in
       `docs/operations/offline_chaos_regression_report_2026-03-31.md`.
 
-- [ ] NEST-135 Expand collaboration model to shared household/workspace operations
-  - Status: BACKLOG
+- [x] NEST-135 Expand collaboration model to shared household/workspace operations
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-129
   - Done when:
     - shared ownership and role model supports family/friends workflows,
     - cross-user task/list/goal permissions are policy-enforced,
     - collaboration audits confirm tenant and membership boundaries.
+  - Done on: 2026-03-31
+  - Notes:
+    - Expanded collaboration role semantics with `owner|editor|viewer` (plus
+      legacy `member` compatibility) and owner-managed membership lifecycle.
+    - Added collaboration member management endpoints:
+      `GET/PATCH/DELETE /api/v1/collaboration/spaces/{spaceId}/members/{memberUserId}`.
+    - Enforced shared-object authorization through explicit policies for
+      `TaskList`, `Task`, and `Goal`, including target mutation checks through
+      goal policy enforcement.
+    - Updated OpenAPI collaboration contract and shared runtime client/types for
+      new role and member-management API surface.
+    - Added role-boundary regression coverage in
+      `apps/api/tests/Feature/CollaborationSpacesApiTest.php`.
+    - Published implementation and boundary-audit notes in
+      `docs/modules/shared_household_workspace_operations_v2.md`.
 
 - [ ] NEST-136 Add shared planning workflows (assignment, handoff, reminders)
   - Status: BACKLOG
