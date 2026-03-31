@@ -481,6 +481,10 @@ Last updated: 2026-03-21
   (`docs/operations/final_readiness_review_2026-03-19.md`)
 - `NEST-081` completed: full-product launch milestone declared with post-launch
   monitoring baseline (`docs/operations/full_product_launch_milestone_2026-03-19.md`)
+- `NEST-122` execution packet published with production-profile launch-window
+  runbook evidence in dry-run mode; live environment and device pass evidence is
+  still required to close the task
+  (`docs/operations/production_launch_window_execution_2026-03-21.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

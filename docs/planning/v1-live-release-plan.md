@@ -60,6 +60,11 @@ Deliver a production-ready V1 that can be:
 - [ ] Execute smoke suite immediately post-deploy (`NEST-122`).
 - [ ] Publish mobile release/internal distribution build and verify install (`NEST-122`).
 
+Execution evidence (2026-03-21):
+- `docs/operations/production_launch_window_execution_2026-03-21.md`
+- Current packet is production-profile dry-run evidence; live sign-off is still
+  required to close `NEST-122`.
+
 ### Immediate Rollback Criteria
 
 - P0 auth or data integrity failures.

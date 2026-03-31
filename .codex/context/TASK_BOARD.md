@@ -474,6 +474,13 @@ Last updated: 2026-03-21
     - release-train run for target tag is executed and recorded,
     - API/web deployment steps and DB migration are executed in launch order,
     - post-deploy smoke suite and mobile distribution verification pass.
+  - Notes:
+    - Execution packet published:
+      `docs/operations/production_launch_window_execution_2026-03-21.md`.
+    - Production-profile runbook commands were executed in `-DryRun` mode to
+      capture launch-order evidence without live environment credentials.
+    - Task remains open until non-dry-run smoke pass and mobile distribution
+      verification pass are recorded.
 
 - [ ] NEST-123 Execute Day0/Day1 post-launch operational validation
   - Status: BACKLOG
