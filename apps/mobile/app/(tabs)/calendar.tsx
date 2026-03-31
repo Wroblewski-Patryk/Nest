@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { IntegrationConflictItem, IntegrationConnectionItem } from '@nest/shared-types';
+import type { IntegrationConflictItem, IntegrationConnectionItem, IntegrationHealthProviderItem } from '@nest/shared-types';
 import { ModuleScreen } from '@/components/mvp/ModuleScreen';
 import { nestApiClient } from '@/constants/apiClient';
 import { calendarData } from '@/constants/mvpData';
@@ -30,6 +30,9 @@ export default function CalendarScreen() {
   const [connections, setConnections] = useState<IntegrationConnectionItem[]>([]);
   const [resolvingId, setResolvingId] = useState<string | null>(null);
   const [busyProvider, setBusyProvider] = useState<string | null>(null);
+  const [healthItems, setHealthItems] = useState<IntegrationHealthProviderItem[]>([]);
+  const [healthMessage, setHealthMessage] = useState<string | null>(null);
+  const [healthBusyKey, setHealthBusyKey] = useState<string | null>(null);
 
   const loadConflicts = useCallback(async () => {
     const response = await nestApiClient.getIntegrationConflicts({
@@ -44,6 +47,11 @@ export default function CalendarScreen() {
     setConnections(response.data ?? []);
   }, []);
 
+  const loadHealth = useCallback(async () => {
+    const response = await nestApiClient.getIntegrationHealth({ window_hours: 24 });
+    setHealthItems(response.data ?? []);
+  }, []);
+
   useEffect(() => {
     let mounted = true;
 
@@ -56,11 +64,15 @@ export default function CalendarScreen() {
       if (!mounted) return;
       setConnections([]);
     });
+    loadHealth().catch(() => {
+      if (!mounted) return;
+      setHealthItems([]);
+    });
 
     return () => {
       mounted = false;
     };
-  }, [loadConflicts, loadConnections]);
+  }, [loadConflicts, loadConnections, loadHealth]);
 
   const resolveConflict = useCallback(
     async (conflictId: string, action: 'accept' | 'override') => {
@@ -114,6 +126,26 @@ export default function CalendarScreen() {
     [loadConnections]
   );
 
+  const remediateProvider = useCallback(
+    async (provider: string, action: 'replay_latest_failure' | 'reconnect_provider') => {
+      const typedProvider = asProvider(provider);
+      if (typedProvider === null) return;
+
+      const key = `${provider}:${action}`;
+      setHealthBusyKey(key);
+      setHealthMessage(null);
+
+      try {
+        const response = await nestApiClient.remediateIntegrationHealth(typedProvider, action);
+        setHealthMessage(`${provider}: ${response.data.message}`);
+        await loadHealth();
+      } finally {
+        setHealthBusyKey(null);
+      }
+    },
+    [loadHealth]
+  );
+
   return (
     <ModuleScreen
       moduleKey={calendarData.module}
@@ -146,6 +178,12 @@ export default function CalendarScreen() {
         onConnect: connectProvider,
         onRevoke: revokeProvider,
         busyProvider,
+      }}
+      integrationHealth={{
+        items: healthItems,
+        onRemediate: remediateProvider,
+        busyKey: healthBusyKey,
+        message: healthMessage,
       }}
     />
   );

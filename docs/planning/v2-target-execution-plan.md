@@ -200,7 +200,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - deduplication and replay protection are enforced,
     - monitoring captures ingestion lag and dropped-event rates.
 
-- [ ] NEST-148 Deliver integration health center and auto-remediation playbooks
+- [x] NEST-148 Deliver integration health center and auto-remediation playbooks
   - Depends on: NEST-147
   - Done when:
     - health center surfaces provider status, failures, and recovery hints,

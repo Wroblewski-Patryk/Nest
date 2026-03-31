@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type {
   IntegrationConnectionItem,
+  IntegrationHealthProviderItem,
   ModuleKey,
   TelemetryEventName,
   UiAsyncState,
@@ -64,6 +65,12 @@ type ModuleScreenProps = {
     onRevoke: (provider: string) => void;
     busyProvider?: string | null;
   };
+  integrationHealth?: {
+    items: IntegrationHealthProviderItem[];
+    onRemediate: (provider: string, action: 'replay_latest_failure' | 'reconnect_provider') => void;
+    busyKey?: string | null;
+    message?: string | null;
+  };
 };
 
 const stateLabels: Record<UiAsyncState, string> = {
@@ -77,6 +84,8 @@ const providerLeastPrivilegeScopes: Record<string, string[]> = {
   trello: ['read', 'write'],
   google_tasks: ['tasks.readonly'],
   todoist: ['data:read_write'],
+  clickup: ['task:read', 'task:write'],
+  microsoft_todo: ['Tasks.ReadWrite'],
   google_calendar: ['calendar.events'],
   obsidian: ['vault:read_write'],
 };
@@ -131,6 +140,7 @@ export function ModuleScreen({
   connectivity,
   conflicts,
   connections,
+  integrationHealth,
 }: ModuleScreenProps) {
   const language = resolveLanguage(process.env.EXPO_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const [auraA, auraB, auraC] = useMemo(() => getAuraPalette(moduleKey), [moduleKey]);
@@ -379,6 +389,66 @@ export function ModuleScreen({
                 </View>
               );
             })}
+          </View>
+        ) : null}
+
+        {integrationHealth ? (
+          <View style={styles.panel}>
+            <Text style={styles.panelTitle}>Integration Health Center</Text>
+            {integrationHealth.message ? (
+              <Text style={styles.rowDetail}>{integrationHealth.message}</Text>
+            ) : null}
+            {integrationHealth.items.length === 0 ? (
+              <View style={styles.row}>
+                <View style={styles.rowTextWrap}>
+                  <Text style={styles.rowTitle}>No provider health data</Text>
+                  <Text style={styles.rowDetail}>Health data appears after first sync window.</Text>
+                </View>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>empty</Text>
+                </View>
+              </View>
+            ) : (
+              integrationHealth.items.map((item) => (
+                <View key={item.provider} style={styles.rowStack}>
+                  <View style={styles.row}>
+                    <View style={styles.rowTextWrap}>
+                      <Text style={styles.rowTitle}>{item.display_name}</Text>
+                      <Text style={styles.rowDetail}>Health: {item.health.status}</Text>
+                      <Text style={styles.rowDetail}>Connection: {item.connection.status}</Text>
+                      <Text style={styles.rowDetail}>
+                        Sync success: {item.sync_window.success_rate_percent}%
+                      </Text>
+                      <Text style={styles.rowDetail}>
+                        Dropped events: {item.events.dropped_count}/{item.events.received_count}
+                      </Text>
+                    </View>
+                    <View style={styles.badge}>
+                      <Text style={styles.badgeText}>{item.health.risk_level}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.actionRow}>
+                    {item.remediation.one_click_actions.map((action) => {
+                      const key = `${item.provider}:${action.action}`;
+
+                      return (
+                        <Pressable
+                          key={key}
+                          style={[
+                            styles.actionButton,
+                            (!action.enabled || integrationHealth.busyKey === key) && styles.actionButtonDisabled,
+                          ]}
+                          onPress={() => integrationHealth.onRemediate(item.provider, action.action)}
+                          disabled={!action.enabled || integrationHealth.busyKey === key}
+                        >
+                          <Text style={styles.actionButtonText}>{action.label}</Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </View>
+              ))
+            )}
           </View>
         ) : null}
       </ScrollView>

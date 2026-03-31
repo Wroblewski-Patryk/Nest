@@ -969,6 +969,59 @@ paths:
         '422':
           $ref: '#/components/responses/ValidationError'
 
+  /v1/integrations/health:
+    get:
+      tags: [Integrations]
+      summary: List provider integration health center status
+      operationId: listIntegrationHealth
+      parameters:
+        - name: window_hours
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 168
+      responses:
+        '200':
+          description: Integration health center collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationHealthCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/integrations/health/{provider}/remediate:
+    post:
+      tags: [Integrations]
+      summary: Execute one-click or guided remediation for provider health
+      operationId: remediateIntegrationHealth
+      parameters:
+        - $ref: '#/components/parameters/Provider'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  enum: [replay_latest_failure, reconnect_provider]
+      responses:
+        '200':
+          description: Remediation action result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationHealthRemediationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
   /v1/integrations/events/{provider}/ingest:
     post:
       tags: [Integrations]
@@ -1730,6 +1783,188 @@ components:
         entity_payload:
           type: object
           additionalProperties: true
+
+    IntegrationHealthCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationHealthProviderItem'
+        meta:
+          type: object
+          required: [total, healthy, degraded, disconnected, window_hours]
+          properties:
+            total:
+              type: integer
+            healthy:
+              type: integer
+            degraded:
+              type: integer
+            disconnected:
+              type: integer
+            window_hours:
+              type: integer
+
+    IntegrationHealthRemediationResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [provider, action, status, message]
+          properties:
+            provider:
+              type: string
+            action:
+              type: string
+              enum: [replay_latest_failure, reconnect_provider]
+            status:
+              type: string
+              enum: [completed, failed, noop, guided]
+            message:
+              type: string
+            result:
+              type: [object, 'null']
+              additionalProperties: true
+
+    IntegrationHealthProviderItem:
+      type: object
+      required:
+        [provider, display_name, category, connection, health, sync_window, failures, events, remediation]
+      properties:
+        provider:
+          type: string
+          enum:
+            [trello, google_tasks, todoist, clickup, microsoft_todo, google_calendar, obsidian]
+        display_name:
+          type: string
+        category:
+          type: string
+        connection:
+          type: object
+          required: [status, is_connected, scopes]
+          properties:
+            status:
+              type: string
+              enum: [not_connected, connected, revoked]
+            is_connected:
+              type: boolean
+            scopes:
+              type: array
+              items:
+                type: string
+            expires_at:
+              type: [string, 'null']
+              format: date-time
+            updated_at:
+              type: [string, 'null']
+              format: date-time
+        health:
+          type: object
+          required: [status, risk_level, summary, window_hours]
+          properties:
+            status:
+              type: string
+              enum: [healthy, degraded, disconnected]
+            risk_level:
+              type: string
+              enum: [low, medium, high]
+            summary:
+              type: string
+            window_hours:
+              type: integer
+        sync_window:
+          type: object
+          required: [success_count, failed_count, success_rate_percent]
+          properties:
+            success_count:
+              type: integer
+            failed_count:
+              type: integer
+            success_rate_percent:
+              type: number
+            last_success_at:
+              type: [string, 'null']
+              format: date-time
+            last_failure_at:
+              type: [string, 'null']
+              format: date-time
+        failures:
+          type: object
+          required: [open_count]
+          properties:
+            open_count:
+              type: integer
+            latest:
+              type: [object, 'null']
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                error_message:
+                  type: string
+                failed_at:
+                  type: [string, 'null']
+                  format: date-time
+                attempts:
+                  type: integer
+                replay_count:
+                  type: integer
+                last_replay_status:
+                  type: [string, 'null']
+        events:
+          type: object
+          required:
+            [supports_webhook, received_count, dropped_count, drop_rate_percent, average_lag_ms]
+          properties:
+            supports_webhook:
+              type: boolean
+            received_count:
+              type: integer
+            dropped_count:
+              type: integer
+            drop_rate_percent:
+              type: number
+            average_lag_ms:
+              type: integer
+            last_received_at:
+              type: [string, 'null']
+              format: date-time
+        remediation:
+          type: object
+          required: [one_click_actions, guided_flows, runbook_ref]
+          properties:
+            one_click_actions:
+              type: array
+              items:
+                type: object
+                required: [action, label, enabled]
+                properties:
+                  action:
+                    type: string
+                    enum: [replay_latest_failure]
+                  label:
+                    type: string
+                  enabled:
+                    type: boolean
+            guided_flows:
+              type: array
+              items:
+                type: object
+                required: [action, label, steps]
+                properties:
+                  action:
+                    type: string
+                  label:
+                    type: string
+                  steps:
+                    type: array
+                    items:
+                      type: string
+            runbook_ref:
+              type: string
 
     IntegrationEventIngestionResponse:
       type: object

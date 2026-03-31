@@ -1,5 +1,6 @@
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { ConflictQueueCard } from "@/components/conflict-queue-card";
+import { IntegrationHealthCenterCard } from "@/components/integration-health-center-card";
 import { ProviderConnectionsCard } from "@/components/provider-connections-card";
 import { calendarSnapshot } from "@/lib/mvp-snapshot";
 
@@ -54,6 +55,7 @@ export default function CalendarPage() {
       </Panel>
 
       <ConflictQueueCard />
+      <IntegrationHealthCenterCard />
       <ProviderConnectionsCard />
     </WorkspaceShell>
   );

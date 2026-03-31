@@ -575,11 +575,15 @@ Last updated: 2026-03-31
   with webhook/event-driven ingestion endpoints, strict replay protection, and
   ingestion lag/drop monitoring metrics + command baseline
   (`docs/modules/integration_near_real_time_sync_triggers_v2.md`)
+- `NEST-148` completed: integration health center delivered with provider
+  status/failure/event-risk aggregation, one-click replay remediation, guided
+  reconnect playbooks, and web/mobile health center surfaces
+  (`docs/modules/integration_health_center_remediation_playbooks_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: execute V2 integrations wave continuation
-  (`NEST-148` onward) while launch-window/live-evidence closure tasks
+  (`NEST-149` onward) while launch-window/live-evidence closure tasks
   (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`)
   remain tracked for non-dry-run operations.
 

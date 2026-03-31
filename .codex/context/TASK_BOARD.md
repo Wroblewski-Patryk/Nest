@@ -1122,14 +1122,40 @@ Last updated: 2026-03-31
       `docs/modules/integration_near_real_time_sync_triggers_v2.md` and linked
       from `docs/modules/integrations.md`.
 
-- [ ] NEST-148 Deliver integration health center and remediation playbooks
-  - Status: BACKLOG
+- [x] NEST-148 Deliver integration health center and remediation playbooks
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-147
   - Done when:
     - health center surfaces provider status, failures, and recovery hints,
     - common failures have one-click remediation or guided flows,
     - runbooks include provider-specific incident procedures.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added integration health center APIs:
+      `GET /api/v1/integrations/health`,
+      `POST /api/v1/integrations/health/{provider}/remediate`.
+    - Added health aggregation and remediation service/controller:
+      `apps/api/app/Integrations/Services/IntegrationHealthCenterService.php`,
+      `apps/api/app/Http/Controllers/Api/IntegrationHealthCenterController.php`.
+    - Added one-click remediation (`replay_latest_failure`) and guided flow
+      (`reconnect_provider`) support.
+    - Added API regression coverage:
+      `apps/api/tests/Feature/IntegrationHealthCenterApiTest.php`.
+    - Added health center UI surfaces for web/mobile calendar integration
+      control areas:
+      `apps/web/src/components/integration-health-center-card.tsx`,
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/mobile/components/mvp/ModuleScreen.tsx`,
+      `apps/mobile/app/(tabs)/calendar.tsx`.
+    - Updated shared runtime contracts and OpenAPI:
+      `packages/shared-types/src/client.js`,
+      `packages/shared-types/src/client.d.ts`,
+      `packages/shared-types/src/index.d.ts`,
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`.
+    - Published module + provider runbook docs:
+      `docs/modules/integration_health_center_remediation_playbooks_v2.md`,
+      `docs/operations/integration_health_center_provider_incident_playbooks_v2.md`.
 
 - [ ] NEST-149 Expand billing to self-serve checkout/portal/dunning (V2)
   - Status: BACKLOG

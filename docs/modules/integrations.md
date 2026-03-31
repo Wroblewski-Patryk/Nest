@@ -62,6 +62,15 @@ Current status:
   with deduplication/replay protection and ingestion lag/drop monitoring.
   - Detailed contract:
     `docs/modules/integration_near_real_time_sync_triggers_v2.md`.
+- Integration health center is active via:
+  - `GET /api/v1/integrations/health`
+  - `POST /api/v1/integrations/health/{provider}/remediate`
+  with provider health scoring, one-click replay remediation, and guided
+  reconnect flows.
+  - Detailed contract:
+    `docs/modules/integration_health_center_remediation_playbooks_v2.md`.
+  - Provider incident runbooks:
+    `docs/operations/integration_health_center_provider_incident_playbooks_v2.md`.
 
 ## Integration Data Model
 

@@ -215,6 +215,78 @@ export type IntegrationEventIngestionItem = {
   queue_job_id: string | null;
 };
 
+export type IntegrationHealthStatus = "healthy" | "degraded" | "disconnected";
+
+export type IntegrationHealthOneClickAction = {
+  action: "replay_latest_failure";
+  label: string;
+  enabled: boolean;
+};
+
+export type IntegrationHealthGuidedFlow = {
+  action: string;
+  label: string;
+  steps: string[];
+};
+
+export type IntegrationHealthProviderItem = {
+  provider: string;
+  display_name: string;
+  category: string;
+  connection: {
+    status: "not_connected" | "connected" | "revoked";
+    is_connected: boolean;
+    scopes: string[];
+    expires_at: string | null;
+    updated_at: string | null;
+  };
+  health: {
+    status: IntegrationHealthStatus;
+    risk_level: "low" | "medium" | "high";
+    summary: string;
+    window_hours: number;
+  };
+  sync_window: {
+    success_count: number;
+    failed_count: number;
+    success_rate_percent: number;
+    last_success_at: string | null;
+    last_failure_at: string | null;
+  };
+  failures: {
+    open_count: number;
+    latest: {
+      id: string;
+      error_message: string;
+      failed_at: string | null;
+      attempts: number;
+      replay_count: number;
+      last_replay_status: string | null;
+    } | null;
+  };
+  events: {
+    supports_webhook: boolean;
+    received_count: number;
+    dropped_count: number;
+    drop_rate_percent: number;
+    average_lag_ms: number;
+    last_received_at: string | null;
+  };
+  remediation: {
+    one_click_actions: IntegrationHealthOneClickAction[];
+    guided_flows: IntegrationHealthGuidedFlow[];
+    runbook_ref: string;
+  };
+};
+
+export type IntegrationHealthRemediationResult = {
+  provider: string;
+  action: "replay_latest_failure" | "reconnect_provider";
+  status: "completed" | "failed" | "noop" | "guided";
+  message: string;
+  result: Record<string, unknown> | null;
+};
+
 export type IntegrationMarketplaceProviderItem = {
   provider: string;
   display_name: string;
@@ -765,6 +837,22 @@ export type NestApiClient = {
   syncListTasks(provider: "trello" | "google_tasks" | "todoist" | "clickup" | "microsoft_todo"): Promise<{ data: Record<string, unknown> }>;
   syncCalendar(provider: "google_calendar"): Promise<{ data: Record<string, unknown> }>;
   syncJournal(provider: "obsidian"): Promise<{ data: Record<string, unknown> }>;
+  getIntegrationHealth(query?: {
+    window_hours?: number;
+  }): Promise<{
+    data: IntegrationHealthProviderItem[];
+    meta: {
+      total: number;
+      healthy: number;
+      degraded: number;
+      disconnected: number;
+      window_hours: number;
+    };
+  }>;
+  remediateIntegrationHealth(
+    provider: "trello" | "google_tasks" | "todoist" | "clickup" | "microsoft_todo" | "google_calendar" | "obsidian",
+    action: "replay_latest_failure" | "reconnect_provider"
+  ): Promise<{ data: IntegrationHealthRemediationResult }>;
   ingestIntegrationEvent(
     provider: "trello" | "todoist" | "google_calendar" | "clickup" | "microsoft_todo",
     payload: {

@@ -291,6 +291,13 @@ export function createNestApiClient(options) {
         method: "POST",
         body: { provider },
       }),
+    getIntegrationHealth: (query = {}) =>
+      request("/integrations/health", { query }),
+    remediateIntegrationHealth: (provider, action) =>
+      request(`/integrations/health/${provider}/remediate`, {
+        method: "POST",
+        body: { action },
+      }),
     ingestIntegrationEvent: (provider, payload) =>
       request(`/integrations/events/${provider}/ingest`, {
         method: "POST",
