@@ -160,6 +160,21 @@ export function createNestApiClient(options) {
         method: "POST",
         body: payload,
       }),
+    getAiActionProposals: (query = {}) => request("/ai/actions/proposals", { query }),
+    proposeAiAction: (payload) =>
+      request("/ai/actions/proposals", {
+        method: "POST",
+        body: payload,
+      }),
+    approveAiActionProposal: (proposalId) =>
+      request(`/ai/actions/proposals/${proposalId}/approve`, {
+        method: "POST",
+      }),
+    rejectAiActionProposal: (proposalId, payload = {}) =>
+      request(`/ai/actions/proposals/${proposalId}/reject`, {
+        method: "POST",
+        body: payload,
+      }),
     getCollaborationSpaces: () => request("/collaboration/spaces"),
     createCollaborationSpace: (payload) =>
       request("/collaboration/spaces", {

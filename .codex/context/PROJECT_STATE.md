@@ -554,11 +554,14 @@ Last updated: 2026-03-31
   API/web/mobile with explainability payloads, source references, and graceful
   fallback behavior when AI provider credentials are unavailable
   (`docs/modules/conversational_copilot_surface_v2.md`)
+- `NEST-142` completed: approval-gated AI write actions delivered with explicit
+  proposal/approve/reject lifecycle, no-write-before-approval enforcement, and
+  persisted execution audit trail (`docs/modules/ai_approval_gated_write_actions_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: execute V2 AI wave continuation
-  (`NEST-142` onward) while launch-window/live-evidence closure tasks
+  (`NEST-143` onward) while launch-window/live-evidence closure tasks
   (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`)
   remain tracked for non-dry-run operations.
 

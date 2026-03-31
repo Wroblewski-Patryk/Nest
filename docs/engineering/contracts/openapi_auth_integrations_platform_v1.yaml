@@ -290,6 +290,97 @@ paths:
         '422':
           $ref: '#/components/responses/ValidationError'
 
+  /v1/ai/actions/proposals:
+    get:
+      tags: [AI]
+      summary: List AI write-action proposals
+      operationId: listAiActionProposals
+      parameters:
+        - in: query
+          name: status
+          required: false
+          schema:
+            type: string
+            enum: [pending, approved, rejected, executed, failed]
+        - in: query
+          name: per_page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Proposal collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiActionProposalCollectionResponse'
+    post:
+      tags: [AI]
+      summary: Propose AI write action requiring approval
+      operationId: proposeAiAction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AiActionProposalRequest'
+      responses:
+        '201':
+          description: Proposal created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiActionProposalResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/ai/actions/proposals/{proposalId}/approve:
+    post:
+      tags: [AI]
+      summary: Approve and execute pending AI proposal
+      operationId: approveAiActionProposal
+      parameters:
+        - $ref: '#/components/parameters/ProposalId'
+      responses:
+        '200':
+          description: Proposal approved and executed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiActionProposalResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/ai/actions/proposals/{proposalId}/reject:
+    post:
+      tags: [AI]
+      summary: Reject pending AI proposal
+      operationId: rejectAiActionProposal
+      parameters:
+        - $ref: '#/components/parameters/ProposalId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                reason:
+                  type: string
+                  maxLength: 1000
+      responses:
+        '200':
+          description: Proposal rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiActionProposalResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
   /v1/ai/feedback:
     post:
       tags: [AI]
@@ -1207,6 +1298,13 @@ components:
       schema:
         type: string
         format: uuid
+    ProposalId:
+      name: proposalId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
 
   responses:
     Unauthorized:
@@ -1842,6 +1940,92 @@ components:
             generated_at:
               type: string
               format: date-time
+
+    AiActionProposalRequest:
+      type: object
+      required: [action_type, proposal_payload]
+      properties:
+        action_type:
+          type: string
+          enum: [create_task, update_task_status]
+        proposal_payload:
+          type: object
+          additionalProperties: true
+        note:
+          type: string
+          maxLength: 1000
+
+    AiActionProposalItem:
+      type: object
+      required: [id, action_type, proposal_payload, requires_approval, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        action_type:
+          type: string
+          enum: [create_task, update_task_status]
+        proposal_payload:
+          type: object
+          additionalProperties: true
+        requires_approval:
+          type: boolean
+        status:
+          type: string
+          enum: [pending, approved, rejected, executed, failed]
+        note:
+          type: [string, 'null']
+        rejection_reason:
+          type: [string, 'null']
+        execution_result:
+          oneOf:
+            - type: object
+              additionalProperties: true
+            - type: 'null'
+        failure_reason:
+          type: [string, 'null']
+        approved_by_user_id:
+          type: [string, 'null']
+          format: uuid
+        approved_at:
+          type: [string, 'null']
+          format: date-time
+        rejected_at:
+          type: [string, 'null']
+          format: date-time
+        executed_at:
+          type: [string, 'null']
+          format: date-time
+        created_at:
+          type: [string, 'null']
+          format: date-time
+        updated_at:
+          type: [string, 'null']
+          format: date-time
+
+    AiActionProposalResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/AiActionProposalItem'
+
+    AiActionProposalCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AiActionProposalItem'
+        meta:
+          type: object
+          required: [total, per_page]
+          properties:
+            total:
+              type: integer
+            per_page:
+              type: integer
 
     ErrorResponse:
       type: object

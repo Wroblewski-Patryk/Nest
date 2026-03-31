@@ -268,6 +268,26 @@ export type AiCopilotConversationResponse = {
   };
 };
 
+export type AiActionProposalStatus = "pending" | "approved" | "rejected" | "executed" | "failed";
+
+export type AiActionProposalItem = {
+  id: string;
+  action_type: "create_task" | "update_task_status";
+  proposal_payload: Record<string, unknown>;
+  requires_approval: boolean;
+  status: AiActionProposalStatus;
+  note: string | null;
+  rejection_reason: string | null;
+  execution_result: Record<string, unknown> | null;
+  failure_reason: string | null;
+  approved_by_user_id: string | null;
+  approved_at: string | null;
+  rejected_at: string | null;
+  executed_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLocalizationOptions(): Promise<{ data: LocalizationOptionsResponse }>;
@@ -285,6 +305,20 @@ export type NestApiClient = {
       as_of?: string;
     };
   }): Promise<AiCopilotConversationResponse>;
+  getAiActionProposals(query?: {
+    status?: AiActionProposalStatus;
+    per_page?: number;
+  }): Promise<{ data: AiActionProposalItem[]; meta: { total: number; per_page: number } }>;
+  proposeAiAction(payload: {
+    action_type: "create_task" | "update_task_status";
+    proposal_payload: Record<string, unknown>;
+    note?: string;
+  }): Promise<{ data: AiActionProposalItem }>;
+  approveAiActionProposal(proposalId: string): Promise<{ data: AiActionProposalItem }>;
+  rejectAiActionProposal(
+    proposalId: string,
+    payload?: { reason?: string }
+  ): Promise<{ data: AiActionProposalItem }>;
   getCollaborationSpaces(): Promise<{ data: CollaborationSpaceItem[] }>;
   createCollaborationSpace(payload: { name: string }): Promise<{ data: CollaborationSpaceItem }>;
   getCollaborationSpaceMembers(spaceId: string): Promise<{ data: CollaborationSpaceMemberItem[] }>;

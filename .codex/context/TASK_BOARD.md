@@ -936,14 +936,36 @@ Last updated: 2026-03-31
     - Added API regression coverage:
       `apps/api/tests/Feature/AiCopilotConversationApiTest.php`.
 
-- [ ] NEST-142 Implement approval-gated AI actions (write operations)
-  - Status: BACKLOG
+- [x] NEST-142 Implement approval-gated AI actions (write operations)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-141
   - Done when:
     - AI can propose concrete mutations (create/update plans/tasks),
     - high-impact actions require explicit user approval,
     - audit trail records proposal, approval, and execution results.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added approval-gated AI write proposal APIs:
+      `GET/POST /api/v1/ai/actions/proposals`,
+      `POST /api/v1/ai/actions/proposals/{proposalId}/approve`,
+      `POST /api/v1/ai/actions/proposals/{proposalId}/reject`.
+    - Added proposal lifecycle storage model:
+      `ai_action_proposals` table +
+      `apps/api/app/Models/AiActionProposal.php`.
+    - Implemented proposal normalization, approval enforcement, execution, and
+      rejection service:
+      `apps/api/app/AI/Services/AiActionProposalService.php`.
+    - Added retention/deletion lifecycle integration for AI action proposals in
+      `apps/api/config/tenant_data_lifecycle.php`.
+    - Added API regression suite:
+      `apps/api/tests/Feature/AiActionProposalApiTest.php`.
+    - Updated shared client/types, OpenAPI, and module documentation:
+      `packages/shared-types/src/client.js`,
+      `packages/shared-types/src/client.d.ts`,
+      `packages/shared-types/src/index.d.ts`,
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
+      `docs/modules/ai_approval_gated_write_actions_v2.md`.
 
 - [ ] NEST-143 Add proactive briefings (daily + weekly) with user controls
   - Status: BACKLOG

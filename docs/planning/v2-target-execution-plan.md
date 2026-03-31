@@ -156,7 +156,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - responses include explainability and source references,
     - feature has graceful fallback when AI provider is unavailable.
 
-- [ ] NEST-142 Implement approval-gated AI actions (write operations)
+- [x] NEST-142 Implement approval-gated AI actions (write operations)
   - Depends on: NEST-141
   - Done when:
     - AI can propose concrete mutations (create/update plans/tasks),

@@ -38,12 +38,18 @@ return [
             'retention_days' => 180,
         ],
         [
+            'table' => 'ai_action_proposals',
+            'timestamp_column' => 'created_at',
+            'retention_days' => 180,
+        ],
+        [
             'table' => 'automation_runs',
             'timestamp_column' => 'created_at',
             'retention_days' => 180,
         ],
     ],
     'deletion_tables' => [
+        'ai_action_proposals',
         'ai_recommendation_feedback',
         'automation_runs',
         'automation_rules',
