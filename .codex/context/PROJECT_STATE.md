@@ -591,6 +591,12 @@ Last updated: 2026-03-31
   perf/security/cost/ops gate matrix, explicit P1 owners/mitigations, and
   documented NO-GO decision for GA pending risk closure
   (`docs/operations/v2_production_readiness_review_2026-03-31.md`)
+- `NEST-152` execution packet and V2.1 prioritized backlog are now published,
+  with pre-GA control checks re-validated in current environment; task remains
+  open pending non-dry-run GA deploy and live Day0/Day1/Week1/Week4 evidence
+  checkpoints
+  (`docs/operations/v2_ga_30_day_stabilization_execution_packet_2026-03-31.md`,
+  `docs/planning/v2_1_prioritized_backlog_wave_2026-03-31.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

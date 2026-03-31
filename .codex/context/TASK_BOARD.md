@@ -1233,6 +1233,18 @@ Last updated: 2026-03-31
     - V2 GA release is deployed and monitored,
     - day0/day1/week1/week4 checkpoints are executed,
     - next backlog wave (V2.1) is published with prioritized tasks.
+  - Notes:
+    - Execution packet published:
+      `docs/operations/v2_ga_30_day_stabilization_execution_packet_2026-03-31.md`.
+    - Prioritized V2.1 backlog wave published:
+      `docs/planning/v2_1_prioritized_backlog_wave_2026-03-31.md`.
+    - Pre-GA control checks executed and passed in current environment:
+      `php artisan migrate --force`,
+      `php artisan secrets:rotate --json`,
+      `php artisan security:controls:verify --json`,
+      `php artisan ai:copilot-safety-eval --json`.
+    - Task remains open pending non-dry-run GA deploy and live Day0/Day1/Week1/Week4
+      evidence checkpoints.
 
 - [x] NEST-015 Implement journal and life areas module
   - Status: DONE
