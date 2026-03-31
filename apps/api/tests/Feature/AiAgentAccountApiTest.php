@@ -48,6 +48,11 @@ class AiAgentAccountApiTest extends TestCase
         $credentialId = (int) $issue->json('data.credential.id');
         $this->assertIsString($issue->json('data.plain_text_token'));
 
+        $this->getJson("/api/v1/auth/ai-agents/{$agentId}/credentials")
+            ->assertOk()
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.id', (string) $credentialId);
+
         $this->postJson("/api/v1/auth/ai-agents/{$agentId}/credentials/{$credentialId}/revoke")
             ->assertOk()
             ->assertJsonPath('data.status', 'revoked');
@@ -199,5 +204,71 @@ class AiAgentAccountApiTest extends TestCase
             'reason' => 'route_not_allowed',
             'route' => '/api/v1/auth/ai-agents',
         ]);
+    }
+
+    public function test_human_user_can_view_access_audits_for_owned_principals(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $human = User::factory()->create(['tenant_id' => $tenant->id]);
+        $ownedAgent = User::factory()->create([
+            'tenant_id' => $tenant->id,
+            'principal_type' => User::PRINCIPAL_AI_AGENT,
+            'owner_user_id' => $human->id,
+            'agent_status' => User::AGENT_STATUS_ACTIVE,
+        ]);
+        $otherUser = User::factory()->create(['tenant_id' => $tenant->id]);
+
+        ActorBoundaryAudit::query()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $human->id,
+            'principal_type' => User::PRINCIPAL_HUMAN_USER,
+            'token_mode' => 'delegated',
+            'route' => '/api/v1/tasks',
+            'method' => 'GET',
+            'reason' => 'missing_scope',
+            'required_scope' => 'tasks:read',
+            'metadata' => ['actor_type' => 'delegated_agent'],
+            'occurred_at' => now(),
+        ]);
+
+        ActorBoundaryAudit::query()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $ownedAgent->id,
+            'principal_type' => User::PRINCIPAL_AI_AGENT,
+            'token_mode' => 'ai_agent',
+            'route' => '/api/v1/auth/delegated-credentials',
+            'method' => 'GET',
+            'reason' => 'route_not_allowed',
+            'required_scope' => null,
+            'metadata' => ['actor_type' => 'ai_agent'],
+            'occurred_at' => now()->subMinute(),
+        ]);
+
+        ActorBoundaryAudit::query()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $otherUser->id,
+            'principal_type' => User::PRINCIPAL_HUMAN_USER,
+            'token_mode' => 'delegated',
+            'route' => '/api/v1/goals',
+            'method' => 'GET',
+            'reason' => 'missing_scope',
+            'required_scope' => 'goals:read',
+            'metadata' => ['actor_type' => 'delegated_agent'],
+            'occurred_at' => now()->subMinutes(2),
+        ]);
+
+        Sanctum::actingAs($human);
+
+        $response = $this->getJson('/api/v1/auth/access-audits')
+            ->assertOk()
+            ->assertJsonPath('meta.total', 2);
+
+        $userIds = collect($response->json('data'))
+            ->map(static fn (array $item): string => (string) $item['user_id'])
+            ->all();
+
+        $this->assertContains($human->id, $userIds);
+        $this->assertContains($ownedAgent->id, $userIds);
+        $this->assertNotContains($otherUser->id, $userIds);
     }
 }

@@ -143,6 +143,27 @@ body {
   letter-spacing: 0.11em;
 }
 
+.workspace-hero-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.workspace-settings-link {
+  text-decoration: none;
+  border: 1px solid color-mix(in srgb, var(--accent), #fff 35%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-soft), #fff 22%);
+  color: color-mix(in srgb, var(--accent), #000 22%);
+  padding: 0.24rem 0.62rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.workspace-settings-link:hover {
+  border-color: color-mix(in srgb, var(--accent), #fff 20%);
+}
+
 .workspace-hero h1 {
   margin: 0;
   font-size: clamp(1.28rem, 2vw, 1.9rem);

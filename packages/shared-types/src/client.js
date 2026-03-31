@@ -154,6 +154,37 @@ export function createNestApiClient(options) {
         method: "POST",
         body: payload,
       }),
+    getDelegatedCredentials: () => request("/auth/delegated-credentials"),
+    createDelegatedCredential: (payload) =>
+      request("/auth/delegated-credentials", {
+        method: "POST",
+        body: payload,
+      }),
+    revokeDelegatedCredential: (credentialId) =>
+      request(`/auth/delegated-credentials/${credentialId}/revoke`, {
+        method: "POST",
+      }),
+    getAiAgents: () => request("/auth/ai-agents"),
+    createAiAgent: (payload) =>
+      request("/auth/ai-agents", {
+        method: "POST",
+        body: payload,
+      }),
+    getAiAgentCredentials: (agentId) => request(`/auth/ai-agents/${agentId}/credentials`),
+    createAiAgentCredential: (agentId, payload) =>
+      request(`/auth/ai-agents/${agentId}/credentials`, {
+        method: "POST",
+        body: payload,
+      }),
+    revokeAiAgentCredential: (agentId, credentialId) =>
+      request(`/auth/ai-agents/${agentId}/credentials/${credentialId}/revoke`, {
+        method: "POST",
+      }),
+    deactivateAiAgent: (agentId) =>
+      request(`/auth/ai-agents/${agentId}/deactivate`, {
+        method: "POST",
+      }),
+    getAccessAudits: (query = {}) => request("/auth/access-audits", { query }),
     getAiContextGraph: (query = {}) => request("/ai/context-graph", { query }),
     askAiCopilot: (payload) =>
       request("/ai/copilot/conversation", {

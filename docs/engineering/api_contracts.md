@@ -44,4 +44,7 @@ for backend and client integration.
 - AI agent principal lifecycle and boundary model (`NEST-165`) is documented
   in `docs/modules/ai_agent_account_lifecycle_boundaries_v1.md` and represented
   in `openapi_auth_integrations_platform_v1.yaml` auth path group.
+- Access-control GUI/API management surface (`NEST-166`) is documented in
+  `docs/modules/access_control_management_surface_v1.md` with auth path updates
+  in `openapi_auth_integrations_platform_v1.yaml`.
 

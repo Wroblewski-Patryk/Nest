@@ -126,6 +126,31 @@ class AiAgentAccountController extends Controller
         ], 201);
     }
 
+    public function listCredentials(Request $request, string $agentId): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $this->assertHumanPrincipal($user);
+
+        $agent = $this->findOwnedAgent($user, $agentId);
+        $credentials = PersonalAccessToken::query()
+            ->where('tokenable_type', User::class)
+            ->where('tokenable_id', $agent->id)
+            ->orderByDesc('id')
+            ->get()
+            ->filter(fn (PersonalAccessToken $token): bool => DelegatedCredentialScopeCatalog::isAiAgentToken($token))
+            ->values();
+
+        return response()->json([
+            'data' => $credentials->map(
+                fn (PersonalAccessToken $token): array => $this->serializeCredential($token)
+            )->values()->all(),
+            'meta' => [
+                'total' => $credentials->count(),
+            ],
+        ]);
+    }
+
     public function revokeCredential(Request $request, string $agentId, int $credentialId): JsonResponse
     {
         /** @var User $user */
@@ -270,4 +295,3 @@ class AiAgentAccountController extends Controller
         return $value?->toISOString();
     }
 }
-

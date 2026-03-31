@@ -867,8 +867,8 @@ Last updated: 2026-03-31
       `php artisan route:list --path=api/v1/auth/ai-agents`.
   - Done on: 2026-03-31
 
-- [ ] NEST-166 Deliver GUI+API access-control surface for AI integration management
-  - Status: BACKLOG
+- [x] NEST-166 Deliver GUI+API access-control surface for AI integration management
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-165
   - Done when:
@@ -878,6 +878,37 @@ Last updated: 2026-03-31
     - OpenAPI and user docs reflect finalized management flows.
   - Notes:
     - Closing evidence includes click-path screenshots and policy regressions.
+    - Delivered protected web settings surface for access control management:
+      `apps/web/src/app/settings/page.tsx`,
+      `apps/web/src/lib/route-guard.ts`,
+      `apps/web/scripts/route-guard-regression.mjs`,
+      `apps/web/src/components/workspace-shell.tsx`.
+    - Added API access-audit read surface for human owner review:
+      `apps/api/app/Http/Controllers/Api/AccessAuditController.php`,
+      `apps/api/routes/api.php`.
+    - Expanded AI agent credential API for explicit credential review list:
+      `GET /api/v1/auth/ai-agents/{agentId}/credentials`
+      in `apps/api/app/Http/Controllers/Api/AiAgentAccountController.php`.
+    - Updated shared API client contract with access-control methods/types:
+      `packages/shared-types/src/client.js`,
+      `packages/shared-types/src/index.d.ts`,
+      `packages/shared-types/src/client.d.ts`.
+    - Updated user/API docs and OpenAPI contract:
+      `docs/modules/access_control_management_surface_v1.md`,
+      `docs/engineering/api_contracts.md`,
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`.
+    - Added access-audit + AI lifecycle regression coverage:
+      `apps/api/tests/Feature/AiAgentAccountApiTest.php`.
+    - Validation:
+      `php artisan test --filter=AiAgentAccountApiTest`,
+      `php artisan test --filter=DelegatedCredentialApiTest`,
+      `php artisan test --filter=AuthApiTest`,
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`,
+      `php artisan route:list --path=api/v1/auth/access-audits`,
+      `php artisan route:list --path=api/v1/auth/ai-agents`.
+  - Done on: 2026-03-31
 
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG

@@ -225,6 +225,39 @@ export type IntegrationMarketplaceAuditItem = {
   created_at: string | null;
 };
 
+export type DelegatedCredentialItem = {
+  id: string;
+  name: string;
+  scopes: string[];
+  status: "active" | "expired" | "revoked";
+  last_used_at: string | null;
+  expires_at: string | null;
+  revoked_at: string | null;
+  created_at: string | null;
+};
+
+export type AiAgentItem = {
+  id: string;
+  name: string;
+  email: string;
+  agent_status: "active" | "revoked";
+  created_at: string | null;
+  last_used_at: string | null;
+};
+
+export type AccessAuditItem = {
+  id: string;
+  user_id: string;
+  principal_type: "human_user" | "ai_agent";
+  token_mode: "delegated" | "ai_agent" | null;
+  route: string;
+  method: string;
+  reason: string;
+  required_scope: string | null;
+  metadata: Record<string, unknown>;
+  occurred_at: string | null;
+};
+
 export type InAppNotificationItem = {
   id: string;
   event_type: string;
@@ -446,6 +479,43 @@ export type NestApiClient = {
     language: SupportedLanguage;
     locale?: string | null;
   }): Promise<{ data: Record<string, unknown> }>;
+  getDelegatedCredentials(): Promise<{
+    data: DelegatedCredentialItem[];
+    meta: { total: number; available_scopes: string[] };
+  }>;
+  createDelegatedCredential(payload: {
+    name: string;
+    scopes: string[];
+    expires_at?: string | null;
+  }): Promise<{
+    data: {
+      credential: DelegatedCredentialItem;
+      plain_text_token: string;
+    };
+  }>;
+  revokeDelegatedCredential(credentialId: string | number): Promise<{ data: DelegatedCredentialItem }>;
+  getAiAgents(): Promise<{ data: AiAgentItem[]; meta: { total: number } }>;
+  createAiAgent(payload: { name: string }): Promise<{ data: AiAgentItem }>;
+  getAiAgentCredentials(agentId: string): Promise<{
+    data: DelegatedCredentialItem[];
+    meta: { total: number };
+  }>;
+  createAiAgentCredential(
+    agentId: string,
+    payload: { name: string; scopes: string[]; expires_at?: string | null }
+  ): Promise<{
+    data: {
+      agent: AiAgentItem;
+      credential: DelegatedCredentialItem;
+      plain_text_token: string;
+    };
+  }>;
+  revokeAiAgentCredential(agentId: string, credentialId: string | number): Promise<{ data: DelegatedCredentialItem }>;
+  deactivateAiAgent(agentId: string): Promise<{ data: AiAgentItem }>;
+  getAccessAudits(query?: { per_page?: number }): Promise<{
+    data: AccessAuditItem[];
+    meta: { total: number; page: number; per_page: number };
+  }>;
   getAiContextGraph(query?: { window_days?: number; entity_limit?: number; as_of?: string }): Promise<AiContextGraphResponse>;
   askAiCopilot(payload: {
     message: string;

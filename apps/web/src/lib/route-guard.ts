@@ -13,6 +13,7 @@ const PROTECTED_PREFIXES = [
   "/insights",
   "/automations",
   "/billing",
+  "/settings",
 ] as const;
 
 const PUBLIC_PREFIXES = ["/auth"] as const;

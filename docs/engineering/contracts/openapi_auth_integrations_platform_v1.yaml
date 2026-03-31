@@ -176,6 +176,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /v1/auth/access-audits:
+    get:
+      tags: [Auth]
+      summary: List access-boundary audit events for current user and owned agents
+      operationId: listAccessAudits
+      parameters:
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: Access audits list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessAuditCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden for non-human principal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /v1/auth/ai-agents:
     get:
       tags: [Auth]
@@ -225,6 +254,38 @@ paths:
           $ref: '#/components/responses/ValidationError'
 
   /v1/auth/ai-agents/{agentId}/credentials:
+    get:
+      tags: [Auth]
+      summary: List AI agent credentials
+      operationId: listAiAgentCredentials
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: AI agent credentials list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegatedCredentialCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden for non-human principal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: AI agent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       tags: [Auth]
       summary: Issue AI agent credential
@@ -2224,6 +2285,56 @@ components:
               $ref: '#/components/schemas/DelegatedCredentialItem'
             plain_text_token:
               type: string
+
+    AccessAuditItem:
+      type: object
+      required: [id, user_id, principal_type, route, method, reason, metadata, occurred_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        principal_type:
+          type: string
+          enum: [human_user, ai_agent]
+        token_mode:
+          type: [string, 'null']
+          enum: [delegated, ai_agent, null]
+        route:
+          type: string
+        method:
+          type: string
+        reason:
+          type: string
+        required_scope:
+          type: [string, 'null']
+        metadata:
+          type: object
+          additionalProperties: true
+        occurred_at:
+          type: [string, 'null']
+          format: date-time
+
+    AccessAuditCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessAuditItem'
+        meta:
+          type: object
+          required: [total, page, per_page]
+          properties:
+            total:
+              type: integer
+            page:
+              type: integer
+            per_page:
+              type: integer
 
     MessageResponse:
       type: object

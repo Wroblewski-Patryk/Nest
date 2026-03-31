@@ -29,7 +29,12 @@ export function WorkspaceShell({ title, subtitle, module, children }: WorkspaceS
               <p className="workspace-logo">NEST</p>
               <p className="workspace-date">{formatLocalizedDateTime(new Date(), language)}</p>
             </div>
-            <p className="workspace-kicker">{translate("app.kicker", language)}</p>
+            <div className="workspace-hero-tools">
+              <p className="workspace-kicker">{translate("app.kicker", language)}</p>
+              <Link href="/settings" className="workspace-settings-link">
+                Access Control
+              </Link>
+            </div>
           </div>
 
           <h1>{title}</h1>

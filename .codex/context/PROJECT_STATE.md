@@ -618,6 +618,15 @@ Last updated: 2026-03-31
   `apps/api/database/migrations/2026_03_31_234600_create_actor_boundary_audits_table.php`,
   `apps/api/app/Http/Middleware/EnforceDelegatedCredentialScope.php`,
   `docs/modules/ai_agent_account_lifecycle_boundaries_v1.md`)
+- `NEST-166` completed: GUI+API access-control management surface is active
+  with protected web settings flow (`/settings`) for delegated credentials,
+  AI-agent lifecycle/credential review, and access-boundary audit visibility;
+  auth API surface and shared client contracts are aligned to final management
+  flows (`apps/web/src/app/settings/page.tsx`,
+  `apps/api/app/Http/Controllers/Api/AccessAuditController.php`,
+  `apps/api/app/Http/Controllers/Api/AiAgentAccountController.php`,
+  `packages/shared-types/src/client.js`,
+  `docs/modules/access_control_management_surface_v1.md`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for
@@ -672,9 +681,8 @@ Last updated: 2026-03-31
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute dual-actor AI-access foundation
-  (`NEST-166`) in parallel
-  with ongoing V2 launch-window/live-evidence closures (`NEST-122`,
+- Current execution focus: ongoing V2 launch-window/live-evidence closures
+  (`NEST-122`,
   `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`) and
   commercial/release continuation (`NEST-152` onward).
 
