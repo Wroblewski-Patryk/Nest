@@ -978,6 +978,77 @@ paths:
         '422':
           $ref: '#/components/responses/ValidationError'
 
+  /v1/notifications/preferences:
+    get:
+      tags: [Notifications]
+      summary: Get notification channel preferences
+      operationId: getNotificationPreferences
+      responses:
+        '200':
+          description: Notification preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreferencesResponse'
+    patch:
+      tags: [Notifications]
+      summary: Update notification channel preferences
+      operationId: updateNotificationPreferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPreferencesUpdateRequest'
+      responses:
+        '200':
+          description: Updated notification preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreferencesResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/notifications/deliveries:
+    get:
+      tags: [Notifications]
+      summary: List notification channel delivery telemetry
+      operationId: listNotificationChannelDeliveries
+      parameters:
+        - name: per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: channel
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [push, email, in_app]
+        - name: event_type
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 64
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [sent, suppressed, failed]
+      responses:
+        '200':
+          description: Notification channel telemetry collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationChannelDeliveryCollectionResponse'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -1289,6 +1360,129 @@ components:
         updated_at:
           type: string
           format: date-time
+
+    NotificationChannelMap:
+      type: object
+      required: [push, email, in_app]
+      properties:
+        push:
+          type: boolean
+        email:
+          type: boolean
+        in_app:
+          type: boolean
+
+    NotificationQuietHours:
+      type: object
+      required: [enabled, start, end, timezone]
+      properties:
+        enabled:
+          type: boolean
+        start:
+          type: string
+          pattern: '^\\d{2}:\\d{2}$'
+        end:
+          type: string
+          pattern: '^\\d{2}:\\d{2}$'
+        timezone:
+          type: string
+
+    NotificationPreferencesItem:
+      type: object
+      required: [channels, event_channels, quiet_hours, locale, supported_event_types]
+      properties:
+        channels:
+          $ref: '#/components/schemas/NotificationChannelMap'
+        event_channels:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/NotificationChannelMap'
+        quiet_hours:
+          $ref: '#/components/schemas/NotificationQuietHours'
+        locale:
+          type: string
+        supported_event_types:
+          type: array
+          items:
+            type: string
+
+    NotificationPreferencesResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/NotificationPreferencesItem'
+
+    NotificationPreferencesUpdateRequest:
+      type: object
+      properties:
+        channels:
+          $ref: '#/components/schemas/NotificationChannelMap'
+        event_channels:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/NotificationChannelMap'
+        quiet_hours:
+          $ref: '#/components/schemas/NotificationQuietHours'
+        locale:
+          type: string
+          maxLength: 16
+
+    NotificationChannelDeliveryItem:
+      type: object
+      required: [id, channel, event_type, status, title, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        channel:
+          type: string
+          enum: [push, email, in_app]
+        event_type:
+          type: string
+        status:
+          type: string
+          enum: [sent, suppressed, failed]
+        failure_reason:
+          type: [string, 'null']
+        title:
+          type: string
+        payload:
+          oneOf:
+            - type: object
+              additionalProperties: true
+            - type: 'null'
+        metadata:
+          oneOf:
+            - type: object
+              additionalProperties: true
+            - type: 'null'
+        delivered_at:
+          type: [string, 'null']
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    NotificationChannelDeliveryCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationChannelDeliveryItem'
+        meta:
+          type: object
+          required: [total, per_page]
+          properties:
+            total:
+              type: integer
+            per_page:
+              type: integer
 
     ErrorResponse:
       type: object

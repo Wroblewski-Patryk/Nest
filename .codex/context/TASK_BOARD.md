@@ -833,14 +833,29 @@ Last updated: 2026-03-31
     - Implementation and validation summary documented in:
       `docs/modules/in_app_notification_center_actionable_events_v2.md`.
 
-- [ ] NEST-138 Implement notification channel matrix (push/email/in-app)
-  - Status: BACKLOG
+- [x] NEST-138 Implement notification channel matrix (push/email/in-app)
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-137
   - Done when:
     - per-channel and per-event preferences are configurable,
     - quiet hours and locale-aware delivery windows are supported,
     - delivery telemetry exists per channel with failure reasons.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added notification channel preference model + telemetry model:
+      `notification_preferences` and `notification_channel_deliveries`.
+    - Added channel matrix API endpoints:
+      `GET/PATCH /api/v1/notifications/preferences`,
+      `GET /api/v1/notifications/deliveries`.
+    - Implemented channel dispatcher (`push/email/in_app`) with quiet-hours
+      suppression and locale-aware default windows.
+    - Wired matrix dispatch into task/calendar assignment workflows and
+      reminder command dispatch path.
+    - Added web/mobile preference controls and telemetry visibility.
+    - Updated shared runtime client/types and OpenAPI notification contract.
+    - Implementation and validation summary documented in:
+      `docs/modules/notification_channel_matrix_push_email_in_app_v2.md`.
 
 - [ ] NEST-139 Run collaboration safety and UX regression certification
   - Status: BACKLOG

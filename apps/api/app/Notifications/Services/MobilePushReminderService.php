@@ -3,19 +3,15 @@
 namespace App\Notifications\Services;
 
 use App\Models\CalendarEvent;
-use App\Models\MobilePushDelivery;
 use App\Models\MobilePushDevice;
 use App\Models\Task;
-use App\Notifications\MobilePush\MobilePushGateway;
-use App\Observability\MetricCounter;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 
 class MobilePushReminderService
 {
     public function __construct(
-        private readonly MobilePushGateway $gateway,
-        private readonly MetricCounter $metrics,
-        private readonly InAppNotificationService $inAppNotifications,
+        private readonly NotificationChannelMatrixDispatcher $notifications,
     ) {}
 
     /**
@@ -30,67 +26,39 @@ class MobilePushReminderService
             $query->where('tenant_id', $tenantId);
         }
 
-        $devices = $query->get();
-        $processedDevices = 0;
+        $devices = $query->get(['id', 'tenant_id', 'user_id']);
+        $processedDevices = $devices->count();
         $sent = 0;
         $failed = 0;
 
+        $recipientMap = [];
         foreach ($devices as $device) {
-            $processedDevices++;
+            $mapKey = (string) $device->tenant_id.'|'.(string) $device->user_id;
+            $recipientMap[$mapKey] = [
+                'tenant_id' => (string) $device->tenant_id,
+                'user_id' => (string) $device->user_id,
+            ];
+        }
 
-            foreach ($this->buildReminderPayloads($device) as $reminder) {
-                $result = $this->gateway->send(
-                    token: (string) $device->device_token,
-                    title: $reminder['title'],
-                    body: $reminder['body'],
+        foreach ($recipientMap as $recipientKey) {
+            $user = User::query()
+                ->where('tenant_id', $recipientKey['tenant_id'])
+                ->find($recipientKey['user_id']);
+
+            if (! $user instanceof User) {
+                continue;
+            }
+
+            foreach ($this->buildReminderPayloads($user) as $reminder) {
+                $dispatch = $this->notifications->dispatch(
+                    user: $user,
+                    eventType: (string) $reminder['notification_type'],
+                    title: (string) $reminder['title'],
+                    body: (string) $reminder['body'],
                     payload: $reminder['payload'],
                 );
-
-                $isSent = ($result['status'] ?? 'failed') === 'sent';
-
-                MobilePushDelivery::query()->create([
-                    'tenant_id' => $device->tenant_id,
-                    'user_id' => $device->user_id,
-                    'mobile_push_device_id' => $device->id,
-                    'notification_type' => $reminder['notification_type'],
-                    'status' => $isSent ? 'sent' : 'failed',
-                    'title' => $reminder['title'],
-                    'body' => $reminder['body'],
-                    'payload' => $reminder['payload'],
-                    'response_payload' => $result['response_payload'] ?? null,
-                    'error_message' => $result['error_message'] ?? null,
-                    'delivered_at' => now(),
-                ]);
-
-                if ($isSent) {
-                    $sent++;
-                    $this->metrics->increment('notifications.push.sent');
-
-                    $entityType = isset($reminder['payload']['task_id'])
-                        ? 'task'
-                        : (isset($reminder['payload']['event_id']) ? 'calendar_event' : null);
-                    $entityId = isset($reminder['payload']['task_id'])
-                        ? (string) $reminder['payload']['task_id']
-                        : (isset($reminder['payload']['event_id']) ? (string) $reminder['payload']['event_id'] : null);
-
-                    $this->inAppNotifications->create(
-                        tenantId: (string) $device->tenant_id,
-                        userId: (string) $device->user_id,
-                        eventType: (string) $reminder['notification_type'],
-                        title: (string) $reminder['title'],
-                        body: (string) $reminder['body'],
-                        payload: [
-                            'module' => isset($reminder['payload']['module']) ? (string) $reminder['payload']['module'] : null,
-                            'entity_type' => $entityType,
-                            'entity_id' => $entityId,
-                            'deep_link' => isset($reminder['payload']['module']) ? '/'.(string) $reminder['payload']['module'] : null,
-                            ...$reminder['payload'],
-                        ],
-                    );
-                } else {
-                    $failed++;
-                    $this->metrics->increment('notifications.push.failed');
-                }
+                $sent += (int) $dispatch['push_sent'];
+                $failed += (int) $dispatch['push_failed'];
             }
         }
 
@@ -104,7 +72,7 @@ class MobilePushReminderService
     /**
      * @return list<array{notification_type:string,title:string,body:string,payload:array<string,mixed>}>
      */
-    private function buildReminderPayloads(MobilePushDevice $device): array
+    private function buildReminderPayloads(User $user): array
     {
         $payloads = [];
         $today = Carbon::today()->toDateString();
@@ -112,16 +80,16 @@ class MobilePushReminderService
         $upcomingBoundary = $now->copy()->addHour();
 
         $dueTask = Task::query()
-            ->where('tenant_id', $device->tenant_id)
-            ->where(function ($query) use ($device): void {
-                $query->where('reminder_owner_user_id', $device->user_id)
-                    ->orWhere(function ($fallback) use ($device): void {
+            ->where('tenant_id', $user->tenant_id)
+            ->where(function ($query) use ($user): void {
+                $query->where('reminder_owner_user_id', $user->id)
+                    ->orWhere(function ($fallback) use ($user): void {
                         $fallback->whereNull('reminder_owner_user_id')
-                            ->where(function ($legacy) use ($device): void {
-                                $legacy->where('assignee_user_id', $device->user_id)
-                                    ->orWhere(function ($ownerOnly) use ($device): void {
+                            ->where(function ($legacy) use ($user): void {
+                                $legacy->where('assignee_user_id', $user->id)
+                                    ->orWhere(function ($ownerOnly) use ($user): void {
                                         $ownerOnly->whereNull('assignee_user_id')
-                                            ->where('user_id', $device->user_id);
+                                            ->where('user_id', $user->id);
                                     });
                             });
                     });
@@ -147,16 +115,16 @@ class MobilePushReminderService
         }
 
         $upcomingEvent = CalendarEvent::query()
-            ->where('tenant_id', $device->tenant_id)
-            ->where(function ($query) use ($device): void {
-                $query->where('reminder_owner_user_id', $device->user_id)
-                    ->orWhere(function ($fallback) use ($device): void {
+            ->where('tenant_id', $user->tenant_id)
+            ->where(function ($query) use ($user): void {
+                $query->where('reminder_owner_user_id', $user->id)
+                    ->orWhere(function ($fallback) use ($user): void {
                         $fallback->whereNull('reminder_owner_user_id')
-                            ->where(function ($legacy) use ($device): void {
-                                $legacy->where('assignee_user_id', $device->user_id)
-                                    ->orWhere(function ($ownerOnly) use ($device): void {
+                            ->where(function ($legacy) use ($user): void {
+                                $legacy->where('assignee_user_id', $user->id)
+                                    ->orWhere(function ($ownerOnly) use ($user): void {
                                         $ownerOnly->whereNull('assignee_user_id')
-                                            ->where('user_id', $device->user_id);
+                                            ->where('user_id', $user->id);
                                     });
                             });
                     });

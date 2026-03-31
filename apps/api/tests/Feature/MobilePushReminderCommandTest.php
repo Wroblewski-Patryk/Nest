@@ -76,6 +76,28 @@ class MobilePushReminderCommandTest extends TestCase
             'user_id' => $user->id,
             'event_type' => 'calendar_upcoming',
         ]);
+        $this->assertDatabaseHas('notification_channel_deliveries', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'channel' => 'push',
+            'event_type' => 'task_due_today',
+            'status' => 'sent',
+        ]);
+        $this->assertDatabaseHas('notification_channel_deliveries', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'channel' => 'in_app',
+            'event_type' => 'calendar_upcoming',
+            'status' => 'sent',
+        ]);
+        $this->assertDatabaseHas('notification_channel_deliveries', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'channel' => 'email',
+            'event_type' => 'task_due_today',
+            'status' => 'suppressed',
+            'failure_reason' => 'channel_disabled',
+        ]);
 
         $metrics = app(MetricCounter::class);
         $this->assertSame(2, $metrics->getCurrentCount('notifications.push.sent'));
@@ -153,6 +175,21 @@ class MobilePushReminderCommandTest extends TestCase
             'tenant_id' => $tenant->id,
             'user_id' => $teammate->id,
             'event_type' => 'calendar_upcoming',
+        ]);
+        $this->assertDatabaseHas('notification_channel_deliveries', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $teammate->id,
+            'channel' => 'push',
+            'event_type' => 'task_due_today',
+            'status' => 'sent',
+        ]);
+        $this->assertDatabaseHas('notification_channel_deliveries', [
+            'tenant_id' => $tenant->id,
+            'user_id' => $teammate->id,
+            'channel' => 'email',
+            'event_type' => 'calendar_upcoming',
+            'status' => 'suppressed',
+            'failure_reason' => 'channel_disabled',
         ]);
     }
 }

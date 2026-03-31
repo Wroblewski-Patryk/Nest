@@ -9,7 +9,7 @@ use App\Models\Goal;
 use App\Models\Routine;
 use App\Models\Task;
 use App\Models\User;
-use App\Notifications\Services\InAppNotificationService;
+use App\Notifications\Services\NotificationChannelMatrixDispatcher;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -57,7 +57,7 @@ class CalendarEventController extends Controller
     public function store(
         Request $request,
         AssignmentTimelineService $timeline,
-        InAppNotificationService $inAppNotifications
+        NotificationChannelMatrixDispatcher $notifications
     ): JsonResponse
     {
         /** @var User $user */
@@ -120,7 +120,7 @@ class CalendarEventController extends Controller
                 note: array_key_exists('handoff_note', $payload) ? (string) ($payload['handoff_note'] ?? '') : null,
             );
 
-            $inAppNotifications->create(
+            $this->dispatchNotificationForUserId(
                 tenantId: $user->tenant_id,
                 userId: $assigneeUserId,
                 eventType: 'calendar_event_assigned',
@@ -132,6 +132,7 @@ class CalendarEventController extends Controller
                     'entity_id' => (string) $event->id,
                     'deep_link' => '/calendar',
                 ],
+                notifications: $notifications
             );
         }
 
@@ -146,7 +147,7 @@ class CalendarEventController extends Controller
                 changedByUserId: $user->id,
             );
 
-            $inAppNotifications->create(
+            $this->dispatchNotificationForUserId(
                 tenantId: $user->tenant_id,
                 userId: $reminderOwnerUserId,
                 eventType: 'calendar_reminder_owner_changed',
@@ -158,6 +159,7 @@ class CalendarEventController extends Controller
                     'entity_id' => (string) $event->id,
                     'deep_link' => '/calendar',
                 ],
+                notifications: $notifications
             );
         }
 
@@ -178,7 +180,7 @@ class CalendarEventController extends Controller
         Request $request,
         string $eventId,
         AssignmentTimelineService $timeline,
-        InAppNotificationService $inAppNotifications
+        NotificationChannelMatrixDispatcher $notifications
     ): JsonResponse
     {
         /** @var User $user */
@@ -259,7 +261,7 @@ class CalendarEventController extends Controller
                 note: $handoffNote,
             );
 
-            $inAppNotifications->create(
+            $this->dispatchNotificationForUserId(
                 tenantId: $user->tenant_id,
                 userId: $currentAssignee,
                 eventType: $action === 'assigned' ? 'calendar_event_assigned' : 'calendar_event_handoff',
@@ -271,6 +273,7 @@ class CalendarEventController extends Controller
                     'entity_id' => (string) $event->id,
                     'deep_link' => '/calendar',
                 ],
+                notifications: $notifications
             );
         }
 
@@ -285,7 +288,7 @@ class CalendarEventController extends Controller
                 changedByUserId: $user->id,
             );
 
-            $inAppNotifications->create(
+            $this->dispatchNotificationForUserId(
                 tenantId: $user->tenant_id,
                 userId: $currentReminderOwner,
                 eventType: 'calendar_reminder_owner_changed',
@@ -297,6 +300,7 @@ class CalendarEventController extends Controller
                     'entity_id' => (string) $event->id,
                     'deep_link' => '/calendar',
                 ],
+                notifications: $notifications
             );
         }
 
@@ -400,5 +404,38 @@ class CalendarEventController extends Controller
                     ->orWhere('assignee_user_id', $user->id)
                     ->orWhere('reminder_owner_user_id', $user->id);
             });
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function dispatchNotificationForUserId(
+        string $tenantId,
+        ?string $userId,
+        string $eventType,
+        string $title,
+        string $body,
+        array $payload,
+        NotificationChannelMatrixDispatcher $notifications
+    ): void {
+        if (! is_string($userId) || $userId === '') {
+            return;
+        }
+
+        $recipient = User::query()
+            ->where('tenant_id', $tenantId)
+            ->find($userId);
+
+        if ($recipient === null) {
+            return;
+        }
+
+        $notifications->dispatch(
+            user: $recipient,
+            eventType: $eventType,
+            title: $title,
+            body: $body,
+            payload: $payload,
+        );
     }
 }

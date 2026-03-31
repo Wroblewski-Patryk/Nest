@@ -9,7 +9,7 @@ use App\Models\CollaborationSpaceMember;
 use App\Models\Task;
 use App\Models\TaskList;
 use App\Models\User;
-use App\Notifications\Services\InAppNotificationService;
+use App\Notifications\Services\NotificationChannelMatrixDispatcher;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -74,7 +74,7 @@ class TaskController extends Controller
     public function store(
         Request $request,
         AssignmentTimelineService $timeline,
-        InAppNotificationService $inAppNotifications
+        NotificationChannelMatrixDispatcher $notifications
     ): JsonResponse
     {
         /** @var User $user */
@@ -131,7 +131,7 @@ class TaskController extends Controller
                 note: array_key_exists('handoff_note', $payload) ? (string) ($payload['handoff_note'] ?? '') : null,
             );
 
-            $inAppNotifications->create(
+            $this->dispatchNotificationForUserId(
                 tenantId: $user->tenant_id,
                 userId: $assigneeUserId,
                 eventType: 'task_assigned',
@@ -143,6 +143,7 @@ class TaskController extends Controller
                     'entity_id' => (string) $task->id,
                     'deep_link' => '/tasks',
                 ],
+                notifications: $notifications
             );
         }
 
@@ -157,7 +158,7 @@ class TaskController extends Controller
                 changedByUserId: $user->id,
             );
 
-            $inAppNotifications->create(
+            $this->dispatchNotificationForUserId(
                 tenantId: $user->tenant_id,
                 userId: $reminderOwnerUserId,
                 eventType: 'task_reminder_owner_changed',
@@ -169,6 +170,7 @@ class TaskController extends Controller
                     'entity_id' => (string) $task->id,
                     'deep_link' => '/tasks',
                 ],
+                notifications: $notifications
             );
         }
 
@@ -192,7 +194,7 @@ class TaskController extends Controller
         Request $request,
         string $taskId,
         AssignmentTimelineService $timeline,
-        InAppNotificationService $inAppNotifications
+        NotificationChannelMatrixDispatcher $notifications
     ): JsonResponse
     {
         /** @var User $user */
@@ -266,7 +268,7 @@ class TaskController extends Controller
                 note: $handoffNote,
             );
 
-            $inAppNotifications->create(
+            $this->dispatchNotificationForUserId(
                 tenantId: $user->tenant_id,
                 userId: $currentAssignee,
                 eventType: $action === 'assigned' ? 'task_assigned' : 'task_handoff',
@@ -278,6 +280,7 @@ class TaskController extends Controller
                     'entity_id' => (string) $task->id,
                     'deep_link' => '/tasks',
                 ],
+                notifications: $notifications
             );
         }
 
@@ -292,7 +295,7 @@ class TaskController extends Controller
                 changedByUserId: $user->id,
             );
 
-            $inAppNotifications->create(
+            $this->dispatchNotificationForUserId(
                 tenantId: $user->tenant_id,
                 userId: $currentReminderOwner,
                 eventType: 'task_reminder_owner_changed',
@@ -304,6 +307,7 @@ class TaskController extends Controller
                     'entity_id' => (string) $task->id,
                     'deep_link' => '/tasks',
                 ],
+                notifications: $notifications
             );
         }
 
@@ -429,5 +433,38 @@ class TaskController extends Controller
         }
 
         return [$assignee, $reminderOwner];
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function dispatchNotificationForUserId(
+        string $tenantId,
+        ?string $userId,
+        string $eventType,
+        string $title,
+        string $body,
+        array $payload,
+        NotificationChannelMatrixDispatcher $notifications
+    ): void {
+        if (! is_string($userId) || $userId === '') {
+            return;
+        }
+
+        $recipient = User::query()
+            ->where('tenant_id', $tenantId)
+            ->find($userId);
+
+        if ($recipient === null) {
+            return;
+        }
+
+        $notifications->dispatch(
+            user: $recipient,
+            eventType: $eventType,
+            title: $title,
+            body: $body,
+            payload: $payload,
+        );
     }
 }

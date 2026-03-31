@@ -126,7 +126,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - notification items deep-link to relevant module context,
     - read/unread and snooze behavior is consistent across clients.
 
-- [ ] NEST-138 Implement notification channel matrix (push/email/in-app)
+- [x] NEST-138 Implement notification channel matrix (push/email/in-app)
   - Depends on: NEST-137
   - Done when:
     - per-channel and per-event preferences are configurable,

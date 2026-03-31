@@ -114,6 +114,42 @@ export type InAppNotificationItem = {
   updated_at: string;
 };
 
+export type NotificationChannel = "push" | "email" | "in_app";
+export type NotificationDeliveryStatus = "sent" | "suppressed" | "failed";
+
+export type NotificationChannelMap = {
+  push: boolean;
+  email: boolean;
+  in_app: boolean;
+};
+
+export type NotificationPreferencesItem = {
+  channels: NotificationChannelMap;
+  event_channels: Record<string, NotificationChannelMap>;
+  quiet_hours: {
+    enabled: boolean;
+    start: string;
+    end: string;
+    timezone: string;
+  };
+  locale: string;
+  supported_event_types: string[];
+};
+
+export type NotificationChannelDeliveryItem = {
+  id: string;
+  channel: NotificationChannel;
+  event_type: string;
+  status: NotificationDeliveryStatus;
+  failure_reason: string | null;
+  title: string;
+  payload: Record<string, unknown> | null;
+  metadata: Record<string, unknown> | null;
+  delivered_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLocalizationOptions(): Promise<{ data: LocalizationOptionsResponse }>;
@@ -205,6 +241,27 @@ export type NestApiClient = {
     notificationId: string,
     payload: { snoozed_until: string }
   ): Promise<{ data: InAppNotificationItem }>;
+  getNotificationPreferences(): Promise<{ data: NotificationPreferencesItem }>;
+  updateNotificationPreferences(payload: {
+    channels?: Partial<NotificationChannelMap>;
+    event_channels?: Record<string, Partial<NotificationChannelMap>>;
+    quiet_hours?: {
+      enabled?: boolean;
+      start?: string;
+      end?: string;
+      timezone?: string;
+    };
+    locale?: string;
+  }): Promise<{ data: NotificationPreferencesItem }>;
+  getNotificationChannelDeliveries(query?: {
+    per_page?: number;
+    channel?: NotificationChannel;
+    event_type?: string;
+    status?: NotificationDeliveryStatus;
+  }): Promise<{
+    data: NotificationChannelDeliveryItem[];
+    meta: { total: number; per_page: number };
+  }>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;
   upsertIntegrationConnection(
     provider: "trello" | "google_tasks" | "todoist" | "google_calendar" | "obsidian",

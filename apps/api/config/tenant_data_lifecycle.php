@@ -24,8 +24,18 @@ return [
         ],
         [
             'table' => 'mobile_push_deliveries',
-            'timestamp_column' => 'sent_at',
+            'timestamp_column' => 'delivered_at',
             'retention_days' => 30,
+        ],
+        [
+            'table' => 'notification_channel_deliveries',
+            'timestamp_column' => 'created_at',
+            'retention_days' => 90,
+        ],
+        [
+            'table' => 'in_app_notifications',
+            'timestamp_column' => 'created_at',
+            'retention_days' => 180,
         ],
         [
             'table' => 'automation_runs',
@@ -40,6 +50,9 @@ return [
         'analytics_events',
         'mobile_push_deliveries',
         'mobile_push_devices',
+        'notification_channel_deliveries',
+        'notification_preferences',
+        'in_app_notifications',
         'integration_sync_conflicts',
         'integration_sync_audits',
         'integration_sync_failures',

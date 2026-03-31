@@ -534,6 +534,10 @@ Last updated: 2026-03-31
   with grouped activity feed, read/unread/snooze actions, actionable deep-link
   routing, and shared contract updates
   (`docs/modules/in_app_notification_center_actionable_events_v2.md`)
+- `NEST-138` completed: notification channel matrix delivered with configurable
+  global/per-event routing (`push/email/in_app`), quiet-hours suppression
+  windows, and per-channel delivery telemetry with failure reasons
+  (`docs/modules/notification_channel_matrix_push_email_in_app_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

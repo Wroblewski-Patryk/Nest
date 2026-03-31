@@ -24,6 +24,8 @@ use App\Http\Controllers\Api\JournalEntryController;
 use App\Http\Controllers\Api\LifeAreaBalanceScoreController;
 use App\Http\Controllers\Api\LifeAreaController;
 use App\Http\Controllers\Api\MobilePushDeviceController;
+use App\Http\Controllers\Api\NotificationDeliveryController;
+use App\Http\Controllers\Api\NotificationPreferenceController;
 use App\Http\Controllers\Api\OrganizationAuditExportController;
 use App\Http\Controllers\Api\OrganizationSsoController;
 use App\Http\Controllers\Api\OrganizationWorkspaceController;
@@ -166,5 +168,8 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/notifications/in-app/{notificationId}/read', [InAppNotificationController::class, 'markRead']);
         Route::post('/notifications/in-app/{notificationId}/unread', [InAppNotificationController::class, 'markUnread']);
         Route::post('/notifications/in-app/{notificationId}/snooze', [InAppNotificationController::class, 'snooze']);
+        Route::get('/notifications/preferences', [NotificationPreferenceController::class, 'show']);
+        Route::patch('/notifications/preferences', [NotificationPreferenceController::class, 'update']);
+        Route::get('/notifications/deliveries', [NotificationDeliveryController::class, 'index']);
     });
 });

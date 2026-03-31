@@ -1,13 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
-import { Platform, ScrollView, StyleSheet } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
-import { resolveLanguage, type InAppNotificationItem } from '@nest/shared-types';
+import {
+  resolveLanguage,
+  type InAppNotificationItem,
+  type NotificationChannel,
+  type NotificationChannelDeliveryItem,
+  type NotificationPreferencesItem,
+} from '@nest/shared-types';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { nestApiClient } from '@/constants/apiClient';
-import { Pressable } from 'react-native';
 import {
   clearOfflineQueue,
   enqueueOfflineAction,
@@ -36,6 +41,13 @@ type NotificationRoute =
   | '/(tabs)/journal'
   | '/(tabs)/insights'
   | '/(tabs)/billing';
+
+const NOTIFICATION_CHANNELS: NotificationChannel[] = ['in_app', 'push', 'email'];
+const CHANNEL_LABEL: Record<NotificationChannel, string> = {
+  in_app: 'In-app',
+  push: 'Push',
+  email: 'Email',
+};
 
 function resolveMobileNotificationRoute(item: InAppNotificationItem): NotificationRoute | null {
   const normalize = (value: string | null): NotificationRoute | null => {
@@ -105,6 +117,11 @@ export default function ModalScreen() {
   const [notificationDetail, setNotificationDetail] = useState('Loading in-app notifications...');
   const [notifications, setNotifications] = useState<InAppNotificationItem[]>([]);
   const [notificationBusyId, setNotificationBusyId] = useState<string | null>(null);
+  const [matrixDetail, setMatrixDetail] = useState('Loading notification matrix...');
+  const [notificationPreferences, setNotificationPreferences] =
+    useState<NotificationPreferencesItem | null>(null);
+  const [channelDeliveries, setChannelDeliveries] = useState<NotificationChannelDeliveryItem[]>([]);
+  const [isSavingMatrix, setIsSavingMatrix] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [scheduler, setScheduler] = useState<MobileOfflineSyncSchedulerState>(() =>
     loadOfflineSyncSchedulerState()
@@ -135,6 +152,80 @@ export default function ModalScreen() {
       setNotificationDetail('Could not load notification center.');
     }
   }, []);
+
+  const refreshNotificationMatrix = useCallback(async () => {
+    try {
+      const [preferencesResponse, deliveriesResponse] = await Promise.all([
+        nestApiClient.getNotificationPreferences(),
+        nestApiClient.getNotificationChannelDeliveries({ per_page: 10 }),
+      ]);
+      setNotificationPreferences(preferencesResponse.data);
+      setChannelDeliveries(deliveriesResponse.data);
+      setMatrixDetail('Notification matrix loaded.');
+    } catch {
+      setMatrixDetail('Could not load notification matrix.');
+    }
+  }, []);
+
+  const toggleMatrixGlobalChannel = useCallback(
+    (channel: NotificationChannel) => {
+      setNotificationPreferences((previous) => {
+        if (!previous) return previous;
+        return {
+          ...previous,
+          channels: {
+            ...previous.channels,
+            [channel]: !previous.channels[channel],
+          },
+        };
+      });
+    },
+    []
+  );
+
+  const toggleMatrixEventChannel = useCallback(
+    (eventType: string, channel: NotificationChannel) => {
+      setNotificationPreferences((previous) => {
+        if (!previous) return previous;
+        const eventChannels = previous.event_channels[eventType] ?? previous.channels;
+        return {
+          ...previous,
+          event_channels: {
+            ...previous.event_channels,
+            [eventType]: {
+              ...eventChannels,
+              [channel]: !eventChannels[channel],
+            },
+          },
+        };
+      });
+    },
+    []
+  );
+
+  const saveNotificationMatrix = useCallback(async () => {
+    if (!notificationPreferences) {
+      return;
+    }
+
+    setIsSavingMatrix(true);
+    try {
+      const response = await nestApiClient.updateNotificationPreferences({
+        channels: notificationPreferences.channels,
+        event_channels: notificationPreferences.event_channels,
+        quiet_hours: notificationPreferences.quiet_hours,
+        locale: notificationPreferences.locale,
+      });
+      setNotificationPreferences(response.data);
+      setMatrixDetail('Notification preferences saved.');
+      const deliveriesResponse = await nestApiClient.getNotificationChannelDeliveries({ per_page: 10 });
+      setChannelDeliveries(deliveriesResponse.data);
+    } catch {
+      setMatrixDetail('Could not save notification preferences.');
+    } finally {
+      setIsSavingMatrix(false);
+    }
+  }, [notificationPreferences]);
 
   const toggleRead = useCallback(
     async (item: InAppNotificationItem) => {
@@ -194,7 +285,8 @@ export default function ModalScreen() {
     setQueue(loadOfflineQueue());
     setScheduler(loadOfflineSyncSchedulerState());
     void refreshNotifications();
-  }, [refreshNotifications]);
+    void refreshNotificationMatrix();
+  }, [refreshNotifications, refreshNotificationMatrix]);
 
   const enqueue = (action: 'sync_list_tasks' | 'sync_calendar' | 'sync_journal') => {
     const duplicatePending = queue.some(
@@ -459,6 +551,150 @@ export default function ModalScreen() {
           </View>
         </View>
       ))}
+
+      <Text style={styles.title}>Notification Matrix</Text>
+      <Text style={styles.description}>{matrixDetail}</Text>
+      {notificationPreferences ? (
+        <View style={styles.notificationCard}>
+          <Text style={styles.notificationTitle}>Global channels</Text>
+          <View style={styles.actionRow}>
+            {NOTIFICATION_CHANNELS.map((channel) => (
+              <Pressable
+                key={channel}
+                style={[
+                  styles.languageButton,
+                  notificationPreferences.channels[channel] && styles.languageButtonActive,
+                ]}
+                onPress={() => toggleMatrixGlobalChannel(channel)}
+                disabled={isSavingMatrix}
+              >
+                <Text style={styles.languageButtonText}>
+                  {CHANNEL_LABEL[channel]} {notificationPreferences.channels[channel] ? 'on' : 'off'}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+
+          <Text style={styles.notificationTitle}>Quiet hours</Text>
+          <Pressable
+            style={[styles.languageButton, notificationPreferences.quiet_hours.enabled && styles.languageButtonActive]}
+            onPress={() =>
+              setNotificationPreferences((previous) => {
+                if (!previous) return previous;
+                return {
+                  ...previous,
+                  quiet_hours: {
+                    ...previous.quiet_hours,
+                    enabled: !previous.quiet_hours.enabled,
+                  },
+                };
+              })
+            }
+            disabled={isSavingMatrix}
+          >
+            <Text style={styles.languageButtonText}>
+              {notificationPreferences.quiet_hours.enabled ? 'Quiet hours enabled' : 'Quiet hours disabled'}
+            </Text>
+          </Pressable>
+          <TextInput
+            style={styles.matrixInput}
+            value={notificationPreferences.quiet_hours.start}
+            onChangeText={(value) =>
+              setNotificationPreferences((previous) =>
+                previous
+                  ? {
+                      ...previous,
+                      quiet_hours: { ...previous.quiet_hours, start: value },
+                    }
+                  : previous
+              )
+            }
+            editable={!isSavingMatrix}
+            placeholder="Start (HH:mm)"
+          />
+          <TextInput
+            style={styles.matrixInput}
+            value={notificationPreferences.quiet_hours.end}
+            onChangeText={(value) =>
+              setNotificationPreferences((previous) =>
+                previous
+                  ? {
+                      ...previous,
+                      quiet_hours: { ...previous.quiet_hours, end: value },
+                    }
+                  : previous
+              )
+            }
+            editable={!isSavingMatrix}
+            placeholder="End (HH:mm)"
+          />
+          <TextInput
+            style={styles.matrixInput}
+            value={notificationPreferences.quiet_hours.timezone}
+            onChangeText={(value) =>
+              setNotificationPreferences((previous) =>
+                previous
+                  ? {
+                      ...previous,
+                      quiet_hours: { ...previous.quiet_hours, timezone: value },
+                    }
+                  : previous
+              )
+            }
+            editable={!isSavingMatrix}
+            placeholder="Timezone"
+          />
+
+          <Text style={styles.notificationTitle}>Per-event channels</Text>
+          {notificationPreferences.supported_event_types.map((eventType) => {
+            const eventChannels =
+              notificationPreferences.event_channels[eventType] ?? notificationPreferences.channels;
+            return (
+              <View key={eventType} style={styles.eventMatrixRow}>
+                <Text style={styles.description}>{eventType}</Text>
+                <View style={styles.actionRow}>
+                  {NOTIFICATION_CHANNELS.map((channel) => (
+                    <Pressable
+                      key={`${eventType}-${channel}`}
+                      style={[styles.languageButton, eventChannels[channel] && styles.languageButtonActive]}
+                      onPress={() => toggleMatrixEventChannel(eventType, channel)}
+                      disabled={isSavingMatrix}
+                    >
+                      <Text style={styles.languageButtonText}>
+                        {CHANNEL_LABEL[channel]} {eventChannels[channel] ? 'on' : 'off'}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            );
+          })}
+
+          <Pressable
+            style={[styles.languageButton, styles.languageButtonActive]}
+            onPress={() => void saveNotificationMatrix()}
+            disabled={isSavingMatrix}
+          >
+            <Text style={styles.languageButtonText}>
+              {isSavingMatrix ? 'Saving notification matrix...' : 'Save notification matrix'}
+            </Text>
+          </Pressable>
+        </View>
+      ) : null}
+
+      <Text style={styles.title}>Notification Telemetry</Text>
+      {channelDeliveries.length === 0 ? (
+        <Text style={styles.description}>No channel telemetry yet.</Text>
+      ) : null}
+      {channelDeliveries.map((delivery) => (
+        <View key={delivery.id} style={styles.notificationCard}>
+          <Text style={styles.notificationTitle}>{delivery.title}</Text>
+          <Text style={styles.description}>
+            {delivery.channel} | {delivery.event_type} | {delivery.status}
+            {delivery.failure_reason ? ` | ${delivery.failure_reason}` : ''}
+          </Text>
+        </View>
+      ))}
       <EditScreenInfo path="app/modal.tsx" />
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
@@ -522,5 +758,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     marginBottom: 4,
+  },
+  matrixInput: {
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    marginBottom: 8,
+    backgroundColor: '#ffffff',
+  },
+  eventMatrixRow: {
+    marginBottom: 8,
   },
 });

@@ -271,6 +271,14 @@ export function createNestApiClient(options) {
         method: "POST",
         body: payload,
       }),
+    getNotificationPreferences: () => request("/notifications/preferences"),
+    updateNotificationPreferences: (payload) =>
+      request("/notifications/preferences", {
+        method: "PATCH",
+        body: payload,
+      }),
+    getNotificationChannelDeliveries: (query = {}) =>
+      request("/notifications/deliveries", { query }),
     getIntegrationConnections: () => request("/integrations/connections"),
     upsertIntegrationConnection: (provider, payload) =>
       request(`/integrations/connections/${provider}`, {
