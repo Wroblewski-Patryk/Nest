@@ -1,39 +1,218 @@
+"use client";
+
+import { FormEvent, useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
-import { goalsSnapshot } from "@/lib/mvp-snapshot";
+import { clearAuthSession } from "@/lib/auth-session";
+import { nestApiClient } from "@/lib/api-client";
+
+type GoalItem = {
+  id: string;
+  title: string;
+  status: "active" | "paused" | "completed" | "archived";
+  target_date: string | null;
+};
+
+type ApiRequestInit = Omit<RequestInit, "body"> & {
+  body?: Record<string, unknown>;
+  query?: Record<string, unknown>;
+};
+
+async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
+  const requestFn = nestApiClient.request as unknown as (
+    requestPath: string,
+    requestInit?: ApiRequestInit
+  ) => Promise<unknown>;
+
+  return (await requestFn(path, init)) as TResponse;
+}
+
+function getErrorStatus(error: unknown): number | null {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "status" in error &&
+    typeof (error as { status?: unknown }).status === "number"
+  ) {
+    return (error as { status: number }).status;
+  }
+  return null;
+}
+
+function getErrorMessage(error: unknown): string {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "payload" in error &&
+    typeof (error as { payload?: unknown }).payload === "object" &&
+    typeof (error as { payload: { message?: unknown } }).payload?.message === "string"
+  ) {
+    return (error as { payload: { message: string } }).payload.message;
+  }
+  return "Goal request failed.";
+}
 
 export default function GoalsPage() {
+  const router = useRouter();
+  const [goals, setGoals] = useState<GoalItem[]>([]);
+  const [newGoalTitle, setNewGoalTitle] = useState("");
+  const [newGoalTargetDate, setNewGoalTargetDate] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreating, setIsCreating] = useState(false);
+  const [feedback, setFeedback] = useState("Create a goal first, then attach targets in the Targets module.");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleUnauthorized = useCallback(() => {
+    clearAuthSession();
+    router.replace("/auth");
+  }, [router]);
+
+  const loadData = useCallback(async () => {
+    const response = await nestApiClient.getGoals({ per_page: 100 });
+    setGoals((response.data ?? []) as GoalItem[]);
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    loadData()
+      .then(() => {
+        if (!mounted) {
+          return;
+        }
+        setFeedback("Goals loaded.");
+      })
+      .catch((error) => {
+        if (!mounted) {
+          return;
+        }
+        if (getErrorStatus(error) === 401) {
+          handleUnauthorized();
+          return;
+        }
+        setErrorMessage(getErrorMessage(error));
+      })
+      .finally(() => {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [handleUnauthorized, loadData]);
+
+  async function createGoal(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!newGoalTitle.trim()) {
+      setErrorMessage("Goal title is required.");
+      return;
+    }
+
+    setIsCreating(true);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest("/goals", {
+        method: "POST",
+        body: {
+          title: newGoalTitle.trim(),
+          status: "active",
+          ...(newGoalTargetDate ? { target_date: newGoalTargetDate } : {}),
+        },
+      });
+      setNewGoalTitle("");
+      setNewGoalTargetDate("");
+      await loadData();
+      setFeedback("Goal created.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setIsCreating(false);
+    }
+  }
+
   return (
     <WorkspaceShell
       title="Goals"
-      subtitle="Keep long-term direction clear and connected to your daily planning."
+      subtitle="Define long-term direction and keep first-create flow fast."
       module="goals"
     >
       <div className="stack">
-        <MetricCard label="Active goals" value={String(goalsSnapshot.goals.length)} />
-        <MetricCard label="Linked targets" value={String(goalsSnapshot.targets.length)} />
-        <MetricCard label="Progress pulse" value="70%" />
+        <MetricCard label="Goals active" value={String(goals.length)} />
+        <MetricCard
+          label="With target date"
+          value={String(goals.filter((goal) => goal.target_date !== null).length)}
+        />
+        <MetricCard label="Create flow" value="Enabled" />
       </div>
 
-      <Panel title="Goal Timeline">
+      <Panel title="Add Goal">
+        <form className="form-grid" onSubmit={createGoal}>
+          <label className="field">
+            <span>Title</span>
+            <input
+              className="list-row"
+              type="text"
+              value={newGoalTitle}
+              onChange={(event) => setNewGoalTitle(event.target.value)}
+              placeholder="Example: Build calmer weekly planning routine"
+              disabled={isCreating || isLoading}
+            />
+          </label>
+          <label className="field">
+            <span>Target date (optional)</span>
+            <input
+              className="list-row"
+              type="date"
+              value={newGoalTargetDate}
+              onChange={(event) => setNewGoalTargetDate(event.target.value)}
+              disabled={isCreating || isLoading}
+            />
+          </label>
+          <button type="submit" className="btn-primary" disabled={isCreating || isLoading}>
+            {isCreating ? "Adding..." : "Add goal"}
+          </button>
+        </form>
+      </Panel>
+
+      <Panel title="Goal List">
         <ul className="list">
-          {goalsSnapshot.goals.map((goal) => (
-            <li className="list-row" key={goal.title}>
-              <div>
-                <strong>{goal.title}</strong>
-                <p>Status: {goal.status}</p>
-              </div>
-              <span className="pill">{goal.progress}%</span>
+          {goals.length === 0 ? (
+            <li className="list-row">
+              <p>No goals yet. Add your first one above.</p>
             </li>
-          ))}
+          ) : (
+            goals.map((goal) => (
+              <li className="list-row" key={goal.id}>
+                <div>
+                  <strong>{goal.title}</strong>
+                  <p>
+                    status: {goal.status}
+                    {goal.target_date ? ` | target ${goal.target_date.slice(0, 10)}` : ""}
+                  </p>
+                </div>
+                <span className="pill">{goal.status}</span>
+              </li>
+            ))
+          )}
         </ul>
       </Panel>
 
-      <Panel title="Module Link">
-        <p className="callout">
-          Targets are available as a dedicated module to keep measurable checkpoints separate while
-          still linked to goals.
-        </p>
-      </Panel>
+      {feedback ? (
+        <Panel title="Status">
+          <p className="callout">{feedback}</p>
+        </Panel>
+      ) : null}
+      {errorMessage ? (
+        <Panel title="Error">
+          <p className="callout state-error">{errorMessage}</p>
+        </Panel>
+      ) : null}
     </WorkspaceShell>
   );
 }

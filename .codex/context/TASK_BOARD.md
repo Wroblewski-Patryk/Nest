@@ -710,8 +710,8 @@ Last updated: 2026-03-31
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-03-31
 
-- [ ] NEST-162 Deliver module-level create-flow parity for core life-management modules
-  - Status: BACKLOG
+- [x] NEST-162 Deliver module-level create-flow parity for core life-management modules
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-161
   - Done when:
@@ -721,6 +721,22 @@ Last updated: 2026-03-31
     - refreshed click-path evidence is published for all create flows.
   - Notes:
     - Follow-up UX evidence pack required after implementation.
+    - Reworked core module screens from static snapshots to authenticated
+      create-flow surfaces:
+      `apps/web/src/app/habits/page.tsx`,
+      `apps/web/src/app/routines/page.tsx`,
+      `apps/web/src/app/goals/page.tsx`,
+      `apps/web/src/app/targets/page.tsx`,
+      `apps/web/src/app/calendar/page.tsx`.
+    - Added first-create forms and API-backed listing for each module
+      (`habits`, `routines`, `goals`, `targets`, `calendar`).
+    - Updated CTA wording to explicit life-management actions ("Add habit",
+      "Add routine", "Add goal", "Add target", "Add event").
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-03-31
 
 - [ ] NEST-163 Introduce dual-actor identity model in backend policy/audit layer
   - Status: BACKLOG

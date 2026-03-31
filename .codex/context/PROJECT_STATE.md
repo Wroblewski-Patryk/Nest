@@ -583,6 +583,14 @@ Last updated: 2026-03-31
   CRUD baseline (create/update/complete/delete for tasks and create/update/
   delete for lists), with `per_page` client contract fixed and actionable error
   feedback (`apps/web/src/app/tasks/page.tsx`)
+- `NEST-162` completed: web first-create flows are now active for core
+  life-management modules (`habits`, `routines`, `goals`, `targets`,
+  `calendar`) with API-backed creation forms and listing surfaces
+  (`apps/web/src/app/habits/page.tsx`,
+  `apps/web/src/app/routines/page.tsx`,
+  `apps/web/src/app/goals/page.tsx`,
+  `apps/web/src/app/targets/page.tsx`,
+  `apps/web/src/app/calendar/page.tsx`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for
@@ -637,8 +645,8 @@ Last updated: 2026-03-31
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: execute module create-flow parity and dual-actor
-  AI-access foundation (`NEST-162` to `NEST-166`) in parallel
+- Current execution focus: execute dual-actor AI-access foundation
+  (`NEST-163` to `NEST-166`) in parallel
   with ongoing V2 launch-window/live-evidence closures (`NEST-122`,
   `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`) and
   commercial/release continuation (`NEST-152` onward).
