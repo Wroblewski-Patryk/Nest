@@ -538,6 +538,10 @@ Last updated: 2026-03-31
   global/per-event routing (`push/email/in_app`), quiet-hours suppression
   windows, and per-channel delivery telemetry with failure reasons
   (`docs/modules/notification_channel_matrix_push_email_in_app_v2.md`)
+- `NEST-139` completed: collaboration safety and UX regression certification
+  executed with permission/privacy regression validation, desktop/mobile smoke
+  pass evidence, and formal certification packet publication
+  (`docs/operations/collaboration_safety_ux_regression_certification_2026-03-31.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

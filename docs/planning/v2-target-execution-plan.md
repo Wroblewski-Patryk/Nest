@@ -133,7 +133,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - quiet hours and locale-aware delivery windows are supported,
     - delivery telemetry exists per channel with failure reasons.
 
-- [ ] NEST-139 Run collaboration safety and UX regression certification
+- [x] NEST-139 Run collaboration safety and UX regression certification
   - Depends on: NEST-136, NEST-137, NEST-138
   - Done when:
     - permission and privacy regressions are validated,

@@ -857,14 +857,23 @@ Last updated: 2026-03-31
     - Implementation and validation summary documented in:
       `docs/modules/notification_channel_matrix_push_email_in_app_v2.md`.
 
-- [ ] NEST-139 Run collaboration safety and UX regression certification
-  - Status: BACKLOG
+- [x] NEST-139 Run collaboration safety and UX regression certification
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-136, NEST-137, NEST-138
   - Done when:
     - permission/privacy regressions are validated,
     - collaboration smoke tests pass on desktop/mobile,
     - certification report is attached to release docs.
+  - Done on: 2026-03-31
+  - Notes:
+    - Executed collaboration-focused API regression pack with PASS results
+      across permission, privacy, assignment/handoff, and notification matrix
+      boundaries.
+    - Executed web and mobile smoke checks (`apps/web` build + `apps/mobile`
+      smoke export) with PASS results.
+    - Published certification packet in:
+      `docs/operations/collaboration_safety_ux_regression_certification_2026-03-31.md`.
 
 - [ ] NEST-140 Build AI context graph across key product modules
   - Status: BACKLOG
