@@ -503,6 +503,9 @@ Last updated: 2026-03-21
 - `NEST-128` staged mobile rollout framework implemented and rehearsed in
   dry-run mode; physical-device rollback validation remains open for final
   closure (`docs/operations/mobile_staged_rollout_rehearsal_2026-03-31.md`)
+- `NEST-129` stabilization gate review published with temporary V2 NO-GO
+  decision and explicit mitigation owners for unresolved high-severity launch
+  risks (`docs/operations/v1_1_stabilization_gate_review_2026-03-31.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)

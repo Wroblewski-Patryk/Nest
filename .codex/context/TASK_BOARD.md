@@ -596,6 +596,12 @@ Last updated: 2026-03-21
     - reliability risks from V1 launch period are resolved or accepted,
     - unresolved high risks have explicit mitigation tasks,
     - V2 execution gate sign-off is recorded.
+  - Notes:
+    - Gate review published:
+      `docs/operations/v1_1_stabilization_gate_review_2026-03-31.md`.
+    - Decision recorded as temporary NO-GO due unresolved high-severity live
+      evidence gaps (`NEST-122`, `NEST-123`, `NEST-128`) and pending real
+      traffic baseline (`NEST-125`).
 
 - [ ] NEST-130 Deliver automatic background sync with adaptive retry/backoff
   - Status: BACKLOG

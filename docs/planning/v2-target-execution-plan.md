@@ -62,6 +62,9 @@ Execution of this plan starts after launch closure tasks are complete:
     - reliability risks from V1 launch period are resolved or accepted,
     - unresolved high risks have explicit mitigation tasks,
     - V2 execution gate sign-off is recorded.
+  - Current status:
+    - temporary NO-GO recorded in
+      `docs/operations/v1_1_stabilization_gate_review_2026-03-31.md`.
 
 ## Workstream B: Offline-First and Cross-Device Continuity (`NEST-130..NEST-134`)
 
