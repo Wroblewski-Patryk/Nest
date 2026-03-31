@@ -568,11 +568,14 @@ Last updated: 2026-03-31
   provider catalog discovery, auditable reversible install/uninstall lifecycle,
   and exposed metadata/status contracts
   (`docs/modules/integration_marketplace_framework_v2.md`)
+- `NEST-146` completed: next-wave providers `clickup` and `microsoft_todo`
+  delivered end-to-end with adapter contracts, sync pipeline coverage, and
+  rollout caveat documentation (`docs/modules/next_wave_provider_rollout_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: execute V2 integrations wave continuation
-  (`NEST-146` onward) while launch-window/live-evidence closure tasks
+  (`NEST-147` onward) while launch-window/live-evidence closure tasks
   (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`)
   remain tracked for non-dry-run operations.
 

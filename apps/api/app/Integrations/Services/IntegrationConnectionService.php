@@ -16,6 +16,8 @@ class IntegrationConnectionService
         'trello',
         'google_tasks',
         'todoist',
+        'clickup',
+        'microsoft_todo',
         'google_calendar',
         'obsidian',
     ];

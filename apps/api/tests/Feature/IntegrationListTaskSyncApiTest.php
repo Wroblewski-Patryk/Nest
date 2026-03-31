@@ -182,6 +182,94 @@ class IntegrationListTaskSyncApiTest extends TestCase
         $this->assertSame([15, 60, 300, 900], $todoistAudit->metadata['retry_profile'] ?? null);
     }
 
+    public function test_user_can_sync_lists_and_tasks_to_clickup(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $list = TaskList::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        Task::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'list_id' => $list->id,
+        ]);
+
+        $this->postJson('/api/v1/integrations/list-task-sync', [
+            'provider' => 'clickup',
+        ])->assertOk()
+            ->assertJsonPath('data.provider', 'clickup')
+            ->assertJsonPath('data.processed', 2)
+            ->assertJsonPath('data.enqueued', 2)
+            ->assertJsonPath('data.mode', 'async');
+
+        $this->drainIntegrationQueue();
+
+        $this->assertDatabaseHas('sync_mappings', [
+            'tenant_id' => $tenant->id,
+            'provider' => 'clickup',
+            'internal_entity_type' => 'task',
+        ]);
+
+        $clickUpAudit = IntegrationSyncAudit::query()
+            ->where('tenant_id', $tenant->id)
+            ->where('provider', 'clickup')
+            ->where('internal_entity_type', 'task')
+            ->first();
+
+        $this->assertNotNull($clickUpAudit);
+        $this->assertSame('clickup.v1', $clickUpAudit->metadata['mapping_version'] ?? null);
+        $this->assertSame([15, 60, 300, 900], $clickUpAudit->metadata['retry_profile'] ?? null);
+    }
+
+    public function test_user_can_sync_lists_and_tasks_to_microsoft_todo(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $list = TaskList::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        Task::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+            'list_id' => $list->id,
+        ]);
+
+        $this->postJson('/api/v1/integrations/list-task-sync', [
+            'provider' => 'microsoft_todo',
+        ])->assertOk()
+            ->assertJsonPath('data.provider', 'microsoft_todo')
+            ->assertJsonPath('data.processed', 2)
+            ->assertJsonPath('data.enqueued', 2)
+            ->assertJsonPath('data.mode', 'async');
+
+        $this->drainIntegrationQueue();
+
+        $this->assertDatabaseHas('sync_mappings', [
+            'tenant_id' => $tenant->id,
+            'provider' => 'microsoft_todo',
+            'internal_entity_type' => 'task',
+        ]);
+
+        $microsoftTodoAudit = IntegrationSyncAudit::query()
+            ->where('tenant_id', $tenant->id)
+            ->where('provider', 'microsoft_todo')
+            ->where('internal_entity_type', 'task')
+            ->first();
+
+        $this->assertNotNull($microsoftTodoAudit);
+        $this->assertSame('microsoft_todo.v1', $microsoftTodoAudit->metadata['mapping_version'] ?? null);
+        $this->assertSame([15, 60, 300, 900], $microsoftTodoAudit->metadata['retry_profile'] ?? null);
+    }
+
     public function test_sync_scope_is_limited_to_authenticated_user_tenant_data(): void
     {
         $tenantA = Tenant::factory()->create();

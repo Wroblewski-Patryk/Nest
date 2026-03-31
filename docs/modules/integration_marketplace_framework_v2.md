@@ -40,6 +40,11 @@ Provider catalog response includes:
   - `connection.status`, `connection.is_connected`, `connection.scopes`,
     token expiry/update timestamps.
 
+Current catalog providers:
+
+- `trello`, `google_tasks`, `todoist`, `clickup`, `microsoft_todo`,
+  `google_calendar`, `obsidian`.
+
 ## Reversibility and Auditability
 
 - uninstall is reversible by running install again for the same provider.
@@ -53,4 +58,3 @@ Provider catalog response includes:
   - install -> uninstall -> reinstall lifecycle,
   - uninstall connection revoke behavior,
   - tenant/user isolation and auth guards.
-

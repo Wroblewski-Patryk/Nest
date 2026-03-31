@@ -20,7 +20,7 @@ class IntegrationMarketplaceApiTest extends TestCase
 
         $this->getJson('/api/v1/integrations/marketplace/providers')
             ->assertOk()
-            ->assertJsonPath('meta.total', 5)
+            ->assertJsonPath('meta.total', 7)
             ->assertJsonPath('meta.installed', 0)
             ->assertJsonPath('data.0.provider', 'trello')
             ->assertJsonPath('data.0.install_status', 'not_installed');

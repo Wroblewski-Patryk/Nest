@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Integrations\Adapters\ClickUpAdapter;
 use App\Integrations\Adapters\GoogleCalendarAdapter;
 use App\Integrations\Adapters\GoogleTasksAdapter;
+use App\Integrations\Adapters\MicrosoftTodoAdapter;
 use App\Integrations\Adapters\ObsidianAdapter;
 use App\Integrations\Adapters\TodoistAdapter;
 use App\Integrations\Adapters\TrelloAdapter;
@@ -41,6 +43,8 @@ class AppServiceProvider extends ServiceProvider
                 new TrelloAdapter,
                 new GoogleTasksAdapter,
                 new TodoistAdapter,
+                new ClickUpAdapter,
+                new MicrosoftTodoAdapter,
                 new GoogleCalendarAdapter,
                 new ObsidianAdapter,
             ]);

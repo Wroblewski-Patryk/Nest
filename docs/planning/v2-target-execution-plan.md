@@ -186,7 +186,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - install/uninstall flows are auditable and reversible,
     - provider metadata and status are exposed in API contracts.
 
-- [ ] NEST-146 Add next-wave providers based on demand scoring
+- [x] NEST-146 Add next-wave providers based on demand scoring
   - Depends on: NEST-145
   - Done when:
     - at least two high-priority providers are implemented end-to-end,

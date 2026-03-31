@@ -1055,14 +1055,36 @@ Last updated: 2026-03-31
     - Added module documentation:
       `docs/modules/integration_marketplace_framework_v2.md`.
 
-- [ ] NEST-146 Add next-wave providers based on demand scoring
-  - Status: BACKLOG
+- [x] NEST-146 Add next-wave providers based on demand scoring
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-145
   - Done when:
     - at least two high-priority providers are implemented end-to-end,
     - each provider meets sync/idempotency/conflict quality bars,
     - rollout docs include limits and known caveats.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added two demand-selected providers end-to-end:
+      `clickup`, `microsoft_todo`.
+    - Implemented provider adapters and registry wiring:
+      `apps/api/app/Integrations/Adapters/ClickUpAdapter.php`,
+      `apps/api/app/Integrations/Adapters/MicrosoftTodoAdapter.php`,
+      `apps/api/app/Providers/AppServiceProvider.php`.
+    - Extended connection/sync/marketplace provider support:
+      `apps/api/app/Integrations/Services/IntegrationConnectionService.php`,
+      `apps/api/app/Http/Controllers/Api/IntegrationSyncController.php`,
+      `apps/api/app/Integrations/Services/IntegrationMarketplaceService.php`.
+    - Added provider-specific regression coverage:
+      `apps/api/tests/Feature/IntegrationListTaskSyncApiTest.php`,
+      `apps/api/tests/Feature/IntegrationConnectionApiTest.php`,
+      `apps/api/tests/Feature/IntegrationMarketplaceApiTest.php`.
+    - Updated rollout docs and contracts with caveats/limits:
+      `docs/modules/next_wave_provider_rollout_v2.md`,
+      `docs/modules/integrations.md`,
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
+      `packages/shared-types/src/client.d.ts`,
+      `packages/shared-types/src/index.d.ts`.
 
 - [ ] NEST-147 Add near-real-time sync triggers (webhooks/event ingestion)
   - Status: BACKLOG

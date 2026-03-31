@@ -21,7 +21,7 @@ class IntegrationConnectionApiTest extends TestCase
 
         $this->getJson('/api/v1/integrations/connections')
             ->assertOk()
-            ->assertJsonCount(5, 'data')
+            ->assertJsonCount(7, 'data')
             ->assertJsonPath('data.0.status', 'not_connected');
 
         $this->putJson('/api/v1/integrations/connections/trello', [

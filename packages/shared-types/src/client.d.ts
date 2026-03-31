@@ -455,7 +455,7 @@ export type NestApiClient = {
   activateBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
   markBillingSubscriptionPastDue(): Promise<{ data: BillingSubscriptionItem }>;
   cancelBillingSubscription(): Promise<{ data: BillingSubscriptionItem }>;
-  syncListTasks(provider: "trello" | "google_tasks" | "todoist"): Promise<{ data: Record<string, unknown> }>;
+  syncListTasks(provider: "trello" | "google_tasks" | "todoist" | "clickup" | "microsoft_todo"): Promise<{ data: Record<string, unknown> }>;
   syncCalendar(provider: "google_calendar"): Promise<{ data: Record<string, unknown> }>;
   syncJournal(provider: "obsidian"): Promise<{ data: Record<string, unknown> }>;
   getIntegrationConflicts(query?: Record<string, unknown>): Promise<ApiCollectionResponse<IntegrationConflictItem>>;
@@ -501,11 +501,11 @@ export type NestApiClient = {
     meta: { total: number; installed: number };
   }>;
   installIntegrationMarketplaceProvider(
-    provider: "trello" | "google_tasks" | "todoist" | "google_calendar" | "obsidian",
+    provider: "trello" | "google_tasks" | "todoist" | "clickup" | "microsoft_todo" | "google_calendar" | "obsidian",
     payload?: { install_metadata?: Record<string, unknown> }
   ): Promise<{ data: IntegrationMarketplaceProviderItem }>;
   uninstallIntegrationMarketplaceProvider(
-    provider: "trello" | "google_tasks" | "todoist" | "google_calendar" | "obsidian",
+    provider: "trello" | "google_tasks" | "todoist" | "clickup" | "microsoft_todo" | "google_calendar" | "obsidian",
     payload?: { reason?: string | null }
   ): Promise<{ data: IntegrationMarketplaceProviderItem }>;
   getIntegrationMarketplaceAudits(query?: {
@@ -516,7 +516,7 @@ export type NestApiClient = {
   }>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;
   upsertIntegrationConnection(
-    provider: "trello" | "google_tasks" | "todoist" | "google_calendar" | "obsidian",
+    provider: "trello" | "google_tasks" | "todoist" | "clickup" | "microsoft_todo" | "google_calendar" | "obsidian",
     payload: {
       access_token: string;
       refresh_token?: string | null;
@@ -525,7 +525,7 @@ export type NestApiClient = {
     }
   ): Promise<{ data: IntegrationConnectionItem }>;
   revokeIntegrationConnection(
-    provider: "trello" | "google_tasks" | "todoist" | "google_calendar" | "obsidian"
+    provider: "trello" | "google_tasks" | "todoist" | "clickup" | "microsoft_todo" | "google_calendar" | "obsidian"
   ): Promise<{ data: IntegrationConnectionItem }>;
   resolveIntegrationConflict(
     conflictId: string,

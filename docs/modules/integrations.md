@@ -16,6 +16,8 @@ Nest should support multiple providers per functional area over time
    - Trello
    - Google Tasks (Google To Do)
    - Todoist (selected as current demand-driven third provider)
+   - ClickUp (next-wave demand-selected provider)
+   - Microsoft To Do (next-wave demand-selected provider)
 2. Google Calendar integration after list/task baseline.
 3. Obsidian integration at the end of the initial wave.
 
@@ -52,6 +54,8 @@ Current status:
   install/uninstall lifecycle.
   - Detailed contract:
     `docs/modules/integration_marketplace_framework_v2.md`.
+- Next-wave provider rollout details (demand scoring, caveats, limits):
+  - `docs/modules/next_wave_provider_rollout_v2.md`.
 
 ## Integration Data Model
 

@@ -8,11 +8,13 @@ const providerScopes: Record<string, string[]> = {
   trello: ['read', 'write'],
   google_tasks: ['tasks.readonly'],
   todoist: ['data:read_write'],
+  clickup: ['task:read', 'task:write'],
+  microsoft_todo: ['Tasks.ReadWrite'],
   google_calendar: ['calendar.events'],
   obsidian: ['vault:read_write'],
 };
 
-const supportedProviders = ['trello', 'google_tasks', 'todoist', 'google_calendar', 'obsidian'] as const;
+const supportedProviders = ['trello', 'google_tasks', 'todoist', 'clickup', 'microsoft_todo', 'google_calendar', 'obsidian'] as const;
 type SupportedProvider = (typeof supportedProviders)[number];
 
 function asProvider(provider: string): SupportedProvider | null {

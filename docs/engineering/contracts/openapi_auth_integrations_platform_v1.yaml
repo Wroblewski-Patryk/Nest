@@ -1388,6 +1388,16 @@ components:
       required: true
       schema:
         type: string
+        enum:
+          [
+            trello,
+            google_tasks,
+            todoist,
+            clickup,
+            microsoft_todo,
+            google_calendar,
+            obsidian,
+          ]
     ProviderSlug:
       name: providerSlug
       in: path
@@ -1537,6 +1547,8 @@ components:
       properties:
         provider:
           type: string
+          enum:
+            [trello, google_tasks, todoist, clickup, microsoft_todo, google_calendar, obsidian]
         idempotency_key:
           type: string
 
@@ -1671,6 +1683,8 @@ components:
       properties:
         provider:
           type: string
+          enum:
+            [trello, google_tasks, todoist, clickup, microsoft_todo, google_calendar, obsidian]
         display_name:
           type: string
         category:

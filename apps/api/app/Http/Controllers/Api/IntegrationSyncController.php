@@ -21,7 +21,7 @@ class IntegrationSyncController extends Controller
         $user = $request->user();
 
         $payload = $request->validate([
-            'provider' => ['required', Rule::in(['trello', 'google_tasks', 'todoist'])],
+            'provider' => ['required', Rule::in(['trello', 'google_tasks', 'todoist', 'clickup', 'microsoft_todo'])],
         ]);
 
         $summary = $syncService->syncForUser($user, $payload['provider']);
