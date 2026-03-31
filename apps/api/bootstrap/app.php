@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AttachTraceId;
+use App\Http\Middleware\EnforceDelegatedCredentialScope;
 use App\Http\Middleware\EnforceBillingEntitlements;
 use App\Http\Middleware\EnforceTenantUsageQuota;
 use App\Http\Middleware\EnsureAiSurfaceEnabled;
@@ -34,6 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'entitlements' => EnforceBillingEntitlements::class,
             'tenant.usage' => EnforceTenantUsageQuota::class,
             'actor.context' => ResolveActorContext::class,
+            'delegated.scope' => EnforceDelegatedCredentialScope::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

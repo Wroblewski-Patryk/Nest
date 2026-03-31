@@ -1,6 +1,6 @@
 ﻿# API Contracts
 
-Last updated: 2026-03-19
+Last updated: 2026-03-31
 
 ## Purpose
 
@@ -38,4 +38,7 @@ for backend and client integration.
   - `openapi_auth_integrations_platform_v1.yaml`: auth, analytics, AI, insights,
     organizations, collaboration, integrations, notifications, and billing
     webhook route groups
+- Delegated AI credential lifecycle (`NEST-164`) is documented in:
+  `docs/modules/delegated_ai_api_credentials_v1.md` and represented in
+  `openapi_auth_integrations_platform_v1.yaml` auth path group.
 

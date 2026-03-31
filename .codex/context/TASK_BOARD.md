@@ -787,8 +787,8 @@ Last updated: 2026-03-31
       `php artisan test --filter=Policy`.
   - Done on: 2026-03-31
 
-- [ ] NEST-164 Add scoped user-issued API credentials for delegated AI access
-  - Status: BACKLOG
+- [x] NEST-164 Add scoped user-issued API credentials for delegated AI access
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-163
   - Done when:
@@ -797,6 +797,33 @@ Last updated: 2026-03-31
     - revoked/expired credentials are denied with deterministic error contract.
   - Notes:
     - API and contract docs must be updated with credential lifecycle flows.
+    - Added delegated credential scope catalog and route-level least-privilege
+      enforcement middleware:
+      `apps/api/app/Auth/DelegatedCredentialScopeCatalog.php`,
+      `apps/api/app/Http/Middleware/EnforceDelegatedCredentialScope.php`.
+    - Added delegated credential lifecycle API endpoints (list/create/revoke):
+      `apps/api/app/Http/Controllers/Api/DelegatedCredentialController.php`,
+      `apps/api/routes/api.php`.
+    - Added revocation persistence for Sanctum credentials:
+      `apps/api/database/migrations/2026_03_31_233500_add_revoked_at_to_personal_access_tokens_table.php`.
+    - Updated actor-context resolver to detect delegated credentials from token
+      metadata (no local header override required for production delegated
+      mode):
+      `apps/api/app/Http/Middleware/ResolveActorContext.php`.
+    - Added delegated credential feature regressions:
+      `apps/api/tests/Feature/DelegatedCredentialApiTest.php`.
+    - Updated API contract/docs for credential lifecycle:
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
+      `docs/engineering/api_contracts.md`,
+      `docs/modules/delegated_ai_api_credentials_v1.md`.
+    - Validation:
+      `php artisan test --filter=DelegatedCredentialApiTest`,
+      `php artisan test --filter=AuthApiTest`,
+      `php artisan test --filter=IntegrationListTaskSyncApiTest`,
+      `php artisan test --filter=IntegrationMarketplaceApiTest`,
+      `php artisan test --filter=LifeAreaPolicyActorContextTest`,
+      `php artisan test --filter=Policy`.
+  - Done on: 2026-03-31
 
 - [ ] NEST-165 Implement AI Agent account lifecycle and capability boundaries
   - Status: BACKLOG

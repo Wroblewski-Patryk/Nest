@@ -3,9 +3,11 @@
 namespace App\Http\Middleware;
 
 use App\Actors\ActorContext;
+use App\Auth\DelegatedCredentialScopeCatalog;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpFoundation\Response;
 
 class ResolveActorContext
@@ -17,14 +19,22 @@ class ResolveActorContext
     {
         $user = $request->user();
         $actorUserId = $user?->id !== null ? (string) $user->id : null;
+        $currentToken = $user?->currentAccessToken();
 
         $actorType = ActorContext::HUMAN_USER;
-        $rawHeaderType = Str::lower((string) $request->header('X-Nest-Actor-Type', ''));
         if (
-            in_array($rawHeaderType, [ActorContext::AI_AGENT, ActorContext::DELEGATED_AGENT], true)
-            && app()->environment(['local', 'testing'])
+            $currentToken instanceof PersonalAccessToken
+            && DelegatedCredentialScopeCatalog::isDelegatedToken($currentToken)
         ) {
-            $actorType = $rawHeaderType;
+            $actorType = ActorContext::DELEGATED_AGENT;
+        } else {
+            $rawHeaderType = Str::lower((string) $request->header('X-Nest-Actor-Type', ''));
+            if (
+                in_array($rawHeaderType, [ActorContext::AI_AGENT, ActorContext::DELEGATED_AGENT], true)
+                && app()->environment(['local', 'testing'])
+            ) {
+                $actorType = $rawHeaderType;
+            }
         }
 
         $delegatorUserId = null;

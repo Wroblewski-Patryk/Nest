@@ -113,6 +113,69 @@ paths:
         '422':
           $ref: '#/components/responses/ValidationError'
 
+  /v1/auth/delegated-credentials:
+    get:
+      tags: [Auth]
+      summary: List delegated AI API credentials for current user
+      operationId: listDelegatedCredentials
+      responses:
+        '200':
+          description: Delegated credentials list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegatedCredentialCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Auth]
+      summary: Issue delegated AI API credential
+      operationId: issueDelegatedCredential
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DelegatedCredentialIssueRequest'
+      responses:
+        '201':
+          description: Delegated credential issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegatedCredentialIssueResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/auth/delegated-credentials/{credentialId}/revoke:
+    post:
+      tags: [Auth]
+      summary: Revoke delegated AI API credential
+      operationId: revokeDelegatedCredential
+      parameters:
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Delegated credential revoked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegatedCredentialResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Credential not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /v1/auth/oauth/{provider}/exchange:
     post:
       tags: [Auth]
@@ -1826,6 +1889,111 @@ components:
             user:
               type: object
               additionalProperties: true
+
+    DelegatedCredentialIssueRequest:
+      type: object
+      required: [name, scopes]
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        scopes:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            enum:
+              - tasks:read
+              - tasks:write
+              - lists:read
+              - lists:write
+              - habits:read
+              - habits:write
+              - routines:read
+              - routines:write
+              - goals:read
+              - goals:write
+              - targets:read
+              - targets:write
+              - life_areas:read
+              - life_areas:write
+              - journal:read
+              - journal:write
+              - calendar:read
+              - calendar:write
+              - integrations:read
+              - integrations:write
+              - insights:read
+        expires_at:
+          type: [string, 'null']
+          format: date-time
+
+    DelegatedCredentialItem:
+      type: object
+      required: [id, name, scopes, status]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [active, expired, revoked]
+        last_used_at:
+          type: [string, 'null']
+          format: date-time
+        expires_at:
+          type: [string, 'null']
+          format: date-time
+        revoked_at:
+          type: [string, 'null']
+          format: date-time
+        created_at:
+          type: [string, 'null']
+          format: date-time
+
+    DelegatedCredentialResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/DelegatedCredentialItem'
+
+    DelegatedCredentialIssueResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [credential, plain_text_token]
+          properties:
+            credential:
+              $ref: '#/components/schemas/DelegatedCredentialItem'
+            plain_text_token:
+              type: string
+
+    DelegatedCredentialCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DelegatedCredentialItem'
+        meta:
+          type: object
+          required: [total, available_scopes]
+          properties:
+            total:
+              type: integer
+            available_scopes:
+              type: array
+              items:
+                type: string
 
     MessageResponse:
       type: object

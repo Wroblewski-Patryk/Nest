@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\BillingWebhookController;
 use App\Http\Controllers\Api\CalendarEventController;
 use App\Http\Controllers\Api\CollaborationInviteController;
 use App\Http\Controllers\Api\CollaborationSpaceController;
+use App\Http\Controllers\Api\DelegatedCredentialController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\HabitController;
 use App\Http\Controllers\Api\InAppNotificationController;
@@ -54,11 +55,14 @@ Route::prefix('v1')->group(function (): void {
     Route::post('/auth/orgs/{organizationSlug}/sso/{providerSlug}/exchange', [OrganizationSsoController::class, 'exchange']);
     Route::post('/billing/providers/stripe/webhook', [BillingWebhookController::class, 'stripe']);
 
-    Route::middleware(['auth:sanctum', 'actor.context', 'tenant.usage', 'entitlements'])->group(function (): void {
+    Route::middleware(['auth:sanctum', 'delegated.scope', 'actor.context', 'tenant.usage', 'entitlements'])->group(function (): void {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::get('/auth/me', [UserSettingsController::class, 'me']);
         Route::patch('/auth/settings', [UserSettingsController::class, 'update']);
         Route::post('/auth/onboarding', [UserSettingsController::class, 'completeOnboarding']);
+        Route::get('/auth/delegated-credentials', [DelegatedCredentialController::class, 'index']);
+        Route::post('/auth/delegated-credentials', [DelegatedCredentialController::class, 'store']);
+        Route::post('/auth/delegated-credentials/{credentialId}/revoke', [DelegatedCredentialController::class, 'revoke']);
         Route::get('/billing/subscription', [BillingSubscriptionController::class, 'show']);
         Route::get('/billing/events', [BillingEventController::class, 'index']);
         Route::post('/billing/subscription/start-trial', [BillingSubscriptionController::class, 'startTrial']);
