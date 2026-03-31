@@ -605,6 +605,13 @@ Last updated: 2026-03-31
     - production dashboards include baseline traffic data for API/web/mobile,
     - top failure modes are quantified by frequency and impact,
     - V2 reliability priorities are published in operations docs.
+  - Notes:
+    - Prepared dashboard/query/reliability memo template pack:
+      `docs/operations/v2_real_traffic_observability_baseline_pack_2026-03-31.md`.
+    - Added operations baseline cross-link in:
+      `docs/engineering/development_and_deployment.md`.
+    - Task remains open until 7-day and 14-day real production traffic exports
+      are attached with quantified top failure modes and explicit owners.
 
 - [x] NEST-126 Enforce SLO/error-budget workflow with automated gate checks
   - Status: DONE

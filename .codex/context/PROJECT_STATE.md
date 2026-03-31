@@ -506,6 +506,10 @@ Last updated: 2026-03-31
 - `NEST-129` stabilization gate review published with temporary V2 NO-GO
   decision and explicit mitigation owners for unresolved high-severity launch
   risks (`docs/operations/v1_1_stabilization_gate_review_2026-03-31.md`)
+- `NEST-125` observability baseline execution pack is prepared (dashboard set,
+  SQL extracts, reliability scoring template), but task remains open pending
+  live 7-day and 14-day production traffic exports
+  (`docs/operations/v2_real_traffic_observability_baseline_pack_2026-03-31.md`)
 - `NEST-130` completed: automatic background sync added on web/mobile offline
   queue flows with adaptive retry/backoff and deterministic jitter while
   preserving manual force-sync override

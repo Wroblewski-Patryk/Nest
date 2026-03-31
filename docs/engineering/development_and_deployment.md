@@ -96,6 +96,8 @@ Current workflow implementation:
   - backend API responses expose `X-Trace-Id`,
   - queue and integration counters are emitted (`api.requests.*`,
     `queue.jobs.*`, `integration.sync.*`).
+- V2 real-traffic baseline capture pack:
+  - `docs/operations/v2_real_traffic_observability_baseline_pack_2026-03-31.md`
 
 ## Integration Sync Operations
 
