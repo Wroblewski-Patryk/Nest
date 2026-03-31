@@ -42,12 +42,35 @@ export default function TasksScreen() {
 
   return (
     <ModuleScreen
+      moduleKey={tasksData.module}
       title="Tasks + Lists"
       subtitle="Capture commitments and execute daily priorities."
       state={tasksData.state}
       telemetry={tasksData.telemetry}
       metrics={tasksData.metrics}
       rows={tasksData.rows}
+      intentProgress={0.75}
+      dailySections={[
+        {
+          label: 'Morning',
+          subtitle: 'Poranek',
+          items: [
+            { title: '07:30 Szklanka wody', detail: 'Nawyk', badge: 'done' },
+            { title: '08:00 Medytacja 10 min', detail: 'Rutyna', badge: 'done' },
+          ],
+        },
+        {
+          label: 'Now',
+          subtitle: 'Teraz',
+          highlight: true,
+          items: [{ title: 'Projekt \"Nest\" UI Design [G]', detail: 'Zadanie', badge: 'active' }],
+        },
+        {
+          label: 'Evening',
+          subtitle: 'Wieczór',
+          items: [{ title: '21:00 Zapis w Dzienniku', detail: 'Refleksja', badge: 'planned' }],
+        },
+      ]}
       quickActions={[
         { label: 'Add Task', variant: 'primary' },
         { label: 'Add List', variant: 'secondary' },

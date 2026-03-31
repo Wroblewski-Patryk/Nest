@@ -79,12 +79,14 @@ export default function InsightsScreen() {
 
   return (
     <ModuleScreen
+      moduleKey={insightsData.module}
       title="Insights"
       subtitle="Watch life-area balance and weekly trends from one panel."
       state={insightsData.state}
       telemetry={telemetry}
       metrics={metrics}
       rows={rows}
+      intentProgress={0.67}
       quickActions={[
         { label: 'Refresh Trends', variant: 'primary' },
         { label: 'Export Snapshot', variant: 'secondary' },

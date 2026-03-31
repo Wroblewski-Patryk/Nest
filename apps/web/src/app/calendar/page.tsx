@@ -8,6 +8,7 @@ export default function CalendarPage() {
     <WorkspaceShell
       title="Calendar"
       subtitle="Plan your day with events linked to tasks, goals, and routines."
+      module="calendar"
     >
       <div className="stack">
         <MetricCard label="Events today" value={String(calendarSnapshot.length)} />

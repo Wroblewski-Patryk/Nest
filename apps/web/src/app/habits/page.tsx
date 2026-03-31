@@ -6,6 +6,7 @@ export default function HabitsPage() {
     <WorkspaceShell
       title="Habits + Routines"
       subtitle="Track small consistent actions and package them into repeatable routines."
+      module="habits"
     >
       <div className="stack">
         <MetricCard label="Habits tracked" value={String(habitsSnapshot.habits.length)} />

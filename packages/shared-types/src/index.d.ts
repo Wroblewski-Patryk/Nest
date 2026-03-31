@@ -280,6 +280,43 @@ export type ApiErrorEnvelope = {
   };
 };
 
+export type AuraVariant = "default" | "tasks" | "journal" | "calendar" | "insights";
+
+export type UiTokenContract = {
+  palette: {
+    surface: string;
+    surfaceLow: string;
+    surfaceHigh: string;
+    ink: string;
+    muted: string;
+    accent: string;
+    accentSoft: string;
+    outlineGhost: string;
+    error: string;
+  };
+  typography: {
+    family: string;
+    titleWeight: number;
+    bodyWeight: number;
+    labelWeight: number;
+  };
+  radius: {
+    sm: number;
+    md: number;
+    lg: number;
+    pill: number;
+  };
+  motion: {
+    auraTransitionMs: number;
+    reduceMotionQuery: string;
+  };
+  aura: Record<AuraVariant, [string, string, string]>;
+};
+
+export const uiTokens: UiTokenContract;
+export function resolveAuraVariant(moduleKey?: ModuleKey | string | null): AuraVariant;
+export function resolveAuraPalette(variant?: AuraVariant | string | null): [string, string, string];
+
 export function resolveLanguage(value: unknown): SupportedLanguage;
 export function resolveLocale(language?: SupportedLanguage | string | null, override?: string | null): string;
 export function translate(key: string, language?: SupportedLanguage | string | null, fallback?: string): string;

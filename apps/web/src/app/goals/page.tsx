@@ -6,6 +6,7 @@ export default function GoalsPage() {
     <WorkspaceShell
       title="Goals + Targets"
       subtitle="Break long-term outcomes into measurable targets and weekly progress."
+      module="goals"
     >
       <div className="stack">
         <MetricCard label="Active goals" value={String(goalsSnapshot.goals.length)} />

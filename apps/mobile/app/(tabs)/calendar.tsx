@@ -114,12 +114,14 @@ export default function CalendarScreen() {
 
   return (
     <ModuleScreen
+      moduleKey={calendarData.module}
       title="Calendar"
       subtitle="Plan events linked to tasks, goals, and routines."
       state={calendarData.state}
       telemetry={calendarData.telemetry}
       metrics={calendarData.metrics}
       rows={calendarData.rows}
+      intentProgress={0.64}
       quickActions={[
         { label: 'Add Event', variant: 'primary' },
         { label: 'Force Sync', variant: 'secondary' },

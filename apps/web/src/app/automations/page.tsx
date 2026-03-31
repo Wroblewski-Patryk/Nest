@@ -198,6 +198,7 @@ export default function AutomationsPage() {
     <WorkspaceShell
       title="Automations"
       subtitle="Create trigger-based workflows and control active/paused execution."
+      module="automations"
     >
       <div className="stack">
         {metrics.map((metric) => (

@@ -520,8 +520,9 @@ Last updated: 2026-03-21
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: complete launch-window and immediate post-launch
-  closure (`NEST-122`, `NEST-123`, `NEST-124`), then execute V2 target backlog
-  starting from `NEST-125`.
+  closure (`NEST-122`, `NEST-123`, `NEST-124`) while continuing V2 delivery
+  slices, including UX/UI refresh baseline (`NEST-154`, `NEST-155`,
+  `NEST-156`) and module parity review (`NEST-157`).
 
 ## Auth, AI, Offline, Notifications
 
@@ -544,6 +545,7 @@ Last updated: 2026-03-21
 - V2 target execution backlog: `docs/planning/v2-target-execution-plan.md`
 - V2 execution roundbook: `docs/planning/v2-execution-roundbook.md`
 - V2 task cards: `docs/planning/v2-task-cards.md`
+- UX/UI refresh implementation wave: `docs/ux/uxui_refresh_implementation_wave_2026-03-31.md`
 - Roadmap overview: `docs/product/roadmap.md`
 - Next execution wave: `docs/planning/next_execution_wave_2026-03-21.md`
 - MVP execution track: `docs/planning/mvp-execution-plan.md`

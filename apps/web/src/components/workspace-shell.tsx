@@ -1,32 +1,61 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { resolveLanguage, translate } from "@nest/shared-types";
+import {
+  formatLocalizedDateTime,
+  resolveAuraVariant,
+  resolveLanguage,
+  translate,
+  type ModuleKey,
+} from "@nest/shared-types";
 import { moduleReadiness } from "@/lib/mvp-snapshot";
 import { STATE_LABELS } from "@/lib/ux-contract";
 
 type WorkspaceShellProps = {
   title: string;
   subtitle: string;
+  module?: ModuleKey;
   children: ReactNode;
 };
 
-export function WorkspaceShell({ title, subtitle, children }: WorkspaceShellProps) {
+export function WorkspaceShell({ title, subtitle, module, children }: WorkspaceShellProps) {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
+  const progress = Math.round(
+    (moduleReadiness.filter((item) => item.state === "success").length / moduleReadiness.length) * 100
+  );
+  const auraVariant = resolveAuraVariant(module ?? "tasks");
 
   return (
-    <div className="workspace-bg">
+    <div className={`workspace-bg aura-${auraVariant}`}>
       <div className="workspace-container">
         <header className="workspace-hero">
-          <p className="workspace-kicker">{translate("app.kicker", language)}</p>
+          <div className="workspace-brand-row">
+            <div className="workspace-brand">
+              <p className="workspace-logo">NEST</p>
+              <p className="workspace-date">{formatLocalizedDateTime(new Date(), language)}</p>
+            </div>
+            <p className="workspace-kicker">{translate("app.kicker", language)}</p>
+          </div>
+
           <h1>{title}</h1>
           <p>{subtitle}</p>
+
+          <div className="workspace-progress" aria-label="Module completion">
+            <div className="workspace-progress-bar">
+              <div className="workspace-progress-fill" style={{ width: `${progress}%` }} />
+            </div>
+            <small>{progress}% of core module baseline is stable in current environment.</small>
+          </div>
         </header>
 
-        <nav className="workspace-nav" aria-label="MVP modules">
-          {moduleReadiness.map((module) => (
-            <Link key={module.href} href={module.href} className="workspace-tab">
-              <span>{module.label}</span>
-              <small>{STATE_LABELS[module.state]}</small>
+        <nav className="workspace-nav" aria-label="Core modules">
+          {moduleReadiness.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`workspace-tab ${module === item.key ? "is-active" : ""}`}
+            >
+              <span>{item.label}</span>
+              <small>{STATE_LABELS[item.state]}</small>
             </Link>
           ))}
         </nav>

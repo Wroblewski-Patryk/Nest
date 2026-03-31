@@ -7,6 +7,80 @@ export {
   translate,
 } from "./localization.js";
 
+export const uiTokens = Object.freeze({
+  palette: {
+    surface: "#FDFCF8",
+    surfaceLow: "#F4F4F0",
+    surfaceHigh: "#EFEEEA",
+    ink: "#4B3F34",
+    muted: "#8C7A67",
+    accent: "#789262",
+    accentSoft: "#DFE5DA",
+    outlineGhost: "rgba(196, 200, 187, 0.35)",
+    error: "#BA1A1A",
+  },
+  typography: {
+    family: "Inter",
+    titleWeight: 500,
+    bodyWeight: 400,
+    labelWeight: 600,
+  },
+  radius: {
+    sm: 8,
+    md: 12,
+    lg: 16,
+    pill: 999,
+  },
+  motion: {
+    auraTransitionMs: 900,
+    reduceMotionQuery: "(prefers-reduced-motion: reduce)",
+  },
+  aura: {
+    default: ["rgba(120,146,98,0.12)", "rgba(191,166,138,0.1)", "rgba(223,229,218,0.14)"],
+    tasks: ["rgba(120,146,98,0.18)", "rgba(223,229,218,0.12)", "rgba(191,166,138,0.08)"],
+    journal: ["rgba(191,166,138,0.16)", "rgba(223,229,218,0.1)", "rgba(120,146,98,0.08)"],
+    calendar: ["rgba(120,146,98,0.14)", "rgba(191,166,138,0.08)", "rgba(223,229,218,0.12)"],
+    insights: ["rgba(120,146,98,0.16)", "rgba(223,229,218,0.14)", "rgba(191,166,138,0.06)"],
+  },
+});
+
+const moduleAuraVariants = Object.freeze({
+  tasks: "tasks",
+  lists: "tasks",
+  habits: "tasks",
+  routines: "tasks",
+  goals: "calendar",
+  targets: "calendar",
+  journal: "journal",
+  life_areas: "journal",
+  calendar: "calendar",
+  insights: "insights",
+  automations: "default",
+  billing: "default",
+});
+
+/**
+ * @param {string | null | undefined} moduleKey
+ * @returns {"default" | "tasks" | "journal" | "calendar" | "insights"}
+ */
+export function resolveAuraVariant(moduleKey) {
+  if (!moduleKey) {
+    return "default";
+  }
+
+  return moduleAuraVariants[moduleKey] ?? "default";
+}
+
+/**
+ * @param {"default" | "tasks" | "journal" | "calendar" | "insights" | string | null | undefined} variant
+ * @returns {[string, string, string]}
+ */
+export function resolveAuraPalette(variant) {
+  const safeVariant = variant && uiTokens.aura[variant] ? variant : "default";
+  const palette = uiTokens.aura[safeVariant];
+  return [palette[0], palette[1], palette[2]];
+}
+
 /**
  * @param {object} options
  * @param {string} options.baseUrl

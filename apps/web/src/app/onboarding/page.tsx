@@ -30,7 +30,11 @@ export default function OnboardingPage() {
   };
 
   return (
-    <WorkspaceShell title="Onboarding" subtitle="Set display name and language before entering dashboard.">
+    <WorkspaceShell
+      title="Onboarding"
+      subtitle="Set display name and language before entering dashboard."
+      module="journal"
+    >
       <div className="stack">
         <MetricCard label="Required field" value="display_name" />
         <MetricCard label="Required field" value="language" />

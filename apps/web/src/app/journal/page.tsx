@@ -6,6 +6,7 @@ export default function JournalPage() {
     <WorkspaceShell
       title="Journal + Life Areas"
       subtitle="Capture reflections and tag entries to maintain life-area balance awareness."
+      module="journal"
     >
       <div className="stack">
         <MetricCard label="Entries this week" value={String(journalSnapshot.entries.length)} />
@@ -25,6 +26,15 @@ export default function JournalPage() {
             </li>
           ))}
         </ul>
+      </Panel>
+
+      <Panel title="Quick Reflection">
+        <div className="row-inline">
+          <span className="pill">Szybki wpis</span>
+          <span className="pill">Nastroje</span>
+          <span className="pill">Wdzięczność</span>
+        </div>
+        <p className="callout">Use short tags to keep reflection lightweight and daily-friendly.</p>
       </Panel>
 
       <Panel title="Life Area Balance">

@@ -1,10 +1,13 @@
+import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type {
   IntegrationConnectionItem,
+  ModuleKey,
   TelemetryEventName,
   UiAsyncState,
 } from '@nest/shared-types';
 import { resolveLanguage, translate } from '@nest/shared-types';
+import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
 
 type Metric = {
   label: string;
@@ -17,13 +20,23 @@ type Row = {
   badge: string;
 };
 
+type DailySection = {
+  label: string;
+  subtitle?: string;
+  highlight?: boolean;
+  items: Row[];
+};
+
 type ModuleScreenProps = {
+  moduleKey?: ModuleKey;
   title: string;
   subtitle: string;
   state: UiAsyncState;
   telemetry: TelemetryEventName;
   metrics: Metric[];
   rows: Row[];
+  intentProgress?: number;
+  dailySections?: DailySection[];
   quickActions?: Array<{
     label: string;
     variant?: 'primary' | 'secondary';
@@ -38,7 +51,7 @@ type ModuleScreenProps = {
       provider: string;
       entityType: string;
       fields: string[];
-      mergeState?: 'manual_required' | 'auto_merged';
+      mergeState?: string;
       autoMergeFields?: string[];
       comparison?: Record<string, { base: string; local: string; remote: string }>;
     }>;
@@ -105,262 +118,353 @@ function reviewConnectionScopes(connection: IntegrationConnectionItem): {
 }
 
 export function ModuleScreen({
+  moduleKey = 'tasks',
   title,
   subtitle,
   state,
   telemetry,
   metrics,
   rows,
+  intentProgress = 0.75,
+  dailySections,
   quickActions,
   connectivity,
   conflicts,
   connections,
 }: ModuleScreenProps) {
   const language = resolveLanguage(process.env.EXPO_PUBLIC_NEST_DEFAULT_LANGUAGE);
+  const [auraA, auraB, auraC] = useMemo(() => getAuraPalette(moduleKey), [moduleKey]);
+  const dateLabel = useMemo(
+    () =>
+      new Date().toLocaleDateString(language === 'pl' ? 'pl-PL' : 'en-US', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+      }),
+    [language]
+  );
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.hero}>
-        <Text style={styles.kicker}>{translate('app.kicker', language)}</Text>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
-        <View style={styles.metaRow}>
-          <Text style={styles.metaPill}>{stateLabels[state]}</Text>
-          <Text style={styles.metaCode}>{telemetry}</Text>
-        </View>
-      </View>
+    <View style={styles.screen}>
+      <View style={[styles.aura, styles.auraLeft, { backgroundColor: auraA }]} />
+      <View style={[styles.aura, styles.auraRight, { backgroundColor: auraB }]} />
+      <View style={[styles.aura, styles.auraBottom, { backgroundColor: auraC }]} />
 
-      <View style={styles.metricRow}>
-        {metrics.map((metric) => (
-          <View key={metric.label} style={styles.metricCard}>
-            <Text style={styles.metricLabel}>{metric.label}</Text>
-            <Text style={styles.metricValue}>{metric.value}</Text>
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+        <View style={styles.hero}>
+          <Text style={styles.brand}>{translate('app.kicker', language)}</Text>
+          <Text style={styles.dateLabel}>{dateLabel}</Text>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.subtitle}>{subtitle}</Text>
+          <View style={styles.progressTrack}>
+            <View style={[styles.progressFill, { width: `${Math.max(0, Math.min(100, intentProgress * 100))}%` }]} />
           </View>
-        ))}
-      </View>
+          <View style={styles.metaRow}>
+            <Text style={styles.metaPill}>{stateLabels[state]}</Text>
+            <Text style={styles.metaCode}>{telemetry}</Text>
+          </View>
+        </View>
 
-      {quickActions && quickActions.length > 0 ? (
-        <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Quick Actions</Text>
-          <View style={styles.actionRow}>
-            {quickActions.map((action) => (
-              <Pressable
-                key={action.label}
-                style={[
-                  styles.actionButton,
-                  action.variant === 'primary' ? styles.actionButtonPrimary : styles.actionButtonSecondary,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.actionButtonText,
-                    action.variant === 'primary' ? styles.actionButtonTextPrimary : styles.actionButtonTextSecondary,
-                  ]}
-                >
-                  {action.label}
+        <View style={styles.metricRow}>
+          {metrics.map((metric) => (
+            <View key={metric.label} style={styles.metricCard}>
+              <Text style={styles.metricLabel}>{metric.label}</Text>
+              <Text style={styles.metricValue}>{metric.value}</Text>
+            </View>
+          ))}
+        </View>
+
+        {dailySections && dailySections.length > 0 ? (
+          <View style={styles.panel}>
+            <Text style={styles.panelTitle}>Twoje dzisiaj</Text>
+            {dailySections.map((section) => (
+              <View key={section.label} style={styles.sectionWrap}>
+                <Text style={[styles.sectionLabel, section.highlight && styles.sectionLabelHighlight]}>
+                  {section.label}
                 </Text>
-              </Pressable>
+                {section.subtitle ? <Text style={styles.sectionSubtitle}>{section.subtitle}</Text> : null}
+                {section.items.map((item) => (
+                  <View key={`${section.label}-${item.title}`} style={styles.row}>
+                    <View style={styles.rowTextWrap}>
+                      <Text style={styles.rowTitle}>{item.title}</Text>
+                      <Text style={styles.rowDetail}>{item.detail}</Text>
+                    </View>
+                    <View style={styles.badge}>
+                      <Text style={styles.badgeText}>{item.badge}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
             ))}
           </View>
-        </View>
-      ) : null}
+        ) : null}
 
-      <View style={styles.panel}>
-        <Text style={styles.panelTitle}>Live Snapshot</Text>
-        {rows.map((row) => (
-          <View key={`${row.title}-${row.badge}`} style={styles.row}>
-            <View style={styles.rowTextWrap}>
-              <Text style={styles.rowTitle}>{row.title}</Text>
-              <Text style={styles.rowDetail}>{row.detail}</Text>
-            </View>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{row.badge}</Text>
+        {quickActions && quickActions.length > 0 ? (
+          <View style={styles.panel}>
+            <Text style={styles.panelTitle}>Quick Actions</Text>
+            <View style={styles.actionRow}>
+              {quickActions.map((action) => (
+                <Pressable
+                  key={action.label}
+                  style={[
+                    styles.actionButton,
+                    action.variant === 'primary' ? styles.actionButtonPrimary : styles.actionButtonSecondary,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.actionButtonText,
+                      action.variant === 'primary' ? styles.actionButtonTextPrimary : styles.actionButtonTextSecondary,
+                    ]}
+                  >
+                    {action.label}
+                  </Text>
+                </Pressable>
+              ))}
             </View>
           </View>
-        ))}
-      </View>
+        ) : null}
 
-      {connectivity ? (
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>API Client Status</Text>
-          <View style={styles.row}>
-            <View style={styles.rowTextWrap}>
-              <Text style={styles.rowTitle}>{stateLabels[connectivity.state]}</Text>
-              <Text style={styles.rowDetail}>{connectivity.detail}</Text>
-            </View>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>shared client</Text>
-            </View>
-          </View>
-        </View>
-      ) : null}
-
-      {conflicts ? (
-        <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Conflict Queue</Text>
-          {conflicts.items.length === 0 ? (
-            <View style={styles.row}>
+          <Text style={styles.panelTitle}>Live Snapshot</Text>
+          {rows.map((row) => (
+            <View key={`${row.title}-${row.badge}`} style={styles.row}>
               <View style={styles.rowTextWrap}>
-                <Text style={styles.rowTitle}>No open conflicts</Text>
-                <Text style={styles.rowDetail}>Queue is clear for this module.</Text>
+                <Text style={styles.rowTitle}>{row.title}</Text>
+                <Text style={styles.rowDetail}>{row.detail}</Text>
               </View>
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>clear</Text>
+                <Text style={styles.badgeText}>{row.badge}</Text>
               </View>
             </View>
-          ) : (
-            conflicts.items.map((conflict) => (
-              <View key={conflict.id} style={styles.rowStack}>
-                <View style={styles.row}>
-                  <View style={styles.rowTextWrap}>
-                    <Text style={styles.rowTitle}>{conflict.provider}</Text>
-                    <Text style={styles.rowDetail}>
-                      {conflict.entityType} - {conflict.fields.join(', ')}
-                    </Text>
-                    <Text style={styles.rowDetail}>Merge state: {conflict.mergeState ?? 'manual_required'}</Text>
-                    {conflict.autoMergeFields && conflict.autoMergeFields.length > 0 ? (
-                      <Text style={styles.rowDetail}>Auto-merged: {conflict.autoMergeFields.join(', ')}</Text>
-                    ) : null}
-                    {conflict.fields[0] ? (
+          ))}
+        </View>
+
+        {connectivity ? (
+          <View style={styles.panel}>
+            <Text style={styles.panelTitle}>API Client Status</Text>
+            <View style={styles.row}>
+              <View style={styles.rowTextWrap}>
+                <Text style={styles.rowTitle}>{stateLabels[connectivity.state]}</Text>
+                <Text style={styles.rowDetail}>{connectivity.detail}</Text>
+              </View>
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>shared client</Text>
+              </View>
+            </View>
+          </View>
+        ) : null}
+
+        {conflicts ? (
+          <View style={styles.panel}>
+            <Text style={styles.panelTitle}>Conflict Queue</Text>
+            {conflicts.items.length === 0 ? (
+              <View style={styles.row}>
+                <View style={styles.rowTextWrap}>
+                  <Text style={styles.rowTitle}>No open conflicts</Text>
+                  <Text style={styles.rowDetail}>Queue is clear for this module.</Text>
+                </View>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>clear</Text>
+                </View>
+              </View>
+            ) : (
+              conflicts.items.map((conflict) => (
+                <View key={conflict.id} style={styles.rowStack}>
+                  <View style={styles.row}>
+                    <View style={styles.rowTextWrap}>
+                      <Text style={styles.rowTitle}>{conflict.provider}</Text>
                       <Text style={styles.rowDetail}>
-                        base/local/remote ({conflict.fields[0]}):{' '}
-                        {conflict.comparison?.[conflict.fields[0]]?.base ?? '(unavailable)'} /{' '}
-                        {conflict.comparison?.[conflict.fields[0]]?.local ?? '(unavailable)'} /{' '}
-                        {conflict.comparison?.[conflict.fields[0]]?.remote ?? '(unavailable)'}
+                        {conflict.entityType} - {conflict.fields.join(', ')}
                       </Text>
-                    ) : null}
+                      {conflict.mergeState ? (
+                        <Text style={styles.rowDetail}>Merge: {conflict.mergeState}</Text>
+                      ) : null}
+                      {conflict.autoMergeFields && conflict.autoMergeFields.length > 0 ? (
+                        <Text style={styles.rowDetail}>Auto: {conflict.autoMergeFields.join(', ')}</Text>
+                      ) : null}
+                      {conflict.fields[0] ? (
+                        <Text style={styles.rowDetail}>
+                          base/local/remote ({conflict.fields[0]}):{' '}
+                          {conflict.comparison?.[conflict.fields[0]]?.base ?? '(unavailable)'} /{' '}
+                          {conflict.comparison?.[conflict.fields[0]]?.local ?? '(unavailable)'} /{' '}
+                          {conflict.comparison?.[conflict.fields[0]]?.remote ?? '(unavailable)'}
+                        </Text>
+                      ) : null}
+                    </View>
+                    <View style={styles.badge}>
+                      <Text style={styles.badgeText}>open</Text>
+                    </View>
                   </View>
-                  <View style={styles.badge}>
-                    <Text style={styles.badgeText}>open</Text>
+                  <View style={styles.actionRow}>
+                    <Pressable
+                      style={[
+                        styles.actionButton,
+                        conflicts.resolvingId === conflict.id && styles.actionButtonDisabled,
+                      ]}
+                      onPress={() => conflicts.onResolve(conflict.id, 'accept')}
+                      disabled={conflicts.resolvingId === conflict.id}
+                    >
+                      <Text style={styles.actionButtonText}>Accept</Text>
+                    </Pressable>
+                    <Pressable
+                      style={[
+                        styles.actionButton,
+                        conflicts.resolvingId === conflict.id && styles.actionButtonDisabled,
+                      ]}
+                      onPress={() => conflicts.onResolve(conflict.id, 'override')}
+                      disabled={conflicts.resolvingId === conflict.id}
+                    >
+                      <Text style={styles.actionButtonText}>Override</Text>
+                    </Pressable>
                   </View>
                 </View>
-                <View style={styles.actionRow}>
-                  <Pressable
-                    style={[
-                      styles.actionButton,
-                      conflicts.resolvingId === conflict.id && styles.actionButtonDisabled,
-                    ]}
-                    onPress={() => conflicts.onResolve(conflict.id, 'accept')}
-                    disabled={conflicts.resolvingId === conflict.id}
-                  >
-                    <Text style={styles.actionButtonText}>Accept</Text>
-                  </Pressable>
-                  <Pressable
-                    style={[
-                      styles.actionButton,
-                      conflicts.resolvingId === conflict.id && styles.actionButtonDisabled,
-                    ]}
-                    onPress={() => conflicts.onResolve(conflict.id, 'override')}
-                    disabled={conflicts.resolvingId === conflict.id}
-                  >
-                    <Text style={styles.actionButtonText}>Override</Text>
-                  </Pressable>
-                </View>
-              </View>
-            ))
-          )}
-        </View>
-      ) : null}
+              ))
+            )}
+          </View>
+        ) : null}
 
-      {connections ? (
-        <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Provider Permissions</Text>
-          {connections.items.map((connection) => {
-            const review = reviewConnectionScopes(connection);
+        {connections ? (
+          <View style={styles.panel}>
+            <Text style={styles.panelTitle}>Provider Permissions</Text>
+            {connections.items.map((connection) => {
+              const review = reviewConnectionScopes(connection);
 
-            return (
-              <View key={connection.provider} style={styles.rowStack}>
-                <View style={styles.row}>
-                  <View style={styles.rowTextWrap}>
-                    <Text style={styles.rowTitle}>{connection.provider}</Text>
-                    <Text style={styles.rowDetail}>Status: {connection.status}</Text>
-                    <Text style={styles.scopeHeading}>Connection Scopes</Text>
-                    <Text style={styles.rowDetail}>
-                      Granted: {connection.scopes.length > 0 ? connection.scopes.join(', ') : 'none'}
-                    </Text>
-                    {connection.status === 'connected' ? (
-                      <Text style={styles.scopeHeading}>Scope Review</Text>
-                    ) : null}
-                    {connection.status === 'connected' ? (
-                      <Text style={review.level === 'warn' ? styles.scopeWarnText : styles.scopeOkText}>
-                        {review.message}
+              return (
+                <View key={connection.provider} style={styles.rowStack}>
+                  <View style={styles.row}>
+                    <View style={styles.rowTextWrap}>
+                      <Text style={styles.rowTitle}>{connection.provider}</Text>
+                      <Text style={styles.rowDetail}>Status: {connection.status}</Text>
+                      <Text style={styles.scopeHeading}>Connection scopes</Text>
+                      <Text style={styles.rowDetail}>
+                        Granted: {connection.scopes.length > 0 ? connection.scopes.join(', ') : 'none'}
                       </Text>
-                    ) : null}
+                      {connection.status === 'connected' ? (
+                        <Text style={review.level === 'warn' ? styles.scopeWarnText : styles.scopeOkText}>
+                          {review.message}
+                        </Text>
+                      ) : null}
+                    </View>
+                    <View style={styles.badge}>
+                      <Text style={styles.badgeText}>
+                        {connection.is_connected ? 'connected' : 'inactive'}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.badge}>
-                    <Text style={styles.badgeText}>
-                      {connection.is_connected ? 'connected' : 'inactive'}
-                    </Text>
+                  <View style={styles.actionRow}>
+                    <Pressable
+                      style={[
+                        styles.actionButton,
+                        connections.busyProvider === connection.provider && styles.actionButtonDisabled,
+                      ]}
+                      onPress={() => connections.onConnect(connection.provider)}
+                      disabled={connections.busyProvider === connection.provider}
+                    >
+                      <Text style={styles.actionButtonText}>
+                        {connection.status === 'connected' ? 'Reconnect' : 'Connect'}
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      style={[
+                        styles.actionButton,
+                        connections.busyProvider === connection.provider && styles.actionButtonDisabled,
+                      ]}
+                      onPress={() => connections.onRevoke(connection.provider)}
+                      disabled={connections.busyProvider === connection.provider}
+                    >
+                      <Text style={styles.actionButtonText}>Revoke</Text>
+                    </Pressable>
                   </View>
                 </View>
-                <View style={styles.actionRow}>
-                  <Pressable
-                    style={[
-                      styles.actionButton,
-                      connections.busyProvider === connection.provider && styles.actionButtonDisabled,
-                    ]}
-                    onPress={() => connections.onConnect(connection.provider)}
-                    disabled={connections.busyProvider === connection.provider}
-                  >
-                    <Text style={styles.actionButtonText}>
-                      {connection.status === 'connected' ? 'Reconnect' : 'Connect'}
-                    </Text>
-                  </Pressable>
-                  <Pressable
-                    style={[
-                      styles.actionButton,
-                      connections.busyProvider === connection.provider && styles.actionButtonDisabled,
-                    ]}
-                    onPress={() => connections.onRevoke(connection.provider)}
-                    disabled={connections.busyProvider === connection.provider}
-                  >
-                    <Text style={styles.actionButtonText}>Revoke</Text>
-                  </Pressable>
-                </View>
-              </View>
-            );
-          })}
-        </View>
-      ) : null}
-    </ScrollView>
+              );
+            })}
+          </View>
+        ) : null}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#f1f5f9',
+    backgroundColor: mobileUiTokens.surface,
+  },
+  scroll: {
+    flex: 1,
+  },
+  aura: {
+    position: 'absolute',
+    borderRadius: 999,
+    opacity: 1,
+  },
+  auraLeft: {
+    width: 320,
+    height: 320,
+    top: -80,
+    left: -120,
+  },
+  auraRight: {
+    width: 280,
+    height: 280,
+    top: 120,
+    right: -110,
+  },
+  auraBottom: {
+    width: 340,
+    height: 340,
+    bottom: -120,
+    left: 20,
   },
   content: {
     padding: 16,
-    gap: 14,
+    gap: 12,
+    paddingBottom: 120,
   },
   hero: {
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: mobileUiTokens.outlineGhost,
     borderRadius: 16,
-    backgroundColor: '#fffdf8',
+    backgroundColor: 'rgba(255,255,255,0.78)',
     padding: 14,
     gap: 4,
   },
-  kicker: {
-    fontSize: 12,
+  brand: {
+    fontSize: 11,
     fontWeight: '700',
-    color: '#0f766e',
-    letterSpacing: 0.4,
+    color: mobileUiTokens.accent,
+    letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
+  dateLabel: {
+    fontSize: 12,
+    color: mobileUiTokens.muted,
+    marginBottom: 2,
+  },
   title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1e293b',
+    fontSize: 30,
+    fontWeight: '400',
+    color: mobileUiTokens.ink,
   },
   subtitle: {
     fontSize: 14,
-    color: '#475569',
+    color: mobileUiTokens.muted,
+  },
+  progressTrack: {
+    marginTop: 6,
+    borderRadius: 999,
+    height: 7,
+    backgroundColor: mobileUiTokens.surfaceLow,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 999,
+    backgroundColor: mobileUiTokens.accent,
   },
   metaRow: {
-    marginTop: 4,
+    marginTop: 6,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
@@ -369,15 +473,15 @@ const styles = StyleSheet.create({
   metaPill: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#0f172a',
-    backgroundColor: '#dbeafe',
+    color: mobileUiTokens.ink,
+    backgroundColor: mobileUiTokens.accentSoft,
     borderRadius: 999,
     paddingHorizontal: 8,
     paddingVertical: 2,
   },
   metaCode: {
     fontSize: 11,
-    color: '#334155',
+    color: mobileUiTokens.muted,
   },
   metricRow: {
     flexDirection: 'row',
@@ -386,40 +490,61 @@ const styles = StyleSheet.create({
   metricCard: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#dbeafe',
+    borderColor: mobileUiTokens.outlineGhost,
     borderRadius: 12,
-    backgroundColor: '#eff6ff',
+    backgroundColor: 'rgba(255,255,255,0.68)',
     padding: 10,
     gap: 3,
   },
   metricLabel: {
     fontSize: 11,
-    color: '#334155',
+    color: mobileUiTokens.muted,
   },
   metricValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0f172a',
+    color: mobileUiTokens.ink,
   },
   panel: {
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: mobileUiTokens.outlineGhost,
     borderRadius: 14,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgba(255,255,255,0.76)',
     padding: 12,
     gap: 8,
   },
   panelTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#334155',
+    color: mobileUiTokens.ink,
+    textTransform: 'uppercase',
+    letterSpacing: 0.7,
+  },
+  sectionWrap: {
+    gap: 6,
+    marginBottom: 8,
+  },
+  sectionLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: mobileUiTokens.muted,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  sectionLabelHighlight: {
+    color: mobileUiTokens.accent,
+  },
+  sectionSubtitle: {
+    fontSize: 11,
+    color: mobileUiTokens.muted,
+    marginTop: -2,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: '#f1f5f9',
+    borderColor: mobileUiTokens.outlineGhost,
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 10,
@@ -435,15 +560,15 @@ const styles = StyleSheet.create({
   rowTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#0f172a',
+    color: mobileUiTokens.ink,
   },
   rowDetail: {
     fontSize: 12,
-    color: '#64748b',
+    color: mobileUiTokens.muted,
   },
   badge: {
-    backgroundColor: '#dcfce7',
-    borderColor: '#86efac',
+    backgroundColor: mobileUiTokens.accentSoft,
+    borderColor: mobileUiTokens.outlineGhost,
     borderWidth: 1,
     paddingVertical: 4,
     paddingHorizontal: 8,
@@ -452,25 +577,28 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#166534',
+    color: mobileUiTokens.ink,
   },
   actionRow: {
     flexDirection: 'row',
     gap: 8,
+    flexWrap: 'wrap',
   },
   actionButton: {
     borderWidth: 1,
+    borderColor: mobileUiTokens.outlineGhost,
     borderRadius: 8,
     paddingVertical: 6,
     paddingHorizontal: 10,
+    backgroundColor: '#ffffff',
   },
   actionButtonPrimary: {
-    borderColor: '#0f766e',
-    backgroundColor: '#0f766e',
+    borderColor: mobileUiTokens.accent,
+    backgroundColor: mobileUiTokens.accent,
   },
   actionButtonSecondary: {
-    borderColor: '#99f6e4',
-    backgroundColor: '#ccfbf1',
+    borderColor: mobileUiTokens.outlineGhost,
+    backgroundColor: mobileUiTokens.accentSoft,
   },
   actionButtonDisabled: {
     opacity: 0.6,
@@ -478,26 +606,26 @@ const styles = StyleSheet.create({
   actionButtonText: {
     fontSize: 12,
     fontWeight: '600',
+    color: mobileUiTokens.ink,
   },
   actionButtonTextPrimary: {
-    color: '#ecfeff',
+    color: '#fbfdf9',
   },
   actionButtonTextSecondary: {
-    color: '#115e59',
+    color: mobileUiTokens.ink,
   },
   scopeHeading: {
     marginTop: 2,
     fontSize: 11,
     fontWeight: '700',
-    color: '#334155',
+    color: mobileUiTokens.ink,
   },
   scopeWarnText: {
     fontSize: 12,
-    color: '#9a3412',
+    color: '#8c4f1d',
   },
   scopeOkText: {
     fontSize: 12,
-    color: '#166534',
+    color: '#2f6c3c',
   },
 });
-

@@ -104,3 +104,9 @@ in web/mobile code.
 - Split implementation into module tasks.
 - Reference exact Stitch screen IDs in each task.
 - Do not mark implementation task done without parity evidence.
+
+## Implementation Wave Status (2026-03-31)
+
+- Baseline shell/token refresh for web and mobile has started.
+- Current execution evidence and remaining parity work:
+  `docs/ux/uxui_refresh_implementation_wave_2026-03-31.md`.

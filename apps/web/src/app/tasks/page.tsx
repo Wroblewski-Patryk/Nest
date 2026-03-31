@@ -7,6 +7,7 @@ export default function TasksPage() {
     <WorkspaceShell
       title="Tasks + Lists"
       subtitle="Capture commitments, group them by context, and execute with clarity."
+      module="tasks"
     >
       <div className="stack">
         <MetricCard label="Open tasks" value="9" />
@@ -47,6 +48,32 @@ export default function TasksPage() {
               <span className="pill">{task.priority}</span>
             </li>
           ))}
+        </ul>
+      </Panel>
+
+      <Panel title="Today Timeline">
+        <ul className="list">
+          <li className="list-row">
+            <div>
+              <strong>Morning</strong>
+              <p>07:30 - Water + 10-minute meditation</p>
+            </div>
+            <span className="pill">settled</span>
+          </li>
+          <li className="list-row">
+            <div>
+              <strong>Now</strong>
+              <p>10:00 - Projekt &quot;Nest&quot; UI Design [G]</p>
+            </div>
+            <span className="pill state-success">active</span>
+          </li>
+          <li className="list-row">
+            <div>
+              <strong>Evening</strong>
+              <p>21:00 - Journal reflection checkpoint</p>
+            </div>
+            <span className="pill">planned</span>
+          </li>
         </ul>
       </Panel>
 

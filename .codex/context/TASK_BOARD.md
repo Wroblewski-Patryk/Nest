@@ -530,6 +530,70 @@ Last updated: 2026-03-21
       `docs/planning/v2-task-cards.md`.
     - Linked artifacts from V2 plan and project planning baseline.
 
+- [x] NEST-154 Add shared UX token + aura contract for web/mobile
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-153
+  - Done when:
+    - shared UI token contract is available to web and mobile clients,
+    - aura variants are defined and resolvable by module key,
+    - no backend API contract changes are required.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added shared token and aura runtime exports in
+      `packages/shared-types/src/client.js`.
+    - Added type contract declarations in
+      `packages/shared-types/src/index.d.ts`.
+    - Added mobile token adapter in
+      `apps/mobile/constants/uiTokens.ts`.
+
+- [x] NEST-155 Refresh web app shell to Stitch-inspired calm visual baseline
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-154
+  - Done when:
+    - web shell applies global aura background + module variants,
+    - typography/color hierarchy matches Mix Ideal direction,
+    - core web routes consume unified shell without module-level duplication.
+  - Done on: 2026-03-31
+  - Notes:
+    - Reworked global style foundation in `apps/web/src/app/globals.css`.
+    - Rebuilt `WorkspaceShell` with progress strip, module-nav pills, and
+      aura-variant wiring (`apps/web/src/components/workspace-shell.tsx`).
+    - Enabled module-aware shell usage across core routes under
+      `apps/web/src/app/*/page.tsx`.
+
+- [x] NEST-156 Refresh mobile shell + navigation to calm floating baseline
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-154
+  - Done when:
+    - mobile module shell uses shared aura/tokens and calm card grammar,
+    - bottom navigation uses floating organic style with central CTA emphasis,
+    - tabs keep existing IA/routes while inheriting refreshed visuals.
+  - Done on: 2026-03-31
+  - Notes:
+    - Rebuilt reusable module surface in
+      `apps/mobile/components/mvp/ModuleScreen.tsx`.
+    - Reworked tab shell with floating bottom bar and seedling CTA in
+      `apps/mobile/app/(tabs)/_layout.tsx`.
+    - Applied module-aware shell usage across core tab routes under
+      `apps/mobile/app/(tabs)/*.tsx`.
+
+- [ ] NEST-157 Execute web/mobile visual parity pass against Stitch screen set
+  - Status: IN_PROGRESS
+  - Owner: Review Agent
+  - Depends on: NEST-155, NEST-156
+  - Done when:
+    - each core module has parity review against mapped Stitch screen IDs,
+    - documented visual deviations are classified (`intentional|follow-up`),
+    - accessibility/readability checks are attached to parity evidence.
+  - Notes:
+    - Current implementation wave and scope captured in:
+      `docs/ux/uxui_refresh_implementation_wave_2026-03-31.md`.
+    - Visual baseline is in place; final module-level parity evidence remains
+      to be captured and reviewed.
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

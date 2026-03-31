@@ -1,32 +1,52 @@
 import React from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { SymbolView } from 'expo-symbols';
 import { Tabs } from 'expo-router';
+import { mobileUiTokens } from '@/constants/uiTokens';
 
-const TAB_COLOR = '#0f766e';
+function TabIcon({ name, color, size = 21 }: { name: string; color: string; size?: number }) {
+  return (
+    <SymbolView
+      name={{ ios: name, android: name, web: name }}
+      tintColor={color}
+      size={size}
+    />
+  );
+}
+
+function SeedlingButton({ onPress, accessibilityState }: { onPress?: () => void; accessibilityState?: { selected?: boolean } }) {
+  const focused = Boolean(accessibilityState?.selected);
+
+  return (
+    <Pressable onPress={onPress} style={styles.seedlingWrap}>
+      <View style={[styles.seedlingButton, focused && styles.seedlingButtonFocused]}>
+        <TabIcon name="eco" color={focused ? '#ffffff' : mobileUiTokens.ink} size={24} />
+      </View>
+    </Pressable>
+  );
+}
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: TAB_COLOR,
-        tabBarInactiveTintColor: '#64748b',
-        headerStyle: {
-          backgroundColor: '#f8fafc',
-        },
-        headerTitleStyle: {
-          fontWeight: '700',
-        },
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: styles.tabBar,
+        tabBarActiveTintColor: mobileUiTokens.accent,
+        tabBarInactiveTintColor: mobileUiTokens.muted,
+        tabBarItemStyle: styles.tabItem,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Tasks',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: 'checklist', android: 'checklist', web: 'checklist' }}
-              tintColor={color}
-              size={22}
+          tabBarIcon: ({ color }) => <TabIcon name="list_alt" color={color} />,
+          tabBarButton: (props) => (
+            <SeedlingButton
+              onPress={props.onPress}
+              accessibilityState={props.accessibilityState}
             />
           ),
         }}
@@ -35,80 +55,90 @@ export default function TabLayout() {
         name="habits"
         options={{
           title: 'Habits',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: 'figure.walk', android: 'directions_walk', web: 'directions_walk' }}
-              tintColor={color}
-              size={22}
-            />
-          ),
+          tabBarIcon: ({ color }) => <TabIcon name="checklist" color={color} />,
         }}
       />
       <Tabs.Screen
         name="goals"
         options={{
           title: 'Goals',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: 'target', android: 'flag', web: 'flag' }}
-              tintColor={color}
-              size={22}
-            />
-          ),
+          tabBarIcon: ({ color }) => <TabIcon name="flag" color={color} />,
         }}
       />
       <Tabs.Screen
         name="journal"
         options={{
           title: 'Journal',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: 'book.pages', android: 'menu_book', web: 'menu_book' }}
-              tintColor={color}
-              size={22}
-            />
-          ),
+          tabBarIcon: ({ color }) => <TabIcon name="menu_book" color={color} />,
         }}
       />
       <Tabs.Screen
         name="calendar"
         options={{
           title: 'Calendar',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: 'calendar', android: 'calendar_today', web: 'calendar_today' }}
-              tintColor={color}
-              size={22}
-            />
-          ),
+          tabBarIcon: ({ color }) => <TabIcon name="calendar_today" color={color} />,
         }}
       />
       <Tabs.Screen
         name="insights"
         options={{
           title: 'Insights',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: 'chart.line.uptrend.xyaxis', android: 'insights', web: 'insights' }}
-              tintColor={color}
-              size={22}
-            />
-          ),
+          tabBarIcon: ({ color }) => <TabIcon name="insights" color={color} />,
         }}
       />
       <Tabs.Screen
         name="billing"
         options={{
           title: 'Billing',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{ ios: 'creditcard', android: 'credit_card', web: 'credit_card' }}
-              tintColor={color}
-              size={22}
-            />
-          ),
+          tabBarIcon: ({ color }) => <TabIcon name="credit_card" color={color} />,
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    position: 'absolute',
+    left: 14,
+    right: 14,
+    bottom: 18,
+    height: 74,
+    borderRadius: 26,
+    borderTopWidth: 0,
+    backgroundColor: 'rgba(253,252,248,0.93)',
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    shadowColor: '#4B3F34',
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 10 },
+    shadowRadius: 18,
+    elevation: 10,
+  },
+  tabItem: {
+    height: 48,
+  },
+  seedlingWrap: {
+    top: -18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  seedlingButton: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: mobileUiTokens.accentSoft,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#4B3F34',
+    shadowOpacity: 0.18,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  seedlingButtonFocused: {
+    backgroundColor: mobileUiTokens.accent,
+  },
+});

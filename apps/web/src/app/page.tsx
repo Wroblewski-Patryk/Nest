@@ -9,6 +9,7 @@ export default function HomePage() {
     <WorkspaceShell
       title="Web MVP Control Center"
       subtitle="Desktop and mobile web shell for all core planning modules."
+      module="tasks"
     >
       <div className="stack">
         <MetricCard label="Modules online" value="7 / 7" />

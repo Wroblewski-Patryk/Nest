@@ -62,12 +62,14 @@ export default function BillingScreen() {
 
   return (
     <ModuleScreen
+      moduleKey={billingData.module}
       title="Billing"
       subtitle="Manage subscription state and inspect billing events."
       state={billingData.state}
       telemetry={telemetry}
       metrics={metrics}
       rows={rows}
+      intentProgress={0.58}
       quickActions={[
         { label: 'Start Trial', variant: 'primary' },
         { label: 'Manage Plan', variant: 'secondary' },

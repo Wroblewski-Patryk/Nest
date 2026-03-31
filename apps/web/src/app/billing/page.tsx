@@ -94,6 +94,7 @@ export default function BillingPage() {
     <WorkspaceShell
       title="Billing"
       subtitle="Manage subscription lifecycle and inspect billing event history."
+      module="billing"
     >
       <div className="stack">
         {metrics.map((metric) => (

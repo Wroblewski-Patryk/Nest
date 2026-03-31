@@ -122,6 +122,7 @@ export default function InsightsPage() {
     <WorkspaceShell
       title="Insights"
       subtitle="Track life-area balance and weekly behavioral trends across core modules."
+      module="insights"
     >
       <div className="stack">
         <MetricCard label="Balance score" value={`${activeBalance.meta.global_balance_score.toFixed(1)} / 100`} />
