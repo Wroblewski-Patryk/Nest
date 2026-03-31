@@ -825,8 +825,8 @@ Last updated: 2026-03-31
       `php artisan test --filter=Policy`.
   - Done on: 2026-03-31
 
-- [ ] NEST-165 Implement AI Agent account lifecycle and capability boundaries
-  - Status: BACKLOG
+- [x] NEST-165 Implement AI Agent account lifecycle and capability boundaries
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-164
   - Done when:
@@ -837,6 +837,35 @@ Last updated: 2026-03-31
   - Notes:
     - Product direction source:
       `docs/product/overview.md`.
+    - Added AI principal metadata on `users` table and model-level constants:
+      `apps/api/database/migrations/2026_03_31_234500_add_ai_agent_principal_columns_to_users_table.php`,
+      `apps/api/app/Models/User.php`.
+    - Added AI agent lifecycle + credential management endpoints:
+      `apps/api/app/Http/Controllers/Api/AiAgentAccountController.php`,
+      `apps/api/routes/api.php`.
+    - Extended scope middleware to enforce marker/principal boundaries for both
+      delegated and AI-agent credentials, with denied-attempt auditing:
+      `apps/api/app/Http/Middleware/EnforceDelegatedCredentialScope.php`,
+      `apps/api/database/migrations/2026_03_31_234600_create_actor_boundary_audits_table.php`,
+      `apps/api/app/Models/ActorBoundaryAudit.php`.
+    - Updated actor-context resolver to classify `ai_agent` mode from
+      credential markers or principal type:
+      `apps/api/app/Http/Middleware/ResolveActorContext.php`,
+      `apps/api/app/Auth/DelegatedCredentialScopeCatalog.php`.
+    - Added lifecycle and boundary regression coverage:
+      `apps/api/tests/Feature/AiAgentAccountApiTest.php`.
+    - Updated API contracts/docs for AI agent lifecycle:
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`,
+      `docs/engineering/api_contracts.md`,
+      `docs/modules/ai_agent_account_lifecycle_boundaries_v1.md`.
+    - Validation:
+      `php artisan test --filter=AiAgentAccountApiTest`,
+      `php artisan test --filter=DelegatedCredentialApiTest`,
+      `php artisan test --filter=AuthApiTest`,
+      `php artisan test --filter=IntegrationListTaskSyncApiTest`,
+      `php artisan test --filter=IntegrationMarketplaceApiTest`,
+      `php artisan route:list --path=api/v1/auth/ai-agents`.
+  - Done on: 2026-03-31
 
 - [ ] NEST-166 Deliver GUI+API access-control surface for AI integration management
   - Status: BACKLOG

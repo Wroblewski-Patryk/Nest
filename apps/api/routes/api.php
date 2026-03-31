@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AiActionProposalController;
+use App\Http\Controllers\Api\AiAgentAccountController;
 use App\Http\Controllers\Api\AiBriefingController;
 use App\Http\Controllers\Api\AiBriefingPreferenceController;
 use App\Http\Controllers\Api\AiContextGraphController;
@@ -63,6 +64,11 @@ Route::prefix('v1')->group(function (): void {
         Route::get('/auth/delegated-credentials', [DelegatedCredentialController::class, 'index']);
         Route::post('/auth/delegated-credentials', [DelegatedCredentialController::class, 'store']);
         Route::post('/auth/delegated-credentials/{credentialId}/revoke', [DelegatedCredentialController::class, 'revoke']);
+        Route::get('/auth/ai-agents', [AiAgentAccountController::class, 'index']);
+        Route::post('/auth/ai-agents', [AiAgentAccountController::class, 'store']);
+        Route::post('/auth/ai-agents/{agentId}/credentials', [AiAgentAccountController::class, 'issueCredential']);
+        Route::post('/auth/ai-agents/{agentId}/credentials/{credentialId}/revoke', [AiAgentAccountController::class, 'revokeCredential']);
+        Route::post('/auth/ai-agents/{agentId}/deactivate', [AiAgentAccountController::class, 'deactivate']);
         Route::get('/billing/subscription', [BillingSubscriptionController::class, 'show']);
         Route::get('/billing/events', [BillingEventController::class, 'index']);
         Route::post('/billing/subscription/start-trial', [BillingSubscriptionController::class, 'startTrial']);

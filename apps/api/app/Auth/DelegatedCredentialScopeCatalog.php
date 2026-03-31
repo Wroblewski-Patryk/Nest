@@ -10,6 +10,8 @@ final class DelegatedCredentialScopeCatalog
 {
     public const MARKER_SCOPE = 'delegated:access';
 
+    public const AI_AGENT_MARKER_SCOPE = 'ai_agent:access';
+
     /**
      * @var array<int, string>
      */
@@ -58,6 +60,29 @@ final class DelegatedCredentialScopeCatalog
         }
 
         return in_array(self::MARKER_SCOPE, $abilities, true);
+    }
+
+    public static function isAiAgentToken(?PersonalAccessToken $token): bool
+    {
+        $abilities = $token?->abilities;
+        if (! is_array($abilities)) {
+            return false;
+        }
+
+        return in_array(self::AI_AGENT_MARKER_SCOPE, $abilities, true);
+    }
+
+    public static function resolveTokenMode(?PersonalAccessToken $token): ?string
+    {
+        if (self::isDelegatedToken($token)) {
+            return 'delegated';
+        }
+
+        if (self::isAiAgentToken($token)) {
+            return 'ai_agent';
+        }
+
+        return null;
     }
 
     /**
@@ -117,4 +142,3 @@ final class DelegatedCredentialScopeCatalog
         };
     }
 }
-

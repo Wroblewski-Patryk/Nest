@@ -27,6 +27,12 @@ class ResolveActorContext
             && DelegatedCredentialScopeCatalog::isDelegatedToken($currentToken)
         ) {
             $actorType = ActorContext::DELEGATED_AGENT;
+        } elseif (
+            ($currentToken instanceof PersonalAccessToken
+                && DelegatedCredentialScopeCatalog::isAiAgentToken($currentToken))
+            || $user?->isAiAgentPrincipal()
+        ) {
+            $actorType = ActorContext::AI_AGENT;
         } else {
             $rawHeaderType = Str::lower((string) $request->header('X-Nest-Actor-Type', ''));
             if (

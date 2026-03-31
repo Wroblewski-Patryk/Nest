@@ -16,6 +16,14 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasUuids, Notifiable;
 
+    public const PRINCIPAL_HUMAN_USER = 'human_user';
+
+    public const PRINCIPAL_AI_AGENT = 'ai_agent';
+
+    public const AGENT_STATUS_ACTIVE = 'active';
+
+    public const AGENT_STATUS_REVOKED = 'revoked';
+
     public $incrementing = false;
 
     protected $keyType = 'string';
@@ -27,6 +35,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'tenant_id',
+        'principal_type',
+        'owner_user_id',
+        'agent_status',
         'name',
         'email',
         'password',
@@ -56,6 +67,16 @@ class User extends Authenticatable
             'password' => 'hashed',
             'settings' => 'array',
         ];
+    }
+
+    public function isAiAgentPrincipal(): bool
+    {
+        return $this->principal_type === self::PRINCIPAL_AI_AGENT;
+    }
+
+    public function isHumanPrincipal(): bool
+    {
+        return $this->principal_type === null || $this->principal_type === self::PRINCIPAL_HUMAN_USER;
     }
 
     /**

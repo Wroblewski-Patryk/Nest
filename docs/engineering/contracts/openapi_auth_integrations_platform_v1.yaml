@@ -176,6 +176,169 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /v1/auth/ai-agents:
+    get:
+      tags: [Auth]
+      summary: List AI agent principals for current user
+      operationId: listAiAgents
+      responses:
+        '200':
+          description: AI agent list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiAgentCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden for non-human principal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags: [Auth]
+      summary: Create AI agent principal
+      operationId: createAiAgent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AiAgentCreateRequest'
+      responses:
+        '201':
+          description: AI agent created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiAgentResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden for non-human principal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/auth/ai-agents/{agentId}/credentials:
+    post:
+      tags: [Auth]
+      summary: Issue AI agent credential
+      operationId: issueAiAgentCredential
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DelegatedCredentialIssueRequest'
+      responses:
+        '201':
+          description: AI agent credential issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiAgentCredentialIssueResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden for non-human principal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: AI agent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/auth/ai-agents/{agentId}/credentials/{credentialId}/revoke:
+    post:
+      tags: [Auth]
+      summary: Revoke AI agent credential
+      operationId: revokeAiAgentCredential
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: credentialId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: AI agent credential revoked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelegatedCredentialResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden for non-human principal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: AI agent credential not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/auth/ai-agents/{agentId}/deactivate:
+    post:
+      tags: [Auth]
+      summary: Deactivate AI agent principal
+      operationId: deactivateAiAgent
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: AI agent deactivated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AiAgentResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Forbidden for non-human principal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: AI agent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /v1/auth/oauth/{provider}/exchange:
     post:
       tags: [Auth]
@@ -1994,6 +2157,73 @@ components:
               type: array
               items:
                 type: string
+
+    AiAgentCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 120
+
+    AiAgentItem:
+      type: object
+      required: [id, name, email, agent_status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        agent_status:
+          type: string
+          enum: [active, revoked]
+        created_at:
+          type: [string, 'null']
+          format: date-time
+        last_used_at:
+          type: [string, 'null']
+          format: date-time
+
+    AiAgentResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/AiAgentItem'
+
+    AiAgentCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AiAgentItem'
+        meta:
+          type: object
+          required: [total]
+          properties:
+            total:
+              type: integer
+
+    AiAgentCredentialIssueResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [agent, credential, plain_text_token]
+          properties:
+            agent:
+              $ref: '#/components/schemas/AiAgentItem'
+            credential:
+              $ref: '#/components/schemas/DelegatedCredentialItem'
+            plain_text_token:
+              type: string
 
     MessageResponse:
       type: object

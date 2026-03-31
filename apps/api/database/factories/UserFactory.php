@@ -27,6 +27,9 @@ class UserFactory extends Factory
     {
         return [
             'tenant_id' => Tenant::factory(),
+            'principal_type' => User::PRINCIPAL_HUMAN_USER,
+            'owner_user_id' => null,
+            'agent_status' => null,
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),

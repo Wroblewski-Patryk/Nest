@@ -608,6 +608,16 @@ Last updated: 2026-03-31
   `apps/api/app/Http/Controllers/Api/DelegatedCredentialController.php`,
   `apps/api/database/migrations/2026_03_31_233500_add_revoked_at_to_personal_access_tokens_table.php`,
   `docs/modules/delegated_ai_api_credentials_v1.md`)
+- `NEST-165` completed: AI agent account lifecycle and boundary enforcement are
+  active with tenant-scoped AI principals, human-owner lifecycle endpoints,
+  AI-agent credential issuance/revoke/deactivate flows, and audited denial of
+  unauthorized cross-boundary access attempts (`boundary_mismatch`,
+  `route_not_allowed`, `missing_scope`, `ai_agent_revoked`) in
+  `actor_boundary_audits` (`apps/api/app/Http/Controllers/Api/AiAgentAccountController.php`,
+  `apps/api/database/migrations/2026_03_31_234500_add_ai_agent_principal_columns_to_users_table.php`,
+  `apps/api/database/migrations/2026_03_31_234600_create_actor_boundary_audits_table.php`,
+  `apps/api/app/Http/Middleware/EnforceDelegatedCredentialScope.php`,
+  `docs/modules/ai_agent_account_lifecycle_boundaries_v1.md`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for
@@ -663,7 +673,7 @@ Last updated: 2026-03-31
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: execute dual-actor AI-access foundation
-  (`NEST-165` to `NEST-166`) in parallel
+  (`NEST-166`) in parallel
   with ongoing V2 launch-window/live-evidence closures (`NEST-122`,
   `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`) and
   commercial/release continuation (`NEST-152` onward).

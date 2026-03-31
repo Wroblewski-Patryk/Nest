@@ -41,4 +41,7 @@ for backend and client integration.
 - Delegated AI credential lifecycle (`NEST-164`) is documented in:
   `docs/modules/delegated_ai_api_credentials_v1.md` and represented in
   `openapi_auth_integrations_platform_v1.yaml` auth path group.
+- AI agent principal lifecycle and boundary model (`NEST-165`) is documented
+  in `docs/modules/ai_agent_account_lifecycle_boundaries_v1.md` and represented
+  in `openapi_auth_integrations_platform_v1.yaml` auth path group.
 
