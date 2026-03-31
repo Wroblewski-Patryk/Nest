@@ -587,11 +587,15 @@ Last updated: 2026-03-31
   delivered with decision dashboard APIs, onboarding/pricing experiment hooks,
   and web/mobile growth-loop visibility in insights surfaces
   (`docs/modules/analytics_activation_retention_monetization_loops_v2.md`)
+- `NEST-151` completed: V2 production readiness review packet published with
+  perf/security/cost/ops gate matrix, explicit P1 owners/mitigations, and
+  documented NO-GO decision for GA pending risk closure
+  (`docs/operations/v2_production_readiness_review_2026-03-31.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: execute V2 commercial + release wave continuation
-  (`NEST-151` onward) while launch-window/live-evidence closure tasks
+  (`NEST-152` onward) while launch-window/live-evidence closure tasks
   (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`)
   remain tracked for non-dry-run operations.
 

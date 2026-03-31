@@ -223,7 +223,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - experiment hooks support onboarding and pricing tests,
     - decision dashboard exists for weekly product iterations.
 
-- [ ] NEST-151 Execute V2 production readiness review (perf/security/cost/ops)
+- [x] NEST-151 Execute V2 production readiness review (perf/security/cost/ops)
   - Depends on: NEST-134, NEST-139, NEST-144, NEST-148, NEST-150
   - Done when:
     - cross-functional readiness packet is complete,
