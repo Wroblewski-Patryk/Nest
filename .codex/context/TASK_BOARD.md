@@ -682,8 +682,8 @@ Last updated: 2026-03-31
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-03-31
 
-- [ ] NEST-161 Restore Tasks+Lists primary create/edit flows and remove blocked CTA states
-  - Status: BACKLOG
+- [x] NEST-161 Restore Tasks+Lists primary create/edit flows and remove blocked CTA states
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-160
   - Done when:
@@ -695,6 +695,20 @@ Last updated: 2026-03-31
   - Notes:
     - Source audit evidence:
       `docs/ux/nest_159_life_management_ux_critical_audit_2026-03-31.md`.
+    - Rebuilt Tasks+Lists screen with authenticated CRUD baseline for both
+      entities:
+      `apps/web/src/app/tasks/page.tsx`.
+    - Fixed task query contract mismatch (`per_page` now capped to 100 on
+      client calls) that previously caused blocked add-task flow.
+    - Added list edit/delete actions and task edit/delete actions with inline
+      validation and user feedback surfaces.
+    - Removed in-module login dependency from Tasks+Lists flow in favor of
+      dedicated auth-gated app entry.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-03-31
 
 - [ ] NEST-162 Deliver module-level create-flow parity for core life-management modules
   - Status: BACKLOG

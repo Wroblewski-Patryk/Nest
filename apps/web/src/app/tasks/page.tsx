@@ -4,7 +4,11 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
-import { clearAuthSession, getAuthToken, setAuthSession } from "@/lib/auth-session";
+import {
+  clearAuthSession,
+  getAuthToken,
+  setOnboardingRequired,
+} from "@/lib/auth-session";
 
 type AuthUser = {
   id: string;
@@ -27,9 +31,6 @@ type TaskItem = {
   priority: "low" | "medium" | "high" | "urgent";
   due_date: string | null;
 };
-
-const DEFAULT_LOGIN_EMAIL = "test@example.com";
-const DEFAULT_LOGIN_PASSWORD = "password";
 
 type ApiRequestInit = Omit<RequestInit, "body"> & {
   body?: Record<string, unknown>;
@@ -77,19 +78,22 @@ function getErrorMessage(error: unknown): string {
   return "Unexpected API error.";
 }
 
+function toDateInputValue(value: string | null): string {
+  if (!value) {
+    return "";
+  }
+
+  return value.slice(0, 10);
+}
+
 export default function TasksPage() {
   const router = useRouter();
   const [isBootstrapping, setIsBootstrapping] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
 
   const [lists, setLists] = useState<ListItem[]>([]);
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [selectedListId, setSelectedListId] = useState<string>("");
-
-  const [loginEmail, setLoginEmail] = useState(DEFAULT_LOGIN_EMAIL);
-  const [loginPassword, setLoginPassword] = useState(DEFAULT_LOGIN_PASSWORD);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const [newListName, setNewListName] = useState("");
   const [newListColor, setNewListColor] = useState("#789262");
@@ -100,8 +104,21 @@ export default function TasksPage() {
   const [newTaskDueDate, setNewTaskDueDate] = useState("");
   const [isCreatingTask, setIsCreatingTask] = useState(false);
 
+  const [editingListId, setEditingListId] = useState<string | null>(null);
+  const [editListName, setEditListName] = useState("");
+  const [editListColor, setEditListColor] = useState("#789262");
+  const [busyListId, setBusyListId] = useState<string | null>(null);
+
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editTaskTitle, setEditTaskTitle] = useState("");
+  const [editTaskPriority, setEditTaskPriority] = useState<TaskItem["priority"]>("medium");
+  const [editTaskDueDate, setEditTaskDueDate] = useState("");
+  const [busyTaskId, setBusyTaskId] = useState<string | null>(null);
+
   const [feedback, setFeedback] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const isAuthenticated = user !== null;
 
   const openTasksCount = useMemo(
     () => tasks.filter((task) => task.status !== "done" && task.status !== "canceled").length,
@@ -116,10 +133,20 @@ export default function TasksPage() {
     return tasks.filter((task) => task.list_id === selectedListId);
   }, [selectedListId, tasks]);
 
+  const handleUnauthorized = useCallback(() => {
+    clearAuthSession();
+    setOnboardingRequired(false);
+    setUser(null);
+    setLists([]);
+    setTasks([]);
+    setSelectedListId("");
+    router.replace("/auth");
+  }, [router]);
+
   const refreshWorkspaceData = useCallback(async () => {
     const [listsResponse, tasksResponse] = await Promise.all([
-      nestApiClient.getLists({ per_page: 200 }),
-      nestApiClient.getTasks({ per_page: 200, sort: "-created_at" }),
+      nestApiClient.getLists({ per_page: 100 }),
+      nestApiClient.getTasks({ per_page: 100, sort: "-created_at" }),
     ]);
 
     const normalizedLists = (listsResponse.data ?? []) as ListItem[];
@@ -138,64 +165,37 @@ export default function TasksPage() {
 
   const bootstrapSession = useCallback(async () => {
     const token = getAuthToken();
-
     if (!token) {
-      setIsAuthenticated(false);
-      setUser(null);
+      handleUnauthorized();
       setIsBootstrapping(false);
       return;
     }
 
     try {
       const meResponse = await apiRequest<{ data: AuthUser }>("/auth/me");
+      if (meResponse.data.onboarding_required) {
+        setOnboardingRequired(true);
+        router.replace("/onboarding");
+        return;
+      }
+
+      setOnboardingRequired(false);
       setUser(meResponse.data);
-      setIsAuthenticated(true);
       await refreshWorkspaceData();
-    } catch {
-      clearAuthSession();
-      setIsAuthenticated(false);
-      setUser(null);
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
     } finally {
       setIsBootstrapping(false);
     }
-  }, [refreshWorkspaceData]);
+  }, [handleUnauthorized, refreshWorkspaceData, router]);
 
   useEffect(() => {
     void bootstrapSession();
   }, [bootstrapSession]);
-
-  async function handleLogin(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsLoggingIn(true);
-    setErrorMessage("");
-    setFeedback("");
-
-    try {
-      const response = await apiRequest<{ data: { token: string; user: AuthUser } }>("/auth/login", {
-        method: "POST",
-        body: {
-          email: loginEmail.trim(),
-          password: loginPassword,
-        },
-      });
-
-      setAuthSession(response.data.token, Boolean(response.data.user.onboarding_required));
-      setUser(response.data.user);
-      setIsAuthenticated(true);
-      if (response.data.user.onboarding_required) {
-        router.replace("/onboarding");
-        return;
-      }
-      await refreshWorkspaceData();
-      setFeedback("Signed in. You can now add lists and tasks.");
-    } catch (error) {
-      setErrorMessage(getErrorMessage(error));
-      setIsAuthenticated(false);
-      setUser(null);
-    } finally {
-      setIsLoggingIn(false);
-    }
-  }
 
   async function handleLogout() {
     setErrorMessage("");
@@ -207,14 +207,7 @@ export default function TasksPage() {
       // no-op
     }
 
-    clearAuthSession();
-    setIsAuthenticated(false);
-    setUser(null);
-    setLists([]);
-    setTasks([]);
-    setSelectedListId("");
-    setFeedback("Signed out.");
-    router.replace("/auth");
+    handleUnauthorized();
   }
 
   async function handleCreateList(event: FormEvent<HTMLFormElement>) {
@@ -242,9 +235,8 @@ export default function TasksPage() {
       setFeedback("List created.");
     } catch (error) {
       if (getErrorStatus(error) === 401) {
-        clearAuthSession();
-        setIsAuthenticated(false);
-        setUser(null);
+        handleUnauthorized();
+        return;
       }
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -286,9 +278,8 @@ export default function TasksPage() {
       setFeedback("Task added.");
     } catch (error) {
       if (getErrorStatus(error) === 401) {
-        clearAuthSession();
-        setIsAuthenticated(false);
-        setUser(null);
+        handleUnauthorized();
+        return;
       }
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -296,7 +287,112 @@ export default function TasksPage() {
     }
   }
 
+  function startListEdit(list: ListItem) {
+    setEditingListId(list.id);
+    setEditListName(list.name);
+    setEditListColor(list.color);
+  }
+
+  async function saveListEdit(listId: string) {
+    if (!editListName.trim()) {
+      setErrorMessage("List name is required.");
+      return;
+    }
+
+    setBusyListId(listId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/lists/${listId}`, {
+        method: "PATCH",
+        body: {
+          name: editListName.trim(),
+          color: editListColor,
+        },
+      });
+      setEditingListId(null);
+      await refreshWorkspaceData();
+      setFeedback("List updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyListId(null);
+    }
+  }
+
+  async function deleteList(listId: string) {
+    if (!window.confirm("Delete this list and remove it from active planning view?")) {
+      return;
+    }
+
+    setBusyListId(listId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/lists/${listId}`, {
+        method: "DELETE",
+      });
+      if (selectedListId === listId) {
+        setSelectedListId("");
+      }
+      await refreshWorkspaceData();
+      setFeedback("List deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyListId(null);
+    }
+  }
+
+  function startTaskEdit(task: TaskItem) {
+    setEditingTaskId(task.id);
+    setEditTaskTitle(task.title);
+    setEditTaskPriority(task.priority);
+    setEditTaskDueDate(toDateInputValue(task.due_date));
+  }
+
+  async function saveTaskEdit(taskId: string) {
+    if (!editTaskTitle.trim()) {
+      setErrorMessage("Task title is required.");
+      return;
+    }
+
+    setBusyTaskId(taskId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/tasks/${taskId}`, {
+        method: "PATCH",
+        body: {
+          title: editTaskTitle.trim(),
+          priority: editTaskPriority,
+          due_date: editTaskDueDate.length > 0 ? editTaskDueDate : null,
+        },
+      });
+      setEditingTaskId(null);
+      await refreshWorkspaceData();
+      setFeedback("Task updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyTaskId(null);
+    }
+  }
+
   async function updateTaskStatus(taskId: string, status: TaskItem["status"]) {
+    setBusyTaskId(taskId);
     setErrorMessage("");
     setFeedback("");
 
@@ -310,71 +406,70 @@ export default function TasksPage() {
       setFeedback(status === "done" ? "Task marked as done." : "Task reopened.");
     } catch (error) {
       if (getErrorStatus(error) === 401) {
-        clearAuthSession();
-        setIsAuthenticated(false);
-        setUser(null);
+        handleUnauthorized();
+        return;
       }
       setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyTaskId(null);
+    }
+  }
+
+  async function deleteTask(taskId: string) {
+    if (!window.confirm("Delete this task?")) {
+      return;
+    }
+
+    setBusyTaskId(taskId);
+    setErrorMessage("");
+    setFeedback("");
+
+    try {
+      await apiRequest(`/tasks/${taskId}`, {
+        method: "DELETE",
+      });
+
+      await refreshWorkspaceData();
+      setFeedback("Task deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyTaskId(null);
     }
   }
 
   return (
     <WorkspaceShell
       title="Tasks + Lists"
-      subtitle="Capture commitments, sort them into lists, and execute with clarity."
+      subtitle="Capture commitments, edit quickly, and keep daily execution under control."
       module="tasks"
     >
       <div className="stack">
         <MetricCard label="Open tasks" value={String(openTasksCount)} />
         <MetricCard label="Lists active" value={String(lists.length)} />
-        <MetricCard label="Signed user" value={user?.name ?? "Not signed in"} />
+        <MetricCard label="Signed user" value={user?.name ?? "Loading..."} />
       </div>
 
       <Panel
         title="Session"
         actions={
-          isAuthenticated ? (
-            <button type="button" className="btn-secondary" onClick={handleLogout}>
-              Sign out
-            </button>
-          ) : null
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={handleLogout}
+            disabled={isBootstrapping}
+          >
+            Sign out
+          </button>
         }
       >
-        <div className="panel-content">
-          <p className="callout">
-            Use account credentials to work with real API data. Default seeded account:{" "}
-            <strong>test@example.com / password</strong>.
-          </p>
-          {!isAuthenticated ? (
-            <form className="form-grid" onSubmit={handleLogin}>
-              <label className="field">
-                <span>Email</span>
-                <input
-                  className="list-row"
-                  type="email"
-                  value={loginEmail}
-                  onChange={(event) => setLoginEmail(event.target.value)}
-                  required
-                />
-              </label>
-              <label className="field">
-                <span>Password</span>
-                <input
-                  className="list-row"
-                  type="password"
-                  value={loginPassword}
-                  onChange={(event) => setLoginPassword(event.target.value)}
-                  required
-                />
-              </label>
-              <button type="submit" className="btn-primary" disabled={isLoggingIn || isBootstrapping}>
-                {isLoggingIn ? "Signing in..." : "Sign in"}
-              </button>
-            </form>
-          ) : (
-            <p className="mono-note">Signed in as {user?.email}</p>
-          )}
-        </div>
+        <p className="callout">
+          Signed in as <strong>{user?.email ?? "..."}</strong>. This module now uses only authenticated CRUD flow.
+        </p>
       </Panel>
 
       <Panel title="Task Lists">
@@ -388,7 +483,7 @@ export default function TasksPage() {
                 value={newListName}
                 onChange={(event) => setNewListName(event.target.value)}
                 placeholder="Example: Home Ops"
-                disabled={!isAuthenticated || isBootstrapping}
+                disabled={!isAuthenticated || isCreatingList || isBootstrapping}
               />
             </label>
             <label className="field">
@@ -398,7 +493,7 @@ export default function TasksPage() {
                 type="color"
                 value={newListColor}
                 onChange={(event) => setNewListColor(event.target.value)}
-                disabled={!isAuthenticated || isBootstrapping}
+                disabled={!isAuthenticated || isCreatingList || isBootstrapping}
               />
             </label>
             <button
@@ -438,10 +533,73 @@ export default function TasksPage() {
             ) : (
               lists.map((list) => (
                 <li className="list-row" key={list.id}>
-                  <div className="row-inline">
-                    <span className="dot" style={{ backgroundColor: list.color }} />
-                    <strong>{list.name}</strong>
-                  </div>
+                  {editingListId === list.id ? (
+                    <div className="form-grid">
+                      <label className="field">
+                        <span>Name</span>
+                        <input
+                          className="list-row"
+                          type="text"
+                          value={editListName}
+                          onChange={(event) => setEditListName(event.target.value)}
+                          disabled={busyListId === list.id}
+                        />
+                      </label>
+                      <label className="field">
+                        <span>Color</span>
+                        <input
+                          className="list-row"
+                          type="color"
+                          value={editListColor}
+                          onChange={(event) => setEditListColor(event.target.value)}
+                          disabled={busyListId === list.id}
+                        />
+                      </label>
+                      <div className="row-inline">
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void saveListEdit(list.id)}
+                          disabled={busyListId === list.id}
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => setEditingListId(null)}
+                          disabled={busyListId === list.id}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="row-inline">
+                        <span className="dot" style={{ backgroundColor: list.color }} />
+                        <strong>{list.name}</strong>
+                      </div>
+                      <div className="row-inline">
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => startListEdit(list)}
+                          disabled={busyListId === list.id}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void deleteList(list.id)}
+                          disabled={busyListId === list.id}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </li>
               ))
             )}
@@ -460,7 +618,7 @@ export default function TasksPage() {
                 value={newTaskTitle}
                 onChange={(event) => setNewTaskTitle(event.target.value)}
                 placeholder="Example: Plan Thursday top 3"
-                disabled={!isAuthenticated || isBootstrapping}
+                disabled={!isAuthenticated || isCreatingTask || isBootstrapping}
               />
             </label>
 
@@ -470,7 +628,7 @@ export default function TasksPage() {
                 className="list-row"
                 value={newTaskPriority}
                 onChange={(event) => setNewTaskPriority(event.target.value as TaskItem["priority"])}
-                disabled={!isAuthenticated || isBootstrapping}
+                disabled={!isAuthenticated || isCreatingTask || isBootstrapping}
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -486,7 +644,7 @@ export default function TasksPage() {
                 type="date"
                 value={newTaskDueDate}
                 onChange={(event) => setNewTaskDueDate(event.target.value)}
-                disabled={!isAuthenticated || isBootstrapping}
+                disabled={!isAuthenticated || isCreatingTask || isBootstrapping}
               />
             </label>
 
@@ -507,28 +665,105 @@ export default function TasksPage() {
             ) : (
               selectedListTasks.map((task) => (
                 <li className="list-row" key={task.id}>
-                  <div>
-                    <strong>{task.title}</strong>
-                    <p>
-                      {task.priority} priority
-                      {task.due_date ? ` • due ${task.due_date.slice(0, 10)}` : ""}
-                    </p>
-                  </div>
-                  <div className="row-inline">
-                    <span className={`pill ${task.status === "done" ? "state-success" : ""}`}>
-                      {task.status}
-                    </span>
-                    <button
-                      type="button"
-                      className="btn-secondary"
-                      onClick={() =>
-                        updateTaskStatus(task.id, task.status === "done" ? "todo" : "done")
-                      }
-                      disabled={!isAuthenticated || isBootstrapping}
-                    >
-                      {task.status === "done" ? "Reopen" : "Mark done"}
-                    </button>
-                  </div>
+                  {editingTaskId === task.id ? (
+                    <div className="form-grid">
+                      <label className="field">
+                        <span>Title</span>
+                        <input
+                          className="list-row"
+                          type="text"
+                          value={editTaskTitle}
+                          onChange={(event) => setEditTaskTitle(event.target.value)}
+                          disabled={busyTaskId === task.id}
+                        />
+                      </label>
+                      <label className="field">
+                        <span>Priority</span>
+                        <select
+                          className="list-row"
+                          value={editTaskPriority}
+                          onChange={(event) =>
+                            setEditTaskPriority(event.target.value as TaskItem["priority"])
+                          }
+                          disabled={busyTaskId === task.id}
+                        >
+                          <option value="low">Low</option>
+                          <option value="medium">Medium</option>
+                          <option value="high">High</option>
+                          <option value="urgent">Urgent</option>
+                        </select>
+                      </label>
+                      <label className="field">
+                        <span>Due date</span>
+                        <input
+                          className="list-row"
+                          type="date"
+                          value={editTaskDueDate}
+                          onChange={(event) => setEditTaskDueDate(event.target.value)}
+                          disabled={busyTaskId === task.id}
+                        />
+                      </label>
+                      <div className="row-inline">
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void saveTaskEdit(task.id)}
+                          disabled={busyTaskId === task.id}
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => setEditingTaskId(null)}
+                          disabled={busyTaskId === task.id}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <strong>{task.title}</strong>
+                        <p>
+                          {task.priority} priority
+                          {task.due_date ? ` | due ${toDateInputValue(task.due_date)}` : ""}
+                        </p>
+                      </div>
+                      <div className="row-inline">
+                        <span className={`pill ${task.status === "done" ? "state-success" : ""}`}>
+                          {task.status}
+                        </span>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() =>
+                            void updateTaskStatus(task.id, task.status === "done" ? "todo" : "done")
+                          }
+                          disabled={busyTaskId === task.id || isBootstrapping}
+                        >
+                          {task.status === "done" ? "Reopen" : "Mark done"}
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => startTaskEdit(task)}
+                          disabled={busyTaskId === task.id || isBootstrapping}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void deleteTask(task.id)}
+                          disabled={busyTaskId === task.id || isBootstrapping}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </li>
               ))
             )}
