@@ -969,6 +969,89 @@ paths:
         '422':
           $ref: '#/components/responses/ValidationError'
 
+  /v1/integrations/marketplace/providers:
+    get:
+      tags: [Integrations]
+      summary: List integration marketplace providers
+      operationId: listIntegrationMarketplaceProviders
+      responses:
+        '200':
+          description: Provider catalog collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationMarketplaceProviderCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/integrations/marketplace/providers/{provider}/install:
+    post:
+      tags: [Integrations]
+      summary: Install provider from marketplace catalog
+      operationId: installIntegrationMarketplaceProvider
+      parameters:
+        - $ref: '#/components/parameters/Provider'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                install_metadata:
+                  type: object
+                  additionalProperties: true
+      responses:
+        '200':
+          description: Provider installed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationMarketplaceProviderResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/integrations/marketplace/providers/{provider}/uninstall:
+    post:
+      tags: [Integrations]
+      summary: Uninstall provider from marketplace catalog
+      operationId: uninstallIntegrationMarketplaceProvider
+      parameters:
+        - $ref: '#/components/parameters/Provider'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Provider uninstalled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationMarketplaceProviderResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /v1/integrations/marketplace/audits:
+    get:
+      tags: [Integrations]
+      summary: List integration marketplace install and uninstall audits
+      operationId: listIntegrationMarketplaceAudits
+      responses:
+        '200':
+          description: Marketplace audit collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationMarketplaceAuditCollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
   /v1/integrations/connections:
     get:
       tags: [Integrations]
@@ -1529,6 +1612,139 @@ components:
               type: array
               items:
                 type: string
+
+    IntegrationMarketplaceProviderResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/IntegrationMarketplaceProviderItem'
+
+    IntegrationMarketplaceProviderCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationMarketplaceProviderItem'
+        meta:
+          type: object
+          required: [total, installed]
+          properties:
+            total:
+              type: integer
+            installed:
+              type: integer
+
+    IntegrationMarketplaceAuditCollectionResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationMarketplaceAuditItem'
+        meta:
+          type: object
+          required: [total]
+          properties:
+            total:
+              type: integer
+
+    IntegrationMarketplaceProviderItem:
+      type: object
+      required:
+        [
+          provider,
+          display_name,
+          category,
+          description,
+          auth_type,
+          default_scopes,
+          supports_webhook,
+          sync_modes,
+          install_status,
+          is_installed,
+          connection,
+        ]
+      properties:
+        provider:
+          type: string
+        display_name:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        auth_type:
+          type: string
+        default_scopes:
+          type: array
+          items:
+            type: string
+        supports_webhook:
+          type: boolean
+        sync_modes:
+          type: array
+          items:
+            type: string
+        install_status:
+          type: string
+          enum: [not_installed, installed, uninstalled]
+        is_installed:
+          type: boolean
+        installed_at:
+          type: [string, 'null']
+          format: date-time
+        uninstalled_at:
+          type: [string, 'null']
+          format: date-time
+        connection:
+          type: object
+          required: [status, is_connected, scopes]
+          properties:
+            status:
+              type: string
+              enum: [not_connected, connected, revoked]
+            is_connected:
+              type: boolean
+            scopes:
+              type: array
+              items:
+                type: string
+            expires_at:
+              type: [string, 'null']
+              format: date-time
+            updated_at:
+              type: [string, 'null']
+              format: date-time
+
+    IntegrationMarketplaceAuditItem:
+      type: object
+      required: [id, provider, action, status, audit_payload]
+      properties:
+        id:
+          type: string
+          format: uuid
+        provider:
+          type: string
+        action:
+          type: string
+          enum: [install, uninstall]
+        status:
+          type: string
+        reason:
+          type: [string, 'null']
+        audit_payload:
+          type: object
+          additionalProperties: true
+        occurred_at:
+          type: [string, 'null']
+          format: date-time
+        created_at:
+          type: [string, 'null']
+          format: date-time
 
     InAppNotificationResponse:
       type: object

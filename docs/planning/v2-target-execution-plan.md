@@ -179,7 +179,7 @@ Execution of this plan starts after launch closure tasks are complete:
 
 ## Workstream E: Integrations and Automation V2 (`NEST-145..NEST-148`)
 
-- [ ] NEST-145 Implement integration marketplace framework
+- [x] NEST-145 Implement integration marketplace framework
   - Depends on: NEST-129
   - Done when:
     - providers can be discovered, connected, and managed from one catalog,

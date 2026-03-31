@@ -1023,14 +1023,37 @@ Last updated: 2026-03-31
       `docs/modules/ai_copilot_safety_evaluation_harness_v2.md`,
       `docs/operations/release_train_change_management.md`.
 
-- [ ] NEST-145 Implement integration marketplace framework
-  - Status: BACKLOG
+- [x] NEST-145 Implement integration marketplace framework
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-129
   - Done when:
     - providers can be discovered, connected, and managed from one catalog,
     - install/uninstall flows are auditable and reversible,
     - provider metadata/status are exposed in API contracts.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added integration marketplace APIs:
+      `GET /integrations/marketplace/providers`,
+      `POST /integrations/marketplace/providers/{provider}/install`,
+      `POST /integrations/marketplace/providers/{provider}/uninstall`,
+      `GET /integrations/marketplace/audits`.
+    - Added marketplace lifecycle models and persistence:
+      `integration_marketplace_installs`,
+      `integration_marketplace_audits`,
+      `apps/api/app/Models/IntegrationMarketplaceInstall.php`,
+      `apps/api/app/Models/IntegrationMarketplaceAudit.php`.
+    - Implemented provider catalog lifecycle service:
+      `apps/api/app/Integrations/Services/IntegrationMarketplaceService.php`.
+    - Added API regression suite:
+      `apps/api/tests/Feature/IntegrationMarketplaceApiTest.php`.
+    - Updated shared client/types and OpenAPI contract:
+      `packages/shared-types/src/client.js`,
+      `packages/shared-types/src/client.d.ts`,
+      `packages/shared-types/src/index.d.ts`,
+      `docs/engineering/contracts/openapi_auth_integrations_platform_v1.yaml`.
+    - Added module documentation:
+      `docs/modules/integration_marketplace_framework_v2.md`.
 
 - [ ] NEST-146 Add next-wave providers based on demand scoring
   - Status: BACKLOG

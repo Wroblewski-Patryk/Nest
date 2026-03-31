@@ -291,6 +291,20 @@ export function createNestApiClient(options) {
         method: "POST",
         body: { provider },
       }),
+    getIntegrationMarketplaceProviders: () =>
+      request("/integrations/marketplace/providers"),
+    installIntegrationMarketplaceProvider: (provider, payload = {}) =>
+      request(`/integrations/marketplace/providers/${provider}/install`, {
+        method: "POST",
+        body: payload,
+      }),
+    uninstallIntegrationMarketplaceProvider: (provider, payload = {}) =>
+      request(`/integrations/marketplace/providers/${provider}/uninstall`, {
+        method: "POST",
+        body: payload,
+      }),
+    getIntegrationMarketplaceAudits: (query = {}) =>
+      request("/integrations/marketplace/audits", { query }),
     getInAppNotifications: (query = {}) => request("/notifications/in-app", { query }),
     markInAppNotificationRead: (notificationId) =>
       request(`/notifications/in-app/${notificationId}/read`, {

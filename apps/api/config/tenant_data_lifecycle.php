@@ -23,6 +23,16 @@ return [
             'retention_days' => 90,
         ],
         [
+            'table' => 'integration_marketplace_audits',
+            'timestamp_column' => 'occurred_at',
+            'retention_days' => 180,
+        ],
+        [
+            'table' => 'integration_marketplace_installs',
+            'timestamp_column' => 'updated_at',
+            'retention_days' => 3650,
+        ],
+        [
             'table' => 'mobile_push_deliveries',
             'timestamp_column' => 'delivered_at',
             'retention_days' => 30,
@@ -72,6 +82,8 @@ return [
         'notification_preferences',
         'in_app_notifications',
         'integration_sync_conflicts',
+        'integration_marketplace_audits',
+        'integration_marketplace_installs',
         'integration_sync_audits',
         'integration_sync_failures',
         'sync_mappings',

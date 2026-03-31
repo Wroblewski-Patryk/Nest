@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\Api\AiRecommendationFeedbackController;
-use App\Http\Controllers\Api\AiContextGraphController;
-use App\Http\Controllers\Api\AiCopilotConversationController;
 use App\Http\Controllers\Api\AiActionProposalController;
 use App\Http\Controllers\Api\AiBriefingController;
 use App\Http\Controllers\Api\AiBriefingPreferenceController;
+use App\Http\Controllers\Api\AiContextGraphController;
+use App\Http\Controllers\Api\AiCopilotConversationController;
+use App\Http\Controllers\Api\AiRecommendationFeedbackController;
 use App\Http\Controllers\Api\AiWeeklyPlanController;
 use App\Http\Controllers\Api\AnalyticsIngestionController;
 use App\Http\Controllers\Api\AuthController;
@@ -19,12 +19,13 @@ use App\Http\Controllers\Api\CollaborationInviteController;
 use App\Http\Controllers\Api\CollaborationSpaceController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\HabitController;
+use App\Http\Controllers\Api\InAppNotificationController;
 use App\Http\Controllers\Api\InsightsTrendController;
 use App\Http\Controllers\Api\IntegrationConflictController;
 use App\Http\Controllers\Api\IntegrationConnectionController;
+use App\Http\Controllers\Api\IntegrationMarketplaceController;
 use App\Http\Controllers\Api\IntegrationSyncController;
 use App\Http\Controllers\Api\IntegrationSyncReplayController;
-use App\Http\Controllers\Api\InAppNotificationController;
 use App\Http\Controllers\Api\JournalEntryController;
 use App\Http\Controllers\Api\LifeAreaBalanceScoreController;
 use App\Http\Controllers\Api\LifeAreaController;
@@ -169,6 +170,10 @@ Route::prefix('v1')->group(function (): void {
         Route::post('/integrations/list-task-sync', [IntegrationSyncController::class, 'syncListsAndTasks']);
         Route::post('/integrations/calendar-sync', [IntegrationSyncController::class, 'syncCalendar']);
         Route::post('/integrations/journal-sync', [IntegrationSyncController::class, 'syncJournal']);
+        Route::get('/integrations/marketplace/providers', [IntegrationMarketplaceController::class, 'index']);
+        Route::post('/integrations/marketplace/providers/{provider}/install', [IntegrationMarketplaceController::class, 'install']);
+        Route::post('/integrations/marketplace/providers/{provider}/uninstall', [IntegrationMarketplaceController::class, 'uninstall']);
+        Route::get('/integrations/marketplace/audits', [IntegrationMarketplaceController::class, 'audits']);
         Route::get('/integrations/connections', [IntegrationConnectionController::class, 'index']);
         Route::put('/integrations/connections/{provider}', [IntegrationConnectionController::class, 'upsert']);
         Route::delete('/integrations/connections/{provider}', [IntegrationConnectionController::class, 'revoke']);

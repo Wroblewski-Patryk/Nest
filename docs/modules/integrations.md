@@ -43,6 +43,15 @@ Current status:
   with tenant/user-scoped connect, reconnect, and revoke flows.
   - Web and mobile screens show granted scopes and least-privilege warnings
     when extra or missing permissions are detected.
+- Integration marketplace catalog management is active via:
+  - `GET /api/v1/integrations/marketplace/providers`
+  - `POST /api/v1/integrations/marketplace/providers/{provider}/install`
+  - `POST /api/v1/integrations/marketplace/providers/{provider}/uninstall`
+  - `GET /api/v1/integrations/marketplace/audits`
+  with provider metadata/status exposure and auditable reversible
+  install/uninstall lifecycle.
+  - Detailed contract:
+    `docs/modules/integration_marketplace_framework_v2.md`.
 
 ## Integration Data Model
 

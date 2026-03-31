@@ -564,11 +564,15 @@ Last updated: 2026-03-31
   deterministic policy/hallucination/action-safety scorecard command and
   release-train threshold gate enforcement
   (`docs/modules/ai_copilot_safety_evaluation_harness_v2.md`)
+- `NEST-145` completed: integration marketplace framework delivered with
+  provider catalog discovery, auditable reversible install/uninstall lifecycle,
+  and exposed metadata/status contracts
+  (`docs/modules/integration_marketplace_framework_v2.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: execute V2 integrations wave continuation
-  (`NEST-145` onward) while launch-window/live-evidence closure tasks
+  (`NEST-146` onward) while launch-window/live-evidence closure tasks
   (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`)
   remain tracked for non-dry-run operations.
 

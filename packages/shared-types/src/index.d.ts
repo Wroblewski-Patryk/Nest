@@ -197,6 +197,39 @@ export type IntegrationConnectionItem = {
   updated_at: string | null;
 };
 
+export type IntegrationMarketplaceProviderItem = {
+  provider: string;
+  display_name: string;
+  category: string;
+  description: string;
+  auth_type: string;
+  default_scopes: string[];
+  supports_webhook: boolean;
+  sync_modes: string[];
+  install_status: "not_installed" | "installed" | "uninstalled";
+  is_installed: boolean;
+  installed_at: string | null;
+  uninstalled_at: string | null;
+  connection: {
+    status: "not_connected" | "connected" | "revoked";
+    is_connected: boolean;
+    scopes: string[];
+    expires_at: string | null;
+    updated_at: string | null;
+  };
+};
+
+export type IntegrationMarketplaceAuditItem = {
+  id: string;
+  provider: string;
+  action: "install" | "uninstall";
+  status: string;
+  reason: string | null;
+  audit_payload: Record<string, unknown>;
+  occurred_at: string | null;
+  created_at: string | null;
+};
+
 export type InAppNotificationItem = {
   id: string;
   event_type: string;
@@ -751,6 +784,24 @@ export type NestApiClient = {
   }): Promise<{
     data: NotificationChannelDeliveryItem[];
     meta: { total: number; per_page: number };
+  }>;
+  getIntegrationMarketplaceProviders(): Promise<{
+    data: IntegrationMarketplaceProviderItem[];
+    meta: { total: number; installed: number };
+  }>;
+  installIntegrationMarketplaceProvider(
+    provider: "trello" | "google_tasks" | "todoist" | "google_calendar" | "obsidian",
+    payload?: { install_metadata?: Record<string, unknown> }
+  ): Promise<{ data: IntegrationMarketplaceProviderItem }>;
+  uninstallIntegrationMarketplaceProvider(
+    provider: "trello" | "google_tasks" | "todoist" | "google_calendar" | "obsidian",
+    payload?: { reason?: string | null }
+  ): Promise<{ data: IntegrationMarketplaceProviderItem }>;
+  getIntegrationMarketplaceAudits(query?: {
+    per_page?: number;
+  }): Promise<{
+    data: IntegrationMarketplaceAuditItem[];
+    meta: { total: number };
   }>;
   getIntegrationConnections(): Promise<{ data: IntegrationConnectionItem[] }>;
   upsertIntegrationConnection(
