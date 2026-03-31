@@ -48,6 +48,11 @@ export function saveOfflineQueue(queue: MobileOfflineQueueItem[]): void {
 
 export function enqueueOfflineAction(action: OfflineAction): MobileOfflineQueueItem[] {
   const queue = readFromStorage();
+  const duplicatePending = queue.some((item) => item.action === action && item.status === 'pending');
+  if (duplicatePending) {
+    return queue;
+  }
+
   const next = [
     ...queue,
     {

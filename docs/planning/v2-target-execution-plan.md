@@ -75,7 +75,7 @@ Execution of this plan starts after launch closure tasks are complete:
     - retry/backoff/jitter rules are deterministic,
     - user can still force manual sync and inspect recent outcome.
 
-- [ ] NEST-131 Add durable local sync scheduler for web/mobile
+- [x] NEST-131 Add durable local sync scheduler for web/mobile
   - Depends on: NEST-130
   - Done when:
     - scheduler survives app restarts and transient network failures,

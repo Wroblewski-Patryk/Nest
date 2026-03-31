@@ -2,6 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { nestApiClient } from "@/lib/api-client";
+import {
+  evaluateOfflineSyncSchedulerHealth,
+  loadOfflineSyncSchedulerState,
+  saveOfflineSyncSchedulerState,
+  type OfflineSyncSchedulerState,
+} from "@/lib/offline-sync-scheduler";
 
 type OfflineAction = "sync_list_tasks" | "sync_calendar" | "sync_journal";
 type QueueStatus = "pending" | "synced" | "failed";
@@ -74,11 +80,27 @@ export function OfflineSyncCard() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [detail, setDetail] = useState("Queue offline changes and run manual force sync.");
   const [isSyncing, setIsSyncing] = useState(false);
-  const [autoSyncEnabled, setAutoSyncEnabled] = useState(true);
+  const [scheduler, setScheduler] = useState<OfflineSyncSchedulerState>(() =>
+    loadOfflineSyncSchedulerState()
+  );
+
+  const autoSyncEnabled = scheduler.auto_sync_enabled;
 
   useEffect(() => {
     setQueue(loadQueue());
+    setScheduler(loadOfflineSyncSchedulerState());
   }, []);
+
+  const updateScheduler = useCallback(
+    (updater: (previous: OfflineSyncSchedulerState) => OfflineSyncSchedulerState) => {
+      setScheduler((previous) => {
+        const next = updater(previous);
+        saveOfflineSyncSchedulerState(next);
+        return next;
+      });
+    },
+    []
+  );
 
   const pendingCount = useMemo(
     () => queue.filter((item) => item.status === "pending").length,
@@ -86,6 +108,14 @@ export function OfflineSyncCard() {
   );
 
   const enqueue = (action: OfflineAction) => {
+    const duplicatePending = queue.some(
+      (item) => item.action === action && item.status === "pending"
+    );
+    if (duplicatePending) {
+      setDetail(`Skipped duplicate pending job for ${action}.`);
+      return;
+    }
+
     const next: QueueItem[] = [
       ...queue,
       {
@@ -107,7 +137,16 @@ export function OfflineSyncCard() {
         source: "manual",
       }
     ) => {
+      const runStartedAt = new Date().toISOString();
+      let hadFailure = false;
+      let hadSuccess = false;
+      let lastError = "";
+
       setIsSyncing(true);
+      updateScheduler((previous) => ({
+        ...previous,
+        last_run_at: runStartedAt,
+      }));
       const nextQueue = [...queueSource].sort((a, b) => a.created_at.localeCompare(b.created_at));
 
       try {
@@ -129,6 +168,7 @@ export function OfflineSyncCard() {
             delete item.last_error;
             delete item.retry_count;
             delete item.next_retry_at;
+            hadSuccess = true;
             setDetail(`Synced ${item.action} from ${item.created_at}.`);
           } catch (error) {
             const status =
@@ -144,6 +184,8 @@ export function OfflineSyncCard() {
             item.retry_count = retryCount;
             item.next_retry_at = new Date(Date.now() + retryDelaySeconds * 1000).toISOString();
             item.last_error = `HTTP ${status}`;
+            hadFailure = true;
+            lastError = `HTTP ${status}`;
             setDetail(
               `${options.source === "auto" ? "Auto" : "Force"} sync error at ${item.action} (HTTP ${status}); retry in ${retryDelaySeconds}s.`
             );
@@ -152,13 +194,26 @@ export function OfflineSyncCard() {
             }
           }
         }
-      } finally {
-        saveQueue(nextQueue);
-        setQueue(nextQueue);
-        setIsSyncing(false);
-      }
-    },
-    [queue]
+    } finally {
+      saveQueue(nextQueue);
+      setQueue(nextQueue);
+      const health = evaluateOfflineSyncSchedulerHealth(nextQueue);
+      updateScheduler((previous) => ({
+        ...previous,
+        ...health,
+        last_run_at: runStartedAt,
+        last_success_at: hadSuccess ? new Date().toISOString() : previous.last_success_at,
+        consecutive_failures: hadFailure
+          ? previous.consecutive_failures + 1
+          : hadSuccess
+            ? 0
+            : previous.consecutive_failures,
+        last_error: hadFailure ? lastError : undefined,
+      }));
+      setIsSyncing(false);
+    }
+  },
+    [queue, updateScheduler]
   );
 
   const retrySync = useCallback(async () => {
@@ -240,15 +295,24 @@ export function OfflineSyncCard() {
         <button
           type="button"
           className="btn-secondary"
-          onClick={() => setAutoSyncEnabled((value) => !value)}
+          onClick={() =>
+            updateScheduler((previous) => ({
+              ...previous,
+              auto_sync_enabled: !previous.auto_sync_enabled,
+            }))
+          }
           disabled={isSyncing}
         >
           {autoSyncEnabled ? "Pause Auto Sync" : "Resume Auto Sync"}
         </button>
       </div>
       <p className="mono-note">
-        Pending: {pendingCount} | Total: {queue.length} | Auto: {autoSyncEnabled ? "on" : "off"}
+        Pending: {pendingCount} | Total: {queue.length} | Auto: {autoSyncEnabled ? "on" : "off"} |
+        Lag: {scheduler.scheduler_lag_seconds}s
       </p>
+      {scheduler.stuck_detected ? (
+        <p className="mono-note">Scheduler alert: stuck queue ({scheduler.stuck_reason ?? "unknown"}).</p>
+      ) : null}
     </div>
   );
 }

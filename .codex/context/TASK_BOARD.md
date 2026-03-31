@@ -620,14 +620,22 @@ Last updated: 2026-03-21
     - Implementation and validation documented in:
       `docs/modules/background_auto_sync_adaptive_retry_v2.md`.
 
-- [ ] NEST-131 Add durable local sync scheduler for web/mobile
-  - Status: BACKLOG
+- [x] NEST-131 Add durable local sync scheduler for web/mobile
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-130
   - Done when:
     - scheduler survives app restarts and transient network failures,
     - sync jobs are deduplicated and safely persisted,
     - monitoring includes scheduler lag and stuck-job detection.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added persisted scheduler state stores on web/mobile with restart-safe
+      auto-sync state and run metadata.
+    - Added queue enqueue deduplication for pending action jobs.
+    - Added scheduler lag and stuck-job detection signals surfaced in client UI.
+    - Implementation and verification documented in:
+      `docs/modules/durable_local_sync_scheduler_v2.md`.
 
 - [ ] NEST-132 Implement deterministic merge policy for offline conflicts (V2)
   - Status: BACKLOG

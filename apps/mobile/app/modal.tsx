@@ -8,6 +8,12 @@ import { Text, View } from '@/components/Themed';
 import { nestApiClient } from '@/constants/apiClient';
 import { Pressable } from 'react-native';
 import { enqueueOfflineAction, loadOfflineQueue, saveOfflineQueue, type MobileOfflineQueueItem } from '@/constants/offlineQueue';
+import {
+  evaluateOfflineSyncSchedulerHealth,
+  loadOfflineSyncSchedulerState,
+  saveOfflineSyncSchedulerState,
+  type MobileOfflineSyncSchedulerState,
+} from '@/constants/offlineSyncScheduler';
 
 const AUTO_SYNC_INTERVAL_MS = 15000;
 const BASE_RETRY_SECONDS = 15;
@@ -46,7 +52,11 @@ export default function ModalScreen() {
   const [queue, setQueue] = useState<MobileOfflineQueueItem[]>([]);
   const [detail, setDetail] = useState('Queue offline changes and run manual force sync.');
   const [isSyncing, setIsSyncing] = useState(false);
-  const [autoSyncEnabled, setAutoSyncEnabled] = useState(true);
+  const [scheduler, setScheduler] = useState<MobileOfflineSyncSchedulerState>(() =>
+    loadOfflineSyncSchedulerState()
+  );
+
+  const autoSyncEnabled = scheduler.auto_sync_enabled;
 
   useEffect(() => {
     nestApiClient
@@ -59,9 +69,29 @@ export default function ModalScreen() {
       });
 
     setQueue(loadOfflineQueue());
+    setScheduler(loadOfflineSyncSchedulerState());
   }, []);
 
+  const updateScheduler = useCallback(
+    (updater: (previous: MobileOfflineSyncSchedulerState) => MobileOfflineSyncSchedulerState) => {
+      setScheduler((previous) => {
+        const next = updater(previous);
+        saveOfflineSyncSchedulerState(next);
+        return next;
+      });
+    },
+    []
+  );
+
   const enqueue = (action: 'sync_list_tasks' | 'sync_calendar' | 'sync_journal') => {
+    const duplicatePending = queue.some(
+      (item) => item.action === action && item.status === 'pending'
+    );
+    if (duplicatePending) {
+      setDetail(`Skipped duplicate pending job for ${action}.`);
+      return;
+    }
+
     setQueue(enqueueOfflineAction(action));
   };
 
@@ -73,7 +103,16 @@ export default function ModalScreen() {
         source: 'manual',
       }
     ) => {
+      const runStartedAt = new Date().toISOString();
+      let hadFailure = false;
+      let hadSuccess = false;
+      let lastError = '';
+
       setIsSyncing(true);
+      updateScheduler((previous) => ({
+        ...previous,
+        last_run_at: runStartedAt,
+      }));
       const nextQueue = [...queueSource].sort((a, b) => a.created_at.localeCompare(b.created_at));
 
       try {
@@ -88,6 +127,7 @@ export default function ModalScreen() {
             delete item.last_error;
             delete item.retry_count;
             delete item.next_retry_at;
+            hadSuccess = true;
             setDetail(`Synced ${item.action} from ${item.created_at}.`);
           } catch (error) {
             const status =
@@ -103,6 +143,8 @@ export default function ModalScreen() {
             item.retry_count = retryCount;
             item.next_retry_at = new Date(Date.now() + retryDelaySeconds * 1000).toISOString();
             item.last_error = `HTTP ${status}`;
+            hadFailure = true;
+            lastError = `HTTP ${status}`;
             setDetail(
               `${options.source === 'auto' ? 'Auto' : 'Force'} sync error at ${item.action} (HTTP ${status}); retry in ${retryDelaySeconds}s.`
             );
@@ -114,10 +156,23 @@ export default function ModalScreen() {
       } finally {
         saveOfflineQueue(nextQueue);
         setQueue(nextQueue);
+        const health = evaluateOfflineSyncSchedulerHealth(nextQueue);
+        updateScheduler((previous) => ({
+          ...previous,
+          ...health,
+          last_run_at: runStartedAt,
+          last_success_at: hadSuccess ? new Date().toISOString() : previous.last_success_at,
+          consecutive_failures: hadFailure
+            ? previous.consecutive_failures + 1
+            : hadSuccess
+              ? 0
+              : previous.consecutive_failures,
+          last_error: hadFailure ? lastError : undefined,
+        }));
         setIsSyncing(false);
       }
     },
-    [queue]
+    [queue, updateScheduler]
   );
 
   const retrySync = useCallback(async () => {
@@ -222,12 +277,22 @@ export default function ModalScreen() {
       </Pressable>
       <Pressable
         style={styles.languageButton}
-        onPress={() => setAutoSyncEnabled((value) => !value)}
+        onPress={() =>
+          updateScheduler((previous) => ({
+            ...previous,
+            auto_sync_enabled: !previous.auto_sync_enabled,
+          }))
+        }
         disabled={isSyncing}
       >
         <Text style={styles.languageButtonText}>{autoSyncEnabled ? 'Pause Auto Sync' : 'Resume Auto Sync'}</Text>
       </Pressable>
-      <Text style={styles.description}>Pending: {pending} | Total: {queue.length} | Auto: {autoSyncEnabled ? 'on' : 'off'}</Text>
+      <Text style={styles.description}>
+        Pending: {pending} | Total: {queue.length} | Auto: {autoSyncEnabled ? 'on' : 'off'} | Lag: {scheduler.scheduler_lag_seconds}s
+      </Text>
+      {scheduler.stuck_detected ? (
+        <Text style={styles.description}>Scheduler alert: stuck queue ({scheduler.stuck_reason ?? 'unknown'}).</Text>
+      ) : null}
       <EditScreenInfo path="app/modal.tsx" />
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
