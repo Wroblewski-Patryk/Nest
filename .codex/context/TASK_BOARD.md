@@ -597,6 +597,36 @@ Last updated: 2026-03-31
     - Published parity review and classification report:
       `docs/ux/nest_157_visual_parity_pass_2026-03-31.md`.
 
+- [x] NEST-158 Deliver usable web Tasks+Lists flow and module IA split baseline
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-157
+  - Done when:
+    - web Tasks+Lists surface supports real login-backed CRUD baseline for lists
+      and tasks (including status update actions),
+    - shell/module navigation removes misleading readiness-state badges and
+      reflects separated module IA (`tasks+lists`, `habits`, `routines`,
+      `goals`, `targets`, `calendar`, `journal`),
+    - non-functional placeholder CTA controls are removed from refreshed web
+      surfaces.
+  - Done on: 2026-03-31
+  - Notes:
+    - Added web token session storage + authenticated API client wiring:
+      `apps/web/src/lib/auth-session.ts`,
+      `apps/web/src/lib/api-client.ts`.
+    - Replaced static tasks snapshot screen with login-backed and CRUD-capable
+      Tasks+Lists flow:
+      `apps/web/src/app/tasks/page.tsx`.
+    - Reorganized module IA/navigation and removed tab-level readiness labels:
+      `apps/web/src/lib/mvp-snapshot.ts`,
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/app/page.tsx`.
+    - Added separated module routes for routines and targets:
+      `apps/web/src/app/routines/page.tsx`,
+      `apps/web/src/app/targets/page.tsx`.
+    - Removed non-functional calendar placeholder command buttons:
+      `apps/web/src/app/calendar/page.tsx`.
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

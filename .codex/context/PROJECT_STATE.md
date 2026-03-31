@@ -550,6 +550,12 @@ Last updated: 2026-03-31
   screen set executed with capture artifacts, deviation classification
   (`intentional|follow-up`), and attached readability/accessibility checks
   (`docs/ux/nest_157_visual_parity_pass_2026-03-31.md`)
+- `NEST-158` completed: web Tasks+Lists usability remediation delivered with
+  login-backed list/task CRUD baseline, split module IA (`habits` vs `routines`,
+  `goals` vs `targets`), and removal of misleading/non-functional UI controls
+  (`apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/lib/auth-session.ts`,
+  `apps/web/src/components/workspace-shell.tsx`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

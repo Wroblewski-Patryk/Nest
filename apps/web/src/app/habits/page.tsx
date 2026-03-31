@@ -4,13 +4,13 @@ import { habitsSnapshot } from "@/lib/mvp-snapshot";
 export default function HabitsPage() {
   return (
     <WorkspaceShell
-      title="Habits + Routines"
-      subtitle="Track small consistent actions and package them into repeatable routines."
+      title="Habits"
+      subtitle="Track small recurring actions that keep your day stable."
       module="habits"
     >
       <div className="stack">
         <MetricCard label="Habits tracked" value={String(habitsSnapshot.habits.length)} />
-        <MetricCard label="Active routines" value={String(habitsSnapshot.routines.length)} />
+        <MetricCard label="Logged this week" value="12" />
         <MetricCard label="Longest streak" value="9 days" />
       </div>
 
@@ -28,18 +28,11 @@ export default function HabitsPage() {
         </ul>
       </Panel>
 
-      <Panel title="Routine Blocks">
-        <ul className="list">
-          {habitsSnapshot.routines.map((routine) => (
-            <li className="list-row" key={routine.title}>
-              <div>
-                <strong>{routine.title}</strong>
-                <p>{routine.steps} steps</p>
-              </div>
-              <span className="pill">{routine.duration}</span>
-            </li>
-          ))}
-        </ul>
+      <Panel title="Module Link">
+        <p className="callout">
+          Routines now live in a separate module so habits and ritual flows are not mixed in one
+          list.
+        </p>
       </Panel>
     </WorkspaceShell>
   );

@@ -33,24 +33,15 @@ export default function CalendarPage() {
 
       <Panel title="Planning Rule">
         <p className="callout">
-          Every event can stay internal or reference an existing module entity.
-          This screen mirrors backend support for linked task, goal, or routine
-          items.
+          Calendar remains a separate module and should aggregate time-bound tasks, habits, and
+          routines in one timeline.
         </p>
       </Panel>
 
-      <Panel
-        title="Calendar Commands"
-        actions={(
-          <>
-            <button type="button" className="btn-primary">Add Event</button>
-            <button type="button" className="btn-secondary">Force Sync</button>
-          </>
-        )}
-      >
+      <Panel title="Calendar Commands">
         <p className="callout">
-          Use force sync when provider changes should be pulled immediately
-          before resolving conflict queue items.
+          Calendar command actions are being reworked for direct CRUD behavior, so non-functional
+          placeholder buttons were removed from this view.
         </p>
       </Panel>
 

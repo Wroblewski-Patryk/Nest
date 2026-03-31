@@ -8,7 +8,6 @@ import {
   type ModuleKey,
 } from "@nest/shared-types";
 import { moduleReadiness } from "@/lib/mvp-snapshot";
-import { STATE_LABELS } from "@/lib/ux-contract";
 
 type WorkspaceShellProps = {
   title: string;
@@ -19,9 +18,6 @@ type WorkspaceShellProps = {
 
 export function WorkspaceShell({ title, subtitle, module, children }: WorkspaceShellProps) {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
-  const progress = Math.round(
-    (moduleReadiness.filter((item) => item.state === "success").length / moduleReadiness.length) * 100
-  );
   const auraVariant = resolveAuraVariant(module ?? "tasks");
 
   return (
@@ -38,13 +34,6 @@ export function WorkspaceShell({ title, subtitle, module, children }: WorkspaceS
 
           <h1>{title}</h1>
           <p>{subtitle}</p>
-
-          <div className="workspace-progress" aria-label="Module completion">
-            <div className="workspace-progress-bar">
-              <div className="workspace-progress-fill" style={{ width: `${progress}%` }} />
-            </div>
-            <small>{progress}% of core module baseline is stable in current environment.</small>
-          </div>
         </header>
 
         <nav className="workspace-nav" aria-label="Core modules">
@@ -55,7 +44,6 @@ export function WorkspaceShell({ title, subtitle, module, children }: WorkspaceS
               className={`workspace-tab ${module === item.key ? "is-active" : ""}`}
             >
               <span>{item.label}</span>
-              <small>{STATE_LABELS[item.state]}</small>
             </Link>
           ))}
         </nav>

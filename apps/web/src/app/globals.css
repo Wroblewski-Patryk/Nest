@@ -284,6 +284,21 @@ body {
   gap: 0.55rem;
 }
 
+.form-grid {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.field span {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
 .list {
   margin: 0;
   padding: 0;
@@ -322,6 +337,11 @@ textarea.list-row {
   font: inherit;
   color: var(--ink);
   background: color-mix(in srgb, #fff, var(--surface-low) 20%);
+}
+
+input[type="color"].list-row {
+  min-height: 2.45rem;
+  padding: 0.32rem;
 }
 
 .mono-note {

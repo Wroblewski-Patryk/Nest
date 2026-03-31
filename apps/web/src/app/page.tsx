@@ -1,33 +1,35 @@
 import Link from "next/link";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
-import { NotificationChannelMatrixCard } from "@/components/notification-channel-matrix-card";
-import { OfflineSyncCard } from "@/components/offline-sync-card";
-import { PreAuthLanguageSelector } from "@/components/pre-auth-language-selector";
-import { NotificationCenterCard } from "@/components/notification-center-card";
-import { AiCopilotCard } from "@/components/ai-copilot-card";
 import { moduleReadiness } from "@/lib/mvp-snapshot";
 
 export default function HomePage() {
   return (
     <WorkspaceShell
-      title="Web MVP Control Center"
-      subtitle="Desktop and mobile web shell for all core planning modules."
+      title="Nest LifeOS"
+      subtitle="Simple, calm daily planning surface to organize life without friction."
       module="tasks"
     >
       <div className="stack">
-        <MetricCard label="Modules online" value="7 / 7" />
-        <MetricCard label="API baseline" value="Stable" />
-        <MetricCard label="Current phase" value="Automation Builder" />
+        <MetricCard label="Core modules" value={String(moduleReadiness.length)} />
+        <MetricCard label="Primary flow" value="Tasks -> Calendar -> Review" />
+        <MetricCard label="Default focus" value="Today plan" />
       </div>
 
-      <Panel title="Module Coverage">
+      <Panel title="Start Here">
+        <p className="callout">
+          Start with <strong>Tasks + Lists</strong>, then place time-bound items in{" "}
+          <strong>Calendar</strong>. Habits, routines, goals, and targets stay linked as supporting
+          modules.
+        </p>
+      </Panel>
+
+      <Panel title="Core Modules">
         <ul className="list">
           {moduleReadiness.map((module) => (
             <li key={module.href} className="list-row">
               <div>
                 <strong>{module.label}</strong>
                 <p>{module.focus}</p>
-                <p className="mono-note">Telemetry: {module.telemetry}</p>
               </div>
               <Link href={module.href} className="pill-link">
                 Open
@@ -35,26 +37,6 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
-      </Panel>
-
-      <Panel title="Pre-Auth Language">
-        <PreAuthLanguageSelector />
-      </Panel>
-
-      <Panel title="Sync Options">
-        <OfflineSyncCard />
-      </Panel>
-
-      <Panel title="Notification Center">
-        <NotificationCenterCard />
-      </Panel>
-
-      <Panel title="Notification Preferences">
-        <NotificationChannelMatrixCard />
-      </Panel>
-
-      <Panel title="Copilot">
-        <AiCopilotCard />
       </Panel>
     </WorkspaceShell>
   );

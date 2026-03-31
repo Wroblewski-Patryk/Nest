@@ -4,13 +4,13 @@ import { goalsSnapshot } from "@/lib/mvp-snapshot";
 export default function GoalsPage() {
   return (
     <WorkspaceShell
-      title="Goals + Targets"
-      subtitle="Break long-term outcomes into measurable targets and weekly progress."
+      title="Goals"
+      subtitle="Keep long-term direction clear and connected to your daily planning."
       module="goals"
     >
       <div className="stack">
         <MetricCard label="Active goals" value={String(goalsSnapshot.goals.length)} />
-        <MetricCard label="Targets live" value={String(goalsSnapshot.targets.length)} />
+        <MetricCard label="Linked targets" value={String(goalsSnapshot.targets.length)} />
         <MetricCard label="Progress pulse" value="70%" />
       </div>
 
@@ -28,15 +28,11 @@ export default function GoalsPage() {
         </ul>
       </Panel>
 
-      <Panel title="Target Checkpoints">
-        <ul className="list">
-          {goalsSnapshot.targets.map((target) => (
-            <li className="list-row" key={target.title}>
-              <strong>{target.title}</strong>
-              <span className="pill">{target.value}</span>
-            </li>
-          ))}
-        </ul>
+      <Panel title="Module Link">
+        <p className="callout">
+          Targets are available as a dedicated module to keep measurable checkpoints separate while
+          still linked to goals.
+        </p>
       </Panel>
     </WorkspaceShell>
   );
