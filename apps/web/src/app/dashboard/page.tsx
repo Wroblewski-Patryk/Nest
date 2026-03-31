@@ -118,6 +118,7 @@ export default function DashboardPage() {
     <WorkspaceShell
       title="Dashboard"
       subtitle="Twoj widok dnia: co zrobic teraz i gdzie dodac kolejne elementy planu."
+      navKey="dashboard"
       module="tasks"
     >
       <div className="stack">

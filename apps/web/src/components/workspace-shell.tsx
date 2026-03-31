@@ -1,40 +1,136 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import {
-  formatLocalizedDateTime,
-  resolveAuraVariant,
-  resolveLanguage,
-  translate,
-  type ModuleKey,
-} from "@nest/shared-types";
+import { formatLocalizedDateTime, resolveAuraVariant, resolveLanguage, translate, type ModuleKey } from "@nest/shared-types";
 import { moduleReadiness } from "@/lib/mvp-snapshot";
+
+type WorkspaceNavKey = ModuleKey | "dashboard";
 
 type WorkspaceShellProps = {
   title: string;
   subtitle: string;
   module?: ModuleKey;
+  navKey?: WorkspaceNavKey | "none";
   children: ReactNode;
 };
+
+type NavIconName =
+  | "dashboard"
+  | "tasks"
+  | "habits"
+  | "routines"
+  | "goals"
+  | "targets"
+  | "calendar"
+  | "journal"
+  | "insights";
 
 const NAV_ITEMS: Array<{
   href: string;
   label: string;
-  key: ModuleKey;
-  short: string;
+  key: WorkspaceNavKey;
+  icon: NavIconName;
 }> = [
-  { href: "/tasks", label: "Tasks + Lists", key: "tasks", short: "TL" },
-  { href: "/habits", label: "Habits", key: "habits", short: "HB" },
-  { href: "/routines", label: "Routines", key: "routines", short: "RT" },
-  { href: "/goals", label: "Goals", key: "goals", short: "GL" },
-  { href: "/targets", label: "Targets", key: "targets", short: "TG" },
-  { href: "/calendar", label: "Calendar", key: "calendar", short: "CL" },
-  { href: "/journal", label: "Journal", key: "journal", short: "JR" },
-  { href: "/insights", label: "Insights", key: "insights", short: "IN" },
+  { href: "/dashboard", label: "Dashboard", key: "dashboard", icon: "dashboard" },
+  { href: "/tasks", label: "Tasks + Lists", key: "tasks", icon: "tasks" },
+  { href: "/habits", label: "Habits", key: "habits", icon: "habits" },
+  { href: "/routines", label: "Routines", key: "routines", icon: "routines" },
+  { href: "/goals", label: "Goals", key: "goals", icon: "goals" },
+  { href: "/targets", label: "Targets", key: "targets", icon: "targets" },
+  { href: "/calendar", label: "Calendar", key: "calendar", icon: "calendar" },
+  { href: "/journal", label: "Journal", key: "journal", icon: "journal" },
+  { href: "/insights", label: "Insights", key: "insights", icon: "insights" },
 ];
 
-export function WorkspaceShell({ title, subtitle, module, children }: WorkspaceShellProps) {
+function MenuIcon({ name }: { name: NavIconName }) {
+  if (name === "dashboard") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3" y="3" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.7" />
+        <rect x="13" y="3" width="8" height="5" rx="2" stroke="currentColor" strokeWidth="1.7" />
+        <rect x="13" y="10" width="8" height="11" rx="2" stroke="currentColor" strokeWidth="1.7" />
+        <rect x="3" y="13" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.7" />
+      </svg>
+    );
+  }
+
+  if (name === "tasks") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="4" y="5" width="16" height="14" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
+        <path d="M8 10h8M8 14h5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (name === "habits") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 20c4.2 0 7-2.8 7-7 0-5-3.5-8-7-9-3.5 1-7 4-7 9 0 4.2 2.8 7 7 7Z" stroke="currentColor" strokeWidth="1.7" />
+        <path d="M12 7v10M8.5 11.5h7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (name === "routines") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M8 6h12M8 12h12M8 18h12" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <circle cx="5" cy="6" r="1.4" stroke="currentColor" strokeWidth="1.7" />
+        <circle cx="5" cy="12" r="1.4" stroke="currentColor" strokeWidth="1.7" />
+        <circle cx="5" cy="18" r="1.4" stroke="currentColor" strokeWidth="1.7" />
+      </svg>
+    );
+  }
+
+  if (name === "goals") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.7" />
+        <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.7" />
+        <circle cx="12" cy="12" r="1.2" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  if (name === "targets") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 12h16M12 4v16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <circle cx="12" cy="12" r="6.5" stroke="currentColor" strokeWidth="1.7" />
+      </svg>
+    );
+  }
+
+  if (name === "calendar") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="4" y="5" width="16" height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
+        <path d="M8 3v4M16 3v4M4 9h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (name === "journal") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 5.5A2.5 2.5 0 0 1 8.5 3H19v18H8.5A2.5 2.5 0 0 0 6 23V5.5Z" stroke="currentColor" strokeWidth="1.7" />
+        <path d="M9.5 8.5H16M9.5 12H16M9.5 15.5H14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 19h16M7 15h3M11 11h3M15 7h2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path d="M6 15l2-2 2 2 3-3 2 2 3-3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function WorkspaceShell({ title, subtitle, module, navKey, children }: WorkspaceShellProps) {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const auraVariant = resolveAuraVariant(module ?? "tasks");
+  const activeNavKey = navKey === "none" ? null : (navKey ?? module ?? null);
 
   return (
     <div className={`workspace-bg aura-${auraVariant}`}>
@@ -49,9 +145,11 @@ export function WorkspaceShell({ title, subtitle, module, children }: WorkspaceS
             <Link
               key={item.href}
               href={item.href}
-              className={`workspace-rail-link ${module === item.key ? "is-active" : ""}`}
+              className={`workspace-rail-link ${activeNavKey === item.key ? "is-active" : ""}`}
             >
-              <span className="workspace-rail-icon">{item.short}</span>
+              <span className="workspace-rail-icon">
+                <MenuIcon name={item.icon} />
+              </span>
               <span>{item.label}</span>
             </Link>
           ))}
@@ -86,7 +184,7 @@ export function WorkspaceShell({ title, subtitle, module, children }: WorkspaceS
             <Link
               key={item.href}
               href={item.href}
-              className={`workspace-tab ${module === item.key ? "is-active" : ""}`}
+              className={`workspace-tab ${activeNavKey === item.key ? "is-active" : ""}`}
             >
               <span>{item.label}</span>
               <small>{item.state}</small>
@@ -101,9 +199,9 @@ export function WorkspaceShell({ title, subtitle, module, children }: WorkspaceS
             <Link
               key={`mobile-${item.href}`}
               href={item.href}
-              className={`workspace-mobile-link ${module === item.key ? "is-active" : ""}`}
+              className={`workspace-mobile-link ${activeNavKey === item.key ? "is-active" : ""}`}
             >
-              <span>{item.short}</span>
+              <MenuIcon name={item.icon} />
             </Link>
           ))}
         </nav>

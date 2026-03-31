@@ -993,6 +993,29 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-171 Rebuild web auth entry surfaces on dedicated welcome template
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-170
+  - Done when:
+    - auth/register are rendered on public welcome-style shell (not app panel),
+    - auth actions route user to onboarding or `/dashboard`,
+    - left app navigation uses outline icons instead of two-letter placeholders.
+  - Notes:
+    - Added dedicated public shell component and styling:
+      `apps/web/src/components/public-shell.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Rebuilt public welcome page and auth module:
+      `apps/web/src/app/page.tsx`,
+      `apps/web/src/app/auth/page.tsx`.
+    - Updated private app shell navigation with outline SVG icons:
+      `apps/web/src/components/workspace-shell.tsx`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

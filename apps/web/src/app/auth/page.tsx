@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
+import { PublicShell } from "@/components/public-shell";
 import { PreAuthLanguageSelector } from "@/components/pre-auth-language-selector";
 import { nestApiClient } from "@/lib/api-client";
 import { clearAuthSession, getAuthToken, setAuthSession } from "@/lib/auth-session";
@@ -21,6 +21,10 @@ type AuthResponse = {
   };
 };
 
+function detectMode(rawValue: string | null): "login" | "register" {
+  return rawValue === "register" ? "register" : "login";
+}
+
 export default function AuthPage() {
   const router = useRouter();
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -37,22 +41,26 @@ export default function AuthPage() {
   const [registerPasswordConfirm, setRegisterPasswordConfirm] = useState("");
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    setMode(detectMode(searchParams.get("mode")));
+  }, []);
+
+  useEffect(() => {
     const token = getAuthToken();
     if (!token) {
       return;
     }
 
     let mounted = true;
-    const requestFn = nestApiClient.request as unknown as <
-      TResponse = unknown,
-      TBody extends Record<string, unknown> = Record<string, unknown>,
-      TQuery extends Record<string, unknown> = Record<string, unknown>,
-    >(
+    const requestFn = nestApiClient.request as unknown as <TResponse = unknown>(
       path: string,
       init?: {
         method?: string;
-        body?: TBody;
-        query?: TQuery;
+        body?: Record<string, unknown>;
       }
     ) => Promise<TResponse>;
 
@@ -63,7 +71,7 @@ export default function AuthPage() {
         }
 
         setAuthSession(token, response.data.onboarding_required);
-        router.replace(response.data.onboarding_required ? "/onboarding" : "/");
+        router.replace(response.data.onboarding_required ? "/onboarding" : "/dashboard");
       })
       .catch(() => {
         if (!mounted) {
@@ -100,7 +108,7 @@ export default function AuthPage() {
 
       setAuthSession(response.data.token, response.data.user.onboarding_required);
       setFeedback("Signed in. Redirecting...");
-      router.replace(response.data.user.onboarding_required ? "/onboarding" : "/");
+      router.replace(response.data.user.onboarding_required ? "/onboarding" : "/dashboard");
     } catch (error) {
       const status =
         typeof error === "object" &&
@@ -145,7 +153,7 @@ export default function AuthPage() {
 
       setAuthSession(response.data.token, response.data.user.onboarding_required);
       setFeedback("Account created. Redirecting to onboarding...");
-      router.replace(response.data.user.onboarding_required ? "/onboarding" : "/");
+      router.replace(response.data.user.onboarding_required ? "/onboarding" : "/dashboard");
     } catch (error) {
       const status =
         typeof error === "object" &&
@@ -161,24 +169,20 @@ export default function AuthPage() {
   }
 
   return (
-    <WorkspaceShell
-      title="Welcome to Nest"
-      subtitle="Sign in to your private workspace or create a new account."
-      module="tasks"
+    <PublicShell
+      title={mode === "login" ? "Sign in to your private workspace" : "Create your Nest account"}
+      subtitle="Modul auth dziala jako osobna strefa wejscia. Po zalogowaniu trafiasz do /dashboard."
     >
-      <div className="stack">
-        <MetricCard label="Access policy" value="Auth required" />
-        <MetricCard label="Public pages" value="/auth only" />
-        <MetricCard label="Onboarding gate" value="Enabled" />
-      </div>
-
-      <Panel title="Language">
+      <section className="panel">
+        <div className="panel-header">
+          <h2>Language</h2>
+        </div>
         <PreAuthLanguageSelector />
-      </Panel>
+      </section>
 
-      <Panel
-        title={mode === "login" ? "Sign In" : "Create Account"}
-        actions={
+      <section className="panel">
+        <div className="panel-header">
+          <h2>{mode === "login" ? "Sign In" : "Register"}</h2>
           <button
             type="button"
             className="btn-secondary"
@@ -187,8 +191,8 @@ export default function AuthPage() {
           >
             {mode === "login" ? "Switch to Register" : "Switch to Login"}
           </button>
-        }
-      >
+        </div>
+
         {mode === "login" ? (
           <form className="form-grid" onSubmit={handleLogin}>
             <label className="field">
@@ -264,18 +268,25 @@ export default function AuthPage() {
             </button>
           </form>
         )}
-      </Panel>
+      </section>
 
       {feedback ? (
-        <Panel title="Status">
+        <section className="panel">
+          <div className="panel-header">
+            <h2>Status</h2>
+          </div>
           <p className="callout">{feedback}</p>
-        </Panel>
+        </section>
       ) : null}
+
       {errorMessage ? (
-        <Panel title="Error">
+        <section className="panel">
+          <div className="panel-header">
+            <h2>Error</h2>
+          </div>
           <p className="callout state-error">{errorMessage}</p>
-        </Panel>
+        </section>
       ) : null}
-    </WorkspaceShell>
+    </PublicShell>
   );
 }

@@ -1,43 +1,58 @@
 import Link from "next/link";
-import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
-import { moduleReadiness } from "@/lib/mvp-snapshot";
+import { PublicShell } from "@/components/public-shell";
 
-export default function HomePage() {
+export default function WelcomePage() {
   return (
-    <WorkspaceShell
-      title="Nest LifeOS"
-      subtitle="Simple, calm daily planning surface to organize life without friction."
-      module="tasks"
+    <PublicShell
+      title="Organize life calmly, one clear dashboard."
+      subtitle="Nest pomaga zarzadzac zadaniami, listami, nawykami, rutynami, celami i kalendarzem w jednym miejscu."
     >
-      <div className="stack">
-        <MetricCard label="Core modules" value={String(moduleReadiness.length)} />
-        <MetricCard label="Primary flow" value="Tasks -> Calendar -> Review" />
-        <MetricCard label="Default focus" value="Today plan" />
-      </div>
+      <section className="panel">
+        <div className="panel-header">
+          <h2>Start</h2>
+        </div>
+        <div className="panel-content">
+          <p className="callout">
+            Wejdz do modulu auth i zaloguj sie, aby przejsc do prywatnego panelu pod
+            {" "}
+            <strong>/dashboard</strong>.
+          </p>
+          <div className="row-inline">
+            <Link href="/auth?mode=login" className="btn-primary">
+              Sign In
+            </Link>
+            <Link href="/auth?mode=register" className="btn-secondary">
+              Register
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      <Panel title="Start Here">
-        <p className="callout">
-          Start with <strong>Tasks + Lists</strong>, then place time-bound items in{" "}
-          <strong>Calendar</strong>. Habits, routines, goals, and targets stay linked as supporting
-          modules.
-        </p>
-      </Panel>
-
-      <Panel title="Core Modules">
+      <section className="panel">
+        <div className="panel-header">
+          <h2>What You Get</h2>
+        </div>
         <ul className="list">
-          {moduleReadiness.map((module) => (
-            <li key={module.href} className="list-row">
-              <div>
-                <strong>{module.label}</strong>
-                <p>{module.focus}</p>
-              </div>
-              <Link href={module.href} className="pill-link">
-                Open
-              </Link>
-            </li>
-          ))}
+          <li className="list-row">
+            <div>
+              <strong>Dashboard dnia</strong>
+              <p>Podglad dzisiejszych zadan i najblizszych eventow.</p>
+            </div>
+          </li>
+          <li className="list-row">
+            <div>
+              <strong>Pelne moduly zycia</strong>
+              <p>Tasks/Lists, Habits, Routines, Goals, Targets, Calendar, Journal, Insights.</p>
+            </div>
+          </li>
+          <li className="list-row">
+            <div>
+              <strong>Przygotowanie pod AI</strong>
+              <p>Delegowane access tokeny i surface pod wspolprace Human + AI.</p>
+            </div>
+          </li>
         </ul>
-      </Panel>
-    </WorkspaceShell>
+      </section>
+    </PublicShell>
   );
 }
