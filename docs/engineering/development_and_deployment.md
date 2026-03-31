@@ -30,6 +30,21 @@
 6. Start queue worker:
    - `php artisan queue:work redis --queue=default,integrations`
 
+### Local Web Troubleshooting
+
+- Symptom:
+  - `Module not found: Can't resolve '@nest/shared-types'`
+- Resolution:
+  1. Ensure dependencies are installed with `pnpm` (not `npm`) in app folders.
+  2. Clean web install state and reinstall:
+     - `cd apps/web`
+     - `rm -rf node_modules .next` (PowerShell: `Remove-Item -Recurse -Force node_modules,.next`)
+     - `pnpm install`
+     - `pnpm dev`
+  3. If mobile dependencies were recently changed, also refresh:
+     - `cd apps/mobile`
+     - `pnpm install`
+
 ## CI Pipeline (Minimum)
 
 - Backend lint/static analysis/tests.

@@ -11,7 +11,7 @@
     "test:smoke": "pnpm exec expo export --platform web && node ./scripts/smoke-routes.mjs"
   },
   "dependencies": {
-    "@nest/shared-types": "link:../../packages/shared-types",
+    "@nest/shared-types": "file:../../packages/shared-types",
     "@react-navigation/native": "^7.1.28",
     "expo": "~55.0.6",
     "expo-constants": "~55.0.7",
