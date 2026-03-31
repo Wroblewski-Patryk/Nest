@@ -4,11 +4,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
-import {
-  clearAuthSession,
-  getAuthToken,
-  setOnboardingRequired,
-} from "@/lib/auth-session";
+import { clearAuthSession, getAuthToken, setOnboardingRequired } from "@/lib/auth-session";
 
 type AuthUser = {
   id: string;
@@ -86,6 +82,22 @@ function toDateInputValue(value: string | null): string {
   return value.slice(0, 10);
 }
 
+function formatPriority(priority: TaskItem["priority"]): string {
+  if (priority === "urgent") {
+    return "Urgent";
+  }
+
+  if (priority === "high") {
+    return "High";
+  }
+
+  if (priority === "medium") {
+    return "Medium";
+  }
+
+  return "Low";
+}
+
 export default function TasksPage() {
   const router = useRouter();
   const [isBootstrapping, setIsBootstrapping] = useState(true);
@@ -125,6 +137,8 @@ export default function TasksPage() {
     [tasks]
   );
 
+  const doneTasksCount = useMemo(() => tasks.filter((task) => task.status === "done").length, [tasks]);
+
   const selectedListTasks = useMemo(() => {
     if (!selectedListId) {
       return tasks;
@@ -132,6 +146,11 @@ export default function TasksPage() {
 
     return tasks.filter((task) => task.list_id === selectedListId);
   }, [selectedListId, tasks]);
+
+  const selectedList = useMemo(
+    () => lists.find((list) => list.id === selectedListId) ?? null,
+    [lists, selectedListId]
+  );
 
   const handleUnauthorized = useCallback(() => {
     clearAuthSession();
@@ -222,7 +241,7 @@ export default function TasksPage() {
     setFeedback("");
 
     try {
-      await apiRequest("/lists", {
+      const response = await apiRequest<{ data: ListItem }>("/lists", {
         method: "POST",
         body: {
           name: newListName.trim(),
@@ -231,6 +250,7 @@ export default function TasksPage() {
       });
 
       setNewListName("");
+      setSelectedListId(response.data.id);
       await refreshWorkspaceData();
       setFeedback("List created.");
     } catch (error) {
@@ -244,15 +264,34 @@ export default function TasksPage() {
     }
   }
 
+  async function ensureListForTask(): Promise<string> {
+    if (selectedListId) {
+      return selectedListId;
+    }
+
+    if (lists.length > 0) {
+      const fallbackId = lists[0].id;
+      setSelectedListId(fallbackId);
+      return fallbackId;
+    }
+
+    const response = await apiRequest<{ data: ListItem }>("/lists", {
+      method: "POST",
+      body: {
+        name: "Inbox",
+        color: "#789262",
+      },
+    });
+
+    setSelectedListId(response.data.id);
+    await refreshWorkspaceData();
+    return response.data.id;
+  }
+
   async function handleCreateTask(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!newTaskTitle.trim()) {
       setErrorMessage("Task title is required.");
-      return;
-    }
-
-    if (!selectedListId) {
-      setErrorMessage("Create or select a list first.");
       return;
     }
 
@@ -261,10 +300,12 @@ export default function TasksPage() {
     setFeedback("");
 
     try {
+      const listId = await ensureListForTask();
+
       await apiRequest("/tasks", {
         method: "POST",
         body: {
-          list_id: selectedListId,
+          list_id: listId,
           title: newTaskTitle.trim(),
           priority: newTaskPriority,
           ...(newTaskDueDate ? { due_date: newTaskDueDate } : {}),
@@ -444,12 +485,13 @@ export default function TasksPage() {
 
   return (
     <WorkspaceShell
-      title="Tasks + Lists"
-      subtitle="Capture commitments, edit quickly, and keep daily execution under control."
+      title="Tasks + Lists Command"
+      subtitle="Capture fast, choose focus list, and close daily loops without friction."
       module="tasks"
     >
       <div className="stack">
         <MetricCard label="Open tasks" value={String(openTasksCount)} />
+        <MetricCard label="Completed" value={String(doneTasksCount)} />
         <MetricCard label="Lists active" value={String(lists.length)} />
         <MetricCard label="Signed user" value={user?.name ?? "Loading..."} />
       </div>
@@ -457,35 +499,75 @@ export default function TasksPage() {
       <Panel
         title="Session"
         actions={
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={handleLogout}
-            disabled={isBootstrapping}
-          >
+          <button type="button" className="btn-secondary" onClick={handleLogout} disabled={isBootstrapping}>
             Sign out
           </button>
         }
       >
         <p className="callout">
-          Signed in as <strong>{user?.email ?? "..."}</strong>. This module now uses only authenticated CRUD flow.
+          Signed in as <strong>{user?.email ?? "..."}</strong>. Task create/edit/delete is fully API-backed.
         </p>
       </Panel>
 
-      <Panel title="Task Lists">
-        <div className="panel-content">
-          <form className="form-grid" onSubmit={handleCreateList}>
+      <Panel title="Quick Capture">
+        <form className="form-grid" onSubmit={handleCreateTask}>
+          <label className="field">
+            <span>Task title</span>
+            <input
+              className="list-row"
+              type="text"
+              value={newTaskTitle}
+              onChange={(event) => setNewTaskTitle(event.target.value)}
+              placeholder="Example: Plan tomorrow top 3"
+              disabled={!isAuthenticated || isCreatingTask || isBootstrapping}
+            />
+          </label>
+          <div className="row-inline">
             <label className="field">
-              <span>List name</span>
+              <span>Priority</span>
+              <select
+                className="list-row"
+                value={newTaskPriority}
+                onChange={(event) => setNewTaskPriority(event.target.value as TaskItem["priority"])}
+                disabled={!isAuthenticated || isCreatingTask || isBootstrapping}
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </label>
+            <label className="field">
+              <span>Due date</span>
               <input
                 className="list-row"
-                type="text"
-                value={newListName}
-                onChange={(event) => setNewListName(event.target.value)}
-                placeholder="Example: Home Ops"
-                disabled={!isAuthenticated || isCreatingList || isBootstrapping}
+                type="date"
+                value={newTaskDueDate}
+                onChange={(event) => setNewTaskDueDate(event.target.value)}
+                disabled={!isAuthenticated || isCreatingTask || isBootstrapping}
               />
             </label>
+          </div>
+          <button type="submit" className="btn-primary" disabled={!isAuthenticated || isCreatingTask || isBootstrapping}>
+            {isCreatingTask ? "Adding..." : "Add task"}
+          </button>
+        </form>
+      </Panel>
+
+      <Panel title="Lists Command">
+        <form className="form-grid" onSubmit={handleCreateList}>
+          <label className="field">
+            <span>New list</span>
+            <input
+              className="list-row"
+              type="text"
+              value={newListName}
+              onChange={(event) => setNewListName(event.target.value)}
+              placeholder="Example: Home Ops"
+              disabled={!isAuthenticated || isCreatingList || isBootstrapping}
+            />
+          </label>
+          <div className="row-inline">
             <label className="field">
               <span>Color</span>
               <input
@@ -503,180 +585,126 @@ export default function TasksPage() {
             >
               {isCreatingList ? "Adding..." : "Add list"}
             </button>
-          </form>
-
-          <div className="row-inline">
-            <label className="mono-note" htmlFor="selected-list-id">
-              Active list
-            </label>
-            <select
-              id="selected-list-id"
-              className="list-row"
-              value={selectedListId}
-              onChange={(event) => setSelectedListId(event.target.value)}
-              disabled={lists.length === 0}
-            >
-              {lists.length === 0 ? <option value="">No lists</option> : null}
-              {lists.map((list) => (
-                <option key={list.id} value={list.id}>
-                  {list.name}
-                </option>
-              ))}
-            </select>
           </div>
+        </form>
 
-          <ul className="list">
-            {lists.length === 0 ? (
-              <li className="list-row">
-                <p>Create your first list to start planning.</p>
-              </li>
-            ) : (
-              lists.map((list) => (
-                <li className="list-row" key={list.id}>
-                  {editingListId === list.id ? (
-                    <div className="form-grid">
-                      <label className="field">
-                        <span>Name</span>
-                        <input
-                          className="list-row"
-                          type="text"
-                          value={editListName}
-                          onChange={(event) => setEditListName(event.target.value)}
-                          disabled={busyListId === list.id}
-                        />
-                      </label>
-                      <label className="field">
-                        <span>Color</span>
-                        <input
-                          className="list-row"
-                          type="color"
-                          value={editListColor}
-                          onChange={(event) => setEditListColor(event.target.value)}
-                          disabled={busyListId === list.id}
-                        />
-                      </label>
-                      <div className="row-inline">
-                        <button
-                          type="button"
-                          className="pill-link"
-                          onClick={() => void saveListEdit(list.id)}
-                          disabled={busyListId === list.id}
-                        >
-                          Save
-                        </button>
-                        <button
-                          type="button"
-                          className="pill-link"
-                          onClick={() => setEditingListId(null)}
-                          disabled={busyListId === list.id}
-                        >
-                          Cancel
-                        </button>
-                      </div>
+        <ul className="list">
+          {lists.length === 0 ? (
+            <li className="list-row">
+              <p>No list yet. Add one above or just add a task, and we will create Inbox automatically.</p>
+            </li>
+          ) : (
+            lists.map((list) => (
+              <li className="list-row" key={list.id}>
+                {editingListId === list.id ? (
+                  <div className="form-grid">
+                    <label className="field">
+                      <span>Name</span>
+                      <input
+                        className="list-row"
+                        type="text"
+                        value={editListName}
+                        onChange={(event) => setEditListName(event.target.value)}
+                        disabled={busyListId === list.id}
+                      />
+                    </label>
+                    <label className="field">
+                      <span>Color</span>
+                      <input
+                        className="list-row"
+                        type="color"
+                        value={editListColor}
+                        onChange={(event) => setEditListColor(event.target.value)}
+                        disabled={busyListId === list.id}
+                      />
+                    </label>
+                    <div className="row-inline">
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void saveListEdit(list.id)}
+                        disabled={busyListId === list.id}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => setEditingListId(null)}
+                        disabled={busyListId === list.id}
+                      >
+                        Cancel
+                      </button>
                     </div>
-                  ) : (
-                    <>
+                  </div>
+                ) : (
+                  <>
+                    <div>
                       <div className="row-inline">
                         <span className="dot" style={{ backgroundColor: list.color }} />
                         <strong>{list.name}</strong>
+                        {selectedListId === list.id ? <span className="pill state-success">active</span> : null}
                       </div>
-                      <div className="row-inline">
-                        <button
-                          type="button"
-                          className="pill-link"
-                          onClick={() => startListEdit(list)}
-                          disabled={busyListId === list.id}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="pill-link"
-                          onClick={() => void deleteList(list.id)}
-                          disabled={busyListId === list.id}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
+                      <p>
+                        {tasks.filter((task) => task.list_id === list.id).length} tasks in this list
+                      </p>
+                    </div>
+                    <div className="row-inline">
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => setSelectedListId(list.id)}
+                        disabled={busyListId === list.id}
+                      >
+                        Focus
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => startListEdit(list)}
+                        disabled={busyListId === list.id}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void deleteList(list.id)}
+                        disabled={busyListId === list.id}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
+              </li>
+            ))
+          )}
+        </ul>
       </Panel>
 
-      <Panel title="Tasks">
-        <div className="panel-content">
-          <form className="form-grid" onSubmit={handleCreateTask}>
-            <label className="field">
-              <span>Task title</span>
-              <input
-                className="list-row"
-                type="text"
-                value={newTaskTitle}
-                onChange={(event) => setNewTaskTitle(event.target.value)}
-                placeholder="Example: Plan Thursday top 3"
-                disabled={!isAuthenticated || isCreatingTask || isBootstrapping}
-              />
-            </label>
-
-            <label className="field">
-              <span>Priority</span>
-              <select
-                className="list-row"
-                value={newTaskPriority}
-                onChange={(event) => setNewTaskPriority(event.target.value as TaskItem["priority"])}
-                disabled={!isAuthenticated || isCreatingTask || isBootstrapping}
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent</option>
-              </select>
-            </label>
-
-            <label className="field">
-              <span>Due date</span>
-              <input
-                className="list-row"
-                type="date"
-                value={newTaskDueDate}
-                onChange={(event) => setNewTaskDueDate(event.target.value)}
-                disabled={!isAuthenticated || isCreatingTask || isBootstrapping}
-              />
-            </label>
-
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={!isAuthenticated || isCreatingTask || !selectedListId || isBootstrapping}
-            >
-              {isCreatingTask ? "Adding..." : "Add task"}
-            </button>
-          </form>
-
-          <ul className="list">
-            {selectedListTasks.length === 0 ? (
-              <li className="list-row">
-                <p>No tasks in this list yet.</p>
-              </li>
-            ) : (
-              selectedListTasks.map((task) => (
-                <li className="list-row" key={task.id}>
-                  {editingTaskId === task.id ? (
-                    <div className="form-grid">
-                      <label className="field">
-                        <span>Title</span>
-                        <input
-                          className="list-row"
-                          type="text"
-                          value={editTaskTitle}
-                          onChange={(event) => setEditTaskTitle(event.target.value)}
-                          disabled={busyTaskId === task.id}
-                        />
-                      </label>
+      <Panel title={`Task Queue${selectedList ? `: ${selectedList.name}` : ""}`}>
+        <ul className="list">
+          {selectedListTasks.length === 0 ? (
+            <li className="list-row">
+              <p>No tasks in this scope yet. Add the first one above.</p>
+            </li>
+          ) : (
+            selectedListTasks.map((task) => (
+              <li className="list-row" key={task.id}>
+                {editingTaskId === task.id ? (
+                  <div className="form-grid">
+                    <label className="field">
+                      <span>Title</span>
+                      <input
+                        className="list-row"
+                        type="text"
+                        value={editTaskTitle}
+                        onChange={(event) => setEditTaskTitle(event.target.value)}
+                        disabled={busyTaskId === task.id}
+                      />
+                    </label>
+                    <div className="row-inline">
                       <label className="field">
                         <span>Priority</span>
                         <select
@@ -703,72 +731,70 @@ export default function TasksPage() {
                           disabled={busyTaskId === task.id}
                         />
                       </label>
-                      <div className="row-inline">
-                        <button
-                          type="button"
-                          className="pill-link"
-                          onClick={() => void saveTaskEdit(task.id)}
-                          disabled={busyTaskId === task.id}
-                        >
-                          Save
-                        </button>
-                        <button
-                          type="button"
-                          className="pill-link"
-                          onClick={() => setEditingTaskId(null)}
-                          disabled={busyTaskId === task.id}
-                        >
-                          Cancel
-                        </button>
-                      </div>
                     </div>
-                  ) : (
-                    <>
-                      <div>
-                        <strong>{task.title}</strong>
-                        <p>
-                          {task.priority} priority
-                          {task.due_date ? ` | due ${toDateInputValue(task.due_date)}` : ""}
-                        </p>
-                      </div>
-                      <div className="row-inline">
-                        <span className={`pill ${task.status === "done" ? "state-success" : ""}`}>
-                          {task.status}
-                        </span>
-                        <button
-                          type="button"
-                          className="pill-link"
-                          onClick={() =>
-                            void updateTaskStatus(task.id, task.status === "done" ? "todo" : "done")
-                          }
-                          disabled={busyTaskId === task.id || isBootstrapping}
-                        >
-                          {task.status === "done" ? "Reopen" : "Mark done"}
-                        </button>
-                        <button
-                          type="button"
-                          className="pill-link"
-                          onClick={() => startTaskEdit(task)}
-                          disabled={busyTaskId === task.id || isBootstrapping}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="pill-link"
-                          onClick={() => void deleteTask(task.id)}
-                          disabled={busyTaskId === task.id || isBootstrapping}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
+                    <div className="row-inline">
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void saveTaskEdit(task.id)}
+                        disabled={busyTaskId === task.id}
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => setEditingTaskId(null)}
+                        disabled={busyTaskId === task.id}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <strong>{task.title}</strong>
+                      <p>
+                        {formatPriority(task.priority)}
+                        {task.due_date ? ` | due ${toDateInputValue(task.due_date)}` : ""}
+                      </p>
+                    </div>
+                    <div className="row-inline">
+                      <span className={`pill ${task.status === "done" ? "state-success" : ""}`}>
+                        {task.status}
+                      </span>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void updateTaskStatus(task.id, task.status === "done" ? "todo" : "done")}
+                        disabled={busyTaskId === task.id || isBootstrapping}
+                      >
+                        {task.status === "done" ? "Reopen" : "Done"}
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => startTaskEdit(task)}
+                        disabled={busyTaskId === task.id || isBootstrapping}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="pill-link"
+                        onClick={() => void deleteTask(task.id)}
+                        disabled={busyTaskId === task.id || isBootstrapping}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                )}
+              </li>
+            ))
+          )}
+        </ul>
       </Panel>
 
       {feedback ? (

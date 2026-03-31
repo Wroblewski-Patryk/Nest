@@ -52,9 +52,12 @@ Additional Stitch-aligned usability remediation executed in web:
 
 - Rebuilt desktop/mobile web shell navigation hierarchy (rail + topbar + mobile
   pill nav) with updated tokenized aura styling.
+- Reworked `Tasks + Lists` into practical command surface with deterministic
+  Inbox fallback when no list exists yet.
 
 Updated files in this extension:
 
 - `apps/web/src/components/workspace-shell.tsx`
 - `apps/web/src/app/globals.css`
+- `apps/web/src/app/tasks/page.tsx`
 - `apps/web/src/lib/mvp-snapshot.ts`

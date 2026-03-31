@@ -930,6 +930,27 @@ Last updated: 2026-03-31
       `pnpm --dir apps/web build`.
   - Done on: 2026-03-31
 
+- [x] NEST-168 Redesign Tasks+Lists command view with practical first-action UX
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-167
+  - Done when:
+    - task/list creation actions are immediately discoverable,
+    - zero-list state still allows task capture via deterministic fallback,
+    - list/task edit and status transitions remain fully functional.
+  - Notes:
+    - Rebuilt task command center UX in:
+      `apps/web/src/app/tasks/page.tsx`.
+    - Added automatic Inbox fallback when adding first task without existing
+      list.
+    - Preserved authenticated CRUD flow (create/update/delete + status toggle)
+      with clearer state messaging.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-03-31
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent
