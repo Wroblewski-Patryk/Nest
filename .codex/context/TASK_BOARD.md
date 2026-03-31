@@ -580,19 +580,22 @@ Last updated: 2026-03-31
     - Applied module-aware shell usage across core tab routes under
       `apps/mobile/app/(tabs)/*.tsx`.
 
-- [ ] NEST-157 Execute web/mobile visual parity pass against Stitch screen set
-  - Status: IN_PROGRESS
+- [x] NEST-157 Execute web/mobile visual parity pass against Stitch screen set
+  - Status: DONE
   - Owner: Review Agent
   - Depends on: NEST-155, NEST-156
   - Done when:
     - each core module has parity review against mapped Stitch screen IDs,
     - documented visual deviations are classified (`intentional|follow-up`),
     - accessibility/readability checks are attached to parity evidence.
+  - Done on: 2026-03-31
   - Notes:
     - Current implementation wave and scope captured in:
       `docs/ux/uxui_refresh_implementation_wave_2026-03-31.md`.
-    - Visual baseline is in place; final module-level parity evidence remains
-      to be captured and reviewed.
+    - Published refreshed parity artifact pack:
+      `docs/ux_parity_evidence/2026-03-31/nest-157/artifact-index.md`.
+    - Published parity review and classification report:
+      `docs/ux/nest_157_visual_parity_pass_2026-03-31.md`.
 
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG

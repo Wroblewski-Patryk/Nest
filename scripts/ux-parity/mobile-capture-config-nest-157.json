@@ -1,0 +1,46 @@
+{
+  "captures": [
+    {
+      "task_id": "NEST-157",
+      "screen_id": "mobile-home-dashboard",
+      "url": "/",
+      "file": "nest-157-mobile-home-dashboard.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "mobile-calendar-timeboxing",
+      "url": "/calendar",
+      "file": "nest-157-mobile-calendar-timeboxing.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "mobile-habits-command",
+      "url": "/habits",
+      "file": "nest-157-mobile-habits-command.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "mobile-goals-module",
+      "url": "/goals",
+      "file": "nest-157-mobile-goals-module.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "mobile-journal-reflection",
+      "url": "/journal",
+      "file": "nest-157-mobile-journal-reflection.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "mobile-insights-trends",
+      "url": "/insights",
+      "file": "nest-157-mobile-insights-trends.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "mobile-billing-module",
+      "url": "/billing",
+      "file": "nest-157-mobile-billing-module.png"
+    }
+  ]
+}

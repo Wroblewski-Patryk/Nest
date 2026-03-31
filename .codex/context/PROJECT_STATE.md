@@ -542,13 +542,16 @@ Last updated: 2026-03-31
   executed with permission/privacy regression validation, desktop/mobile smoke
   pass evidence, and formal certification packet publication
   (`docs/operations/collaboration_safety_ux_regression_certification_2026-03-31.md`)
+- `NEST-157` completed: web/mobile visual parity pass against active Stitch
+  screen set executed with capture artifacts, deviation classification
+  (`intentional|follow-up`), and attached readability/accessibility checks
+  (`docs/ux/nest_157_visual_parity_pass_2026-03-31.md`)
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
 - Current execution focus: complete launch-window and immediate post-launch
-  closure (`NEST-122`, `NEST-123`, `NEST-124`) while continuing V2 delivery
-  slices, including UX/UI refresh baseline (`NEST-154`, `NEST-155`,
-  `NEST-156`) and module parity review (`NEST-157`).
+  closure (`NEST-122`, `NEST-123`, `NEST-124`) while preparing V2 execution
+  gate dependencies (`NEST-128`, `NEST-129`).
 
 ## Auth, AI, Offline, Notifications
 

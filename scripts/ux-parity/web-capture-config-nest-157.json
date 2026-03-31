@@ -1,0 +1,58 @@
+{
+  "captures": [
+    {
+      "task_id": "NEST-157",
+      "screen_id": "web-home-dashboard",
+      "url": "/",
+      "file": "nest-157-web-home-dashboard.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "web-tasks-command",
+      "url": "/tasks",
+      "file": "nest-157-web-tasks-command.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "web-habits-command",
+      "url": "/habits",
+      "file": "nest-157-web-habits-command.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "web-goals-module",
+      "url": "/goals",
+      "file": "nest-157-web-goals-module.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "web-calendar-timeboxing",
+      "url": "/calendar",
+      "file": "nest-157-web-calendar-timeboxing.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "web-journal-reflection",
+      "url": "/journal",
+      "file": "nest-157-web-journal-reflection.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "web-insights-trends",
+      "url": "/insights",
+      "file": "nest-157-web-insights-trends.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "web-billing-module",
+      "url": "/billing",
+      "file": "nest-157-web-billing-module.png"
+    },
+    {
+      "task_id": "NEST-157",
+      "screen_id": "web-automations-module",
+      "url": "/automations",
+      "file": "nest-157-web-automations-module.png"
+    }
+  ]
+}
