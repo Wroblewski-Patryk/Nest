@@ -151,7 +151,7 @@ export default function HabitsPage() {
       <div className="stack">
         <MetricCard label="Habits tracked" value={String(habits.length)} />
         <MetricCard label="Active habits" value={String(activeHabits)} />
-        <MetricCard label="Create flow" value="Enabled" />
+        <MetricCard label="Paused habits" value={String(habits.length - activeHabits)} />
       </div>
 
       <Panel title="Add Habit">
@@ -164,7 +164,7 @@ export default function HabitsPage() {
               value={newHabitTitle}
               onChange={(event) => setNewHabitTitle(event.target.value)}
               placeholder="Example: 20 min reading"
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
           <label className="field">
@@ -173,7 +173,7 @@ export default function HabitsPage() {
               className="list-row"
               value={newHabitType}
               onChange={(event) => setNewHabitType(event.target.value as HabitItem["type"])}
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             >
               <option value="boolean">Boolean</option>
               <option value="numeric">Numeric</option>
@@ -186,13 +186,13 @@ export default function HabitsPage() {
               className="list-row"
               value={newHabitCadence}
               onChange={(event) => setNewHabitCadence(event.target.value as "daily" | "weekly")}
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             >
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
             </select>
           </label>
-          <button type="submit" className="btn-primary" disabled={isCreating || isLoading}>
+          <button type="submit" className="btn-primary" disabled={isCreating}>
             {isCreating ? "Adding..." : "Add habit"}
           </button>
         </form>

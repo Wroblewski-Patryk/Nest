@@ -8,6 +8,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -42,6 +43,18 @@ class DatabaseSeeder extends Seeder
                 'settings' => [],
             ]
         );
+
+        $adminSettings = is_array($adminUser->settings) ? $adminUser->settings : [];
+        $adminSettings['language'] = $adminSettings['language'] ?? 'pl';
+        $adminSettings['locale'] = $adminSettings['locale'] ?? 'pl-PL';
+        $adminSettings['onboarding_completed_at'] = $adminSettings['onboarding_completed_at'] ?? Carbon::now()->toIso8601String();
+
+        $adminUser->forceFill([
+            'name' => 'Admin User',
+            'password' => 'password',
+            'timezone' => 'UTC',
+            'settings' => $adminSettings,
+        ])->save();
 
         $templates = DB::table('life_area_templates')
             ->where('is_active', true)

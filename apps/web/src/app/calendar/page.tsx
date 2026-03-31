@@ -3,9 +3,6 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
-import { ConflictQueueCard } from "@/components/conflict-queue-card";
-import { IntegrationHealthCenterCard } from "@/components/integration-health-center-card";
-import { ProviderConnectionsCard } from "@/components/provider-connections-card";
 import { clearAuthSession } from "@/lib/auth-session";
 import { nestApiClient } from "@/lib/api-client";
 
@@ -168,7 +165,7 @@ export default function CalendarPage() {
   return (
     <WorkspaceShell
       title="Calendar"
-      subtitle="Place life activities on timeline with a direct create flow."
+      subtitle="Plan dnia i tygodnia na osi czasu, zeby widziec realne obciazenie."
       module="calendar"
     >
       <div className="stack">
@@ -177,7 +174,10 @@ export default function CalendarPage() {
           label="Linked entities"
           value={String(events.filter((item) => item.linked_entity_type !== null).length)}
         />
-        <MetricCard label="Create flow" value="Enabled" />
+        <MetricCard
+          label="Standalone events"
+          value={String(events.filter((item) => item.linked_entity_type === null).length)}
+        />
       </div>
 
       <Panel title="Add Event">
@@ -190,7 +190,7 @@ export default function CalendarPage() {
               value={newEventTitle}
               onChange={(event) => setNewEventTitle(event.target.value)}
               placeholder="Example: Weekly life planning"
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
           <label className="field">
@@ -200,7 +200,7 @@ export default function CalendarPage() {
               type="datetime-local"
               value={newEventStartAt}
               onChange={(event) => setNewEventStartAt(event.target.value)}
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
           <label className="field">
@@ -210,10 +210,10 @@ export default function CalendarPage() {
               type="datetime-local"
               value={newEventEndAt}
               onChange={(event) => setNewEventEndAt(event.target.value)}
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
-          <button type="submit" className="btn-primary" disabled={isCreating || isLoading}>
+          <button type="submit" className="btn-primary" disabled={isCreating}>
             {isCreating ? "Adding..." : "Add event"}
           </button>
         </form>
@@ -240,10 +240,6 @@ export default function CalendarPage() {
           )}
         </ul>
       </Panel>
-
-      <ConflictQueueCard />
-      <IntegrationHealthCenterCard />
-      <ProviderConnectionsCard />
 
       {feedback ? (
         <Panel title="Status">

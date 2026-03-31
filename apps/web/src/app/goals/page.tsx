@@ -139,7 +139,7 @@ export default function GoalsPage() {
   return (
     <WorkspaceShell
       title="Goals"
-      subtitle="Define long-term direction and keep first-create flow fast."
+      subtitle="Ustal kierunek i termin, a potem rozbij to na konkretne targety."
       module="goals"
     >
       <div className="stack">
@@ -148,7 +148,10 @@ export default function GoalsPage() {
           label="With target date"
           value={String(goals.filter((goal) => goal.target_date !== null).length)}
         />
-        <MetricCard label="Create flow" value="Enabled" />
+        <MetricCard
+          label="Completed"
+          value={String(goals.filter((goal) => goal.status === "completed").length)}
+        />
       </div>
 
       <Panel title="Add Goal">
@@ -161,7 +164,7 @@ export default function GoalsPage() {
               value={newGoalTitle}
               onChange={(event) => setNewGoalTitle(event.target.value)}
               placeholder="Example: Build calmer weekly planning routine"
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
           <label className="field">
@@ -171,10 +174,10 @@ export default function GoalsPage() {
               type="date"
               value={newGoalTargetDate}
               onChange={(event) => setNewGoalTargetDate(event.target.value)}
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
-          <button type="submit" className="btn-primary" disabled={isCreating || isLoading}>
+          <button type="submit" className="btn-primary" disabled={isCreating}>
             {isCreating ? "Adding..." : "Add goal"}
           </button>
         </form>

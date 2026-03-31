@@ -47,8 +47,8 @@ export default function WelcomePage() {
           </li>
           <li className="list-row">
             <div>
-              <strong>Przygotowanie pod AI</strong>
-              <p>Delegowane access tokeny i surface pod wspolprace Human + AI.</p>
+              <strong>Prosty model rozwoju</strong>
+              <p>Najpierw porzadny panel do codziennego planowania, potem rozszerzenia AI.</p>
             </div>
           </li>
         </ul>

@@ -479,8 +479,8 @@ export default function TasksPage() {
 
   return (
     <WorkspaceShell
-      title="Tasks + Lists Command"
-      subtitle="Capture fast, choose focus list, and close daily loops without friction."
+      title="Tasks + Lists"
+      subtitle="Dodawaj zadania, grupuj je na listach i domykaj to, co najwazniejsze."
       module="tasks"
     >
       <div className="stack">
@@ -499,7 +499,7 @@ export default function TasksPage() {
         }
       >
         <p className="callout">
-          Signed in as <strong>{user?.email ?? "..."}</strong>. Task create/edit/delete is fully API-backed.
+          Signed in as <strong>{user?.email ?? "..."}</strong>.
         </p>
       </Panel>
 
@@ -548,7 +548,7 @@ export default function TasksPage() {
         </form>
       </Panel>
 
-      <Panel title="Lists Command">
+      <Panel title="Lists">
         <form className="form-grid" onSubmit={handleCreateList}>
           <label className="field">
             <span>New list</span>

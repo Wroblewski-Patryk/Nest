@@ -173,7 +173,10 @@ export default function RoutinesPage() {
       <div className="stack">
         <MetricCard label="Routines active" value={String(routines.length)} />
         <MetricCard label="Avg steps" value={String(avgSteps)} />
-        <MetricCard label="Create flow" value="Enabled" />
+        <MetricCard
+          label="Total steps"
+          value={String(routines.reduce((sum, routine) => sum + routine.steps.length, 0))}
+        />
       </div>
 
       <Panel title="Add Routine">
@@ -186,7 +189,7 @@ export default function RoutinesPage() {
               value={newRoutineTitle}
               onChange={(event) => setNewRoutineTitle(event.target.value)}
               placeholder="Example: Morning reset"
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
           <label className="field">
@@ -197,7 +200,7 @@ export default function RoutinesPage() {
               value={newRoutineStepTitle}
               onChange={(event) => setNewRoutineStepTitle(event.target.value)}
               placeholder="Example: Hydrate"
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
           <label className="field">
@@ -208,10 +211,10 @@ export default function RoutinesPage() {
               min={0}
               value={newRoutineStepDuration}
               onChange={(event) => setNewRoutineStepDuration(event.target.value)}
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
-          <button type="submit" className="btn-primary" disabled={isCreating || isLoading}>
+          <button type="submit" className="btn-primary" disabled={isCreating}>
             {isCreating ? "Adding..." : "Add routine"}
           </button>
         </form>

@@ -71,7 +71,7 @@ export default function AuthPage() {
         }
 
         setAuthSession(token, response.data.onboarding_required);
-        router.replace(response.data.onboarding_required ? "/onboarding" : "/dashboard");
+        router.replace("/dashboard");
       })
       .catch(() => {
         if (!mounted) {
@@ -108,7 +108,7 @@ export default function AuthPage() {
 
       setAuthSession(response.data.token, response.data.user.onboarding_required);
       setFeedback("Signed in. Redirecting...");
-      router.replace(response.data.user.onboarding_required ? "/onboarding" : "/dashboard");
+      router.replace("/dashboard");
     } catch (error) {
       const status =
         typeof error === "object" &&
@@ -152,8 +152,8 @@ export default function AuthPage() {
       });
 
       setAuthSession(response.data.token, response.data.user.onboarding_required);
-      setFeedback("Account created. Redirecting to onboarding...");
-      router.replace(response.data.user.onboarding_required ? "/onboarding" : "/dashboard");
+      setFeedback("Account created. Redirecting...");
+      router.replace("/dashboard");
     } catch (error) {
       const status =
         typeof error === "object" &&

@@ -57,7 +57,7 @@ export function isProtectedPath(pathname: string): boolean {
 }
 
 type RouteGuardResult = {
-  redirectTo: "/auth" | "/onboarding" | "/dashboard" | null;
+  redirectTo: "/auth" | "/dashboard" | null;
 };
 
 export function resolveRouteAccess(params: {
@@ -65,20 +65,12 @@ export function resolveRouteAccess(params: {
   hasToken: boolean;
   onboardingRequired: boolean | null;
 }): RouteGuardResult {
-  const { pathname, hasToken, onboardingRequired } = params;
+  const { pathname, hasToken } = params;
   const normalized = normalizePath(pathname);
 
   if (!hasToken) {
     if (isProtectedPath(normalized) || isOnboardingPath(normalized)) {
       return { redirectTo: "/auth" };
-    }
-
-    return { redirectTo: null };
-  }
-
-  if (onboardingRequired === true) {
-    if (!isOnboardingPath(normalized)) {
-      return { redirectTo: "/onboarding" };
     }
 
     return { redirectTo: null };

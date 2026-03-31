@@ -46,6 +46,7 @@ Default seeded account after `migrate --seed`:
 
 - email: `admin@admin.com`
 - password: `password`
+- onboarding: already completed for seeded admin user
 
 ## License
 

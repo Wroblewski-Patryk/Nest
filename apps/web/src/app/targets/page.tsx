@@ -71,9 +71,11 @@ export default function TargetsPage() {
   const [newTargetMetricType, setNewTargetMetricType] = useState("count");
   const [newTargetValueTarget, setNewTargetValueTarget] = useState("1");
   const [newTargetUnit, setNewTargetUnit] = useState("items");
+  const [quickGoalTitle, setQuickGoalTitle] = useState("");
 
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
+  const [isCreatingGoal, setIsCreatingGoal] = useState(false);
   const [feedback, setFeedback] = useState("Create target checkpoints linked to a goal.");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -168,6 +170,40 @@ export default function TargetsPage() {
     }
   }
 
+  async function createGoalQuick(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!quickGoalTitle.trim()) {
+      setErrorMessage("Goal title is required.");
+      return;
+    }
+
+    setIsCreatingGoal(true);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      const response = await apiRequest<{ data: GoalItem }>("/goals", {
+        method: "POST",
+        body: {
+          title: quickGoalTitle.trim(),
+          status: "active",
+        },
+      });
+
+      setQuickGoalTitle("");
+      setNewTargetGoalId(response.data.id);
+      await loadData();
+      setFeedback("Goal created. You can now add target checkpoints.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setIsCreatingGoal(false);
+    }
+  }
+
   return (
     <WorkspaceShell
       title="Targets"
@@ -177,10 +213,32 @@ export default function TargetsPage() {
       <div className="stack">
         <MetricCard label="Targets live" value={String(targets.length)} />
         <MetricCard label="Goals available" value={String(goals.length)} />
-        <MetricCard label="Create flow" value="Enabled" />
+        <MetricCard
+          label="Completed"
+          value={String(targets.filter((target) => target.status === "completed").length)}
+        />
       </div>
 
       <Panel title="Add Target">
+        {goals.length === 0 ? (
+          <form className="form-grid" onSubmit={createGoalQuick}>
+            <p className="callout">Najpierw dodaj jeden goal, aby tworzyc targety.</p>
+            <label className="field">
+              <span>Quick goal title</span>
+              <input
+                className="list-row"
+                type="text"
+                value={quickGoalTitle}
+                onChange={(event) => setQuickGoalTitle(event.target.value)}
+                placeholder="Example: Improve weekly planning discipline"
+                disabled={isCreatingGoal}
+              />
+            </label>
+            <button type="submit" className="btn-secondary" disabled={isCreatingGoal}>
+              {isCreatingGoal ? "Creating..." : "Create goal first"}
+            </button>
+          </form>
+        ) : null}
         <form className="form-grid" onSubmit={createTarget}>
           <label className="field">
             <span>Goal</span>
@@ -188,7 +246,7 @@ export default function TargetsPage() {
               className="list-row"
               value={newTargetGoalId}
               onChange={(event) => setNewTargetGoalId(event.target.value)}
-              disabled={isCreating || isLoading || goals.length === 0}
+              disabled={isCreating || goals.length === 0}
             >
               {goals.length === 0 ? <option value="">No goals yet</option> : null}
               {goals.map((goal) => (
@@ -206,7 +264,7 @@ export default function TargetsPage() {
               value={newTargetTitle}
               onChange={(event) => setNewTargetTitle(event.target.value)}
               placeholder="Example: 3 planning reviews per week"
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
           <label className="field">
@@ -216,7 +274,7 @@ export default function TargetsPage() {
               type="text"
               value={newTargetMetricType}
               onChange={(event) => setNewTargetMetricType(event.target.value)}
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
           <label className="field">
@@ -226,7 +284,7 @@ export default function TargetsPage() {
               type="number"
               value={newTargetValueTarget}
               onChange={(event) => setNewTargetValueTarget(event.target.value)}
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
           <label className="field">
@@ -236,13 +294,13 @@ export default function TargetsPage() {
               type="text"
               value={newTargetUnit}
               onChange={(event) => setNewTargetUnit(event.target.value)}
-              disabled={isCreating || isLoading}
+              disabled={isCreating}
             />
           </label>
           <button
             type="submit"
             className="btn-primary"
-            disabled={isCreating || isLoading || goals.length === 0}
+            disabled={isCreating || goals.length === 0}
           >
             {isCreating ? "Adding..." : "Add target"}
           </button>

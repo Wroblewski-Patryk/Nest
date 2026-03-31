@@ -79,7 +79,7 @@ export default function JournalPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreatingEntry, setIsCreatingEntry] = useState(false);
   const [isCreatingArea, setIsCreatingArea] = useState(false);
-  const [feedback, setFeedback] = useState("Create a reflection and tag life areas for better clarity.");
+  const [feedback, setFeedback] = useState("Dodaj refleksje i oznacz obszary zycia, aby latwiej zobaczyc balans.");
   const [errorMessage, setErrorMessage] = useState("");
 
   const [entryTitle, setEntryTitle] = useState("");
@@ -246,7 +246,7 @@ export default function JournalPage() {
               value={entryTitle}
               onChange={(event) => setEntryTitle(event.target.value)}
               placeholder="Example: Calm planning evening"
-              disabled={isCreatingEntry || isLoading}
+              disabled={isCreatingEntry}
             />
           </label>
           <label className="field">
@@ -257,7 +257,7 @@ export default function JournalPage() {
               onChange={(event) => setEntryBody(event.target.value)}
               placeholder="What worked? What felt heavy? What to improve tomorrow?"
               rows={4}
-              disabled={isCreatingEntry || isLoading}
+              disabled={isCreatingEntry}
             />
           </label>
           <div className="row-inline">
@@ -269,7 +269,7 @@ export default function JournalPage() {
                 onChange={(event) =>
                   setEntryMood(event.target.value as "low" | "neutral" | "good" | "great")
                 }
-                disabled={isCreatingEntry || isLoading}
+                disabled={isCreatingEntry}
               >
                 <option value="low">Low</option>
                 <option value="neutral">Neutral</option>
@@ -284,7 +284,7 @@ export default function JournalPage() {
                 type="date"
                 value={entryDate}
                 onChange={(event) => setEntryDate(event.target.value)}
-                disabled={isCreatingEntry || isLoading}
+                disabled={isCreatingEntry}
               />
             </label>
           </div>
@@ -303,14 +303,14 @@ export default function JournalPage() {
                           : [...current, area.id]
                       )
                     }
-                    disabled={isCreatingEntry || isLoading}
+                    disabled={isCreatingEntry}
                   />{" "}
                   {area.name}
                 </label>
               ))}
             </div>
           </div>
-          <button type="submit" className="btn-primary" disabled={isCreatingEntry || isLoading}>
+          <button type="submit" className="btn-primary" disabled={isCreatingEntry}>
             {isCreatingEntry ? "Saving..." : "Save reflection"}
           </button>
         </form>
@@ -326,7 +326,7 @@ export default function JournalPage() {
               value={newAreaName}
               onChange={(event) => setNewAreaName(event.target.value)}
               placeholder="Example: Relationships"
-              disabled={isCreatingArea || isLoading}
+              disabled={isCreatingArea}
             />
           </label>
           <div className="row-inline">
@@ -337,7 +337,7 @@ export default function JournalPage() {
                 type="color"
                 value={newAreaColor}
                 onChange={(event) => setNewAreaColor(event.target.value)}
-                disabled={isCreatingArea || isLoading}
+                disabled={isCreatingArea}
               />
             </label>
             <label className="field">
@@ -349,10 +349,10 @@ export default function JournalPage() {
                 max={100}
                 value={newAreaWeight}
                 onChange={(event) => setNewAreaWeight(event.target.value)}
-                disabled={isCreatingArea || isLoading}
+                disabled={isCreatingArea}
               />
             </label>
-            <button type="submit" className="btn-secondary" disabled={isCreatingArea || isLoading}>
+            <button type="submit" className="btn-secondary" disabled={isCreatingArea}>
               {isCreatingArea ? "Adding..." : "Add area"}
             </button>
           </div>

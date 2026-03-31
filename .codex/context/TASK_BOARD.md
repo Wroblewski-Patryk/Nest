@@ -1063,6 +1063,43 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-174 Stabilize journal navigation and unblock module create flows
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-173
+  - Done when:
+    - intermittent redirects from `/journal` are removed,
+    - onboarding no longer forces route redirects during standard authenticated navigation,
+    - seeded admin account is deterministic and onboarding-ready,
+    - module create forms no longer stay locked behind loading-only guards,
+    - non-essential prototype/fantasy copy in core modules is replaced with practical UX copy.
+  - Notes:
+    - Removed onboarding redirect enforcement from web route guard/auth redirects:
+      `apps/web/src/lib/route-guard.ts`,
+      `apps/web/scripts/route-guard-regression.mjs`,
+      `apps/web/src/app/auth/page.tsx`.
+    - Seeded admin user now gets stable onboarding-complete settings and deterministic credentials:
+      `apps/api/database/seeders/DatabaseSeeder.php`,
+      `README.md`.
+    - Simplified module copy and removed loading-lock from create forms in
+      core modules:
+      `apps/web/src/app/tasks/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/habits/page.tsx`,
+      `apps/web/src/app/routines/page.tsx`,
+      `apps/web/src/app/goals/page.tsx`,
+      `apps/web/src/app/targets/page.tsx`,
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/page.tsx`.
+    - Added quick goal creation directly in targets when no goals exist:
+      `apps/web/src/app/targets/page.tsx`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`,
+      `php artisan test --filter=AuthApiTest`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent
