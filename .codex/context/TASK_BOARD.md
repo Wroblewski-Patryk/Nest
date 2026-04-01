@@ -1378,6 +1378,33 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-186 Polish `/tasks` UX for practical day-one usability
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-185
+  - Done when:
+    - `No list` capture column remains visible as a stable quick-entry point
+      (no more empty-board dead-end),
+    - board is treated as primary surface and setup/filter tools do not
+      visually overwhelm first interaction,
+    - readability and visual hierarchy are improved for cards/metrics/panels.
+  - Notes:
+    - Added `Today Focus` action panel for immediate start flow (`add task`,
+      `show all columns`, `refresh`) in:
+      `apps/web/src/app/tasks/page.tsx`.
+    - Forced persistent `No list` column visibility to prevent zero-column board
+      state in default setup.
+    - Converted list setup and filters into collapsible sections so creation and
+      filtering tools are available but not dominant by default.
+    - Added panel-level class support and updated visual hierarchy tokens/styles
+      for stronger readability in:
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

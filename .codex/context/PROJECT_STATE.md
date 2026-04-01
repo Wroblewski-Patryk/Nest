@@ -763,6 +763,13 @@ Last updated: 2026-04-01
   `apps/web/src/app/goals/page.tsx`,
   `apps/web/src/app/targets/page.tsx`,
   `apps/web/src/components/workspace-shell.tsx`)
+- `NEST-186` completed: `/tasks` UX is now optimized for immediate daily use
+  with `Today Focus` primary actions, always-visible `No list` quick-capture
+  column (no zero-column dead-end), collapsible setup/filter tools, and
+  stronger card/metric/panel visual hierarchy for readability
+  (`apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/app/globals.css`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

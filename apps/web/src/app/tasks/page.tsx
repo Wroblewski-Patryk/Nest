@@ -519,17 +519,7 @@ export default function TasksPage() {
     });
   }, [filteredTasksByListId, hideEmptyColumns, listContextFilter, lists, normalizedSearch]);
 
-  const showUnassignedColumn = useMemo(() => {
-    if (hideEmptyColumns && filteredUnassignedTasks.length === 0) {
-      return false;
-    }
-
-    if (normalizedSearch && filteredUnassignedTasks.length === 0) {
-      return false;
-    }
-
-    return true;
-  }, [filteredUnassignedTasks.length, hideEmptyColumns, normalizedSearch]);
+  const showUnassignedColumn = true;
 
   function setTaskDraft(listId: string, patch: Partial<TaskDraft>) {
     setTaskDrafts((current) => ({
@@ -1079,9 +1069,40 @@ export default function TasksPage() {
       </Panel>
 
       {planningTab === "board" ? (
+        <Panel title="Today Focus" className="planning-focus-primary">
+          <p className="callout">
+            Start from quick capture in <strong>No List</strong>, then move tasks into lists and connect them to
+            goals/targets only when needed.
+          </p>
+          <div className="row-inline">
+            <a href="#unassigned-capture" className="btn-primary">
+              Add first task
+            </a>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setHideEmptyColumns(false)}
+            >
+              Show all columns
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => void loadWorkspace()}
+              disabled={isLoading}
+            >
+              Refresh board
+            </button>
+          </div>
+        </Panel>
+      ) : null}
+
+      {planningTab === "board" ? (
         <>
-      <Panel title="Create List">
-        <form className="form-grid" onSubmit={createList}>
+      <Panel title="Quick Setup" className="planning-secondary-tools">
+        <details className="collapsible-panel">
+          <summary>Create list</summary>
+        <form className="form-grid collapsible-content" onSubmit={createList}>
           <label className="field">
             <span>Name</span>
             <input
@@ -1162,10 +1183,13 @@ export default function TasksPage() {
             {isCreatingList ? "Creating..." : "Create list"}
           </button>
         </form>
+        </details>
       </Panel>
 
-      <Panel title="Board Filters">
-        <div className="tasks-board-toolbar">
+      <Panel title="Board Filters" className="planning-secondary-tools">
+        <details className="collapsible-panel">
+          <summary>Show and adjust filters</summary>
+        <div className="tasks-board-toolbar collapsible-content">
           <label className="field tasks-search">
             <span>Search</span>
             <input
@@ -1255,9 +1279,10 @@ export default function TasksPage() {
             Reset
           </button>
         </div>
+        </details>
       </Panel>
 
-      <section className="panel">
+      <section className="panel planning-board-primary">
         <div className="panel-header">
           <h2>Kanban Board</h2>
           <div className="panel-actions">
@@ -1276,7 +1301,10 @@ export default function TasksPage() {
         <div className="panel-content">
           {isLoading ? <p className="callout state-loading">Loading board...</p> : null}
           {!isLoading && lists.length === 0 ? (
-            <p className="callout state-empty">No lists yet. Create one above to start your board.</p>
+            <p className="callout state-empty">
+              No lists yet. Open <strong>Quick Setup</strong> below, or start immediately with standalone tasks in
+              <strong> No List</strong>.
+            </p>
           ) : null}
           {!isLoading && lists.length > 0 && visibleLists.length === 0 && !showUnassignedColumn ? (
             <p className="callout state-empty">No columns match current filters.</p>
@@ -1475,6 +1503,7 @@ export default function TasksPage() {
                       <label className="field">
                         <span>Add standalone task</span>
                         <input
+                          id="unassigned-capture"
                           className="list-row"
                           type="text"
                           value={taskDrafts[UNASSIGNED_COLUMN_ID]?.title ?? ""}

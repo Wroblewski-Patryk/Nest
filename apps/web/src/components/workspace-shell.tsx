@@ -248,13 +248,16 @@ export function MetricCard({ label, value }: MetricCardProps) {
 
 type PanelProps = {
   title: string;
+  className?: string;
   actions?: ReactNode;
   children: ReactNode;
 };
 
-export function Panel({ title, actions, children }: PanelProps) {
+export function Panel({ title, className, actions, children }: PanelProps) {
+  const panelClassName = className ? `panel ${className}` : "panel";
+
   return (
-    <section className="panel">
+    <section className={panelClassName}>
       <div className="panel-header">
         <h2>{title}</h2>
         {actions ? <div className="panel-actions">{actions}</div> : null}
