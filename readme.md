@@ -47,6 +47,8 @@ Default seeded account after `migrate --seed`:
 - email: `admin@admin.com`
 - password: `password`
 - onboarding: already completed for seeded admin user
+- demo planning dataset: prefilled `Goals + Targets + Lists + Tasks` is added
+  for this account so `/tasks` is not empty on first run
 
 ## License
 

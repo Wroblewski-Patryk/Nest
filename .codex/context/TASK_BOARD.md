@@ -1405,6 +1405,29 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-187 Add practical demo seed dataset for unified planning module
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-186
+  - Done when:
+    - `migrate --seed` provides immediate demo data visibility for
+      `Goals + Targets + Lists + Tasks`,
+    - seeded planning data is idempotent on repeated seed runs (no duplicate
+      growth for demo entities),
+    - startup documentation explicitly states that demo planning data is
+      available for the seeded admin account.
+  - Notes:
+    - Extended `DatabaseSeeder` with deterministic planning demo seeding
+      (`goals`, `targets`, `task_lists`, `tasks`) linked to existing life areas:
+      `apps/api/database/seeders/DatabaseSeeder.php`.
+    - Added README startup note about seeded planning demo dataset visibility:
+      `README.md`.
+    - Validation:
+      `php artisan db:seed` (run twice),
+      `php artisan tinker --execute="echo 'goals='.App\\Models\\Goal::count().' targets='.App\\Models\\Target::count().' lists='.App\\Models\\TaskList::count().' tasks='.App\\Models\\Task::count();"`,
+      `php artisan test --filter=TasksAndListsApiTest`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

@@ -770,6 +770,12 @@ Last updated: 2026-04-01
   (`apps/web/src/app/tasks/page.tsx`,
   `apps/web/src/components/workspace-shell.tsx`,
   `apps/web/src/app/globals.css`)
+- `NEST-187` completed: backend seed baseline now includes practical demo
+  planning data (`goals`, `targets`, `task_lists`, `tasks`) for seeded admin
+  account, so `/tasks` is populated right after `migrate --seed`; repeated seed
+  runs remain idempotent for demo entities
+  (`apps/api/database/seeders/DatabaseSeeder.php`,
+  `README.md`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for
