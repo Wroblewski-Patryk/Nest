@@ -1,0 +1,67 @@
+sequence,viewport,step,intended_path,final_path,screenshot,notes
+1,desktop,welcome,/,/,docs/ux_audit_evidence/2026-04-01/desktop/01-welcome.png,
+2,desktop,auth-login,/auth,/auth,docs/ux_audit_evidence/2026-04-01/desktop/02-auth-login.png,
+3,desktop,auth-register,/auth?mode=register,/auth?mode=register,docs/ux_audit_evidence/2026-04-01/desktop/03-auth-register.png,
+4,desktop,dashboard,/dashboard,/dashboard,docs/ux_audit_evidence/2026-04-01/desktop/04-dashboard.png,
+5,desktop,tasks-board,/tasks?tab=tasks,/tasks?tab=tasks,docs/ux_audit_evidence/2026-04-01/desktop/05-tasks-board.png,
+6,desktop,tasks-add-card-open,/tasks?tab=tasks,/tasks?tab=tasks,docs/ux_audit_evidence/2026-04-01/desktop/06-tasks-add-card-open.png,After clicking first Add card.
+7,desktop,tasks-lists,/tasks?tab=lists,/tasks?tab=lists,docs/ux_audit_evidence/2026-04-01/desktop/07-tasks-lists.png,
+8,desktop,tasks-targets,/tasks?tab=targets,/tasks?tab=targets,docs/ux_audit_evidence/2026-04-01/desktop/08-tasks-targets.png,
+9,desktop,tasks-goals,/tasks?tab=goals,/tasks?tab=goals,docs/ux_audit_evidence/2026-04-01/desktop/09-tasks-goals.png,
+10,desktop,habits,/habits,/habits,docs/ux_audit_evidence/2026-04-01/desktop/10-habits.png,
+11,desktop,routines,/routines,/routines,docs/ux_audit_evidence/2026-04-01/desktop/11-routines.png,
+12,desktop,calendar,/calendar,/calendar,docs/ux_audit_evidence/2026-04-01/desktop/12-calendar.png,
+13,desktop,calendar-day,/calendar,/calendar,docs/ux_audit_evidence/2026-04-01/desktop/13-calendar-day.png,Calendar switched to Dzien.
+14,desktop,calendar-week,/calendar,/calendar,docs/ux_audit_evidence/2026-04-01/desktop/14-calendar-week.png,Calendar switched to Tydzien.
+15,desktop,calendar-month,/calendar,/calendar,docs/ux_audit_evidence/2026-04-01/desktop/15-calendar-month.png,Calendar switched to Miesiac.
+16,desktop,journal,/journal,/journal,docs/ux_audit_evidence/2026-04-01/desktop/16-journal.png,
+17,desktop,life-areas,/life-areas,/life-areas,docs/ux_audit_evidence/2026-04-01/desktop/17-life-areas.png,
+18,desktop,insights,/insights,/insights,docs/ux_audit_evidence/2026-04-01/desktop/18-insights.png,
+19,desktop,settings-profile,/settings,/settings,docs/ux_audit_evidence/2026-04-01/desktop/19-settings-profile.png,
+20,desktop,settings-application,/settings?tab=application,/settings?tab=application,docs/ux_audit_evidence/2026-04-01/desktop/20-settings-application.png,
+21,desktop,settings-access-api,/settings?tab=access,/settings?tab=access,docs/ux_audit_evidence/2026-04-01/desktop/21-settings-access-api.png,
+22,desktop,settings-subscription,/settings?tab=subscription,/settings?tab=subscription,docs/ux_audit_evidence/2026-04-01/desktop/22-settings-subscription.png,
+23,desktop,automations,/automations,/automations,docs/ux_audit_evidence/2026-04-01/desktop/23-automations.png,
+24,desktop,billing,/billing,/billing,docs/ux_audit_evidence/2026-04-01/desktop/24-billing.png,
+25,desktop,goals-route,/goals,/tasks?tab=goals,docs/ux_audit_evidence/2026-04-01/desktop/25-goals-route.png,
+26,desktop,targets-route,/targets,/tasks?tab=targets,docs/ux_audit_evidence/2026-04-01/desktop/26-targets-route.png,
+27,desktop,onboarding-route,/onboarding,/onboarding,docs/ux_audit_evidence/2026-04-01/desktop/27-onboarding-route.png,
+28,desktop,journal-stability-pass-1,/journal,/journal,docs/ux_audit_evidence/2026-04-01/desktop/28-journal-stability-pass-1.png,Repeated open to detect spontaneous redirects.
+29,desktop,journal-stability-pass-2,/journal,/journal,docs/ux_audit_evidence/2026-04-01/desktop/29-journal-stability-pass-2.png,Repeated open to detect spontaneous redirects.
+30,desktop,journal-stability-pass-3,/journal,/journal,docs/ux_audit_evidence/2026-04-01/desktop/30-journal-stability-pass-3.png,Repeated open to detect spontaneous redirects.
+31,desktop,settings-access-stability-pass-1,/settings?tab=access,/settings?tab=access,docs/ux_audit_evidence/2026-04-01/desktop/31-settings-access-stability-pass-1.png,Repeated open to detect spontaneous redirects.
+32,desktop,settings-access-stability-pass-2,/settings?tab=access,/settings?tab=access,docs/ux_audit_evidence/2026-04-01/desktop/32-settings-access-stability-pass-2.png,Repeated open to detect spontaneous redirects.
+33,desktop,settings-access-stability-pass-3,/settings?tab=access,/settings?tab=access,docs/ux_audit_evidence/2026-04-01/desktop/33-settings-access-stability-pass-3.png,Repeated open to detect spontaneous redirects.
+1,mobile,welcome,/,/,docs/ux_audit_evidence/2026-04-01/mobile/01-welcome.png,
+2,mobile,auth-login,/auth,/auth,docs/ux_audit_evidence/2026-04-01/mobile/02-auth-login.png,
+3,mobile,auth-register,/auth?mode=register,/auth?mode=register,docs/ux_audit_evidence/2026-04-01/mobile/03-auth-register.png,
+4,mobile,dashboard,/dashboard,/dashboard,docs/ux_audit_evidence/2026-04-01/mobile/04-dashboard.png,
+5,mobile,tasks-board,/tasks?tab=tasks,/tasks?tab=tasks,docs/ux_audit_evidence/2026-04-01/mobile/05-tasks-board.png,
+6,mobile,tasks-add-card-open,/tasks?tab=tasks,/tasks?tab=tasks,docs/ux_audit_evidence/2026-04-01/mobile/06-tasks-add-card-open.png,After clicking first Add card.
+7,mobile,tasks-lists,/tasks?tab=lists,/tasks?tab=lists,docs/ux_audit_evidence/2026-04-01/mobile/07-tasks-lists.png,
+8,mobile,tasks-targets,/tasks?tab=targets,/tasks?tab=targets,docs/ux_audit_evidence/2026-04-01/mobile/08-tasks-targets.png,
+9,mobile,tasks-goals,/tasks?tab=goals,/tasks?tab=goals,docs/ux_audit_evidence/2026-04-01/mobile/09-tasks-goals.png,
+10,mobile,habits,/habits,/habits,docs/ux_audit_evidence/2026-04-01/mobile/10-habits.png,
+11,mobile,routines,/routines,/routines,docs/ux_audit_evidence/2026-04-01/mobile/11-routines.png,
+12,mobile,calendar,/calendar,/calendar,docs/ux_audit_evidence/2026-04-01/mobile/12-calendar.png,
+13,mobile,calendar-day,/calendar,/calendar,docs/ux_audit_evidence/2026-04-01/mobile/13-calendar-day.png,Calendar switched to Dzien.
+14,mobile,calendar-week,/calendar,/calendar,docs/ux_audit_evidence/2026-04-01/mobile/14-calendar-week.png,Calendar switched to Tydzien.
+15,mobile,calendar-month,/calendar,/calendar,docs/ux_audit_evidence/2026-04-01/mobile/15-calendar-month.png,Calendar switched to Miesiac.
+16,mobile,journal,/journal,/journal,docs/ux_audit_evidence/2026-04-01/mobile/16-journal.png,
+17,mobile,life-areas,/life-areas,/life-areas,docs/ux_audit_evidence/2026-04-01/mobile/17-life-areas.png,
+18,mobile,insights,/insights,/insights,docs/ux_audit_evidence/2026-04-01/mobile/18-insights.png,
+19,mobile,settings-profile,/settings,/settings,docs/ux_audit_evidence/2026-04-01/mobile/19-settings-profile.png,
+20,mobile,settings-application,/settings?tab=application,/settings?tab=application,docs/ux_audit_evidence/2026-04-01/mobile/20-settings-application.png,
+21,mobile,settings-access-api,/settings?tab=access,/settings?tab=access,docs/ux_audit_evidence/2026-04-01/mobile/21-settings-access-api.png,
+22,mobile,settings-subscription,/settings?tab=subscription,/settings?tab=subscription,docs/ux_audit_evidence/2026-04-01/mobile/22-settings-subscription.png,
+23,mobile,automations,/automations,/automations,docs/ux_audit_evidence/2026-04-01/mobile/23-automations.png,
+24,mobile,billing,/billing,/billing,docs/ux_audit_evidence/2026-04-01/mobile/24-billing.png,
+25,mobile,goals-route,/goals,/tasks?tab=goals,docs/ux_audit_evidence/2026-04-01/mobile/25-goals-route.png,
+26,mobile,targets-route,/targets,/tasks?tab=targets,docs/ux_audit_evidence/2026-04-01/mobile/26-targets-route.png,
+27,mobile,onboarding-route,/onboarding,/onboarding,docs/ux_audit_evidence/2026-04-01/mobile/27-onboarding-route.png,
+28,mobile,journal-stability-pass-1,/journal,/journal,docs/ux_audit_evidence/2026-04-01/mobile/28-journal-stability-pass-1.png,Repeated open to detect spontaneous redirects.
+29,mobile,journal-stability-pass-2,/journal,/journal,docs/ux_audit_evidence/2026-04-01/mobile/29-journal-stability-pass-2.png,Repeated open to detect spontaneous redirects.
+30,mobile,journal-stability-pass-3,/journal,/journal,docs/ux_audit_evidence/2026-04-01/mobile/30-journal-stability-pass-3.png,Repeated open to detect spontaneous redirects.
+31,mobile,settings-access-stability-pass-1,/settings?tab=access,/settings?tab=access,docs/ux_audit_evidence/2026-04-01/mobile/31-settings-access-stability-pass-1.png,Repeated open to detect spontaneous redirects.
+32,mobile,settings-access-stability-pass-2,/settings?tab=access,/settings?tab=access,docs/ux_audit_evidence/2026-04-01/mobile/32-settings-access-stability-pass-2.png,Repeated open to detect spontaneous redirects.
+33,mobile,settings-access-stability-pass-3,/settings?tab=access,/settings?tab=access,docs/ux_audit_evidence/2026-04-01/mobile/33-settings-access-stability-pass-3.png,Repeated open to detect spontaneous redirects.

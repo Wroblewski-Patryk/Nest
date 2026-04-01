@@ -1476,6 +1476,32 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web build`.
   - Done on: 2026-04-01
 
+- [x] NEST-190 Execute full-system UX clickthrough audit and define target UX assumptions baseline
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-189
+  - Done when:
+    - full authenticated user journey is captured across desktop and mobile with
+      screenshot evidence,
+    - UX friction points are consolidated into actionable target assumptions per
+      module,
+    - UX foundation docs are updated to anchor next implementation wave to one
+      shared baseline.
+  - Notes:
+    - Added deterministic full-system screenshot capture script:
+      `scripts/ux-audit/capture-system-audit.mjs`.
+    - Captured evidence pack:
+      `docs/ux_audit_evidence/2026-04-01/capture-manifest.json`,
+      `docs/ux_audit_evidence/2026-04-01/capture-manifest.csv`,
+      `docs/ux_audit_evidence/2026-04-01/desktop/*.png`,
+      `docs/ux_audit_evidence/2026-04-01/mobile/*.png`.
+    - Published target assumptions baseline:
+      `docs/ux/nest_190_full_system_ux_target_assumptions_2026-04-01.md`.
+    - Updated UX foundation and wave tracking docs:
+      `docs/ux/ui-ux-foundation.md`,
+      `docs/ux/uxui_refresh_implementation_wave_2026-03-31.md`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

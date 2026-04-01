@@ -1,0 +1,600 @@
+{
+  "baseUrl": "http://127.0.0.1:9001",
+  "evidenceTag": "2026-04-01",
+  "captures": [
+    {
+      "sequence": 1,
+      "viewport": "desktop",
+      "step": "welcome",
+      "intended_path": "/",
+      "final_path": "/",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/01-welcome.png",
+      "notes": ""
+    },
+    {
+      "sequence": 2,
+      "viewport": "desktop",
+      "step": "auth-login",
+      "intended_path": "/auth",
+      "final_path": "/auth",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/02-auth-login.png",
+      "notes": ""
+    },
+    {
+      "sequence": 3,
+      "viewport": "desktop",
+      "step": "auth-register",
+      "intended_path": "/auth?mode=register",
+      "final_path": "/auth?mode=register",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/03-auth-register.png",
+      "notes": ""
+    },
+    {
+      "sequence": 4,
+      "viewport": "desktop",
+      "step": "dashboard",
+      "intended_path": "/dashboard",
+      "final_path": "/dashboard",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/04-dashboard.png",
+      "notes": ""
+    },
+    {
+      "sequence": 5,
+      "viewport": "desktop",
+      "step": "tasks-board",
+      "intended_path": "/tasks?tab=tasks",
+      "final_path": "/tasks?tab=tasks",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/05-tasks-board.png",
+      "notes": ""
+    },
+    {
+      "sequence": 6,
+      "viewport": "desktop",
+      "step": "tasks-add-card-open",
+      "intended_path": "/tasks?tab=tasks",
+      "final_path": "/tasks?tab=tasks",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/06-tasks-add-card-open.png",
+      "notes": "After clicking first Add card."
+    },
+    {
+      "sequence": 7,
+      "viewport": "desktop",
+      "step": "tasks-lists",
+      "intended_path": "/tasks?tab=lists",
+      "final_path": "/tasks?tab=lists",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/07-tasks-lists.png",
+      "notes": ""
+    },
+    {
+      "sequence": 8,
+      "viewport": "desktop",
+      "step": "tasks-targets",
+      "intended_path": "/tasks?tab=targets",
+      "final_path": "/tasks?tab=targets",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/08-tasks-targets.png",
+      "notes": ""
+    },
+    {
+      "sequence": 9,
+      "viewport": "desktop",
+      "step": "tasks-goals",
+      "intended_path": "/tasks?tab=goals",
+      "final_path": "/tasks?tab=goals",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/09-tasks-goals.png",
+      "notes": ""
+    },
+    {
+      "sequence": 10,
+      "viewport": "desktop",
+      "step": "habits",
+      "intended_path": "/habits",
+      "final_path": "/habits",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/10-habits.png",
+      "notes": ""
+    },
+    {
+      "sequence": 11,
+      "viewport": "desktop",
+      "step": "routines",
+      "intended_path": "/routines",
+      "final_path": "/routines",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/11-routines.png",
+      "notes": ""
+    },
+    {
+      "sequence": 12,
+      "viewport": "desktop",
+      "step": "calendar",
+      "intended_path": "/calendar",
+      "final_path": "/calendar",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/12-calendar.png",
+      "notes": ""
+    },
+    {
+      "sequence": 13,
+      "viewport": "desktop",
+      "step": "calendar-day",
+      "intended_path": "/calendar",
+      "final_path": "/calendar",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/13-calendar-day.png",
+      "notes": "Calendar switched to Dzien."
+    },
+    {
+      "sequence": 14,
+      "viewport": "desktop",
+      "step": "calendar-week",
+      "intended_path": "/calendar",
+      "final_path": "/calendar",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/14-calendar-week.png",
+      "notes": "Calendar switched to Tydzien."
+    },
+    {
+      "sequence": 15,
+      "viewport": "desktop",
+      "step": "calendar-month",
+      "intended_path": "/calendar",
+      "final_path": "/calendar",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/15-calendar-month.png",
+      "notes": "Calendar switched to Miesiac."
+    },
+    {
+      "sequence": 16,
+      "viewport": "desktop",
+      "step": "journal",
+      "intended_path": "/journal",
+      "final_path": "/journal",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/16-journal.png",
+      "notes": ""
+    },
+    {
+      "sequence": 17,
+      "viewport": "desktop",
+      "step": "life-areas",
+      "intended_path": "/life-areas",
+      "final_path": "/life-areas",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/17-life-areas.png",
+      "notes": ""
+    },
+    {
+      "sequence": 18,
+      "viewport": "desktop",
+      "step": "insights",
+      "intended_path": "/insights",
+      "final_path": "/insights",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/18-insights.png",
+      "notes": ""
+    },
+    {
+      "sequence": 19,
+      "viewport": "desktop",
+      "step": "settings-profile",
+      "intended_path": "/settings",
+      "final_path": "/settings",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/19-settings-profile.png",
+      "notes": ""
+    },
+    {
+      "sequence": 20,
+      "viewport": "desktop",
+      "step": "settings-application",
+      "intended_path": "/settings?tab=application",
+      "final_path": "/settings?tab=application",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/20-settings-application.png",
+      "notes": ""
+    },
+    {
+      "sequence": 21,
+      "viewport": "desktop",
+      "step": "settings-access-api",
+      "intended_path": "/settings?tab=access",
+      "final_path": "/settings?tab=access",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/21-settings-access-api.png",
+      "notes": ""
+    },
+    {
+      "sequence": 22,
+      "viewport": "desktop",
+      "step": "settings-subscription",
+      "intended_path": "/settings?tab=subscription",
+      "final_path": "/settings?tab=subscription",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/22-settings-subscription.png",
+      "notes": ""
+    },
+    {
+      "sequence": 23,
+      "viewport": "desktop",
+      "step": "automations",
+      "intended_path": "/automations",
+      "final_path": "/automations",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/23-automations.png",
+      "notes": ""
+    },
+    {
+      "sequence": 24,
+      "viewport": "desktop",
+      "step": "billing",
+      "intended_path": "/billing",
+      "final_path": "/billing",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/24-billing.png",
+      "notes": ""
+    },
+    {
+      "sequence": 25,
+      "viewport": "desktop",
+      "step": "goals-route",
+      "intended_path": "/goals",
+      "final_path": "/tasks?tab=goals",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/25-goals-route.png",
+      "notes": ""
+    },
+    {
+      "sequence": 26,
+      "viewport": "desktop",
+      "step": "targets-route",
+      "intended_path": "/targets",
+      "final_path": "/tasks?tab=targets",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/26-targets-route.png",
+      "notes": ""
+    },
+    {
+      "sequence": 27,
+      "viewport": "desktop",
+      "step": "onboarding-route",
+      "intended_path": "/onboarding",
+      "final_path": "/onboarding",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/27-onboarding-route.png",
+      "notes": ""
+    },
+    {
+      "sequence": 28,
+      "viewport": "desktop",
+      "step": "journal-stability-pass-1",
+      "intended_path": "/journal",
+      "final_path": "/journal",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/28-journal-stability-pass-1.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 29,
+      "viewport": "desktop",
+      "step": "journal-stability-pass-2",
+      "intended_path": "/journal",
+      "final_path": "/journal",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/29-journal-stability-pass-2.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 30,
+      "viewport": "desktop",
+      "step": "journal-stability-pass-3",
+      "intended_path": "/journal",
+      "final_path": "/journal",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/30-journal-stability-pass-3.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 31,
+      "viewport": "desktop",
+      "step": "settings-access-stability-pass-1",
+      "intended_path": "/settings?tab=access",
+      "final_path": "/settings?tab=access",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/31-settings-access-stability-pass-1.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 32,
+      "viewport": "desktop",
+      "step": "settings-access-stability-pass-2",
+      "intended_path": "/settings?tab=access",
+      "final_path": "/settings?tab=access",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/32-settings-access-stability-pass-2.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 33,
+      "viewport": "desktop",
+      "step": "settings-access-stability-pass-3",
+      "intended_path": "/settings?tab=access",
+      "final_path": "/settings?tab=access",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/desktop/33-settings-access-stability-pass-3.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 1,
+      "viewport": "mobile",
+      "step": "welcome",
+      "intended_path": "/",
+      "final_path": "/",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/01-welcome.png",
+      "notes": ""
+    },
+    {
+      "sequence": 2,
+      "viewport": "mobile",
+      "step": "auth-login",
+      "intended_path": "/auth",
+      "final_path": "/auth",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/02-auth-login.png",
+      "notes": ""
+    },
+    {
+      "sequence": 3,
+      "viewport": "mobile",
+      "step": "auth-register",
+      "intended_path": "/auth?mode=register",
+      "final_path": "/auth?mode=register",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/03-auth-register.png",
+      "notes": ""
+    },
+    {
+      "sequence": 4,
+      "viewport": "mobile",
+      "step": "dashboard",
+      "intended_path": "/dashboard",
+      "final_path": "/dashboard",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/04-dashboard.png",
+      "notes": ""
+    },
+    {
+      "sequence": 5,
+      "viewport": "mobile",
+      "step": "tasks-board",
+      "intended_path": "/tasks?tab=tasks",
+      "final_path": "/tasks?tab=tasks",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/05-tasks-board.png",
+      "notes": ""
+    },
+    {
+      "sequence": 6,
+      "viewport": "mobile",
+      "step": "tasks-add-card-open",
+      "intended_path": "/tasks?tab=tasks",
+      "final_path": "/tasks?tab=tasks",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/06-tasks-add-card-open.png",
+      "notes": "After clicking first Add card."
+    },
+    {
+      "sequence": 7,
+      "viewport": "mobile",
+      "step": "tasks-lists",
+      "intended_path": "/tasks?tab=lists",
+      "final_path": "/tasks?tab=lists",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/07-tasks-lists.png",
+      "notes": ""
+    },
+    {
+      "sequence": 8,
+      "viewport": "mobile",
+      "step": "tasks-targets",
+      "intended_path": "/tasks?tab=targets",
+      "final_path": "/tasks?tab=targets",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/08-tasks-targets.png",
+      "notes": ""
+    },
+    {
+      "sequence": 9,
+      "viewport": "mobile",
+      "step": "tasks-goals",
+      "intended_path": "/tasks?tab=goals",
+      "final_path": "/tasks?tab=goals",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/09-tasks-goals.png",
+      "notes": ""
+    },
+    {
+      "sequence": 10,
+      "viewport": "mobile",
+      "step": "habits",
+      "intended_path": "/habits",
+      "final_path": "/habits",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/10-habits.png",
+      "notes": ""
+    },
+    {
+      "sequence": 11,
+      "viewport": "mobile",
+      "step": "routines",
+      "intended_path": "/routines",
+      "final_path": "/routines",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/11-routines.png",
+      "notes": ""
+    },
+    {
+      "sequence": 12,
+      "viewport": "mobile",
+      "step": "calendar",
+      "intended_path": "/calendar",
+      "final_path": "/calendar",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/12-calendar.png",
+      "notes": ""
+    },
+    {
+      "sequence": 13,
+      "viewport": "mobile",
+      "step": "calendar-day",
+      "intended_path": "/calendar",
+      "final_path": "/calendar",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/13-calendar-day.png",
+      "notes": "Calendar switched to Dzien."
+    },
+    {
+      "sequence": 14,
+      "viewport": "mobile",
+      "step": "calendar-week",
+      "intended_path": "/calendar",
+      "final_path": "/calendar",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/14-calendar-week.png",
+      "notes": "Calendar switched to Tydzien."
+    },
+    {
+      "sequence": 15,
+      "viewport": "mobile",
+      "step": "calendar-month",
+      "intended_path": "/calendar",
+      "final_path": "/calendar",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/15-calendar-month.png",
+      "notes": "Calendar switched to Miesiac."
+    },
+    {
+      "sequence": 16,
+      "viewport": "mobile",
+      "step": "journal",
+      "intended_path": "/journal",
+      "final_path": "/journal",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/16-journal.png",
+      "notes": ""
+    },
+    {
+      "sequence": 17,
+      "viewport": "mobile",
+      "step": "life-areas",
+      "intended_path": "/life-areas",
+      "final_path": "/life-areas",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/17-life-areas.png",
+      "notes": ""
+    },
+    {
+      "sequence": 18,
+      "viewport": "mobile",
+      "step": "insights",
+      "intended_path": "/insights",
+      "final_path": "/insights",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/18-insights.png",
+      "notes": ""
+    },
+    {
+      "sequence": 19,
+      "viewport": "mobile",
+      "step": "settings-profile",
+      "intended_path": "/settings",
+      "final_path": "/settings",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/19-settings-profile.png",
+      "notes": ""
+    },
+    {
+      "sequence": 20,
+      "viewport": "mobile",
+      "step": "settings-application",
+      "intended_path": "/settings?tab=application",
+      "final_path": "/settings?tab=application",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/20-settings-application.png",
+      "notes": ""
+    },
+    {
+      "sequence": 21,
+      "viewport": "mobile",
+      "step": "settings-access-api",
+      "intended_path": "/settings?tab=access",
+      "final_path": "/settings?tab=access",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/21-settings-access-api.png",
+      "notes": ""
+    },
+    {
+      "sequence": 22,
+      "viewport": "mobile",
+      "step": "settings-subscription",
+      "intended_path": "/settings?tab=subscription",
+      "final_path": "/settings?tab=subscription",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/22-settings-subscription.png",
+      "notes": ""
+    },
+    {
+      "sequence": 23,
+      "viewport": "mobile",
+      "step": "automations",
+      "intended_path": "/automations",
+      "final_path": "/automations",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/23-automations.png",
+      "notes": ""
+    },
+    {
+      "sequence": 24,
+      "viewport": "mobile",
+      "step": "billing",
+      "intended_path": "/billing",
+      "final_path": "/billing",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/24-billing.png",
+      "notes": ""
+    },
+    {
+      "sequence": 25,
+      "viewport": "mobile",
+      "step": "goals-route",
+      "intended_path": "/goals",
+      "final_path": "/tasks?tab=goals",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/25-goals-route.png",
+      "notes": ""
+    },
+    {
+      "sequence": 26,
+      "viewport": "mobile",
+      "step": "targets-route",
+      "intended_path": "/targets",
+      "final_path": "/tasks?tab=targets",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/26-targets-route.png",
+      "notes": ""
+    },
+    {
+      "sequence": 27,
+      "viewport": "mobile",
+      "step": "onboarding-route",
+      "intended_path": "/onboarding",
+      "final_path": "/onboarding",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/27-onboarding-route.png",
+      "notes": ""
+    },
+    {
+      "sequence": 28,
+      "viewport": "mobile",
+      "step": "journal-stability-pass-1",
+      "intended_path": "/journal",
+      "final_path": "/journal",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/28-journal-stability-pass-1.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 29,
+      "viewport": "mobile",
+      "step": "journal-stability-pass-2",
+      "intended_path": "/journal",
+      "final_path": "/journal",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/29-journal-stability-pass-2.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 30,
+      "viewport": "mobile",
+      "step": "journal-stability-pass-3",
+      "intended_path": "/journal",
+      "final_path": "/journal",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/30-journal-stability-pass-3.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 31,
+      "viewport": "mobile",
+      "step": "settings-access-stability-pass-1",
+      "intended_path": "/settings?tab=access",
+      "final_path": "/settings?tab=access",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/31-settings-access-stability-pass-1.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 32,
+      "viewport": "mobile",
+      "step": "settings-access-stability-pass-2",
+      "intended_path": "/settings?tab=access",
+      "final_path": "/settings?tab=access",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/32-settings-access-stability-pass-2.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    },
+    {
+      "sequence": 33,
+      "viewport": "mobile",
+      "step": "settings-access-stability-pass-3",
+      "intended_path": "/settings?tab=access",
+      "final_path": "/settings?tab=access",
+      "screenshot": "docs/ux_audit_evidence/2026-04-01/mobile/33-settings-access-stability-pass-3.png",
+      "notes": "Repeated open to detect spontaneous redirects."
+    }
+  ]
+}

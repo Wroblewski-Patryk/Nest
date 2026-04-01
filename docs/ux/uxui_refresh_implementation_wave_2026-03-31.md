@@ -69,3 +69,20 @@ Updated files in this extension:
 - `apps/web/src/app/insights/page.tsx`
 - `apps/web/src/app/auth/page.tsx`
 - `apps/web/src/lib/mvp-snapshot.ts`
+
+## Wave Extension (2026-04-01)
+
+Full-system UX audit and target-baseline definition completed as planning input for
+the next implementation slice:
+
+- Added deterministic full-system screenshot capture script:
+  - `scripts/ux-audit/capture-system-audit.mjs`
+- Captured desktop and mobile evidence set:
+  - `docs/ux_audit_evidence/2026-04-01/capture-manifest.json`
+  - `docs/ux_audit_evidence/2026-04-01/capture-manifest.csv`
+  - `docs/ux_audit_evidence/2026-04-01/desktop/*.png`
+  - `docs/ux_audit_evidence/2026-04-01/mobile/*.png`
+- Defined target UX assumptions for module-by-module implementation:
+  - `docs/ux/nest_190_full_system_ux_target_assumptions_2026-04-01.md`
+- Updated foundation contract to reference current baseline:
+  - `docs/ux/ui-ux-foundation.md`
