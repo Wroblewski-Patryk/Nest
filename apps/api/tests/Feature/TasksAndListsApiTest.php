@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\Goal;
+use App\Models\LifeArea;
 use App\Models\Task;
 use App\Models\TaskList;
 use App\Models\Tenant;
+use App\Models\Target;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -133,6 +136,77 @@ class TasksAndListsApiTest extends TestCase
         $secondId = $second->json('data.id');
 
         $this->assertNotSame($firstId, $secondId);
+    }
+
+    public function test_user_can_assign_list_to_goal_target_and_life_area(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $lifeArea = LifeArea::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        $goal = Goal::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        $target = Target::factory()->create([
+            'tenant_id' => $tenant->id,
+            'goal_id' => $goal->id,
+        ]);
+
+        $create = $this->postJson('/api/v1/lists', [
+            'name' => 'Execution Board',
+            'goal_id' => $goal->id,
+            'target_id' => $target->id,
+            'life_area_id' => $lifeArea->id,
+        ])->assertCreated();
+
+        $listId = (string) $create->json('data.id');
+        $this->assertSame($goal->id, $create->json('data.goal_id'));
+        $this->assertSame($target->id, $create->json('data.target_id'));
+        $this->assertSame($lifeArea->id, $create->json('data.life_area_id'));
+
+        $this->patchJson("/api/v1/lists/{$listId}", [
+            'goal_id' => null,
+            'target_id' => null,
+            'life_area_id' => null,
+        ])->assertOk()
+            ->assertJsonPath('data.goal_id', null)
+            ->assertJsonPath('data.target_id', null)
+            ->assertJsonPath('data.life_area_id', null);
+    }
+
+    public function test_user_can_assign_task_life_area_and_update_it(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $lifeArea = LifeArea::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        $list = TaskList::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        $taskId = (string) $this->postJson('/api/v1/tasks', [
+            'list_id' => $list->id,
+            'title' => 'Align task with life area',
+            'life_area_id' => $lifeArea->id,
+        ])->assertCreated()->json('data.id');
+
+        $this->patchJson("/api/v1/tasks/{$taskId}", [
+            'life_area_id' => null,
+        ])->assertOk()
+            ->assertJsonPath('data.life_area_id', null);
     }
 
     public function test_user_cannot_access_other_tenant_lists_or_tasks(): void

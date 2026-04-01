@@ -1231,6 +1231,40 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-181 Rebuild Tasks+Lists as Kanban with planning-context assignments
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-180
+  - Done when:
+    - `Tasks + Lists` uses single-column module layout and renders board-style
+      kanban columns (lists as columns, tasks as cards),
+    - list create/edit supports `goal_id`, `target_id`, and `life_area_id`
+      assignment with server-side validation and persisted API fields,
+    - task create/edit supports optional `life_area_id` assignment and GUI
+      controls are enabled for practical day-to-day CRUD.
+  - Notes:
+    - Added task-list planning-context schema + model/controller coverage:
+      `apps/api/database/migrations/2026_04_01_030000_add_context_references_to_task_lists_table.php`,
+      `apps/api/app/Models/TaskList.php`,
+      `apps/api/app/Http/Controllers/Api/TaskListController.php`.
+    - Added task-level life-area assignment validation/write-path support:
+      `apps/api/app/Http/Controllers/Api/TaskController.php`.
+    - Added API regressions for new context assignment flows:
+      `apps/api/tests/Feature/TasksAndListsApiTest.php`.
+    - Rebuilt web `Tasks + Lists` route to kanban board flow with active list
+      + task forms and context selectors:
+      `apps/web/src/app/tasks/page.tsx`.
+    - Refined workspace layout mode handling so only explicit modules use
+      two-column grids:
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/app/dashboard/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Validation:
+      `php artisan test --filter=TasksAndListsApiTest`,
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

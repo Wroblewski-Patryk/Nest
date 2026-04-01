@@ -120,6 +120,7 @@ export default function DashboardPage() {
       subtitle="Twoj widok dnia: co zrobic teraz i gdzie dodac kolejne elementy planu."
       navKey="dashboard"
       module="tasks"
+      contentLayout="grid"
     >
       <div className="stack">
         <MetricCard label="Today tasks" value={String(todayTasks.length)} />

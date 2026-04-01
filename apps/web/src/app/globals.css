@@ -754,6 +754,102 @@ input[type="color"].list-row {
   color: #f8fdf8;
 }
 
+.kanban-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.kanban-columns {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(280px, 320px);
+  gap: 0.7rem;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+}
+
+.kanban-column {
+  border: 1px solid var(--line-ghost);
+  border-radius: 0.95rem;
+  background: color-mix(in srgb, #fff, var(--surface-low) 16%);
+  padding: 0.62rem;
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  min-height: 220px;
+}
+
+.kanban-column-head {
+  display: grid;
+  gap: 0.38rem;
+}
+
+.kanban-column-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+
+.kanban-column-title {
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.kanban-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.kanban-badge {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent), #fff 40%);
+  background: color-mix(in srgb, var(--accent-soft), #fff 24%);
+  color: color-mix(in srgb, var(--accent), #000 16%);
+  padding: 0.14rem 0.5rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.kanban-card {
+  border: 1px solid var(--line-ghost);
+  border-radius: 0.8rem;
+  background: rgb(255 255 255 / 82%);
+  padding: 0.52rem 0.58rem;
+  display: grid;
+  gap: 0.32rem;
+}
+
+.kanban-card h4 {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.kanban-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+.kanban-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34rem;
+  flex-wrap: wrap;
+}
+
+.kanban-column-footer {
+  border-top: 1px dashed var(--line-ghost);
+  padding-top: 0.42rem;
+}
+
 @media (min-width: 920px) {
   .public-main {
     padding: 1.9rem 1.35rem 2.4rem;
@@ -774,11 +870,11 @@ input[type="color"].list-row {
     align-items: start;
   }
 
-  .workspace-grid {
+  .workspace-grid.is-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .stack {
+  .workspace-grid.is-grid .stack {
     grid-column: span 2;
   }
 

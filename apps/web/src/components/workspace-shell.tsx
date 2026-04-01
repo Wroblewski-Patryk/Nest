@@ -10,6 +10,7 @@ type WorkspaceShellProps = {
   subtitle: string;
   module?: ModuleKey;
   navKey?: WorkspaceNavKey | "none";
+  contentLayout?: "single" | "grid";
   children: ReactNode;
 };
 
@@ -159,10 +160,11 @@ function MenuIcon({ name }: { name: NavIconName }) {
   );
 }
 
-export function WorkspaceShell({ title, subtitle, module, navKey, children }: WorkspaceShellProps) {
+export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout, children }: WorkspaceShellProps) {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const auraVariant = resolveAuraVariant(module ?? "tasks");
   const activeNavKey = navKey === "none" ? null : (navKey ?? module ?? null);
+  const layoutClass = contentLayout === "grid" ? "is-grid" : "is-single";
 
   return (
     <div className={`workspace-bg aura-${auraVariant}`}>
@@ -212,7 +214,7 @@ export function WorkspaceShell({ title, subtitle, module, navKey, children }: Wo
           </div>
         </header>
 
-        <main className="workspace-grid">{children}</main>
+        <main className={`workspace-grid ${layoutClass}`}>{children}</main>
 
         <nav className="workspace-mobile-nav" aria-label="Mobile modules">
           {NAV_ITEMS.filter((item) =>

@@ -24,6 +24,9 @@ class TaskList extends Model
         'tenant_id',
         'user_id',
         'project_id',
+        'goal_id',
+        'target_id',
+        'life_area_id',
         'name',
         'color',
         'position',
@@ -57,6 +60,30 @@ class TaskList extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return BelongsTo<Goal, $this>
+     */
+    public function goal(): BelongsTo
+    {
+        return $this->belongsTo(Goal::class);
+    }
+
+    /**
+     * @return BelongsTo<Target, $this>
+     */
+    public function target(): BelongsTo
+    {
+        return $this->belongsTo(Target::class);
+    }
+
+    /**
+     * @return BelongsTo<LifeArea, $this>
+     */
+    public function lifeArea(): BelongsTo
+    {
+        return $this->belongsTo(LifeArea::class);
     }
 
     /**

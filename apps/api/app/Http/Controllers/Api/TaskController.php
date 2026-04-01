@@ -6,6 +6,7 @@ use App\Collaboration\Services\AssignmentTimelineService;
 use App\Collaboration\Services\CollaborationAccessService;
 use App\Http\Controllers\Controller;
 use App\Models\CollaborationSpaceMember;
+use App\Models\LifeArea;
 use App\Models\Task;
 use App\Models\TaskList;
 use App\Models\User;
@@ -89,6 +90,7 @@ class TaskController extends Controller
             'priority' => ['nullable', Rule::in(['low', 'medium', 'high', 'urgent'])],
             'due_date' => ['nullable', 'date'],
             'starts_at' => ['nullable', 'date'],
+            'life_area_id' => ['nullable', 'uuid'],
             'assignee_user_id' => ['nullable', 'uuid'],
             'reminder_owner_user_id' => ['nullable', 'uuid'],
             'handoff_note' => ['nullable', 'string', 'max:500'],
@@ -102,6 +104,7 @@ class TaskController extends Controller
             $payload['assignee_user_id'] ?? $user->id,
             $payload['reminder_owner_user_id'] ?? ($payload['assignee_user_id'] ?? $user->id)
         );
+        $lifeAreaId = $this->normalizeTaskLifeAreaReference($user, $payload['life_area_id'] ?? null);
 
         $task = Task::query()->create([
             'tenant_id' => $user->tenant_id,
@@ -115,6 +118,7 @@ class TaskController extends Controller
             'priority' => $payload['priority'] ?? 'medium',
             'due_date' => $payload['due_date'] ?? null,
             'starts_at' => $payload['starts_at'] ?? null,
+            'life_area_id' => $lifeAreaId,
             'source' => 'internal',
             'sort_order' => 0,
         ]);
@@ -210,6 +214,7 @@ class TaskController extends Controller
             'due_date' => ['sometimes', 'nullable', 'date'],
             'starts_at' => ['sometimes', 'nullable', 'date'],
             'completed_at' => ['sometimes', 'nullable', 'date'],
+            'life_area_id' => ['sometimes', 'nullable', 'uuid'],
             'assignee_user_id' => ['sometimes', 'nullable', 'uuid'],
             'reminder_owner_user_id' => ['sometimes', 'nullable', 'uuid'],
             'handoff_note' => ['sometimes', 'nullable', 'string', 'max:500'],
@@ -247,6 +252,10 @@ class TaskController extends Controller
                 $candidateAssignee,
                 $candidateReminderOwner
             );
+        }
+
+        if (array_key_exists('life_area_id', $payload)) {
+            $payload['life_area_id'] = $this->normalizeTaskLifeAreaReference($user, $payload['life_area_id']);
         }
 
         $task->fill($payload);
@@ -466,5 +475,26 @@ class TaskController extends Controller
             body: $body,
             payload: $payload,
         );
+    }
+
+    private function normalizeTaskLifeAreaReference(User $user, ?string $lifeAreaId): ?string
+    {
+        if ($lifeAreaId === null || $lifeAreaId === '') {
+            return null;
+        }
+
+        $exists = LifeArea::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('user_id', $user->id)
+            ->whereKey($lifeAreaId)
+            ->exists();
+
+        if (! $exists) {
+            throw ValidationException::withMessages([
+                'life_area_id' => ['Life area must belong to your account in current workspace.'],
+            ]);
+        }
+
+        return $lifeAreaId;
     }
 }
