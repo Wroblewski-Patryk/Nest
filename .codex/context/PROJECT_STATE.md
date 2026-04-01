@@ -747,6 +747,13 @@ Last updated: 2026-04-01
   `apps/api/app/Http/Controllers/Api/TaskController.php`,
   `apps/api/app/Policies/TaskPolicy.php`,
   `apps/api/tests/Feature/TasksAndListsApiTest.php`)
+- `NEST-184` completed: Tasks module clickthrough audit is executed end-to-end
+  with documented web findings/remediation, web `/tasks` loading contract and
+  feedback UX issues fixed, and mobile `tasks` tab rebuilt to practical
+  API-backed CRUD baseline for lists/tasks (including standalone no-list flow)
+  (`docs/ux/nest_184_tasks_module_clickthrough_remediation_2026-04-01.md`,
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/mobile/app/(tabs)/index.tsx`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

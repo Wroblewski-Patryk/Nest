@@ -1319,6 +1319,35 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-184 Execute full `/tasks` clickthrough audit and close web/mobile UX blockers
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-183
+  - Done when:
+    - all primary create/edit/delete/toggle/filter actions in web `/tasks` are
+      manually validated via clickthrough evidence,
+    - identified blocker defects are fixed in implementation (not only
+      documented),
+    - mobile `tasks` tab reaches practical API-backed CRUD baseline aligned
+      with current web flow expectations.
+  - Notes:
+    - Published clickthrough findings and remediation report in:
+      `docs/ux/nest_184_tasks_module_clickthrough_remediation_2026-04-01.md`.
+    - Fixed web task loading contract issue by replacing invalid oversized
+      `per_page` request with guarded paginated fetch in:
+      `apps/web/src/app/tasks/page.tsx`.
+    - Improved web tasks UX ergonomics with top-level feedback callouts and
+      focused default board density (`hide empty columns` enabled by default).
+    - Rebuilt mobile tasks tab from placeholder state to practical API-backed
+      Tasks+Lists workflow in:
+      `apps/mobile/app/(tabs)/index.tsx`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web test:smoke`,
+      `pnpm --dir apps/mobile test:unit`,
+      `pnpm --dir apps/mobile test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

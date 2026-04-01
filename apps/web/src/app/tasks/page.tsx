@@ -59,6 +59,8 @@ type ApiRequestInit = Omit<RequestInit, "body"> & {
 };
 
 const UNASSIGNED_COLUMN_ID = "__unassigned__";
+const TASKS_PAGE_SIZE = 100;
+const TASKS_PAGE_GUARD_LIMIT = 20;
 
 function createEmptyTaskDraft(): TaskDraft {
   return {
@@ -233,7 +235,7 @@ export default function TasksPage() {
   const [statusFilter, setStatusFilter] = useState<"all" | "open" | "done">("all");
   const [listContextFilter, setListContextFilter] = useState<"all" | "with_context" | "without_context">("all");
   const [boardLifeAreaFilter, setBoardLifeAreaFilter] = useState("");
-  const [hideEmptyColumns, setHideEmptyColumns] = useState(false);
+  const [hideEmptyColumns, setHideEmptyColumns] = useState(true);
 
   const [feedback, setFeedback] = useState("Kanban board gotowy: listy jako kolumny, taski jako karty.");
   const [errorMessage, setErrorMessage] = useState("");
@@ -243,10 +245,36 @@ export default function TasksPage() {
     router.replace("/auth");
   }, [router]);
 
+  const loadAllTasks = useCallback(async (): Promise<TaskItem[]> => {
+    const allTasks: TaskItem[] = [];
+    let page = 1;
+
+    while (page <= TASKS_PAGE_GUARD_LIMIT) {
+      const response = await nestApiClient.getTasks({
+        page,
+        per_page: TASKS_PAGE_SIZE,
+        sort: "-created_at",
+      });
+
+      const chunk = (response.data ?? []) as TaskItem[];
+      allTasks.push(...chunk);
+
+      const total =
+        response.meta && typeof response.meta.total === "number" ? response.meta.total : allTasks.length;
+      if (chunk.length === 0 || allTasks.length >= total) {
+        break;
+      }
+
+      page += 1;
+    }
+
+    return allTasks;
+  }, []);
+
   const loadWorkspace = useCallback(async () => {
     const [listsResponse, tasksResponse, goalsResponse, targetsResponse, lifeAreasResponse] = await Promise.all([
       nestApiClient.getLists({ per_page: 100 }),
-      nestApiClient.getTasks({ per_page: 200, sort: "-created_at" }),
+      loadAllTasks(),
       nestApiClient.getGoals({ per_page: 100 }),
       apiRequest<{ data: TargetItem[] }>("/targets", { query: { per_page: 100 } }),
       apiRequest<{ data: LifeAreaItem[] }>("/life-areas", { query: { per_page: 100 } }),
@@ -254,7 +282,7 @@ export default function TasksPage() {
 
     const normalizedLists = (listsResponse.data ?? []) as ListItem[];
     setLists(normalizedLists);
-    setTasks((tasksResponse.data ?? []) as TaskItem[]);
+    setTasks(tasksResponse);
     setGoals((goalsResponse.data ?? []) as GoalItem[]);
     setTargets(targetsResponse.data ?? []);
     setLifeAreas(lifeAreasResponse.data ?? []);
@@ -267,7 +295,7 @@ export default function TasksPage() {
       next[UNASSIGNED_COLUMN_ID] = current[UNASSIGNED_COLUMN_ID] ?? createEmptyTaskDraft();
       return next;
     });
-  }, []);
+  }, [loadAllTasks]);
 
   useEffect(() => {
     let mounted = true;
@@ -710,6 +738,9 @@ export default function TasksPage() {
         />
       </div>
 
+      {errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
+      {!errorMessage && feedback ? <p className="callout state-success">{feedback}</p> : null}
+
       <Panel title="Create List">
         <form className="form-grid" onSubmit={createList}>
           <label className="field">
@@ -879,7 +910,7 @@ export default function TasksPage() {
               setStatusFilter("all");
               setListContextFilter("all");
               setBoardLifeAreaFilter("");
-              setHideEmptyColumns(false);
+              setHideEmptyColumns(true);
             }}
           >
             Reset
@@ -1572,16 +1603,6 @@ export default function TasksPage() {
         </div>
       </section>
 
-      {feedback ? (
-        <Panel title="Status">
-          <p className="callout">{feedback}</p>
-        </Panel>
-      ) : null}
-      {errorMessage ? (
-        <Panel title="Error">
-          <p className="callout state-error">{errorMessage}</p>
-        </Panel>
-      ) : null}
     </WorkspaceShell>
   );
 }
