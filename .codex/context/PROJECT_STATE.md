@@ -783,6 +783,12 @@ Last updated: 2026-04-01
   (`apps/web/src/components/workspace-shell.tsx`,
   `apps/web/src/app/tasks/page.tsx`,
   `apps/web/src/app/globals.css`)
+- `NEST-189` completed: dashboard is now rebuilt as a mobile-first daily
+  cockpit with one responsive system for web-mobile and desktop, including:
+  progress hero, `Morning/Now/Evening` timeline, `Zadania/Nawyki` focus tabs,
+  quick reflection save flow, and compact quick actions
+  (`apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/app/globals.css`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

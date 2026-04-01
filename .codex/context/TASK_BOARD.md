@@ -1452,6 +1452,30 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web build`.
   - Done on: 2026-04-01
 
+- [x] NEST-189 Redesign dashboard into mobile-first daily cockpit style
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-188
+  - Done when:
+    - dashboard UI follows mobile-first structure and visual language inspired
+      by provided daily-life cockpit reference,
+    - web mobile and desktop keep one coherent layout system (desktop as
+      extension of mobile, not separate design),
+    - dashboard exposes practical daily sections: timeline, tasks/habits focus,
+      quick reflection, and quick actions.
+  - Notes:
+    - Rebuilt dashboard data/UX surface in:
+      `apps/web/src/app/dashboard/page.tsx`.
+    - Added dedicated responsive dashboard styles in:
+      `apps/web/src/app/globals.css`.
+    - Dashboard now includes:
+      hero with progress bar, day timeline blocks (`Morning/Now/Evening`),
+      toggle tabs (`Zadania/Nawyki`), quick journal entry save, and compact
+      quick-actions grid.
+    - Validation:
+      `pnpm --dir apps/web build`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent
