@@ -179,7 +179,7 @@ Last updated: 2026-04-01
   `docs/planning/next_execution_wave_2026-03-21.md`
 - Auth/usability/AI-access remediation wave documented in
   `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md` with
-  execution queue `NEST-160` to `NEST-178`.
+  execution queue `NEST-160` to `NEST-179`.
 - `NEST-001` completed: monorepo structure approved and documented in
   `docs/engineering/monorepo_structure.md`
 - `NEST-002` completed: Laravel backend skeleton bootstrapped in `apps/api`
@@ -706,6 +706,16 @@ Last updated: 2026-04-01
   (`apps/web/src/app/life-areas/page.tsx`,
   `apps/web/src/components/workspace-shell.tsx`,
   `apps/web/src/lib/route-guard.ts`)
+- `NEST-179` completed: settings IA is reorganized into practical tabs
+  (`Moj profil`, `Ustawienia aplikacji`, `Access i API`, `Subskrypcja`),
+  global logout is available in the main left menu, and middleware no longer
+  persists onboarding status cookie (preventing stale onboarding navigation
+  side effects on guarded settings access)
+  (`apps/web/src/app/settings/page.tsx`,
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/components/workspace-logout-button.tsx`,
+  `apps/web/src/app/globals.css`,
+  `apps/web/middleware.ts`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

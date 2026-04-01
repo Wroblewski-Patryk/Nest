@@ -596,11 +596,15 @@ input[type="color"].list-row {
 }
 
 .settings-tab {
+  display: grid;
+  gap: 0.08rem;
+  align-items: start;
+  text-align: left;
   border: 1px solid color-mix(in srgb, var(--accent), #fff 35%);
-  border-radius: 999px;
+  border-radius: 0.72rem;
   background: color-mix(in srgb, var(--accent-soft), #fff 26%);
   color: color-mix(in srgb, var(--accent), #000 20%);
-  padding: 0.3rem 0.74rem;
+  padding: 0.45rem 0.7rem;
   font-size: 0.74rem;
   font-weight: 700;
   cursor: pointer;
@@ -609,6 +613,29 @@ input[type="color"].list-row {
 .settings-tab.is-active {
   background: var(--accent);
   color: #f8fdf8;
+}
+
+.settings-tab strong {
+  font-size: 0.74rem;
+  letter-spacing: 0.01em;
+}
+
+.settings-tab small {
+  font-size: 0.64rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.settings-grid-dual {
+  display: grid;
+  gap: 0.56rem;
+}
+
+.form-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
 }
 
 .dot {
@@ -638,6 +665,22 @@ input[type="color"].list-row {
   font-size: 0.68rem;
   font-weight: 700;
   text-align: center;
+}
+
+.workspace-logout-button {
+  border: 1px solid rgb(186 26 26 / 32%);
+  border-radius: 999px;
+  background: rgb(255 218 214 / 55%);
+  color: color-mix(in srgb, var(--danger), #000 15%);
+  padding: 0.25rem 0.62rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.workspace-logout-button:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
 }
 
 .workspace-mobile-nav {
@@ -705,6 +748,10 @@ input[type="color"].list-row {
 
   .stack {
     grid-column: span 2;
+  }
+
+  .settings-grid-dual {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .workspace-mobile-nav {

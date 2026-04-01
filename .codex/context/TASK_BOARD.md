@@ -1177,6 +1177,35 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-179 Reorganize settings IA and add global logout action in app menu
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-178
+  - Done when:
+    - left rail footer links to `/settings` (not `?tab=access`) and exposes a
+      global logout action,
+    - settings page removes non-essential summary metrics and is split into
+      clear tabs (`Moj profil`, `Ustawienia aplikacji`, `Access i API`,
+      `Subskrypcja`),
+    - access-tab navigation remains stable and does not trigger onboarding
+      redirect drift.
+  - Notes:
+    - Added global menu logout action:
+      `apps/web/src/components/workspace-logout-button.tsx`,
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Reworked settings information architecture and removed obsolete profile
+      metrics/scope copy:
+      `apps/web/src/app/settings/page.tsx`.
+    - Removed middleware persistence of onboarding status cookie to avoid stale
+      onboarding-driven navigation side effects on guarded routes:
+      `apps/web/middleware.ts`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

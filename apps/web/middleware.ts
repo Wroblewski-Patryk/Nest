@@ -10,17 +10,6 @@ import {
 } from "@/lib/route-guard";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_NEST_API_URL ?? "http://127.0.0.1:9000/api/v1";
-const onboardingCookieMaxAgeSeconds = 60 * 60 * 24 * 30; // 30 days
-
-function readOnboardingCookie(raw: string | undefined): boolean | null {
-  if (raw === "1") {
-    return true;
-  }
-  if (raw === "0") {
-    return false;
-  }
-  return null;
-}
 
 async function resolveSessionFromApi(token: string): Promise<{
   authenticated: boolean;
@@ -77,22 +66,6 @@ function withClearedSessionCookies(response: NextResponse): NextResponse {
   return response;
 }
 
-function withOnboardingCookie(response: NextResponse, required: boolean | null): NextResponse {
-  if (required === null) {
-    return response;
-  }
-
-  response.cookies.set({
-    name: ONBOARDING_REQUIRED_COOKIE_KEY,
-    value: required ? "1" : "0",
-    path: "/",
-    maxAge: onboardingCookieMaxAgeSeconds,
-    sameSite: "lax",
-  });
-
-  return response;
-}
-
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
   const pathNeedsGuard = isProtectedPath(pathname) || isPublicPath(pathname) || isOnboardingPath(pathname);
@@ -103,9 +76,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
   const token = request.cookies.get(AUTH_TOKEN_COOKIE_KEY)?.value;
   const hasToken = typeof token === "string" && token.trim().length > 0;
-  let onboardingRequired = readOnboardingCookie(
-    request.cookies.get(ONBOARDING_REQUIRED_COOKIE_KEY)?.value
-  );
+  let onboardingRequired: boolean | null = null;
 
   if (hasToken && token) {
     const resolved = await resolveSessionFromApi(token);
@@ -135,10 +106,10 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
   if (result.redirectTo) {
     const target = new URL(result.redirectTo, request.url);
-    return withOnboardingCookie(NextResponse.redirect(target), onboardingRequired);
+    return NextResponse.redirect(target);
   }
 
-  return withOnboardingCookie(NextResponse.next(), onboardingRequired);
+  return NextResponse.next();
 }
 
 export const config = {

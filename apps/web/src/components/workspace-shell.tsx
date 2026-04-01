@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { formatLocalizedDateTime, resolveAuraVariant, resolveLanguage, translate, type ModuleKey } from "@nest/shared-types";
+import { WorkspaceLogoutButton } from "@/components/workspace-logout-button";
 
 type WorkspaceNavKey = ModuleKey | "dashboard" | "settings";
 
@@ -187,9 +188,10 @@ export function WorkspaceShell({ title, subtitle, module, navKey, children }: Wo
         </nav>
 
         <div className="workspace-rail-footer">
-          <Link href="/settings?tab=access" className="workspace-settings-link">
-            Access Control
+          <Link href="/settings" className="workspace-settings-link">
+            Settings
           </Link>
+          <WorkspaceLogoutButton />
         </div>
       </aside>
 

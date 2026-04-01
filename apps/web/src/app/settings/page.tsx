@@ -1,12 +1,12 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
+import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
-import { clearAuthSession, getAuthToken, setOnboardingRequired } from "@/lib/auth-session";
+import { clearAuthSession, getAuthToken } from "@/lib/auth-session";
 
-type SettingsTab = "profile" | "access";
+type SettingsTab = "profile" | "application" | "access" | "subscription";
 type ProfileLanguage = "en" | "pl";
 
 type AuthUser = {
@@ -66,7 +66,19 @@ type ApiRequestInit = Omit<RequestInit, "body"> & {
 const FALLBACK_SCOPES = ["tasks:read", "tasks:write", "lists:read", "lists:write"];
 
 function detectSettingsTab(value: string | null): SettingsTab {
-  return value === "access" ? "access" : "profile";
+  if (value === "access") {
+    return "access";
+  }
+
+  if (value === "application" || value === "app") {
+    return "application";
+  }
+
+  if (value === "subscription" || value === "billing") {
+    return "subscription";
+  }
+
+  return "profile";
 }
 
 async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
@@ -164,7 +176,6 @@ export default function SettingsPage() {
 
   const handleUnauthorized = useCallback(() => {
     clearAuthSession();
-    setOnboardingRequired(false);
     setUser(null);
     router.replace("/auth");
   }, [router]);
@@ -262,7 +273,6 @@ export default function SettingsPage() {
     try {
       const meResponse = await apiRequest<{ data: AuthUser }>("/auth/me");
       const me = meResponse.data;
-      setOnboardingRequired(Boolean(me.onboarding_required));
       setUser(me);
       setProfileName(me.name ?? "");
       setProfileLanguage(me.language === "pl" ? "pl" : "en");
@@ -281,11 +291,6 @@ export default function SettingsPage() {
   useEffect(() => {
     void bootstrapSession();
   }, [bootstrapSession]);
-
-  const activeDelegatedCount = useMemo(
-    () => delegatedCredentials.filter((item) => item.status === "active").length,
-    [delegatedCredentials]
-  );
 
   function toggleScope(current: string[], scope: string): string[] {
     if (current.includes(scope)) {
@@ -308,8 +313,7 @@ export default function SettingsPage() {
     }));
   }
 
-  async function saveProfilePreferences(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function persistUserSettings(successMessage: string) {
     if (!profileName.trim()) {
       setErrorMessage("Display name is required.");
       return;
@@ -333,7 +337,7 @@ export default function SettingsPage() {
       setUser(response.data);
       setProfileName(response.data.name ?? profileName.trim());
       setProfileLanguage(response.data.language === "pl" ? "pl" : normalizedLanguage);
-      setFeedback("Profile preferences updated.");
+      setFeedback(successMessage);
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -345,13 +349,14 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleLogout() {
-    try {
-      await apiRequest("/auth/logout", { method: "POST" });
-    } catch {
-      // no-op
-    }
-    handleUnauthorized();
+  async function saveProfilePreferences(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await persistUserSettings("Profile updated.");
+  }
+
+  async function saveApplicationPreferences(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await persistUserSettings("Application preferences updated.");
   }
 
   async function createDelegatedCredential(event: FormEvent<HTMLFormElement>) {
@@ -516,26 +521,6 @@ export default function SettingsPage() {
       navKey="settings"
       module="insights"
     >
-      <div className="stack">
-        <MetricCard label="Signed user" value={user?.name ?? "..."} />
-        <MetricCard label="Language" value={(user?.language ?? profileLanguage).toUpperCase()} />
-        <MetricCard label="Delegated active" value={String(activeDelegatedCount)} />
-        <MetricCard label="AI agents" value={String(aiAgents.length)} />
-      </div>
-
-      <Panel
-        title="Session"
-        actions={
-          <button type="button" className="btn-secondary" onClick={handleLogout} disabled={isBootstrapping}>
-            Sign out
-          </button>
-        }
-      >
-        <p className="callout">
-          Signed in as <strong>{user?.email ?? "..."}</strong>.
-        </p>
-      </Panel>
-
       <Panel title="Settings Tabs">
         <div className="settings-tabs">
           <button
@@ -543,34 +528,81 @@ export default function SettingsPage() {
             className={`settings-tab ${activeTab === "profile" ? "is-active" : ""}`}
             onClick={() => selectTab("profile")}
           >
-            Profile
+            <strong>Moj profil</strong>
+            <small>konto i podstawowe dane</small>
+          </button>
+          <button
+            type="button"
+            className={`settings-tab ${activeTab === "application" ? "is-active" : ""}`}
+            onClick={() => selectTab("application")}
+          >
+            <strong>Ustawienia aplikacji</strong>
+            <small>jezyk i preferencje UI</small>
           </button>
           <button
             type="button"
             className={`settings-tab ${activeTab === "access" ? "is-active" : ""}`}
             onClick={() => selectTab("access")}
           >
-            Access Control
+            <strong>Access i API</strong>
+            <small>tokeny, agenci AI, audyt</small>
+          </button>
+          <button
+            type="button"
+            className={`settings-tab ${activeTab === "subscription" ? "is-active" : ""}`}
+            onClick={() => selectTab("subscription")}
+          >
+            <strong>Subskrypcja</strong>
+            <small>plan i billing</small>
           </button>
         </div>
       </Panel>
 
       {activeTab === "profile" ? (
         <>
-          <Panel title="User Profile">
+          <Panel title="Moj profil">
             <form className="form-grid" onSubmit={saveProfilePreferences}>
+              <div className="settings-grid-dual">
+                <label className="field">
+                  <span>Twoje imie / ksywa</span>
+                  <input
+                    className="list-row"
+                    type="text"
+                    value={profileName}
+                    onChange={(event) => setProfileName(event.target.value)}
+                    disabled={isSavingProfile || isBootstrapping}
+                  />
+                </label>
+                <label className="field">
+                  <span>Email logowania</span>
+                  <input className="list-row" type="email" value={user?.email ?? ""} disabled />
+                </label>
+              </div>
               <label className="field">
-                <span>Your name / nickname</span>
-                <input
-                  className="list-row"
-                  type="text"
-                  value={profileName}
-                  onChange={(event) => setProfileName(event.target.value)}
-                  disabled={isSavingProfile || isBootstrapping}
-                />
+                <span>Timezone</span>
+                <input className="list-row" type="text" value={user?.timezone ?? "Europe/Warsaw"} disabled />
               </label>
+              <button type="submit" className="btn-primary" disabled={isSavingProfile || isBootstrapping}>
+                {isSavingProfile ? "Saving..." : "Save profile"}
+              </button>
+            </form>
+          </Panel>
+
+          <Panel title="Security">
+            <p className="callout">
+              Wylogowanie jest dostepne w lewym menu aplikacji. Zmiana hasla i dodatkowe zabezpieczenia konta pojda
+              tutaj w kolejnym kroku.
+            </p>
+          </Panel>
+        </>
+      ) : null}
+
+      {activeTab === "application" ? (
+        <>
+          <Panel title="Preferencje aplikacji">
+            <form className="form-grid" onSubmit={saveApplicationPreferences}>
               <label className="field">
-                <span>App language</span>
+                <span>Jezyk aplikacji</span>
                 <select
                   className="list-row"
                   value={profileLanguage}
@@ -581,16 +613,19 @@ export default function SettingsPage() {
                   <option value="pl">Polski</option>
                 </select>
               </label>
+              <p className="form-hint">
+                Zmiana jezyka odswieza tlumaczenia UI i domyslny locale (`en-US` lub `pl-PL`) po zapisaniu.
+              </p>
               <button type="submit" className="btn-primary" disabled={isSavingProfile || isBootstrapping}>
-                {isSavingProfile ? "Saving..." : "Save preferences"}
+                {isSavingProfile ? "Saving..." : "Save application settings"}
               </button>
             </form>
           </Panel>
 
-          <Panel title="Preference Scope">
+          <Panel title="Planowane opcje">
             <p className="callout">
-              Profile tab is dedicated to daily user preferences. Security tokens and AI agent permissions are placed in
-              the <strong> Access Control</strong> tab.
+              Kolejne ustawienia aplikacji: start tygodnia, format czasu, personalizacja dashboardu i preferencje
+              powiadomien.
             </p>
           </Panel>
         </>
@@ -872,6 +907,24 @@ export default function SettingsPage() {
               <p className="callout">{latestAgentToken.token}</p>
             </Panel>
           ) : null}
+        </>
+      ) : null}
+
+      {activeTab === "subscription" ? (
+        <>
+          <Panel title="Subskrypcja">
+            <p className="callout">
+              Tutaj bedzie panel planu, historii platnosci i statusu subskrypcji. Na ten moment konto dziala w trybie
+              rozwojowym.
+            </p>
+          </Panel>
+
+          <Panel title="API i aplikacje zewnetrzne">
+            <p className="callout">
+              Generowanie kluczy API i podpinanie zewnetrznych aplikacji zostaje w tabie <strong>Access i API</strong>,
+              zeby wszystkie uprawnienia i tokeny byly w jednym miejscu.
+            </p>
+          </Panel>
         </>
       ) : null}
 
