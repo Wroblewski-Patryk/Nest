@@ -30,7 +30,7 @@ class TaskController extends Controller
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'status' => ['sometimes', Rule::in(['todo', 'in_progress', 'done', 'canceled'])],
             'priority' => ['sometimes', Rule::in(['low', 'medium', 'high', 'urgent'])],
-            'list_id' => ['sometimes', 'uuid'],
+            'list_id' => ['sometimes', 'nullable', 'uuid'],
             'q' => ['sometimes', 'string', 'max:255'],
             'due_from' => ['sometimes', 'date'],
             'due_to' => ['sometimes', 'date'],
@@ -83,7 +83,7 @@ class TaskController extends Controller
         $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $payload = $request->validate([
-            'list_id' => ['required', 'uuid'],
+            'list_id' => ['nullable', 'uuid'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
             'status' => ['nullable', Rule::in(['todo', 'in_progress', 'done', 'canceled'])],
@@ -96,14 +96,23 @@ class TaskController extends Controller
             'handoff_note' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $list = $this->findAccessibleList($user, $spaceIds, (string) $payload['list_id']);
-        $this->authorize('update', $list);
+        $list = null;
+        if (array_key_exists('list_id', $payload) && is_string($payload['list_id']) && $payload['list_id'] !== '') {
+            $list = $this->findAccessibleList($user, $spaceIds, (string) $payload['list_id']);
+            $this->authorize('update', $list);
+        }
 
-        [$assigneeUserId, $reminderOwnerUserId] = $this->resolveTaskAssignmentTargets(
-            $list,
-            $payload['assignee_user_id'] ?? $user->id,
-            $payload['reminder_owner_user_id'] ?? ($payload['assignee_user_id'] ?? $user->id)
-        );
+        [$assigneeUserId, $reminderOwnerUserId] = $list instanceof TaskList
+            ? $this->resolveTaskAssignmentTargets(
+                $list,
+                $payload['assignee_user_id'] ?? $user->id,
+                $payload['reminder_owner_user_id'] ?? ($payload['assignee_user_id'] ?? $user->id)
+            )
+            : $this->resolveTaskAssignmentTargetsForNoList(
+                $user,
+                $payload['assignee_user_id'] ?? $user->id,
+                $payload['reminder_owner_user_id'] ?? ($payload['assignee_user_id'] ?? $user->id)
+            );
         $lifeAreaId = $this->normalizeTaskLifeAreaReference($user, $payload['life_area_id'] ?? null);
 
         $task = Task::query()->create([
@@ -111,7 +120,7 @@ class TaskController extends Controller
             'user_id' => $user->id,
             'assignee_user_id' => $assigneeUserId,
             'reminder_owner_user_id' => $reminderOwnerUserId,
-            'list_id' => $list->id,
+            'list_id' => $list?->id,
             'title' => $payload['title'],
             'description' => $payload['description'] ?? null,
             'status' => $payload['status'] ?? 'todo',
@@ -206,7 +215,7 @@ class TaskController extends Controller
         $spaceIds = app(CollaborationAccessService::class)->memberSpaceIds($user);
 
         $payload = $request->validate([
-            'list_id' => ['sometimes', 'uuid'],
+            'list_id' => ['sometimes', 'nullable', 'uuid'],
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string', 'max:5000'],
             'status' => ['sometimes', Rule::in(['todo', 'in_progress', 'done', 'canceled'])],
@@ -224,14 +233,16 @@ class TaskController extends Controller
         $this->authorize('update', $task);
 
         $effectiveList = $task->list()->first();
-        if ($effectiveList === null) {
-            abort(404);
-        }
 
         if (array_key_exists('list_id', $payload)) {
-            $effectiveList = $this->findAccessibleList($user, $spaceIds, (string) $payload['list_id']);
-            $this->authorize('update', $effectiveList);
-            $payload['list_id'] = $effectiveList->id;
+            if ($payload['list_id'] === null || $payload['list_id'] === '') {
+                $effectiveList = null;
+                $payload['list_id'] = null;
+            } else {
+                $effectiveList = $this->findAccessibleList($user, $spaceIds, (string) $payload['list_id']);
+                $this->authorize('update', $effectiveList);
+                $payload['list_id'] = $effectiveList->id;
+            }
         }
 
         $previousAssignee = $task->assignee_user_id ?? $task->user_id;
@@ -239,7 +250,11 @@ class TaskController extends Controller
         $handoffNote = array_key_exists('handoff_note', $payload) ? (string) ($payload['handoff_note'] ?? '') : null;
         unset($payload['handoff_note']);
 
-        if (array_key_exists('assignee_user_id', $payload) || array_key_exists('reminder_owner_user_id', $payload)) {
+        if (
+            array_key_exists('assignee_user_id', $payload)
+            || array_key_exists('reminder_owner_user_id', $payload)
+            || array_key_exists('list_id', $payload)
+        ) {
             $candidateAssignee = array_key_exists('assignee_user_id', $payload)
                 ? $payload['assignee_user_id']
                 : $previousAssignee;
@@ -247,11 +262,19 @@ class TaskController extends Controller
                 ? $payload['reminder_owner_user_id']
                 : $previousReminderOwner;
 
-            [$payload['assignee_user_id'], $payload['reminder_owner_user_id']] = $this->resolveTaskAssignmentTargets(
-                $effectiveList,
-                $candidateAssignee,
-                $candidateReminderOwner
-            );
+            if ($effectiveList instanceof TaskList) {
+                [$payload['assignee_user_id'], $payload['reminder_owner_user_id']] = $this->resolveTaskAssignmentTargets(
+                    $effectiveList,
+                    $candidateAssignee,
+                    $candidateReminderOwner
+                );
+            } else {
+                [$payload['assignee_user_id'], $payload['reminder_owner_user_id']] = $this->resolveTaskAssignmentTargetsForNoList(
+                    $user,
+                    $candidateAssignee,
+                    $candidateReminderOwner
+                );
+            }
         }
 
         if (array_key_exists('life_area_id', $payload)) {
@@ -442,6 +465,33 @@ class TaskController extends Controller
         }
 
         return [$assignee, $reminderOwner];
+    }
+
+    /**
+     * @return array{0:string,1:string}
+     */
+    private function resolveTaskAssignmentTargetsForNoList(
+        User $user,
+        ?string $assigneeUserId,
+        ?string $reminderOwnerUserId
+    ): array {
+        $ownerUserId = (string) $user->id;
+        $assignee = $assigneeUserId ?: $ownerUserId;
+        $reminderOwner = $reminderOwnerUserId ?: $assignee;
+
+        if ($assignee !== $ownerUserId) {
+            throw ValidationException::withMessages([
+                'assignee_user_id' => ['Tasks without list can only be assigned to the owner.'],
+            ]);
+        }
+
+        if ($reminderOwner !== $ownerUserId) {
+            throw ValidationException::withMessages([
+                'reminder_owner_user_id' => ['Reminder owner for tasks without list must be the owner.'],
+            ]);
+        }
+
+        return [$ownerUserId, $ownerUserId];
     }
 
     /**

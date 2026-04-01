@@ -1289,6 +1289,36 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-183 Unblock optional hierarchy flow in Tasks+Lists (parentless list/task support)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-182
+  - Done when:
+    - list creation/edit in `/tasks` works without required `goal/target/life
+      area` assignment and exposes actionable validation feedback,
+    - task creation/edit works with `list_id=null` (standalone task), including
+      moving task between list and no-list states,
+    - backend schema/policy/tests explicitly support nullable task `list_id`
+      without tenant/collaboration policy regressions.
+  - Notes:
+    - Enabled nullable `tasks.list_id` with FK update migration:
+      `apps/api/database/migrations/2026_04_01_050000_make_tasks_list_id_nullable.php`.
+    - Updated task API write-path and assignment resolution for no-list tasks:
+      `apps/api/app/Http/Controllers/Api/TaskController.php`.
+    - Updated task policy behavior for tasks detached from lists:
+      `apps/api/app/Policies/TaskPolicy.php`.
+    - Added API regression for standalone task create->assign->detach flow:
+      `apps/api/tests/Feature/TasksAndListsApiTest.php`.
+    - Updated web Tasks+Lists UX with explicit `No list` column, optional list
+      parent selector (single parent type), and improved field-level validation
+      messaging:
+      `apps/web/src/app/tasks/page.tsx`.
+    - Validation:
+      `php artisan test --filter=TasksAndListsApiTest`,
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

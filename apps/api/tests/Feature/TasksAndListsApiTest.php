@@ -209,6 +209,36 @@ class TasksAndListsApiTest extends TestCase
             ->assertJsonPath('data.life_area_id', null);
     }
 
+    public function test_user_can_create_task_without_list_and_move_it_to_list(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $user = User::factory()->create(['tenant_id' => $tenant->id]);
+        Sanctum::actingAs($user);
+
+        $unassignedTask = $this->postJson('/api/v1/tasks', [
+            'title' => 'Standalone task',
+            'priority' => 'medium',
+        ])->assertCreated();
+
+        $taskId = (string) $unassignedTask->json('data.id');
+        $this->assertNull($unassignedTask->json('data.list_id'));
+
+        $list = TaskList::factory()->create([
+            'tenant_id' => $tenant->id,
+            'user_id' => $user->id,
+        ]);
+
+        $this->patchJson("/api/v1/tasks/{$taskId}", [
+            'list_id' => $list->id,
+        ])->assertOk()
+            ->assertJsonPath('data.list_id', $list->id);
+
+        $this->patchJson("/api/v1/tasks/{$taskId}", [
+            'list_id' => null,
+        ])->assertOk()
+            ->assertJsonPath('data.list_id', null);
+    }
+
     public function test_user_cannot_access_other_tenant_lists_or_tasks(): void
     {
         $tenantA = Tenant::factory()->create();

@@ -28,7 +28,9 @@ class TaskPolicy
         $task->loadMissing('list');
         $list = $task->list;
         if ($list === null) {
-            return false;
+            return $task->user_id === $user->id
+                || $task->assignee_user_id === $user->id
+                || $task->reminder_owner_user_id === $user->id;
         }
 
         if ($list->visibility !== 'shared') {
@@ -55,7 +57,9 @@ class TaskPolicy
         $task->loadMissing('list');
         $list = $task->list;
         if ($list === null) {
-            return false;
+            return $task->user_id === $user->id
+                || $task->assignee_user_id === $user->id
+                || $task->reminder_owner_user_id === $user->id;
         }
 
         if ($list->visibility !== 'shared') {
