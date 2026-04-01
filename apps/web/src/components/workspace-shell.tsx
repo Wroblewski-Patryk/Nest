@@ -4,6 +4,7 @@ import { formatLocalizedDateTime, resolveAuraVariant, resolveLanguage, translate
 import { WorkspaceLogoutButton } from "@/components/workspace-logout-button";
 
 type WorkspaceNavKey = ModuleKey | "dashboard" | "settings";
+type PlanningSubnavKey = "tasks" | "lists" | "targets" | "goals";
 
 type WorkspaceShellProps = {
   title: string;
@@ -11,6 +12,9 @@ type WorkspaceShellProps = {
   module?: ModuleKey;
   navKey?: WorkspaceNavKey | "none";
   contentLayout?: "single" | "grid";
+  planningSubnav?: {
+    active: PlanningSubnavKey;
+  };
   children: ReactNode;
 };
 
@@ -34,7 +38,7 @@ const NAV_ITEMS: Array<{
   icon: NavIconName;
 }> = [
   { href: "/dashboard", label: "Dashboard", key: "dashboard", icon: "dashboard" },
-  { href: "/tasks", label: "Tasks + Lists", key: "tasks", icon: "tasks" },
+  { href: "/tasks", label: "Planning", key: "tasks", icon: "tasks" },
   { href: "/habits", label: "Habits", key: "habits", icon: "habits" },
   { href: "/routines", label: "Routines", key: "routines", icon: "routines" },
   { href: "/calendar", label: "Calendar", key: "calendar", icon: "calendar" },
@@ -42,6 +46,17 @@ const NAV_ITEMS: Array<{
   { href: "/life-areas", label: "Life Areas", key: "life_areas", icon: "life_areas" },
   { href: "/insights", label: "Insights", key: "insights", icon: "insights" },
   { href: "/settings", label: "Settings", key: "settings", icon: "settings" },
+];
+
+const PLANNING_SUBNAV_ITEMS: Array<{
+  key: PlanningSubnavKey;
+  label: string;
+  href: string;
+}> = [
+  { key: "tasks", label: "Tasks", href: "/tasks?tab=tasks" },
+  { key: "lists", label: "Lists", href: "/tasks?tab=lists" },
+  { key: "targets", label: "Targets", href: "/tasks?tab=targets" },
+  { key: "goals", label: "Goals", href: "/tasks?tab=goals" },
 ];
 
 function MenuIcon({ name }: { name: NavIconName }) {
@@ -158,7 +173,7 @@ function MenuIcon({ name }: { name: NavIconName }) {
   );
 }
 
-export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout, children }: WorkspaceShellProps) {
+export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout, planningSubnav, children }: WorkspaceShellProps) {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const auraVariant = resolveAuraVariant(module ?? "tasks");
   const activeNavKey = navKey === "none" ? null : (navKey ?? module ?? null);
@@ -173,18 +188,47 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
         </div>
 
         <nav className="workspace-rail-nav" aria-label="Core modules">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`workspace-rail-link ${activeNavKey === item.key ? "is-active" : ""}`}
-            >
-              <span className="workspace-rail-icon">
-                <MenuIcon name={item.icon} />
-              </span>
-              <span>{item.label}</span>
-            </Link>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const isActive = activeNavKey === item.key;
+            const isPlanning = item.key === "tasks";
+
+            if (!isPlanning || !planningSubnav) {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`workspace-rail-link ${isActive ? "is-active" : ""}`}
+                >
+                  <span className="workspace-rail-icon">
+                    <MenuIcon name={item.icon} />
+                  </span>
+                  <span>{item.label}</span>
+                </Link>
+              );
+            }
+
+            return (
+              <div key={item.href} className={`workspace-rail-group ${isActive ? "is-active" : ""}`}>
+                <Link href={item.href} className={`workspace-rail-link ${isActive ? "is-active" : ""}`}>
+                  <span className="workspace-rail-icon">
+                    <MenuIcon name={item.icon} />
+                  </span>
+                  <span>{item.label}</span>
+                </Link>
+                <nav className="workspace-rail-subnav" aria-label="Planning sections">
+                  {PLANNING_SUBNAV_ITEMS.map((subitem) => (
+                    <Link
+                      key={subitem.key}
+                      href={subitem.href}
+                      className={`workspace-rail-sublink ${planningSubnav.active === subitem.key ? "is-active" : ""}`}
+                    >
+                      {subitem.label}
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            );
+          })}
         </nav>
 
         <div className="workspace-rail-footer">

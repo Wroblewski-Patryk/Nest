@@ -243,6 +243,19 @@ body {
   background: color-mix(in srgb, var(--accent-soft), #fff 20%);
 }
 
+.workspace-rail-group {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.workspace-rail-subnav {
+  display: none;
+}
+
+.workspace-rail-sublink {
+  display: none;
+}
+
 .workspace-rail-icon {
   width: 2rem;
   height: 2rem;
@@ -657,6 +670,30 @@ input[type="color"].list-row {
   line-height: 1.45;
 }
 
+.journey-list {
+  margin-top: 0.42rem;
+  display: grid;
+  gap: 0.33rem;
+}
+
+.journey-row {
+  border: 1px solid var(--line-ghost);
+  border-radius: 0.7rem;
+  padding: 0.34rem 0.48rem;
+  background: color-mix(in srgb, #fff, var(--surface-low) 24%);
+  display: grid;
+  gap: 0.12rem;
+}
+
+.journey-row strong {
+  font-size: 0.77rem;
+}
+
+.journey-row span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
 .workspace-settings-link {
   text-decoration: none;
   border: 1px solid color-mix(in srgb, var(--accent), #fff 35%);
@@ -1069,5 +1106,38 @@ input[type="color"].list-row {
     display: inline;
     font-size: 0.78rem;
     font-weight: 600;
+  }
+
+  .workspace-rail-subnav {
+    display: grid;
+    gap: 0.16rem;
+    padding-left: 2.64rem;
+    padding-right: 0.2rem;
+    margin-top: -0.14rem;
+  }
+
+  .workspace-rail-sublink {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 0.56rem;
+    border: 1px solid transparent;
+    min-height: 1.75rem;
+    padding: 0.2rem 0.46rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  .workspace-rail-sublink:hover {
+    border-color: var(--line-ghost);
+    background: rgb(255 255 255 / 64%);
+    color: var(--ink);
+  }
+
+  .workspace-rail-sublink.is-active {
+    border-color: color-mix(in srgb, var(--accent), #fff 36%);
+    background: color-mix(in srgb, var(--accent-soft), #fff 22%);
+    color: color-mix(in srgb, var(--accent), #000 18%);
   }
 }

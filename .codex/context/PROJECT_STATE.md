@@ -776,6 +776,13 @@ Last updated: 2026-04-01
   runs remain idempotent for demo entities
   (`apps/api/database/seeders/DatabaseSeeder.php`,
   `README.md`)
+- `NEST-188` completed: planning IA now uses one `Planning` entry with explicit
+  subviews (`tasks`, `lists`, `targets`, `goals`), tasks capture is progressive
+  (`Add card` opens form on demand and closes after save), and goals now show a
+  visible path summary from goal through targets/lists to linked task workload
+  (`apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

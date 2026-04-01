@@ -9,7 +9,7 @@ import { nestApiClient } from "@/lib/api-client";
 type TaskStatus = "todo" | "in_progress" | "done" | "canceled";
 type TaskPriority = "low" | "medium" | "high" | "urgent";
 type GoalStatus = "active" | "paused" | "completed" | "archived";
-type PlanningTab = "board" | "goals" | "targets";
+type PlanningTab = "tasks" | "lists" | "goals" | "targets";
 
 type ListItem = {
   id: string;
@@ -186,11 +186,11 @@ function formatGoalStatus(status: GoalStatus): string {
 }
 
 function resolvePlanningTab(tab: string | null): PlanningTab {
-  if (tab === "goals" || tab === "targets") {
+  if (tab === "tasks" || tab === "lists" || tab === "goals" || tab === "targets") {
     return tab;
   }
 
-  return "board";
+  return "tasks";
 }
 
 function resolveParentType(list: ListItem): { type: ListParentType; id: string } {
@@ -231,7 +231,7 @@ function buildListParentPayload(type: ListParentType, id: string): {
 
 export default function TasksPage() {
   const router = useRouter();
-  const [planningTab, setPlanningTab] = useState<PlanningTab>("board");
+  const [planningTab, setPlanningTab] = useState<PlanningTab>("tasks");
 
   const [lists, setLists] = useState<ListItem[]>([]);
   const [tasks, setTasks] = useState<TaskItem[]>([]);
@@ -257,6 +257,7 @@ export default function TasksPage() {
   const [editListParentId, setEditListParentId] = useState("");
 
   const [taskDrafts, setTaskDrafts] = useState<Record<string, TaskDraft>>({});
+  const [taskComposerListId, setTaskComposerListId] = useState<string | null>(null);
 
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editTaskTitle, setEditTaskTitle] = useState("");
@@ -297,7 +298,7 @@ export default function TasksPage() {
   const [boardLifeAreaFilter, setBoardLifeAreaFilter] = useState("");
   const [hideEmptyColumns, setHideEmptyColumns] = useState(true);
 
-  const [feedback, setFeedback] = useState("Kanban board gotowy: listy jako kolumny, taski jako karty.");
+  const [feedback, setFeedback] = useState("Planning ready.");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleUnauthorized = useCallback(() => {
@@ -310,8 +311,7 @@ export default function TasksPage() {
       return;
     }
 
-    const queryTab = new URLSearchParams(window.location.search).get("tab");
-    setPlanningTab(resolvePlanningTab(queryTab));
+    setPlanningTab(resolvePlanningTab(new URLSearchParams(window.location.search).get("tab")));
   }, []);
 
   const loadAllTasks = useCallback(async (): Promise<TaskItem[]> => {
@@ -426,6 +426,15 @@ export default function TasksPage() {
     () => new Map(lifeAreas.map((lifeArea) => [lifeArea.id, lifeArea.name])),
     [lifeAreas]
   );
+  const targetsByGoalId = useMemo(() => {
+    const grouped = new Map<string, TargetItem[]>();
+    for (const target of targets) {
+      const bucket = grouped.get(target.goal_id) ?? [];
+      bucket.push(target);
+      grouped.set(target.goal_id, bucket);
+    }
+    return grouped;
+  }, [targets]);
 
   const todayKey = useMemo(() => toLocalDateKey(new Date()), []);
   const normalizedSearch = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
@@ -678,6 +687,7 @@ export default function TasksPage() {
       });
 
       setTaskDraft(columnId, createEmptyTaskDraft());
+      setTaskComposerListId(null);
       await loadWorkspace();
       setFeedback("Task created.");
     } catch (error) {
@@ -1010,12 +1020,267 @@ export default function TasksPage() {
     }
   }
 
+  function resolveListParentLabel(list: ListItem): string | null {
+    const parent = resolveParentType(list);
+    if (parent.type === "goal") {
+      return `Goal: ${goalLabelById.get(parent.id) ?? "Unknown goal"}`;
+    }
+
+    if (parent.type === "target") {
+      return `Target: ${targetLabelById.get(parent.id) ?? "Unknown target"}`;
+    }
+
+    if (parent.type === "life_area") {
+      return `Life area: ${lifeAreaLabelById.get(parent.id) ?? "Unknown area"}`;
+    }
+
+    return null;
+  }
+
+  function renderTaskCard(task: TaskItem) {
+    const dueDateLabel = toDateInputValue(task.due_date);
+    const isOverdue =
+      Boolean(task.due_date) &&
+      dueDateLabel < todayKey &&
+      task.status !== "done" &&
+      task.status !== "canceled";
+
+    return (
+      <article className="kanban-card" key={task.id}>
+        {editingTaskId === task.id ? (
+          <div className="form-grid">
+            <label className="field">
+              <span>Title</span>
+              <input
+                className="list-row"
+                type="text"
+                value={editTaskTitle}
+                onChange={(event) => setEditTaskTitle(event.target.value)}
+                disabled={busyTaskId === task.id}
+              />
+            </label>
+            <div className="row-inline">
+              <label className="field">
+                <span>Status</span>
+                <select
+                  className="list-row"
+                  value={editTaskStatus}
+                  onChange={(event) => setEditTaskStatus(event.target.value as TaskStatus)}
+                  disabled={busyTaskId === task.id}
+                >
+                  <option value="todo">To do</option>
+                  <option value="in_progress">In progress</option>
+                  <option value="done">Done</option>
+                  <option value="canceled">Canceled</option>
+                </select>
+              </label>
+              <label className="field">
+                <span>Priority</span>
+                <select
+                  className="list-row"
+                  value={editTaskPriority}
+                  onChange={(event) => setEditTaskPriority(event.target.value as TaskPriority)}
+                  disabled={busyTaskId === task.id}
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="urgent">Urgent</option>
+                </select>
+              </label>
+            </div>
+            <div className="row-inline">
+              <label className="field">
+                <span>List</span>
+                <select
+                  className="list-row"
+                  value={editTaskListId}
+                  onChange={(event) => setEditTaskListId(event.target.value)}
+                  disabled={busyTaskId === task.id}
+                >
+                  <option value="">No list</option>
+                  {lists.map((listOption) => (
+                    <option key={listOption.id} value={listOption.id}>
+                      {listOption.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="field">
+                <span>Due date</span>
+                <input
+                  className="list-row"
+                  type="date"
+                  value={editTaskDueDate}
+                  onChange={(event) => setEditTaskDueDate(event.target.value)}
+                  disabled={busyTaskId === task.id}
+                />
+              </label>
+              <label className="field">
+                <span>Life area</span>
+                <select
+                  className="list-row"
+                  value={editTaskLifeAreaId}
+                  onChange={(event) => setEditTaskLifeAreaId(event.target.value)}
+                  disabled={busyTaskId === task.id}
+                >
+                  <option value="">No life area</option>
+                  {lifeAreas.map((lifeArea) => (
+                    <option key={lifeArea.id} value={lifeArea.id}>
+                      {lifeArea.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div className="kanban-actions">
+              <button
+                type="button"
+                className="pill-link"
+                onClick={() => void saveTaskEdit(task.id)}
+                disabled={busyTaskId === task.id}
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                className="pill-link"
+                onClick={() => setEditingTaskId(null)}
+                disabled={busyTaskId === task.id}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <h4>{task.title}</h4>
+            <div className="kanban-meta">
+              <span className={`kanban-meta-chip priority-${task.priority}`}>{formatPriority(task.priority)}</span>
+              <span className={`kanban-meta-chip ${isOverdue ? "is-overdue" : ""}`}>
+                {task.due_date ? `Due ${dueDateLabel}` : "No date"}
+              </span>
+              {task.life_area_id ? (
+                <span className="kanban-meta-chip">{lifeAreaLabelById.get(task.life_area_id) ?? "Unknown area"}</span>
+              ) : null}
+            </div>
+            <div className="kanban-actions">
+              <span className={`pill status-${task.status}`}>{formatStatus(task.status)}</span>
+              <button
+                type="button"
+                className="pill-link"
+                onClick={() => void toggleTaskDone(task)}
+                disabled={busyTaskId === task.id}
+              >
+                {task.status === "done" ? "Reopen" : "Done"}
+              </button>
+              <button
+                type="button"
+                className="pill-link"
+                onClick={() => startTaskEdit(task)}
+                disabled={busyTaskId === task.id}
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                className="pill-link"
+                onClick={() => void deleteTask(task.id)}
+                disabled={busyTaskId === task.id}
+              >
+                Delete
+              </button>
+            </div>
+          </>
+        )}
+      </article>
+    );
+  }
+
+  function renderTaskComposer(columnId: string, label: string) {
+    const draft = taskDrafts[columnId] ?? createEmptyTaskDraft();
+    const isBusy = creatingTaskForListId === columnId;
+
+    return (
+      <form className="form-grid planning-task-composer" onSubmit={(event) => void createTaskInList(columnId, event)}>
+        <label className="field">
+          <span>{label}</span>
+          <input
+            id={columnId === UNASSIGNED_COLUMN_ID ? "unassigned-capture" : undefined}
+            className="list-row"
+            type="text"
+            value={draft.title}
+            onChange={(event) => setTaskDraft(columnId, { title: event.target.value })}
+            placeholder="Task title"
+            disabled={isBusy}
+          />
+        </label>
+        <div className="row-inline">
+          <label className="field">
+            <span>Priority</span>
+            <select
+              className="list-row"
+              value={draft.priority}
+              onChange={(event) => setTaskDraft(columnId, { priority: event.target.value as TaskPriority })}
+              disabled={isBusy}
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Due date</span>
+            <input
+              className="list-row"
+              type="date"
+              value={draft.dueDate}
+              onChange={(event) => setTaskDraft(columnId, { dueDate: event.target.value })}
+              disabled={isBusy}
+            />
+          </label>
+          <label className="field">
+            <span>Life area</span>
+            <select
+              className="list-row"
+              value={draft.lifeAreaId}
+              onChange={(event) => setTaskDraft(columnId, { lifeAreaId: event.target.value })}
+              disabled={isBusy}
+            >
+              <option value="">No life area</option>
+              {lifeAreas.map((lifeArea) => (
+                <option key={lifeArea.id} value={lifeArea.id}>
+                  {lifeArea.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div className="row-inline">
+          <button type="submit" className="btn-primary" disabled={isBusy}>
+            {isBusy ? "Adding..." : "Save card"}
+          </button>
+          <button type="button" className="btn-secondary" onClick={() => setTaskComposerListId(null)} disabled={isBusy}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  function openPlanningTab(tab: PlanningTab) {
+    setPlanningTab(tab);
+    router.replace(tab === "tasks" ? "/tasks" : `/tasks?tab=${tab}`);
+  }
+
   return (
     <WorkspaceShell
-      title="Tasks + Lists"
-      subtitle="Unified planning workspace: goals -> targets -> lists -> tasks, with optional parent links."
+      title="Planning"
+      subtitle="Jedno miejsce dla goals, targets, lists i tasks. Hierarchia jest opcjonalna, żeby planowanie było lekkie."
       module="tasks"
       contentLayout="single"
+      planningSubnav={{ active: planningTab }}
     >
       <div className="stack">
         <MetricCard label="Lists" value={String(lists.length)} />
@@ -1024,10 +1289,6 @@ export default function TasksPage() {
         <MetricCard label="Targets active" value={String(activeTargetsCount)} />
         <MetricCard label="Due today" value={String(dueTodayCount)} />
         <MetricCard label="Overdue" value={String(overdueCount)} />
-        <MetricCard
-          label="Lists with context"
-          value={String(lists.filter((list) => list.goal_id || list.target_id || list.life_area_id).length)}
-        />
       </div>
 
       {errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
@@ -1038,18 +1299,27 @@ export default function TasksPage() {
           <button
             type="button"
             role="tab"
-            aria-selected={planningTab === "board"}
-            className={`filter-chip ${planningTab === "board" ? "is-active" : ""}`}
-            onClick={() => setPlanningTab("board")}
+            aria-selected={planningTab === "tasks"}
+            className={`filter-chip ${planningTab === "tasks" ? "is-active" : ""}`}
+            onClick={() => openPlanningTab("tasks")}
           >
-            Board
+            Tasks
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={planningTab === "lists"}
+            className={`filter-chip ${planningTab === "lists" ? "is-active" : ""}`}
+            onClick={() => openPlanningTab("lists")}
+          >
+            Lists
           </button>
           <button
             type="button"
             role="tab"
             aria-selected={planningTab === "goals"}
             className={`filter-chip ${planningTab === "goals" ? "is-active" : ""}`}
-            onClick={() => setPlanningTab("goals")}
+            onClick={() => openPlanningTab("goals")}
           >
             Goals
           </button>
@@ -1058,26 +1328,28 @@ export default function TasksPage() {
             role="tab"
             aria-selected={planningTab === "targets"}
             className={`filter-chip ${planningTab === "targets" ? "is-active" : ""}`}
-            onClick={() => setPlanningTab("targets")}
+            onClick={() => openPlanningTab("targets")}
           >
             Targets
           </button>
         </div>
-        <p className="form-hint">
-          Stitch direction: one focused planning module with lightweight switching, not separate disconnected pages.
-        </p>
+        <p className="form-hint">Tasks pokazuje zadania pogrupowane po listach. Lists służy do zarządzania strukturą.</p>
       </Panel>
 
-      {planningTab === "board" ? (
+      {planningTab === "tasks" ? (
         <Panel title="Today Focus" className="planning-focus-primary">
           <p className="callout">
             Start from quick capture in <strong>No List</strong>, then move tasks into lists and connect them to
             goals/targets only when needed.
           </p>
           <div className="row-inline">
-            <a href="#unassigned-capture" className="btn-primary">
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => setTaskComposerListId(UNASSIGNED_COLUMN_ID)}
+            >
               Add first task
-            </a>
+            </button>
             <button
               type="button"
               className="btn-secondary"
@@ -1097,7 +1369,7 @@ export default function TasksPage() {
         </Panel>
       ) : null}
 
-      {planningTab === "board" ? (
+      {planningTab === "tasks" ? (
         <>
       <Panel title="Quick Setup" className="planning-secondary-tools">
         <details className="collapsible-panel">
@@ -1330,248 +1602,26 @@ export default function TasksPage() {
                       <p className="callout state-empty">No standalone tasks.</p>
                     ) : null}
 
-                    {filteredUnassignedTasks.map((task) => {
-                      const dueDateLabel = toDateInputValue(task.due_date);
-                      const isOverdue =
-                        Boolean(task.due_date) &&
-                        dueDateLabel < todayKey &&
-                        task.status !== "done" &&
-                        task.status !== "canceled";
-
-                      return (
-                        <article className="kanban-card" key={task.id}>
-                          {editingTaskId === task.id ? (
-                            <div className="form-grid">
-                              <label className="field">
-                                <span>Title</span>
-                                <input
-                                  className="list-row"
-                                  type="text"
-                                  value={editTaskTitle}
-                                  onChange={(event) => setEditTaskTitle(event.target.value)}
-                                  disabled={busyTaskId === task.id}
-                                />
-                              </label>
-                              <div className="row-inline">
-                                <label className="field">
-                                  <span>Status</span>
-                                  <select
-                                    className="list-row"
-                                    value={editTaskStatus}
-                                    onChange={(event) => setEditTaskStatus(event.target.value as TaskStatus)}
-                                    disabled={busyTaskId === task.id}
-                                  >
-                                    <option value="todo">To do</option>
-                                    <option value="in_progress">In progress</option>
-                                    <option value="done">Done</option>
-                                    <option value="canceled">Canceled</option>
-                                  </select>
-                                </label>
-                                <label className="field">
-                                  <span>Priority</span>
-                                  <select
-                                    className="list-row"
-                                    value={editTaskPriority}
-                                    onChange={(event) => setEditTaskPriority(event.target.value as TaskPriority)}
-                                    disabled={busyTaskId === task.id}
-                                  >
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                    <option value="urgent">Urgent</option>
-                                  </select>
-                                </label>
-                              </div>
-                              <div className="row-inline">
-                                <label className="field">
-                                  <span>List</span>
-                                  <select
-                                    className="list-row"
-                                    value={editTaskListId}
-                                    onChange={(event) => setEditTaskListId(event.target.value)}
-                                    disabled={busyTaskId === task.id}
-                                  >
-                                    <option value="">No list</option>
-                                    {lists.map((listOption) => (
-                                      <option key={listOption.id} value={listOption.id}>
-                                        {listOption.name}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </label>
-                                <label className="field">
-                                  <span>Due date</span>
-                                  <input
-                                    className="list-row"
-                                    type="date"
-                                    value={editTaskDueDate}
-                                    onChange={(event) => setEditTaskDueDate(event.target.value)}
-                                    disabled={busyTaskId === task.id}
-                                  />
-                                </label>
-                                <label className="field">
-                                  <span>Life area</span>
-                                  <select
-                                    className="list-row"
-                                    value={editTaskLifeAreaId}
-                                    onChange={(event) => setEditTaskLifeAreaId(event.target.value)}
-                                    disabled={busyTaskId === task.id}
-                                  >
-                                    <option value="">No life area</option>
-                                    {lifeAreas.map((lifeArea) => (
-                                      <option key={lifeArea.id} value={lifeArea.id}>
-                                        {lifeArea.name}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </label>
-                              </div>
-                              <div className="kanban-actions">
-                                <button
-                                  type="button"
-                                  className="pill-link"
-                                  onClick={() => void saveTaskEdit(task.id)}
-                                  disabled={busyTaskId === task.id}
-                                >
-                                  Save
-                                </button>
-                                <button
-                                  type="button"
-                                  className="pill-link"
-                                  onClick={() => setEditingTaskId(null)}
-                                  disabled={busyTaskId === task.id}
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <>
-                              <h4>{task.title}</h4>
-                              <div className="kanban-meta">
-                                <span className={`kanban-meta-chip priority-${task.priority}`}>
-                                  {formatPriority(task.priority)}
-                                </span>
-                                <span className={`kanban-meta-chip ${isOverdue ? "is-overdue" : ""}`}>
-                                  {task.due_date ? `Due ${dueDateLabel}` : "No date"}
-                                </span>
-                                {task.life_area_id ? (
-                                  <span className="kanban-meta-chip">
-                                    {lifeAreaLabelById.get(task.life_area_id) ?? "Unknown area"}
-                                  </span>
-                                ) : null}
-                              </div>
-                              <div className="kanban-actions">
-                                <span className={`pill status-${task.status}`}>{formatStatus(task.status)}</span>
-                                <button
-                                  type="button"
-                                  className="pill-link"
-                                  onClick={() => void toggleTaskDone(task)}
-                                  disabled={busyTaskId === task.id}
-                                >
-                                  {task.status === "done" ? "Reopen" : "Done"}
-                                </button>
-                                <button
-                                  type="button"
-                                  className="pill-link"
-                                  onClick={() => startTaskEdit(task)}
-                                  disabled={busyTaskId === task.id}
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  type="button"
-                                  className="pill-link"
-                                  onClick={() => void deleteTask(task.id)}
-                                  disabled={busyTaskId === task.id}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </article>
-                      );
-                    })}
+                    {filteredUnassignedTasks.map((task) => renderTaskCard(task))}
                   </div>
 
                   <footer className="kanban-column-footer">
-                    <form
-                      className="form-grid"
-                      onSubmit={(event) => void createTaskInList(UNASSIGNED_COLUMN_ID, event)}
-                    >
-                      <label className="field">
-                        <span>Add standalone task</span>
-                        <input
-                          id="unassigned-capture"
-                          className="list-row"
-                          type="text"
-                          value={taskDrafts[UNASSIGNED_COLUMN_ID]?.title ?? ""}
-                          onChange={(event) =>
-                            setTaskDraft(UNASSIGNED_COLUMN_ID, { title: event.target.value })
-                          }
-                          placeholder="Task title"
-                          disabled={creatingTaskForListId === UNASSIGNED_COLUMN_ID}
-                        />
-                      </label>
-                      <div className="row-inline">
-                        <label className="field">
-                          <span>Priority</span>
-                          <select
-                            className="list-row"
-                            value={taskDrafts[UNASSIGNED_COLUMN_ID]?.priority ?? "medium"}
-                            onChange={(event) =>
-                              setTaskDraft(UNASSIGNED_COLUMN_ID, {
-                                priority: event.target.value as TaskPriority,
-                              })
-                            }
-                            disabled={creatingTaskForListId === UNASSIGNED_COLUMN_ID}
-                          >
-                            <option value="low">Low</option>
-                            <option value="medium">Medium</option>
-                            <option value="high">High</option>
-                            <option value="urgent">Urgent</option>
-                          </select>
-                        </label>
-                        <label className="field">
-                          <span>Due date</span>
-                          <input
-                            className="list-row"
-                            type="date"
-                            value={taskDrafts[UNASSIGNED_COLUMN_ID]?.dueDate ?? ""}
-                            onChange={(event) =>
-                              setTaskDraft(UNASSIGNED_COLUMN_ID, { dueDate: event.target.value })
-                            }
-                            disabled={creatingTaskForListId === UNASSIGNED_COLUMN_ID}
-                          />
-                        </label>
-                        <label className="field">
-                          <span>Life area</span>
-                          <select
-                            className="list-row"
-                            value={taskDrafts[UNASSIGNED_COLUMN_ID]?.lifeAreaId ?? ""}
-                            onChange={(event) =>
-                              setTaskDraft(UNASSIGNED_COLUMN_ID, { lifeAreaId: event.target.value })
-                            }
-                            disabled={creatingTaskForListId === UNASSIGNED_COLUMN_ID}
-                          >
-                            <option value="">No life area</option>
-                            {lifeAreas.map((lifeArea) => (
-                              <option key={lifeArea.id} value={lifeArea.id}>
-                                {lifeArea.name}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                      </div>
+                    <div className="row-inline">
                       <button
-                        type="submit"
+                        type="button"
                         className="btn-secondary"
-                        disabled={creatingTaskForListId === UNASSIGNED_COLUMN_ID}
+                        onClick={() =>
+                          setTaskComposerListId((current) =>
+                            current === UNASSIGNED_COLUMN_ID ? null : UNASSIGNED_COLUMN_ID
+                          )
+                        }
                       >
-                        {creatingTaskForListId === UNASSIGNED_COLUMN_ID ? "Adding..." : "Add task"}
+                        {taskComposerListId === UNASSIGNED_COLUMN_ID ? "Close add form" : "Add card"}
                       </button>
-                    </form>
+                    </div>
+                    {taskComposerListId === UNASSIGNED_COLUMN_ID
+                      ? renderTaskComposer(UNASSIGNED_COLUMN_ID, "Add standalone task")
+                      : null}
                   </footer>
                 </article>
               ) : null}
@@ -1579,16 +1629,7 @@ export default function TasksPage() {
               {visibleLists.map((list) => {
                 const listTasks = filteredTasksByListId.get(list.id) ?? [];
                 const totalListTasks = tasksByListId.get(list.id)?.length ?? 0;
-                const draft = taskDrafts[list.id] ?? createEmptyTaskDraft();
-                const parent = resolveParentType(list);
-                const parentBadge =
-                  parent.type === "goal"
-                    ? `Goal: ${goalLabelById.get(parent.id) ?? "Unknown goal"}`
-                    : parent.type === "target"
-                      ? `Target: ${targetLabelById.get(parent.id) ?? "Unknown target"}`
-                      : parent.type === "life_area"
-                        ? `Area: ${lifeAreaLabelById.get(parent.id) ?? "Unknown area"}`
-                        : null;
+                const parentBadge = resolveListParentLabel(list);
 
                 return (
                   <article
@@ -1726,242 +1767,20 @@ export default function TasksPage() {
                         <p className="callout state-empty">No cards in this list yet.</p>
                       ) : null}
 
-                      {listTasks.map((task) => {
-                        const dueDateLabel = toDateInputValue(task.due_date);
-                        const isOverdue =
-                          Boolean(task.due_date) &&
-                          dueDateLabel < todayKey &&
-                          task.status !== "done" &&
-                          task.status !== "canceled";
-
-                        return (
-                        <article className="kanban-card" key={task.id}>
-                          {editingTaskId === task.id ? (
-                            <div className="form-grid">
-                              <label className="field">
-                                <span>Title</span>
-                                <input
-                                  className="list-row"
-                                  type="text"
-                                  value={editTaskTitle}
-                                  onChange={(event) => setEditTaskTitle(event.target.value)}
-                                  disabled={busyTaskId === task.id}
-                                />
-                              </label>
-
-                              <div className="row-inline">
-                                <label className="field">
-                                  <span>Status</span>
-                                  <select
-                                    className="list-row"
-                                    value={editTaskStatus}
-                                    onChange={(event) => setEditTaskStatus(event.target.value as TaskStatus)}
-                                    disabled={busyTaskId === task.id}
-                                  >
-                                    <option value="todo">To do</option>
-                                    <option value="in_progress">In progress</option>
-                                    <option value="done">Done</option>
-                                    <option value="canceled">Canceled</option>
-                                  </select>
-                                </label>
-                                <label className="field">
-                                  <span>Priority</span>
-                                  <select
-                                    className="list-row"
-                                    value={editTaskPriority}
-                                    onChange={(event) => setEditTaskPriority(event.target.value as TaskPriority)}
-                                    disabled={busyTaskId === task.id}
-                                  >
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                    <option value="urgent">Urgent</option>
-                                  </select>
-                                </label>
-                              </div>
-
-                              <div className="row-inline">
-                                <label className="field">
-                                  <span>List</span>
-                                  <select
-                                    className="list-row"
-                                    value={editTaskListId}
-                                    onChange={(event) => setEditTaskListId(event.target.value)}
-                                    disabled={busyTaskId === task.id}
-                                  >
-                                    <option value="">No list</option>
-                                    {lists.map((listOption) => (
-                                      <option key={listOption.id} value={listOption.id}>
-                                        {listOption.name}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </label>
-                                <label className="field">
-                                  <span>Due date</span>
-                                  <input
-                                    className="list-row"
-                                    type="date"
-                                    value={editTaskDueDate}
-                                    onChange={(event) => setEditTaskDueDate(event.target.value)}
-                                    disabled={busyTaskId === task.id}
-                                  />
-                                </label>
-                                <label className="field">
-                                  <span>Life area</span>
-                                  <select
-                                    className="list-row"
-                                    value={editTaskLifeAreaId}
-                                    onChange={(event) => setEditTaskLifeAreaId(event.target.value)}
-                                    disabled={busyTaskId === task.id}
-                                  >
-                                    <option value="">No life area</option>
-                                    {lifeAreas.map((lifeArea) => (
-                                      <option key={lifeArea.id} value={lifeArea.id}>
-                                        {lifeArea.name}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </label>
-                              </div>
-
-                              <div className="kanban-actions">
-                                <button
-                                  type="button"
-                                  className="pill-link"
-                                  onClick={() => void saveTaskEdit(task.id)}
-                                  disabled={busyTaskId === task.id}
-                                >
-                                  Save
-                                </button>
-                                <button
-                                  type="button"
-                                  className="pill-link"
-                                  onClick={() => setEditingTaskId(null)}
-                                  disabled={busyTaskId === task.id}
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <>
-                              <h4>{task.title}</h4>
-                              <div className="kanban-meta">
-                                <span className={`kanban-meta-chip priority-${task.priority}`}>
-                                  {formatPriority(task.priority)}
-                                </span>
-                                <span className={`kanban-meta-chip ${isOverdue ? "is-overdue" : ""}`}>
-                                  {task.due_date ? `Due ${dueDateLabel}` : "No date"}
-                                </span>
-                                {task.life_area_id ? (
-                                  <span className="kanban-meta-chip">
-                                    {lifeAreaLabelById.get(task.life_area_id) ?? "Unknown area"}
-                                  </span>
-                                ) : null}
-                              </div>
-
-                              <div className="kanban-actions">
-                                <span className={`pill status-${task.status}`}>{formatStatus(task.status)}</span>
-                                <button
-                                  type="button"
-                                  className="pill-link"
-                                  onClick={() => void toggleTaskDone(task)}
-                                  disabled={busyTaskId === task.id}
-                                >
-                                  {task.status === "done" ? "Reopen" : "Done"}
-                                </button>
-                                <button
-                                  type="button"
-                                  className="pill-link"
-                                  onClick={() => startTaskEdit(task)}
-                                  disabled={busyTaskId === task.id}
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  type="button"
-                                  className="pill-link"
-                                  onClick={() => void deleteTask(task.id)}
-                                  disabled={busyTaskId === task.id}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </article>
-                        );
-                      })}
+                      {listTasks.map((task) => renderTaskCard(task))}
                     </div>
 
                     <footer className="kanban-column-footer">
-                      <form className="form-grid" onSubmit={(event) => void createTaskInList(list.id, event)}>
-                        <label className="field">
-                          <span>Add card</span>
-                          <input
-                            className="list-row"
-                            type="text"
-                            value={draft.title}
-                            onChange={(event) => setTaskDraft(list.id, { title: event.target.value })}
-                            placeholder="Task title"
-                            disabled={creatingTaskForListId === list.id}
-                          />
-                        </label>
-
-                        <div className="row-inline">
-                          <label className="field">
-                            <span>Priority</span>
-                            <select
-                              className="list-row"
-                              value={draft.priority}
-                              onChange={(event) =>
-                                setTaskDraft(list.id, { priority: event.target.value as TaskPriority })
-                              }
-                              disabled={creatingTaskForListId === list.id}
-                            >
-                              <option value="low">Low</option>
-                              <option value="medium">Medium</option>
-                              <option value="high">High</option>
-                              <option value="urgent">Urgent</option>
-                            </select>
-                          </label>
-                          <label className="field">
-                            <span>Due date</span>
-                            <input
-                              className="list-row"
-                              type="date"
-                              value={draft.dueDate}
-                              onChange={(event) => setTaskDraft(list.id, { dueDate: event.target.value })}
-                              disabled={creatingTaskForListId === list.id}
-                            />
-                          </label>
-                          <label className="field">
-                            <span>Life area</span>
-                            <select
-                              className="list-row"
-                              value={draft.lifeAreaId}
-                              onChange={(event) => setTaskDraft(list.id, { lifeAreaId: event.target.value })}
-                              disabled={creatingTaskForListId === list.id}
-                            >
-                              <option value="">No life area</option>
-                              {lifeAreas.map((lifeArea) => (
-                                <option key={lifeArea.id} value={lifeArea.id}>
-                                  {lifeArea.name}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                        </div>
-
+                      <div className="row-inline">
                         <button
-                          type="submit"
+                          type="button"
                           className="btn-secondary"
-                          disabled={creatingTaskForListId === list.id}
+                          onClick={() => setTaskComposerListId((current) => (current === list.id ? null : list.id))}
                         >
-                          {creatingTaskForListId === list.id ? "Adding..." : "Add card"}
+                          {taskComposerListId === list.id ? "Close add form" : "Add card"}
                         </button>
-                      </form>
+                      </div>
+                      {taskComposerListId === list.id ? renderTaskComposer(list.id, `Add card to ${list.name}`) : null}
                     </footer>
                   </article>
                 );
@@ -1970,6 +1789,237 @@ export default function TasksPage() {
           ) : null}
         </div>
       </section>
+        </>
+      ) : null}
+
+      {planningTab === "lists" ? (
+        <>
+          <Panel title="Create List">
+            <form className="form-grid" onSubmit={createList}>
+              <label className="field">
+                <span>Name</span>
+                <input
+                  className="list-row"
+                  type="text"
+                  value={newListName}
+                  onChange={(event) => setNewListName(event.target.value)}
+                  placeholder="Example: Weekly Focus"
+                  disabled={isCreatingList}
+                />
+              </label>
+
+              <div className="row-inline">
+                <label className="field">
+                  <span>Color</span>
+                  <input
+                    className="list-row"
+                    type="color"
+                    value={newListColor}
+                    onChange={(event) => setNewListColor(event.target.value)}
+                    disabled={isCreatingList}
+                  />
+                </label>
+                <label className="field">
+                  <span>Parent type</span>
+                  <select
+                    className="list-row"
+                    value={newListParentType}
+                    onChange={(event) => {
+                      setNewListParentType(event.target.value as ListParentType);
+                      setNewListParentId("");
+                    }}
+                    disabled={isCreatingList}
+                  >
+                    <option value="none">No parent</option>
+                    <option value="goal">Goal</option>
+                    <option value="target">Target</option>
+                    <option value="life_area">Life area</option>
+                  </select>
+                </label>
+                {newListParentType !== "none" ? (
+                  <label className="field">
+                    <span>Parent</span>
+                    <select
+                      className="list-row"
+                      value={newListParentId}
+                      onChange={(event) => setNewListParentId(event.target.value)}
+                      disabled={isCreatingList}
+                    >
+                      <option value="">Select parent</option>
+                      {newListParentType === "goal"
+                        ? goals.map((goal) => (
+                            <option key={goal.id} value={goal.id}>
+                              {goal.title}
+                            </option>
+                          ))
+                        : null}
+                      {newListParentType === "target"
+                        ? targets.map((target) => (
+                            <option key={target.id} value={target.id}>
+                              {target.title}
+                            </option>
+                          ))
+                        : null}
+                      {newListParentType === "life_area"
+                        ? lifeAreas.map((lifeArea) => (
+                            <option key={lifeArea.id} value={lifeArea.id}>
+                              {lifeArea.name}
+                            </option>
+                          ))
+                        : null}
+                    </select>
+                  </label>
+                ) : null}
+              </div>
+
+              <button type="submit" className="btn-primary" disabled={isCreatingList}>
+                {isCreatingList ? "Creating..." : "Create list"}
+              </button>
+            </form>
+          </Panel>
+
+          <Panel title="List Library">
+            <ul className="list">
+              {lists.length === 0 ? (
+                <li className="list-row">
+                  <p>No lists yet. Add your first one above.</p>
+                </li>
+              ) : (
+                lists.map((list) => {
+                  const parentLabel = resolveListParentLabel(list);
+                  const listTasksCount = tasksByListId.get(list.id)?.length ?? 0;
+
+                  return (
+                    <li className="list-row" key={list.id}>
+                      {editingListId === list.id ? (
+                        <div className="form-grid">
+                          <label className="field">
+                            <span>Name</span>
+                            <input
+                              className="list-row"
+                              type="text"
+                              value={editListName}
+                              onChange={(event) => setEditListName(event.target.value)}
+                              disabled={busyListId === list.id}
+                            />
+                          </label>
+
+                          <div className="row-inline">
+                            <label className="field">
+                              <span>Color</span>
+                              <input
+                                className="list-row"
+                                type="color"
+                                value={editListColor}
+                                onChange={(event) => setEditListColor(event.target.value)}
+                                disabled={busyListId === list.id}
+                              />
+                            </label>
+                            <label className="field">
+                              <span>Parent type</span>
+                              <select
+                                className="list-row"
+                                value={editListParentType}
+                                onChange={(event) => {
+                                  setEditListParentType(event.target.value as ListParentType);
+                                  setEditListParentId("");
+                                }}
+                                disabled={busyListId === list.id}
+                              >
+                                <option value="none">No parent</option>
+                                <option value="goal">Goal</option>
+                                <option value="target">Target</option>
+                                <option value="life_area">Life area</option>
+                              </select>
+                            </label>
+                            {editListParentType !== "none" ? (
+                              <label className="field">
+                                <span>Parent</span>
+                                <select
+                                  className="list-row"
+                                  value={editListParentId}
+                                  onChange={(event) => setEditListParentId(event.target.value)}
+                                  disabled={busyListId === list.id}
+                                >
+                                  <option value="">Select parent</option>
+                                  {editListParentType === "goal"
+                                    ? goals.map((goal) => (
+                                        <option key={goal.id} value={goal.id}>
+                                          {goal.title}
+                                        </option>
+                                      ))
+                                    : null}
+                                  {editListParentType === "target"
+                                    ? targets.map((target) => (
+                                        <option key={target.id} value={target.id}>
+                                          {target.title}
+                                        </option>
+                                      ))
+                                    : null}
+                                  {editListParentType === "life_area"
+                                    ? lifeAreas.map((lifeArea) => (
+                                        <option key={lifeArea.id} value={lifeArea.id}>
+                                          {lifeArea.name}
+                                        </option>
+                                      ))
+                                    : null}
+                                </select>
+                              </label>
+                            ) : null}
+                          </div>
+
+                          <div className="row-inline">
+                            <button
+                              type="button"
+                              className="pill-link"
+                              onClick={() => void saveListEdit(list.id)}
+                              disabled={busyListId === list.id}
+                            >
+                              Save
+                            </button>
+                            <button
+                              type="button"
+                              className="pill-link"
+                              onClick={() => setEditingListId(null)}
+                              disabled={busyListId === list.id}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div>
+                            <strong>{list.name}</strong>
+                            <p>{parentLabel ?? "No parent context"}</p>
+                            <p className="mono-note">{listTasksCount} tasks assigned</p>
+                          </div>
+                          <div className="row-inline">
+                            <button
+                              type="button"
+                              className="pill-link"
+                              onClick={() => startListEdit(list)}
+                              disabled={busyListId === list.id}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              className="pill-link"
+                              onClick={() => void deleteList(list.id)}
+                              disabled={busyListId === list.id}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </li>
+                  );
+                })
+              )}
+            </ul>
+          </Panel>
         </>
       ) : null}
 
@@ -2004,14 +2054,28 @@ export default function TasksPage() {
             </form>
           </Panel>
 
-          <Panel title="Goal List">
+          <Panel title="Goal Roadmaps">
             <ul className="list">
               {goals.length === 0 ? (
                 <li className="list-row">
                   <p>No goals yet. Add your first one above.</p>
                 </li>
               ) : (
-                goals.map((goal) => (
+                goals.map((goal) => {
+                  const goalTargets = targetsByGoalId.get(goal.id) ?? [];
+                  const goalTargetIds = new Set(goalTargets.map((target) => target.id));
+                  const goalLists = lists.filter(
+                    (list) => list.goal_id === goal.id || (list.target_id ? goalTargetIds.has(list.target_id) : false)
+                  );
+                  const goalListIds = new Set(goalLists.map((list) => list.id));
+                  const goalTasks = tasks.filter((task) =>
+                    Boolean(task.list_id) && goalListIds.has(task.list_id as string)
+                  );
+                  const goalOpenTasks = goalTasks.filter(
+                    (task) => task.status !== "done" && task.status !== "canceled"
+                  ).length;
+
+                  return (
                   <li className="list-row" key={goal.id}>
                     {editingGoalId === goal.id ? (
                       <div className="form-grid">
@@ -2078,6 +2142,34 @@ export default function TasksPage() {
                             status: {formatGoalStatus(goal.status)}
                             {goal.target_date ? ` | target ${toDateInputValue(goal.target_date)}` : ""}
                           </p>
+                          <p className="mono-note">
+                            {`Path: Goal -> ${goalTargets.length} targets -> ${goalLists.length} lists -> ${goalOpenTasks}/${goalTasks.length} open tasks`}
+                          </p>
+                          {goalTargets.length > 0 ? (
+                            <div className="journey-list">
+                              {goalTargets.map((target) => {
+                                const targetLists = lists.filter((list) => list.target_id === target.id);
+                                const targetListIds = new Set(targetLists.map((list) => list.id));
+                                const targetTasks = tasks.filter(
+                                  (task) => Boolean(task.list_id) && targetListIds.has(task.list_id as string)
+                                );
+                                const targetOpenTasks = targetTasks.filter(
+                                  (task) => task.status !== "done" && task.status !== "canceled"
+                                ).length;
+
+                                return (
+                                  <div className="journey-row" key={target.id}>
+                                    <strong>{target.title}</strong>
+                                    <span>
+                                      {targetLists.length} lists | {targetOpenTasks}/{targetTasks.length} open tasks
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <p className="mono-note">No targets yet. Add one to build a concrete path.</p>
+                          )}
                         </div>
                         <div className="row-inline">
                           <span className="pill">{formatGoalStatus(goal.status)}</span>
@@ -2101,7 +2193,8 @@ export default function TasksPage() {
                       </>
                     )}
                   </li>
-                ))
+                  );
+                })
               )}
             </ul>
           </Panel>

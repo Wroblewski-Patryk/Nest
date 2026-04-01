@@ -1428,6 +1428,30 @@ Last updated: 2026-04-01
       `php artisan test --filter=TasksAndListsApiTest`.
   - Done on: 2026-04-01
 
+- [x] NEST-188 Reorganize planning IA into practical subviews and progressive task capture
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-187
+  - Done when:
+    - main planning navigation exposes practical subviews (`tasks`, `lists`,
+      `targets`, `goals`) from one module entrypoint,
+    - `Add card` is progressive (opens on click, closes after save) to reduce
+      visual overload in daily task flow,
+    - goal view shows explicit path context from goal through targets/lists to
+      linked task workload.
+  - Notes:
+    - Updated planning rail IA and subnavigation behavior in:
+      `apps/web/src/components/workspace-shell.tsx`.
+    - Reworked `/tasks` tabs and views:
+      `tasks` (grouped by lists), `lists` (structure management), `targets`,
+      `goals` with path visibility, including progressive card composer behavior
+      in `apps/web/src/app/tasks/page.tsx`.
+    - Added style support for planning subnav and goal path rows in:
+      `apps/web/src/app/globals.css`.
+    - Validation:
+      `pnpm --dir apps/web build`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent
