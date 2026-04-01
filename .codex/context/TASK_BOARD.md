@@ -1206,6 +1206,31 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-180 Eliminate module stretch artifacts and add calendar day/week/month view
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-179
+  - Done when:
+    - module header/content cards no longer stretch unnaturally on wide
+      displays,
+    - grid panels keep natural height (no row-equalization stretch side
+      effect),
+    - calendar supports `day/week/month` switch with range navigation and shows
+      both events and due tasks in selected window.
+  - Notes:
+    - Fixed global layout stretch behavior by anchoring workspace grid content
+      to top and preventing auto row-item stretch:
+      `apps/web/src/app/globals.css`.
+    - Rebuilt calendar module with window switch (`day/week/month`), prev/today/next
+      navigation, anchor-date picker, and combined planning feed
+      (`events + due tasks`) for selected range:
+      `apps/web/src/app/calendar/page.tsx`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web build`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

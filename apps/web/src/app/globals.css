@@ -270,6 +270,7 @@ body {
   padding: 1rem 1rem 5.5rem;
   display: grid;
   gap: 0.8rem;
+  align-content: start;
 }
 
 .workspace-topbar {
@@ -364,6 +365,7 @@ body {
   gap: 0.8rem;
   grid-template-columns: 1fr;
   align-content: start;
+  align-items: start;
   width: min(1120px, 100%);
   margin-inline: auto;
 }
@@ -720,6 +722,36 @@ input[type="color"].list-row {
   color: color-mix(in srgb, var(--accent), #000 18%);
   border-color: color-mix(in srgb, var(--accent), #fff 35%);
   background: color-mix(in srgb, var(--accent-soft), #fff 20%);
+}
+
+.calendar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.calendar-view-switch {
+  display: inline-flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.calendar-view-button {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent), #fff 35%);
+  background: color-mix(in srgb, var(--accent-soft), #fff 24%);
+  color: color-mix(in srgb, var(--accent), #000 18%);
+  padding: 0.3rem 0.68rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.calendar-view-button.is-active {
+  background: var(--accent);
+  color: #f8fdf8;
 }
 
 @media (min-width: 920px) {

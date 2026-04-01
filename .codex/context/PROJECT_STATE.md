@@ -179,7 +179,7 @@ Last updated: 2026-04-01
   `docs/planning/next_execution_wave_2026-03-21.md`
 - Auth/usability/AI-access remediation wave documented in
   `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md` with
-  execution queue `NEST-160` to `NEST-179`.
+  execution queue `NEST-160` to `NEST-180`.
 - `NEST-001` completed: monorepo structure approved and documented in
   `docs/engineering/monorepo_structure.md`
 - `NEST-002` completed: Laravel backend skeleton bootstrapped in `apps/api`
@@ -716,6 +716,12 @@ Last updated: 2026-04-01
   `apps/web/src/components/workspace-logout-button.tsx`,
   `apps/web/src/app/globals.css`,
   `apps/web/middleware.ts`)
+- `NEST-180` completed: workspace layout stretch artifacts were removed by
+  anchoring module grids to natural top-flow sizing, and calendar now provides
+  practical `day/week/month` view switching with date-range navigation and
+  combined visibility of events plus due tasks in selected window
+  (`apps/web/src/app/globals.css`,
+  `apps/web/src/app/calendar/page.tsx`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

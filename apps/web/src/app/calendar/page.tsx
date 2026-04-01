@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { clearAuthSession } from "@/lib/auth-session";
@@ -14,6 +14,16 @@ type CalendarEventItem = {
   all_day: boolean;
   linked_entity_type: string | null;
 };
+
+type TaskCalendarItem = {
+  id: string;
+  title: string;
+  status: "todo" | "in_progress" | "done" | "canceled";
+  priority: "low" | "medium" | "high" | "urgent";
+  due_date: string | null;
+};
+
+type CalendarViewMode = "day" | "week" | "month";
 
 type ApiRequestInit = Omit<RequestInit, "body"> & {
   body?: Record<string, unknown>;
@@ -63,10 +73,6 @@ function toIso(input: string): string | null {
   return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
 }
 
-function formatWhen(value: string): string {
-  return new Date(value).toLocaleString();
-}
-
 function toLocalDateTimeInput(value: string): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
@@ -75,9 +81,95 @@ function toLocalDateTimeInput(value: string): string {
   return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 }
 
+function toDateInputValue(value: Date): string {
+  return new Date(value.getTime() - value.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+}
+
+function fromDateInput(value: string): Date {
+  const parsed = new Date(`${value}T12:00:00`);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+}
+
+function startOfDay(value: Date): Date {
+  return new Date(value.getFullYear(), value.getMonth(), value.getDate(), 0, 0, 0, 0);
+}
+
+function addDays(value: Date, days: number): Date {
+  const next = new Date(value);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function startOfWeekMonday(value: Date): Date {
+  const base = startOfDay(value);
+  const weekDay = base.getDay();
+  const diff = weekDay === 0 ? -6 : 1 - weekDay;
+  return addDays(base, diff);
+}
+
+function endForView(view: CalendarViewMode, start: Date): Date {
+  if (view === "day") {
+    return addDays(start, 1);
+  }
+
+  if (view === "week") {
+    return addDays(start, 7);
+  }
+
+  return new Date(start.getFullYear(), start.getMonth() + 1, 1, 0, 0, 0, 0);
+}
+
+function resolveWindow(view: CalendarViewMode, anchor: Date): { start: Date; end: Date } {
+  if (view === "day") {
+    const start = startOfDay(anchor);
+    return { start, end: endForView("day", start) };
+  }
+
+  if (view === "week") {
+    const start = startOfWeekMonday(anchor);
+    return { start, end: endForView("week", start) };
+  }
+
+  const start = new Date(anchor.getFullYear(), anchor.getMonth(), 1, 0, 0, 0, 0);
+  return { start, end: endForView("month", start) };
+}
+
+function formatRangeLabel(view: CalendarViewMode, start: Date, end: Date): string {
+  if (view === "day") {
+    return start.toLocaleDateString();
+  }
+
+  if (view === "week") {
+    const lastDay = addDays(end, -1);
+    return `${start.toLocaleDateString()} - ${lastDay.toLocaleDateString()}`;
+  }
+
+  return start.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+}
+
+function isInRange(value: Date, start: Date, end: Date): boolean {
+  return value >= start && value < end;
+}
+
+function overlapsRange(startAt: Date, endAt: Date, start: Date, end: Date): boolean {
+  return endAt > start && startAt < end;
+}
+
+function formatWhen(value: string): string {
+  return new Date(value).toLocaleString();
+}
+
+function isClosedTask(status: TaskCalendarItem["status"]): boolean {
+  return status === "done" || status === "canceled";
+}
+
 export default function CalendarPage() {
   const router = useRouter();
   const [events, setEvents] = useState<CalendarEventItem[]>([]);
+  const [tasks, setTasks] = useState<TaskCalendarItem[]>([]);
+  const [viewMode, setViewMode] = useState<CalendarViewMode>("week");
+  const [anchorDate, setAnchorDate] = useState(toDateInputValue(new Date()));
+
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventStartAt, setNewEventStartAt] = useState("");
   const [newEventEndAt, setNewEventEndAt] = useState("");
@@ -97,8 +189,12 @@ export default function CalendarPage() {
   }, [router]);
 
   const loadData = useCallback(async () => {
-    const response = await nestApiClient.getCalendarEvents({ per_page: 100 });
-    setEvents((response.data ?? []) as CalendarEventItem[]);
+    const [eventsResponse, tasksResponse] = await Promise.all([
+      nestApiClient.getCalendarEvents({ per_page: 200 }),
+      nestApiClient.getTasks({ per_page: 200 }),
+    ]);
+    setEvents((eventsResponse.data ?? []) as CalendarEventItem[]);
+    setTasks((tasksResponse.data ?? []) as TaskCalendarItem[]);
   }, []);
 
   useEffect(() => {
@@ -130,6 +226,86 @@ export default function CalendarPage() {
       mounted = false;
     };
   }, [handleUnauthorized, loadData]);
+
+  const windowStart = useMemo(() => resolveWindow(viewMode, fromDateInput(anchorDate)).start, [anchorDate, viewMode]);
+  const windowEnd = useMemo(() => resolveWindow(viewMode, fromDateInput(anchorDate)).end, [anchorDate, viewMode]);
+  const windowLabel = useMemo(() => formatRangeLabel(viewMode, windowStart, windowEnd), [viewMode, windowStart, windowEnd]);
+
+  const visibleEvents = useMemo(
+    () =>
+      events.filter((item) => {
+        const startAt = new Date(item.start_at);
+        const endAt = new Date(item.end_at);
+        if (Number.isNaN(startAt.getTime()) || Number.isNaN(endAt.getTime())) {
+          return false;
+        }
+        return overlapsRange(startAt, endAt, windowStart, windowEnd);
+      }),
+    [events, windowEnd, windowStart]
+  );
+
+  const visibleTasks = useMemo(
+    () =>
+      tasks.filter((item) => {
+        if (!item.due_date) {
+          return false;
+        }
+        const dueDate = new Date(item.due_date);
+        if (Number.isNaN(dueDate.getTime())) {
+          return false;
+        }
+        return isInRange(dueDate, windowStart, windowEnd);
+      }),
+    [tasks, windowEnd, windowStart]
+  );
+
+  const planningFeed = useMemo(() => {
+    const eventRows = visibleEvents.map((entry) => ({
+      key: `event-${entry.id}`,
+      type: "event" as const,
+      at: new Date(entry.start_at),
+      title: entry.title,
+      detail: `${formatWhen(entry.start_at)} - ${formatWhen(entry.end_at)}`,
+      tag: entry.linked_entity_type ?? "event",
+    }));
+
+    const taskRows = visibleTasks.map((task) => ({
+      key: `task-${task.id}`,
+      type: "task" as const,
+      at: new Date(task.due_date ?? ""),
+      title: task.title,
+      detail: `Due ${task.due_date?.slice(0, 10)} | ${task.priority} | ${task.status}`,
+      tag: "task",
+    }));
+
+    return [...eventRows, ...taskRows]
+      .filter((entry) => !Number.isNaN(entry.at.getTime()))
+      .sort((a, b) => a.at.getTime() - b.at.getTime());
+  }, [visibleEvents, visibleTasks]);
+
+  const openTasksInView = useMemo(
+    () => visibleTasks.filter((item) => !isClosedTask(item.status)).length,
+    [visibleTasks]
+  );
+
+  function moveWindow(direction: -1 | 1) {
+    const anchor = fromDateInput(anchorDate);
+    const next = new Date(anchor);
+
+    if (viewMode === "day") {
+      next.setDate(anchor.getDate() + direction);
+    } else if (viewMode === "week") {
+      next.setDate(anchor.getDate() + direction * 7);
+    } else {
+      next.setMonth(anchor.getMonth() + direction, 1);
+    }
+
+    setAnchorDate(toDateInputValue(next));
+  }
+
+  function goToday() {
+    setAnchorDate(toDateInputValue(new Date()));
+  }
 
   async function createEvent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -257,16 +433,78 @@ export default function CalendarPage() {
       module="calendar"
     >
       <div className="stack">
-        <MetricCard label="Events total" value={String(events.length)} />
-        <MetricCard
-          label="Linked entities"
-          value={String(events.filter((item) => item.linked_entity_type !== null).length)}
-        />
-        <MetricCard
-          label="Standalone events"
-          value={String(events.filter((item) => item.linked_entity_type === null).length)}
-        />
+        <MetricCard label="Window" value={windowLabel} />
+        <MetricCard label="Events in view" value={String(visibleEvents.length)} />
+        <MetricCard label="Tasks due in view" value={String(visibleTasks.length)} />
+        <MetricCard label="Open due tasks" value={String(openTasksInView)} />
       </div>
+
+      <Panel title="Calendar View">
+        <div className="calendar-toolbar">
+          <div className="calendar-view-switch">
+            <button
+              type="button"
+              className={`calendar-view-button ${viewMode === "day" ? "is-active" : ""}`}
+              onClick={() => setViewMode("day")}
+            >
+              Dzien
+            </button>
+            <button
+              type="button"
+              className={`calendar-view-button ${viewMode === "week" ? "is-active" : ""}`}
+              onClick={() => setViewMode("week")}
+            >
+              Tydzien
+            </button>
+            <button
+              type="button"
+              className={`calendar-view-button ${viewMode === "month" ? "is-active" : ""}`}
+              onClick={() => setViewMode("month")}
+            >
+              Miesiac
+            </button>
+          </div>
+
+          <div className="row-inline">
+            <button type="button" className="btn-secondary" onClick={() => moveWindow(-1)}>
+              Prev
+            </button>
+            <button type="button" className="btn-secondary" onClick={goToday}>
+              Today
+            </button>
+            <button type="button" className="btn-secondary" onClick={() => moveWindow(1)}>
+              Next
+            </button>
+            <label className="field">
+              <span>Anchor date</span>
+              <input
+                className="list-row"
+                type="date"
+                value={anchorDate}
+                onChange={(event) => setAnchorDate(event.target.value)}
+              />
+            </label>
+          </div>
+        </div>
+
+        <ul className="list">
+          {planningFeed.length === 0 ? (
+            <li className="list-row">
+              <p>No tasks or events in selected window.</p>
+            </li>
+          ) : (
+            planningFeed.map((entry) => (
+              <li className="list-row" key={entry.key}>
+                <div>
+                  <strong>{entry.title}</strong>
+                  <p>{entry.detail}</p>
+                </div>
+                <span className="pill">{entry.tag}</span>
+              </li>
+            ))
+          )}
+        </ul>
+      </Panel>
 
       <Panel title="Add Event">
         <form className="form-grid" onSubmit={createEvent}>
@@ -307,7 +545,7 @@ export default function CalendarPage() {
         </form>
       </Panel>
 
-      <Panel title="Timeline">
+      <Panel title="All Events">
         <ul className="list">
           {events.length === 0 ? (
             <li className="list-row">
@@ -403,6 +641,12 @@ export default function CalendarPage() {
           )}
         </ul>
       </Panel>
+
+      {isLoading ? (
+        <Panel title="Loading">
+          <p className="callout">Loading calendar...</p>
+        </Panel>
+      ) : null}
 
       {feedback ? (
         <Panel title="Status">
