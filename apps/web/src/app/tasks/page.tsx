@@ -106,6 +106,10 @@ function toDateInputValue(value: string | null): string {
   return value.slice(0, 10);
 }
 
+function toLocalDateKey(value: Date): string {
+  return new Date(value.getTime() - value.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+}
+
 function formatPriority(priority: TaskPriority): string {
   if (priority === "urgent") {
     return "Urgent";
@@ -117,6 +121,19 @@ function formatPriority(priority: TaskPriority): string {
     return "Medium";
   }
   return "Low";
+}
+
+function formatStatus(status: TaskStatus): string {
+  if (status === "in_progress") {
+    return "In progress";
+  }
+  if (status === "done") {
+    return "Done";
+  }
+  if (status === "canceled") {
+    return "Canceled";
+  }
+  return "To do";
 }
 
 export default function TasksPage() {
@@ -155,6 +172,12 @@ export default function TasksPage() {
   const [editTaskDueDate, setEditTaskDueDate] = useState("");
   const [editTaskLifeAreaId, setEditTaskLifeAreaId] = useState("");
   const [editTaskStatus, setEditTaskStatus] = useState<TaskStatus>("todo");
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "open" | "done">("all");
+  const [listContextFilter, setListContextFilter] = useState<"all" | "with_context" | "without_context">("all");
+  const [boardLifeAreaFilter, setBoardLifeAreaFilter] = useState("");
+  const [hideEmptyColumns, setHideEmptyColumns] = useState(false);
 
   const [feedback, setFeedback] = useState("Kanban board gotowy: listy jako kolumny, taski jako karty.");
   const [errorMessage, setErrorMessage] = useState("");
@@ -244,10 +267,85 @@ export default function TasksPage() {
     [lifeAreas]
   );
 
+  const todayKey = useMemo(() => toLocalDateKey(new Date()), []);
+  const normalizedSearch = useMemo(() => searchQuery.trim().toLowerCase(), [searchQuery]);
+
   const openTasksCount = useMemo(
     () => tasks.filter((task) => task.status !== "done" && task.status !== "canceled").length,
     [tasks]
   );
+  const dueTodayCount = useMemo(
+    () =>
+      tasks.filter(
+        (task) =>
+          task.due_date?.slice(0, 10) === todayKey && task.status !== "done" && task.status !== "canceled"
+      ).length,
+    [tasks, todayKey]
+  );
+  const overdueCount = useMemo(
+    () =>
+      tasks.filter(
+        (task) =>
+          Boolean(task.due_date) &&
+          task.due_date!.slice(0, 10) < todayKey &&
+          task.status !== "done" &&
+          task.status !== "canceled"
+      ).length,
+    [tasks, todayKey]
+  );
+
+  const filteredTasksByListId = useMemo(() => {
+    const grouped = new Map<string, TaskItem[]>();
+    for (const list of lists) {
+      const listTasks = tasksByListId.get(list.id) ?? [];
+      const filtered = listTasks.filter((task) => {
+        if (statusFilter === "open" && (task.status === "done" || task.status === "canceled")) {
+          return false;
+        }
+
+        if (statusFilter === "done" && task.status !== "done") {
+          return false;
+        }
+
+        if (boardLifeAreaFilter && task.life_area_id !== boardLifeAreaFilter) {
+          return false;
+        }
+
+        if (normalizedSearch && !task.title.toLowerCase().includes(normalizedSearch)) {
+          return false;
+        }
+
+        return true;
+      });
+
+      grouped.set(list.id, filtered);
+    }
+
+    return grouped;
+  }, [boardLifeAreaFilter, lists, normalizedSearch, statusFilter, tasksByListId]);
+
+  const visibleLists = useMemo(() => {
+    return lists.filter((list) => {
+      if (listContextFilter === "with_context" && !list.goal_id && !list.target_id && !list.life_area_id) {
+        return false;
+      }
+
+      if (listContextFilter === "without_context" && (list.goal_id || list.target_id || list.life_area_id)) {
+        return false;
+      }
+
+      const listTasks = filteredTasksByListId.get(list.id) ?? [];
+      if (hideEmptyColumns && listTasks.length === 0) {
+        return false;
+      }
+
+      if (normalizedSearch && !list.name.toLowerCase().includes(normalizedSearch) && listTasks.length === 0) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [filteredTasksByListId, hideEmptyColumns, listContextFilter, lists, normalizedSearch]);
 
   function getTargetsForGoal(goalId: string): TargetItem[] {
     if (!goalId) {
@@ -529,10 +627,8 @@ export default function TasksPage() {
       <div className="stack">
         <MetricCard label="Lists" value={String(lists.length)} />
         <MetricCard label="Open tasks" value={String(openTasksCount)} />
-        <MetricCard
-          label="Completed"
-          value={String(tasks.filter((task) => task.status === "done").length)}
-        />
+        <MetricCard label="Due today" value={String(dueTodayCount)} />
+        <MetricCard label="Overdue" value={String(overdueCount)} />
         <MetricCard
           label="Lists with context"
           value={String(lists.filter((list) => list.goal_id || list.target_id || list.life_area_id).length)}
@@ -636,10 +732,104 @@ export default function TasksPage() {
         </form>
       </Panel>
 
+      <Panel title="Board Filters">
+        <div className="tasks-board-toolbar">
+          <label className="field tasks-search">
+            <span>Search</span>
+            <input
+              className="list-row"
+              type="text"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search list or task title"
+            />
+          </label>
+
+          <div className="tasks-filter-group" role="group" aria-label="Status filter">
+            <button
+              type="button"
+              className={`filter-chip ${statusFilter === "all" ? "is-active" : ""}`}
+              onClick={() => setStatusFilter("all")}
+            >
+              All
+            </button>
+            <button
+              type="button"
+              className={`filter-chip ${statusFilter === "open" ? "is-active" : ""}`}
+              onClick={() => setStatusFilter("open")}
+            >
+              Open
+            </button>
+            <button
+              type="button"
+              className={`filter-chip ${statusFilter === "done" ? "is-active" : ""}`}
+              onClick={() => setStatusFilter("done")}
+            >
+              Done
+            </button>
+          </div>
+
+          <label className="field">
+            <span>Context</span>
+            <select
+              className="list-row"
+              value={listContextFilter}
+              onChange={(event) =>
+                setListContextFilter(event.target.value as "all" | "with_context" | "without_context")
+              }
+            >
+              <option value="all">All lists</option>
+              <option value="with_context">Only contextualized</option>
+              <option value="without_context">Only without context</option>
+            </select>
+          </label>
+
+          <label className="field">
+            <span>Life area</span>
+            <select
+              className="list-row"
+              value={boardLifeAreaFilter}
+              onChange={(event) => setBoardLifeAreaFilter(event.target.value)}
+            >
+              <option value="">All areas</option>
+              {lifeAreas.map((lifeArea) => (
+                <option key={lifeArea.id} value={lifeArea.id}>
+                  {lifeArea.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="tasks-toggle">
+            <input
+              type="checkbox"
+              checked={hideEmptyColumns}
+              onChange={(event) => setHideEmptyColumns(event.target.checked)}
+            />
+            Hide empty columns
+          </label>
+
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => {
+              setSearchQuery("");
+              setStatusFilter("all");
+              setListContextFilter("all");
+              setBoardLifeAreaFilter("");
+              setHideEmptyColumns(false);
+            }}
+          >
+            Reset
+          </button>
+        </div>
+      </Panel>
+
       <section className="panel">
         <div className="panel-header">
           <h2>Kanban Board</h2>
           <div className="panel-actions">
+            <span className="pill">{visibleLists.length} columns</span>
             <button
               type="button"
               className="btn-secondary"
@@ -656,11 +846,15 @@ export default function TasksPage() {
           {!isLoading && lists.length === 0 ? (
             <p className="callout state-empty">No lists yet. Create one above to start your board.</p>
           ) : null}
+          {!isLoading && lists.length > 0 && visibleLists.length === 0 ? (
+            <p className="callout state-empty">No columns match current filters.</p>
+          ) : null}
 
-          {!isLoading && lists.length > 0 ? (
+          {!isLoading && visibleLists.length > 0 ? (
             <div className="kanban-columns">
-              {lists.map((list) => {
-                const listTasks = tasksByListId.get(list.id) ?? [];
+              {visibleLists.map((list) => {
+                const listTasks = filteredTasksByListId.get(list.id) ?? [];
+                const totalListTasks = tasksByListId.get(list.id)?.length ?? 0;
                 const draft = taskDrafts[list.id] ?? createEmptyTaskDraft();
 
                 return (
@@ -683,7 +877,7 @@ export default function TasksPage() {
                       </div>
 
                       <div className="kanban-badges">
-                        <span className="kanban-badge">{listTasks.length} cards</span>
+                        <span className="kanban-badge">{`${listTasks.length}/${totalListTasks} cards`}</span>
                         {list.goal_id ? (
                           <span className="kanban-badge">Goal: {goalLabelById.get(list.goal_id)}</span>
                         ) : null}
@@ -820,7 +1014,15 @@ export default function TasksPage() {
                         <p className="callout state-empty">No cards in this list yet.</p>
                       ) : null}
 
-                      {listTasks.map((task) => (
+                      {listTasks.map((task) => {
+                        const dueDateLabel = toDateInputValue(task.due_date);
+                        const isOverdue =
+                          Boolean(task.due_date) &&
+                          dueDateLabel < todayKey &&
+                          task.status !== "done" &&
+                          task.status !== "canceled";
+
+                        return (
                         <article className="kanban-card" key={task.id}>
                           {editingTaskId === task.id ? (
                             <div className="form-grid">
@@ -917,14 +1119,22 @@ export default function TasksPage() {
                           ) : (
                             <>
                               <h4>{task.title}</h4>
-                              <p>Priority: {formatPriority(task.priority)}</p>
-                              {task.due_date ? <p>Due: {toDateInputValue(task.due_date)}</p> : null}
-                              {task.life_area_id ? (
-                                <p>Area: {lifeAreaLabelById.get(task.life_area_id) ?? "Unknown"}</p>
-                              ) : null}
+                              <div className="kanban-meta">
+                                <span className={`kanban-meta-chip priority-${task.priority}`}>
+                                  {formatPriority(task.priority)}
+                                </span>
+                                <span className={`kanban-meta-chip ${isOverdue ? "is-overdue" : ""}`}>
+                                  {task.due_date ? `Due ${dueDateLabel}` : "No date"}
+                                </span>
+                                {task.life_area_id ? (
+                                  <span className="kanban-meta-chip">
+                                    {lifeAreaLabelById.get(task.life_area_id) ?? "Unknown area"}
+                                  </span>
+                                ) : null}
+                              </div>
 
                               <div className="kanban-actions">
-                                <span className="pill">{task.status}</span>
+                                <span className={`pill status-${task.status}`}>{formatStatus(task.status)}</span>
                                 <button
                                   type="button"
                                   className="pill-link"
@@ -953,7 +1163,8 @@ export default function TasksPage() {
                             </>
                           )}
                         </article>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     <footer className="kanban-column-footer">

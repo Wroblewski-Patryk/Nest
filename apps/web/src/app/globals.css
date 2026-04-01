@@ -762,10 +762,50 @@ input[type="color"].list-row {
   flex-wrap: wrap;
 }
 
+.tasks-board-toolbar {
+  display: grid;
+  gap: 0.56rem;
+}
+
+.tasks-search {
+  min-width: min(360px, 100%);
+}
+
+.tasks-filter-group {
+  display: inline-flex;
+  gap: 0.38rem;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent), #fff 35%);
+  background: color-mix(in srgb, var(--accent-soft), #fff 30%);
+  color: color-mix(in srgb, var(--accent), #000 16%);
+  padding: 0.24rem 0.62rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.filter-chip.is-active {
+  background: var(--accent);
+  color: #fcfefc;
+}
+
+.tasks-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
 .kanban-columns {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(280px, 320px);
+  grid-auto-columns: minmax(300px, 360px);
   gap: 0.7rem;
   overflow-x: auto;
   padding-bottom: 0.2rem;
@@ -836,6 +876,64 @@ input[type="color"].list-row {
   margin: 0;
   color: var(--muted);
   font-size: 0.74rem;
+}
+
+.kanban-meta {
+  display: inline-flex;
+  gap: 0.32rem;
+  flex-wrap: wrap;
+}
+
+.kanban-meta-chip {
+  border-radius: 999px;
+  border: 1px solid var(--line-ghost);
+  background: color-mix(in srgb, #fff, var(--surface-low) 24%);
+  color: var(--muted);
+  padding: 0.15rem 0.45rem;
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+.kanban-meta-chip.priority-low {
+  color: #466b52;
+}
+
+.kanban-meta-chip.priority-medium {
+  color: #577255;
+}
+
+.kanban-meta-chip.priority-high {
+  color: #8c4f1d;
+}
+
+.kanban-meta-chip.priority-urgent {
+  color: #a02121;
+}
+
+.kanban-meta-chip.is-overdue {
+  border-color: rgb(186 26 26 / 35%);
+  background: rgb(255 218 214 / 68%);
+  color: var(--danger);
+}
+
+.status-todo {
+  background: color-mix(in srgb, #f3f1ec, #fff 30%);
+  border-color: var(--line-ghost);
+  color: var(--muted);
+}
+
+.status-in_progress {
+  background: color-mix(in srgb, #e5ecde, #fff 20%);
+}
+
+.status-done {
+  background: color-mix(in srgb, var(--accent-soft), #fff 22%);
+}
+
+.status-canceled {
+  background: color-mix(in srgb, #f8e3de, #fff 20%);
+  border-color: rgb(186 26 26 / 30%);
+  color: #9b3a2d;
 }
 
 .kanban-actions {

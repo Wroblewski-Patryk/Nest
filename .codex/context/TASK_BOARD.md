@@ -1265,6 +1265,30 @@ Last updated: 2026-04-01
       `pnpm --dir apps/web test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-182 Upgrade Tasks+Lists board usability with practical filter UX
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-181
+  - Done when:
+    - board exposes fast filters for search, status, context scope, and life
+      area without opening edit forms,
+    - kanban cards show clearer metadata (priority, due-date state, area) and
+      visual emphasis for overdue items,
+    - board ergonomics improve for daily usage via clearer column visibility
+      controls (including hide-empty and reset).
+  - Notes:
+    - Added task board filter toolbar and interactive controls in:
+      `apps/web/src/app/tasks/page.tsx`.
+    - Added filtered column rendering + no-results states for active filters.
+    - Enhanced kanban card metadata chips/status visuals and overdue styling
+      in:
+      `apps/web/src/app/globals.css`,
+      `apps/web/src/app/tasks/page.tsx`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent
