@@ -8,6 +8,8 @@ import { nestApiClient } from "@/lib/api-client";
 
 type TaskStatus = "todo" | "in_progress" | "done" | "canceled";
 type TaskPriority = "low" | "medium" | "high" | "urgent";
+type GoalStatus = "active" | "paused" | "completed" | "archived";
+type PlanningTab = "board" | "goals" | "targets";
 
 type ListItem = {
   id: string;
@@ -33,12 +35,20 @@ type ListParentType = "none" | "goal" | "target" | "life_area";
 type GoalItem = {
   id: string;
   title: string;
+  status: GoalStatus;
+  target_date: string | null;
 };
 
 type TargetItem = {
   id: string;
   goal_id: string;
   title: string;
+  metric_type: string;
+  value_target: number;
+  value_current: number;
+  unit: string | null;
+  due_date: string | null;
+  status: GoalStatus;
 };
 
 type LifeAreaItem = {
@@ -159,6 +169,30 @@ function formatStatus(status: TaskStatus): string {
   return "To do";
 }
 
+function formatGoalStatus(status: GoalStatus): string {
+  if (status === "completed") {
+    return "Completed";
+  }
+
+  if (status === "paused") {
+    return "Paused";
+  }
+
+  if (status === "archived") {
+    return "Archived";
+  }
+
+  return "Active";
+}
+
+function resolvePlanningTab(tab: string | null): PlanningTab {
+  if (tab === "goals" || tab === "targets") {
+    return tab;
+  }
+
+  return "board";
+}
+
 function resolveParentType(list: ListItem): { type: ListParentType; id: string } {
   if (list.target_id) {
     return { type: "target", id: list.target_id };
@@ -197,6 +231,7 @@ function buildListParentPayload(type: ListParentType, id: string): {
 
 export default function TasksPage() {
   const router = useRouter();
+  const [planningTab, setPlanningTab] = useState<PlanningTab>("board");
 
   const [lists, setLists] = useState<ListItem[]>([]);
   const [tasks, setTasks] = useState<TaskItem[]>([]);
@@ -231,6 +266,31 @@ export default function TasksPage() {
   const [editTaskStatus, setEditTaskStatus] = useState<TaskStatus>("todo");
   const [editTaskListId, setEditTaskListId] = useState("");
 
+  const [newGoalTitle, setNewGoalTitle] = useState("");
+  const [newGoalTargetDate, setNewGoalTargetDate] = useState("");
+  const [isCreatingGoal, setIsCreatingGoal] = useState(false);
+  const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
+  const [editGoalTitle, setEditGoalTitle] = useState("");
+  const [editGoalTargetDate, setEditGoalTargetDate] = useState("");
+  const [editGoalStatus, setEditGoalStatus] = useState<GoalStatus>("active");
+  const [busyGoalId, setBusyGoalId] = useState<string | null>(null);
+
+  const [newTargetGoalId, setNewTargetGoalId] = useState("");
+  const [newTargetTitle, setNewTargetTitle] = useState("");
+  const [newTargetMetricType, setNewTargetMetricType] = useState("count");
+  const [newTargetValueTarget, setNewTargetValueTarget] = useState("1");
+  const [newTargetUnit, setNewTargetUnit] = useState("items");
+  const [isCreatingTarget, setIsCreatingTarget] = useState(false);
+  const [editingTargetId, setEditingTargetId] = useState<string | null>(null);
+  const [editTargetTitle, setEditTargetTitle] = useState("");
+  const [editTargetMetricType, setEditTargetMetricType] = useState("count");
+  const [editTargetValueTarget, setEditTargetValueTarget] = useState("1");
+  const [editTargetValueCurrent, setEditTargetValueCurrent] = useState("0");
+  const [editTargetUnit, setEditTargetUnit] = useState("items");
+  const [editTargetDueDate, setEditTargetDueDate] = useState("");
+  const [editTargetStatus, setEditTargetStatus] = useState<GoalStatus>("active");
+  const [busyTargetId, setBusyTargetId] = useState<string | null>(null);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "open" | "done">("all");
   const [listContextFilter, setListContextFilter] = useState<"all" | "with_context" | "without_context">("all");
@@ -244,6 +304,15 @@ export default function TasksPage() {
     clearAuthSession();
     router.replace("/auth");
   }, [router]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const queryTab = new URLSearchParams(window.location.search).get("tab");
+    setPlanningTab(resolvePlanningTab(queryTab));
+  }, []);
 
   const loadAllTasks = useCallback(async (): Promise<TaskItem[]> => {
     const allTasks: TaskItem[] = [];
@@ -281,11 +350,15 @@ export default function TasksPage() {
     ]);
 
     const normalizedLists = (listsResponse.data ?? []) as ListItem[];
+    const normalizedGoals = (goalsResponse.data ?? []) as GoalItem[];
     setLists(normalizedLists);
     setTasks(tasksResponse);
-    setGoals((goalsResponse.data ?? []) as GoalItem[]);
+    setGoals(normalizedGoals);
     setTargets(targetsResponse.data ?? []);
     setLifeAreas(lifeAreasResponse.data ?? []);
+    setNewTargetGoalId((current) =>
+      normalizedGoals.some((goal) => goal.id === current) ? current : (normalizedGoals[0]?.id ?? "")
+    );
 
     setTaskDrafts((current) => {
       const next: Record<string, TaskDraft> = {};
@@ -379,6 +452,14 @@ export default function TasksPage() {
           task.status !== "canceled"
       ).length,
     [tasks, todayKey]
+  );
+  const activeGoalsCount = useMemo(
+    () => goals.filter((goal) => goal.status === "active").length,
+    [goals]
+  );
+  const activeTargetsCount = useMemo(
+    () => targets.filter((target) => target.status === "active").length,
+    [targets]
   );
 
   const filteredTasksByListId = useMemo(() => {
@@ -720,16 +801,237 @@ export default function TasksPage() {
     }
   }
 
+  async function createGoal(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!newGoalTitle.trim()) {
+      setErrorMessage("Goal title is required.");
+      return;
+    }
+
+    setIsCreatingGoal(true);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest("/goals", {
+        method: "POST",
+        body: {
+          title: newGoalTitle.trim(),
+          status: "active",
+          target_date: newGoalTargetDate || null,
+        },
+      });
+      setNewGoalTitle("");
+      setNewGoalTargetDate("");
+      await loadWorkspace();
+      setFeedback("Goal created.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setIsCreatingGoal(false);
+    }
+  }
+
+  function startGoalEdit(goal: GoalItem) {
+    setEditingGoalId(goal.id);
+    setEditGoalTitle(goal.title);
+    setEditGoalTargetDate(toDateInputValue(goal.target_date));
+    setEditGoalStatus(goal.status);
+  }
+
+  async function saveGoalEdit(goalId: string) {
+    if (!editGoalTitle.trim()) {
+      setErrorMessage("Goal title is required.");
+      return;
+    }
+
+    setBusyGoalId(goalId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/goals/${goalId}`, {
+        method: "PATCH",
+        body: {
+          title: editGoalTitle.trim(),
+          status: editGoalStatus,
+          target_date: editGoalTargetDate || null,
+        },
+      });
+      setEditingGoalId(null);
+      await loadWorkspace();
+      setFeedback("Goal updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyGoalId(null);
+    }
+  }
+
+  async function deleteGoal(goalId: string) {
+    if (!window.confirm("Delete this goal?")) {
+      return;
+    }
+
+    setBusyGoalId(goalId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/goals/${goalId}`, {
+        method: "DELETE",
+      });
+      if (editingGoalId === goalId) {
+        setEditingGoalId(null);
+      }
+      await loadWorkspace();
+      setFeedback("Goal deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyGoalId(null);
+    }
+  }
+
+  async function createTarget(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!newTargetGoalId) {
+      setErrorMessage("Select goal first.");
+      return;
+    }
+    if (!newTargetTitle.trim()) {
+      setErrorMessage("Target title is required.");
+      return;
+    }
+
+    setIsCreatingTarget(true);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest("/targets", {
+        method: "POST",
+        body: {
+          goal_id: newTargetGoalId,
+          title: newTargetTitle.trim(),
+          metric_type: newTargetMetricType.trim() || "count",
+          value_target: Number(newTargetValueTarget) || 0,
+          unit: newTargetUnit.trim() || null,
+          status: "active",
+        },
+      });
+      setNewTargetTitle("");
+      setNewTargetMetricType("count");
+      setNewTargetValueTarget("1");
+      setNewTargetUnit("items");
+      await loadWorkspace();
+      setFeedback("Target created.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setIsCreatingTarget(false);
+    }
+  }
+
+  function startTargetEdit(target: TargetItem) {
+    setEditingTargetId(target.id);
+    setEditTargetTitle(target.title);
+    setEditTargetMetricType(target.metric_type);
+    setEditTargetValueTarget(String(target.value_target));
+    setEditTargetValueCurrent(String(target.value_current));
+    setEditTargetUnit(target.unit ?? "");
+    setEditTargetDueDate(toDateInputValue(target.due_date));
+    setEditTargetStatus(target.status);
+  }
+
+  async function saveTargetEdit(targetId: string) {
+    if (!editTargetTitle.trim()) {
+      setErrorMessage("Target title is required.");
+      return;
+    }
+
+    setBusyTargetId(targetId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/targets/${targetId}`, {
+        method: "PATCH",
+        body: {
+          title: editTargetTitle.trim(),
+          metric_type: editTargetMetricType.trim() || "count",
+          value_target: Number(editTargetValueTarget) || 0,
+          value_current: Number(editTargetValueCurrent) || 0,
+          unit: editTargetUnit.trim() || null,
+          due_date: editTargetDueDate || null,
+          status: editTargetStatus,
+        },
+      });
+      setEditingTargetId(null);
+      await loadWorkspace();
+      setFeedback("Target updated.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyTargetId(null);
+    }
+  }
+
+  async function deleteTarget(targetId: string) {
+    if (!window.confirm("Delete this target?")) {
+      return;
+    }
+
+    setBusyTargetId(targetId);
+    setErrorMessage("");
+    setFeedback("");
+    try {
+      await apiRequest(`/targets/${targetId}`, {
+        method: "DELETE",
+      });
+      if (editingTargetId === targetId) {
+        setEditingTargetId(null);
+      }
+      await loadWorkspace();
+      setFeedback("Target deleted.");
+    } catch (error) {
+      if (getErrorStatus(error) === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setBusyTargetId(null);
+    }
+  }
+
   return (
     <WorkspaceShell
       title="Tasks + Lists"
-      subtitle="Widok tablicy: tworz listy, przypinaj je do goal/target/life area i zarzadzaj kartami."
+      subtitle="Unified planning workspace: goals -> targets -> lists -> tasks, with optional parent links."
       module="tasks"
       contentLayout="single"
     >
       <div className="stack">
         <MetricCard label="Lists" value={String(lists.length)} />
         <MetricCard label="Open tasks" value={String(openTasksCount)} />
+        <MetricCard label="Goals active" value={String(activeGoalsCount)} />
+        <MetricCard label="Targets active" value={String(activeTargetsCount)} />
         <MetricCard label="Due today" value={String(dueTodayCount)} />
         <MetricCard label="Overdue" value={String(overdueCount)} />
         <MetricCard
@@ -741,6 +1043,43 @@ export default function TasksPage() {
       {errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
       {!errorMessage && feedback ? <p className="callout state-success">{feedback}</p> : null}
 
+      <Panel title="Planning Views">
+        <div className="tasks-filter-group" role="tablist" aria-label="Planning module views">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={planningTab === "board"}
+            className={`filter-chip ${planningTab === "board" ? "is-active" : ""}`}
+            onClick={() => setPlanningTab("board")}
+          >
+            Board
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={planningTab === "goals"}
+            className={`filter-chip ${planningTab === "goals" ? "is-active" : ""}`}
+            onClick={() => setPlanningTab("goals")}
+          >
+            Goals
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={planningTab === "targets"}
+            className={`filter-chip ${planningTab === "targets" ? "is-active" : ""}`}
+            onClick={() => setPlanningTab("targets")}
+          >
+            Targets
+          </button>
+        </div>
+        <p className="form-hint">
+          Stitch direction: one focused planning module with lightweight switching, not separate disconnected pages.
+        </p>
+      </Panel>
+
+      {planningTab === "board" ? (
+        <>
       <Panel title="Create List">
         <form className="form-grid" onSubmit={createList}>
           <label className="field">
@@ -1602,6 +1941,362 @@ export default function TasksPage() {
           ) : null}
         </div>
       </section>
+        </>
+      ) : null}
+
+      {planningTab === "goals" ? (
+        <>
+          <Panel title="Add Goal">
+            <form className="form-grid" onSubmit={createGoal}>
+              <label className="field">
+                <span>Title</span>
+                <input
+                  className="list-row"
+                  type="text"
+                  value={newGoalTitle}
+                  onChange={(event) => setNewGoalTitle(event.target.value)}
+                  placeholder="Example: Build calmer weekly planning routine"
+                  disabled={isCreatingGoal}
+                />
+              </label>
+              <label className="field">
+                <span>Target date (optional)</span>
+                <input
+                  className="list-row"
+                  type="date"
+                  value={newGoalTargetDate}
+                  onChange={(event) => setNewGoalTargetDate(event.target.value)}
+                  disabled={isCreatingGoal}
+                />
+              </label>
+              <button type="submit" className="btn-primary" disabled={isCreatingGoal}>
+                {isCreatingGoal ? "Adding..." : "Add goal"}
+              </button>
+            </form>
+          </Panel>
+
+          <Panel title="Goal List">
+            <ul className="list">
+              {goals.length === 0 ? (
+                <li className="list-row">
+                  <p>No goals yet. Add your first one above.</p>
+                </li>
+              ) : (
+                goals.map((goal) => (
+                  <li className="list-row" key={goal.id}>
+                    {editingGoalId === goal.id ? (
+                      <div className="form-grid">
+                        <label className="field">
+                          <span>Title</span>
+                          <input
+                            className="list-row"
+                            type="text"
+                            value={editGoalTitle}
+                            onChange={(event) => setEditGoalTitle(event.target.value)}
+                            disabled={busyGoalId === goal.id}
+                          />
+                        </label>
+                        <div className="row-inline">
+                          <label className="field">
+                            <span>Status</span>
+                            <select
+                              className="list-row"
+                              value={editGoalStatus}
+                              onChange={(event) => setEditGoalStatus(event.target.value as GoalStatus)}
+                              disabled={busyGoalId === goal.id}
+                            >
+                              <option value="active">Active</option>
+                              <option value="paused">Paused</option>
+                              <option value="completed">Completed</option>
+                              <option value="archived">Archived</option>
+                            </select>
+                          </label>
+                          <label className="field">
+                            <span>Target date</span>
+                            <input
+                              className="list-row"
+                              type="date"
+                              value={editGoalTargetDate}
+                              onChange={(event) => setEditGoalTargetDate(event.target.value)}
+                              disabled={busyGoalId === goal.id}
+                            />
+                          </label>
+                        </div>
+                        <div className="row-inline">
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => void saveGoalEdit(goal.id)}
+                            disabled={busyGoalId === goal.id}
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => setEditingGoalId(null)}
+                            disabled={busyGoalId === goal.id}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div>
+                          <strong>{goal.title}</strong>
+                          <p>
+                            status: {formatGoalStatus(goal.status)}
+                            {goal.target_date ? ` | target ${toDateInputValue(goal.target_date)}` : ""}
+                          </p>
+                        </div>
+                        <div className="row-inline">
+                          <span className="pill">{formatGoalStatus(goal.status)}</span>
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => startGoalEdit(goal)}
+                            disabled={busyGoalId === goal.id}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => void deleteGoal(goal.id)}
+                            disabled={busyGoalId === goal.id}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </li>
+                ))
+              )}
+            </ul>
+          </Panel>
+        </>
+      ) : null}
+
+      {planningTab === "targets" ? (
+        <>
+          <Panel title="Add Target">
+            {goals.length === 0 ? (
+              <p className="callout state-empty">Create at least one goal in the Goals tab first.</p>
+            ) : null}
+            <form className="form-grid" onSubmit={createTarget}>
+              <label className="field">
+                <span>Goal</span>
+                <select
+                  className="list-row"
+                  value={newTargetGoalId}
+                  onChange={(event) => setNewTargetGoalId(event.target.value)}
+                  disabled={isCreatingTarget || goals.length === 0}
+                >
+                  {goals.length === 0 ? <option value="">No goals yet</option> : null}
+                  {goals.map((goal) => (
+                    <option key={goal.id} value={goal.id}>
+                      {goal.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="field">
+                <span>Title</span>
+                <input
+                  className="list-row"
+                  type="text"
+                  value={newTargetTitle}
+                  onChange={(event) => setNewTargetTitle(event.target.value)}
+                  placeholder="Example: 3 planning reviews per week"
+                  disabled={isCreatingTarget}
+                />
+              </label>
+              <div className="row-inline">
+                <label className="field">
+                  <span>Metric type</span>
+                  <input
+                    className="list-row"
+                    type="text"
+                    value={newTargetMetricType}
+                    onChange={(event) => setNewTargetMetricType(event.target.value)}
+                    disabled={isCreatingTarget}
+                  />
+                </label>
+                <label className="field">
+                  <span>Target value</span>
+                  <input
+                    className="list-row"
+                    type="number"
+                    value={newTargetValueTarget}
+                    onChange={(event) => setNewTargetValueTarget(event.target.value)}
+                    disabled={isCreatingTarget}
+                  />
+                </label>
+                <label className="field">
+                  <span>Unit</span>
+                  <input
+                    className="list-row"
+                    type="text"
+                    value={newTargetUnit}
+                    onChange={(event) => setNewTargetUnit(event.target.value)}
+                    disabled={isCreatingTarget}
+                  />
+                </label>
+              </div>
+              <button type="submit" className="btn-primary" disabled={isCreatingTarget || goals.length === 0}>
+                {isCreatingTarget ? "Adding..." : "Add target"}
+              </button>
+            </form>
+          </Panel>
+
+          <Panel title="Target Checkpoints">
+            <ul className="list">
+              {targets.length === 0 ? (
+                <li className="list-row">
+                  <p>No targets yet. Add your first checkpoint above.</p>
+                </li>
+              ) : (
+                targets.map((target) => (
+                  <li className="list-row" key={target.id}>
+                    {editingTargetId === target.id ? (
+                      <div className="form-grid">
+                        <label className="field">
+                          <span>Title</span>
+                          <input
+                            className="list-row"
+                            type="text"
+                            value={editTargetTitle}
+                            onChange={(event) => setEditTargetTitle(event.target.value)}
+                            disabled={busyTargetId === target.id}
+                          />
+                        </label>
+                        <div className="row-inline">
+                          <label className="field">
+                            <span>Metric type</span>
+                            <input
+                              className="list-row"
+                              type="text"
+                              value={editTargetMetricType}
+                              onChange={(event) => setEditTargetMetricType(event.target.value)}
+                              disabled={busyTargetId === target.id}
+                            />
+                          </label>
+                          <label className="field">
+                            <span>Status</span>
+                            <select
+                              className="list-row"
+                              value={editTargetStatus}
+                              onChange={(event) => setEditTargetStatus(event.target.value as GoalStatus)}
+                              disabled={busyTargetId === target.id}
+                            >
+                              <option value="active">Active</option>
+                              <option value="paused">Paused</option>
+                              <option value="completed">Completed</option>
+                              <option value="archived">Archived</option>
+                            </select>
+                          </label>
+                        </div>
+                        <div className="row-inline">
+                          <label className="field">
+                            <span>Current</span>
+                            <input
+                              className="list-row"
+                              type="number"
+                              value={editTargetValueCurrent}
+                              onChange={(event) => setEditTargetValueCurrent(event.target.value)}
+                              disabled={busyTargetId === target.id}
+                            />
+                          </label>
+                          <label className="field">
+                            <span>Target</span>
+                            <input
+                              className="list-row"
+                              type="number"
+                              value={editTargetValueTarget}
+                              onChange={(event) => setEditTargetValueTarget(event.target.value)}
+                              disabled={busyTargetId === target.id}
+                            />
+                          </label>
+                          <label className="field">
+                            <span>Unit</span>
+                            <input
+                              className="list-row"
+                              type="text"
+                              value={editTargetUnit}
+                              onChange={(event) => setEditTargetUnit(event.target.value)}
+                              disabled={busyTargetId === target.id}
+                            />
+                          </label>
+                          <label className="field">
+                            <span>Due date</span>
+                            <input
+                              className="list-row"
+                              type="date"
+                              value={editTargetDueDate}
+                              onChange={(event) => setEditTargetDueDate(event.target.value)}
+                              disabled={busyTargetId === target.id}
+                            />
+                          </label>
+                        </div>
+                        <div className="row-inline">
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => void saveTargetEdit(target.id)}
+                            disabled={busyTargetId === target.id}
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => setEditingTargetId(null)}
+                            disabled={busyTargetId === target.id}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div>
+                          <strong>{target.title}</strong>
+                          <p>
+                            goal: {goalLabelById.get(target.goal_id) ?? "Unknown goal"} | {target.value_current}/
+                            {target.value_target} {target.unit ?? ""}
+                            {target.due_date ? ` | due ${toDateInputValue(target.due_date)}` : ""}
+                          </p>
+                        </div>
+                        <div className="row-inline">
+                          <span className="pill">{formatGoalStatus(target.status)}</span>
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => startTargetEdit(target)}
+                            disabled={busyTargetId === target.id}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => void deleteTarget(target.id)}
+                            disabled={busyTargetId === target.id}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </li>
+                ))
+              )}
+            </ul>
+          </Panel>
+        </>
+      ) : null}
 
     </WorkspaceShell>
   );

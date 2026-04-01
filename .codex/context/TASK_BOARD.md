@@ -1348,6 +1348,36 @@ Last updated: 2026-04-01
       `pnpm --dir apps/mobile test:smoke`.
   - Done on: 2026-04-01
 
+- [x] NEST-185 Consolidate `Tasks + Lists + Goals + Targets` into one unified planning module
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-184
+  - Done when:
+    - planning hierarchy surfaces (`goals -> targets -> lists -> tasks`) are
+      managed from one module (`/tasks`) without forcing separate top-level
+      navigation contexts,
+    - previous standalone routes `/goals` and `/targets` remain safe for legacy
+      links and redirect to unified planning tabs,
+    - left rail navigation reflects one planning entrypoint (`Tasks + Lists`)
+      instead of split goal/target entries.
+  - Notes:
+    - Consulted active Stitch project `projects/11122321523690086751` as UX
+      direction input (single planning workspace behavior) before implementation.
+    - Extended web planning workspace with in-module view switching:
+      `Board`, `Goals`, `Targets` in
+      `apps/web/src/app/tasks/page.tsx`.
+    - Added legacy route redirects:
+      `apps/web/src/app/goals/page.tsx` ->
+      `/tasks?tab=goals`,
+      `apps/web/src/app/targets/page.tsx` ->
+      `/tasks?tab=targets`.
+    - Simplified main rail planning IA in:
+      `apps/web/src/components/workspace-shell.tsx`.
+    - Validation:
+      `pnpm --dir apps/web test:unit`,
+      `pnpm --dir apps/web test:smoke`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent

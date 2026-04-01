@@ -37,8 +37,6 @@ const NAV_ITEMS: Array<{
   { href: "/tasks", label: "Tasks + Lists", key: "tasks", icon: "tasks" },
   { href: "/habits", label: "Habits", key: "habits", icon: "habits" },
   { href: "/routines", label: "Routines", key: "routines", icon: "routines" },
-  { href: "/goals", label: "Goals", key: "goals", icon: "goals" },
-  { href: "/targets", label: "Targets", key: "targets", icon: "targets" },
   { href: "/calendar", label: "Calendar", key: "calendar", icon: "calendar" },
   { href: "/journal", label: "Journal", key: "journal", icon: "journal" },
   { href: "/life-areas", label: "Life Areas", key: "life_areas", icon: "life_areas" },

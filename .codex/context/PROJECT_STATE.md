@@ -754,6 +754,15 @@ Last updated: 2026-04-01
   (`docs/ux/nest_184_tasks_module_clickthrough_remediation_2026-04-01.md`,
   `apps/web/src/app/tasks/page.tsx`,
   `apps/mobile/app/(tabs)/index.tsx`)
+- `NEST-185` completed: planning hierarchy surfaces are now unified in one web
+  module (`/tasks`) with in-module view switching (`Board`, `Goals`,
+  `Targets`), while legacy `/goals` and `/targets` routes redirect to the same
+  workspace tabs and main rail navigation no longer duplicates separate
+  goal/target entries
+  (`apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/goals/page.tsx`,
+  `apps/web/src/app/targets/page.tsx`,
+  `apps/web/src/components/workspace-shell.tsx`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for
