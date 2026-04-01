@@ -87,10 +87,15 @@ function getErrorMessage(error: unknown): string {
     typeof (error as { payload?: unknown }).payload === "object" &&
     typeof (error as { payload: { message?: unknown } }).payload?.message === "string"
   ) {
-    return (error as { payload: { message: string } }).payload.message;
+    const message = (error as { payload: { message: string } }).payload.message;
+    if (message.toLowerCase().includes("per page field must not be greater than 100")) {
+      return "Too many items were requested at once. Refresh and try again.";
+    }
+
+    return message;
   }
 
-  return "Dashboard data request failed.";
+  return "Dashboard request failed. Try refreshing this view.";
 }
 
 function formatMoodLabel(mood: JournalEntryItem["mood"]): string {
@@ -158,7 +163,6 @@ export default function DashboardPage() {
       setEvents((eventsResponse.data ?? []) as CalendarEventItem[]);
       setHabits((habitsResponse.data ?? []) as HabitItem[]);
       setEntries((entriesResponse.data ?? []) as JournalEntryItem[]);
-      setFeedback("Dashboard odswiezony.");
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -275,6 +279,43 @@ export default function DashboardPage() {
     [todayEvents, todayTasks]
   );
 
+  const nextAction = useMemo(() => {
+    if (nowItems.length > 0) {
+      const item = nowItems[0];
+      return {
+        title: item.label,
+        detail: `${item.detail} • ${item.timeLabel}`,
+        href: item.detail === "Wydarzenie" ? "/calendar" : "/tasks",
+        cta: item.detail === "Wydarzenie" ? "Open Calendar" : "Open Tasks",
+      };
+    }
+
+    if (todayOpenTasks.length > 0) {
+      return {
+        title: todayOpenTasks[0].title,
+        detail: "Open task waiting for focus",
+        href: "/tasks",
+        cta: "Open Tasks",
+      };
+    }
+
+    if (activeHabits.length > 0) {
+      return {
+        title: activeHabits[0].title,
+        detail: "Active habit ready to check in",
+        href: "/habits",
+        cta: "Open Habits",
+      };
+    }
+
+    return {
+      title: "Capture your first task for today",
+      detail: "Start simple: add one concrete next step.",
+      href: "/tasks",
+      cta: "Add Task",
+    };
+  }, [activeHabits, nowItems, todayOpenTasks]);
+
   const lastEntry = entries[0] ?? null;
 
   async function saveQuickReflection() {
@@ -365,6 +406,20 @@ export default function DashboardPage() {
             <span>{todayOpenTasks.length} otwartych zadan</span>
             <span>{todayEvents.length} wydarzen</span>
             <span>{activeHabits.length} aktywnych nawykow</span>
+          </div>
+        </article>
+
+        <article className="dashboard-now-card">
+          <p className="dashboard-now-kicker">Now focus</p>
+          <h2>{nextAction.title}</h2>
+          <p>{nextAction.detail}</p>
+          <div className="row-inline">
+            <Link href={nextAction.href} className="btn-primary">
+              {nextAction.cta}
+            </Link>
+            <button type="button" className="btn-secondary" onClick={() => void loadDashboard()} disabled={isLoading}>
+              Refresh
+            </button>
           </div>
         </article>
 

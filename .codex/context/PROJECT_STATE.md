@@ -179,7 +179,7 @@ Last updated: 2026-04-01
   `docs/planning/next_execution_wave_2026-03-21.md`
 - Auth/usability/AI-access remediation wave documented in
   `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md` with
-  execution queue `NEST-160` to `NEST-190`.
+  execution queue `NEST-160` to `NEST-191`.
 - `NEST-001` completed: monorepo structure approved and documented in
   `docs/engineering/monorepo_structure.md`
 - `NEST-002` completed: Laravel backend skeleton bootstrapped in `apps/api`
@@ -796,6 +796,12 @@ Last updated: 2026-04-01
   `docs/ux_audit_evidence/2026-04-01/capture-manifest.json`,
   `docs/ux/nest_190_full_system_ux_target_assumptions_2026-04-01.md`,
   `docs/ux/ui-ux-foundation.md`)
+- `NEST-191` completed: first post-audit UX implementation slice is active with
+  mobile-first workspace shell hierarchy (no cramped mid-width rail), action-
+  first dashboard "Now focus" block, and simplified planning surface feedback
+  and setup noise reduction (`apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/app/globals.css`)
 - `NEST-140` completed: AI context graph foundation delivered with deterministic
   snapshot fingerprinting, cross-module context assembly
   (tasks/calendar/habits/goals/journal), and strict redaction policy for

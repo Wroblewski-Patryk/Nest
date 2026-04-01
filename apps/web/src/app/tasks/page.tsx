@@ -127,9 +127,14 @@ function getErrorMessage(error: unknown): string {
     typeof (error as { payload?: unknown }).payload === "object" &&
     typeof (error as { payload: { message?: unknown } }).payload?.message === "string"
   ) {
-    return (error as { payload: { message: string } }).payload.message;
+    const message = (error as { payload: { message: string } }).payload.message;
+    if (message.toLowerCase().includes("per page field must not be greater than 100")) {
+      return "Too many items were requested at once. Refresh and try again.";
+    }
+
+    return message;
   }
-  return "Tasks and lists request failed.";
+  return "Planning request failed. Try refreshing this view.";
 }
 
 function toDateInputValue(value: string | null): string {
@@ -298,7 +303,7 @@ export default function TasksPage() {
   const [boardLifeAreaFilter, setBoardLifeAreaFilter] = useState("");
   const [hideEmptyColumns, setHideEmptyColumns] = useState(true);
 
-  const [feedback, setFeedback] = useState("Planning ready.");
+  const [feedback, setFeedback] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleUnauthorized = useCallback(() => {
@@ -374,11 +379,7 @@ export default function TasksPage() {
     let mounted = true;
 
     loadWorkspace()
-      .then(() => {
-        if (mounted) {
-          setFeedback("Board loaded.");
-        }
-      })
+      .then(() => undefined)
       .catch((error) => {
         if (!mounted) {
           return;
@@ -1277,7 +1278,7 @@ export default function TasksPage() {
   return (
     <WorkspaceShell
       title="Planning"
-      subtitle="Jedno miejsce dla goals, targets, lists i tasks. Hierarchia jest opcjonalna, żeby planowanie było lekkie."
+      subtitle="One place for goals, targets, lists and tasks. Parent links stay optional."
       module="tasks"
       contentLayout="single"
       planningSubnav={{ active: planningTab }}
@@ -1294,7 +1295,7 @@ export default function TasksPage() {
       {errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
       {!errorMessage && feedback ? <p className="callout state-success">{feedback}</p> : null}
 
-      <Panel title="Planning Views">
+      <Panel title="View">
         <div className="tasks-filter-group" role="tablist" aria-label="Planning module views">
           <button
             type="button"
@@ -1333,14 +1334,13 @@ export default function TasksPage() {
             Targets
           </button>
         </div>
-        <p className="form-hint">Tasks pokazuje zadania pogrupowane po listach. Lists służy do zarządzania strukturą.</p>
+        <p className="form-hint">One module, lightweight switching between board, lists, targets and goals.</p>
       </Panel>
 
       {planningTab === "tasks" ? (
         <Panel title="Today Focus" className="planning-focus-primary">
           <p className="callout">
-            Start from quick capture in <strong>No List</strong>, then move tasks into lists and connect them to
-            goals/targets only when needed.
+            Capture work fast in <strong>No List</strong>, then organize only what needs structure.
           </p>
           <div className="row-inline">
             <button
@@ -1348,14 +1348,21 @@ export default function TasksPage() {
               className="btn-primary"
               onClick={() => setTaskComposerListId(UNASSIGNED_COLUMN_ID)}
             >
-              Add first task
+              Add task now
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => openPlanningTab("lists")}
+            >
+              Add list
             </button>
             <button
               type="button"
               className="btn-secondary"
               onClick={() => setHideEmptyColumns(false)}
             >
-              Show all columns
+              Show empty columns
             </button>
             <button
               type="button"
@@ -1371,7 +1378,7 @@ export default function TasksPage() {
 
       {planningTab === "tasks" ? (
         <>
-      <Panel title="Quick Setup" className="planning-secondary-tools">
+      <Panel title="Setup (Optional)" className="planning-secondary-tools">
         <details className="collapsible-panel">
           <summary>Create list</summary>
         <form className="form-grid collapsible-content" onSubmit={createList}>
@@ -1460,7 +1467,7 @@ export default function TasksPage() {
 
       <Panel title="Board Filters" className="planning-secondary-tools">
         <details className="collapsible-panel">
-          <summary>Show and adjust filters</summary>
+          <summary>Show filters</summary>
         <div className="tasks-board-toolbar collapsible-content">
           <label className="field tasks-search">
             <span>Search</span>
@@ -1574,7 +1581,7 @@ export default function TasksPage() {
           {isLoading ? <p className="callout state-loading">Loading board...</p> : null}
           {!isLoading && lists.length === 0 ? (
             <p className="callout state-empty">
-              No lists yet. Open <strong>Quick Setup</strong> below, or start immediately with standalone tasks in
+              No lists yet. Open <strong>Setup (Optional)</strong> below, or start immediately with standalone tasks in
               <strong> No List</strong>.
             </p>
           ) : null}

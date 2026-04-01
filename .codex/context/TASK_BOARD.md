@@ -1502,6 +1502,29 @@ Last updated: 2026-04-01
       `docs/ux/uxui_refresh_implementation_wave_2026-03-31.md`.
   - Done on: 2026-04-01
 
+- [x] NEST-191 Implement UX refresh wave 1 (shell hierarchy + action-first dashboard/planning)
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-190
+  - Done when:
+    - workspace shell follows mobile-first hierarchy without cramped content area
+      on small/medium viewports,
+    - dashboard promotes one clear "next action now" block instead of flat card
+      parity,
+    - planning module reduces default noise (messages and setup friction) while
+      keeping progressive add/edit behavior.
+  - Notes:
+    - Updated planning action hierarchy and feedback behavior in:
+      `apps/web/src/app/tasks/page.tsx`.
+    - Updated dashboard next-action flow and safer user-facing error message
+      mapping in:
+      `apps/web/src/app/dashboard/page.tsx`.
+    - Updated workspace/mobile shell behavior and responsive hierarchy styles in:
+      `apps/web/src/app/globals.css`.
+    - Validation:
+      `pnpm --dir apps/web build`.
+  - Done on: 2026-04-01
+
 - [ ] NEST-125 Establish real-traffic observability baseline for V2 planning
   - Status: BACKLOG
   - Owner: Review Agent
