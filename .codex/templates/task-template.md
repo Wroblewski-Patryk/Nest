@@ -1,4 +1,4 @@
-﻿# Task Template
+# Task Template
 
 ## Header
 
@@ -19,11 +19,17 @@ One short paragraph with expected outcome.
 - [ ] Criterion 2
 - [ ] Criterion 3
 
+## Validation Plan
+
+- Automated:
+- Manual:
+- Out-of-scope checks:
+
 ## UX Source and MCP Evidence (Required for UX/UI Tasks)
 
 - Source of truth type: `figma | approved_snapshot`
 - Artifact reference:
-  - Figma URL/node ID, or
+  - Figma URL or node ID, or
   - approved Stitch snapshot reference (project ID + screen IDs + snapshot date)
 - Approval checkpoint:
   - required for `approved_snapshot` source
@@ -43,17 +49,16 @@ One short paragraph with expected outcome.
   - color contrast for key UI states
 - MCP evidence links:
   - design context capture
-  - screenshot/parity capture
+  - screenshot or parity capture
 
-## Review Checklist (UX Evidence Gate)
+## Review Checklist
 
-- [ ] source-of-truth type is declared (`figma|approved_snapshot`)
+- [ ] source-of-truth type is declared when UX is involved
 - [ ] artifact reference is present and testable
-- [ ] when source is `approved_snapshot`, approval checkpoint evidence exists
-- [ ] required states (`loading|empty|error|success`) are verified
-- [ ] responsive behavior evidence exists (desktop/tablet/mobile)
-- [ ] accessibility checks are recorded
-- [ ] parity evidence (MCP context + screenshot) is attached
+- [ ] acceptance criteria are verified
+- [ ] relevant validations were run
+- [ ] parity, responsive, and accessibility evidence exists when required
+- [ ] architecture follow-up was captured if discovered
 
 ## Notes
 

@@ -1,31 +1,23 @@
-﻿# Planning Agent
+# Planning Agent
 
 ## Mission
 
-Translate documentation and decisions into an actionable execution plan.
+Translate Nest decisions and documentation into an actionable execution queue.
 
 ## Inputs
 
-- `docs/`
 - `.codex/context/PROJECT_STATE.md`
-- existing `.codex/context/TASK_BOARD.md`
-
-## Outputs
-
-- Updated `.codex/context/TASK_BOARD.md`
-- Clear priorities, dependencies, and acceptance criteria
+- `.codex/context/TASK_BOARD.md`
+- `docs/planning/`
 
 ## Rules
 
-- Keep tasks small enough for one focused implementation session.
-- Use IDs: `NEST-001`, `NEST-002`, etc.
-- Every task must include owner role, status, and done criteria.
-- Keep at most 5 tasks `IN_PROGRESS`.
-- For UX/UI tasks, include design reference, required UI states, responsive
-  checks, and accessibility evidence in acceptance criteria.
-
-## Completion Checklist
-
-- Priorities re-ranked
-- Blockers identified
-- Next 3 executable tasks clearly ready
+- keep tasks small enough for one focused implementation session
+- use IDs like `NEST-001`
+- every task must include owner role, status, dependencies, and done criteria
+- if no task is `READY`, derive the smallest viable one from active planning
+  docs instead of leaving the queue stale
+- keep at most 5 tasks `IN_PROGRESS`
+- for UX/UI tasks, include design reference, required states, responsive checks,
+  accessibility evidence, and parity expectations
+- note architectural follow-up opportunities discovered during planning

@@ -1,6 +1,26 @@
 ﻿# TASK_BOARD
 
-Last updated: 2026-04-01
+Last updated: 2026-04-16
+
+## Agent Workflow Refresh (2026-04-16)
+
+- This board remains the canonical execution queue for Nest.
+- If no task is `READY`, the Planning Agent should derive the next smallest
+  executable task from:
+  - `docs/planning/next_execution_wave_2026-03-21.md`
+  - `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md`
+  - `docs/planning/open-decisions.md`
+- Default delivery loop for every execution slice:
+  - plan
+  - implement
+  - run relevant tests and validations
+  - capture architecture follow-up if discovered
+  - sync task state and project state
+- Surface validation baseline:
+  - API: integration, unit, feature, security-controls verification
+  - Web: lint, typecheck, build, unit checks
+  - Mobile: typecheck, Expo web export, unit checks
+  - Contracts: OpenAPI lint when docs or API contracts change
 
 ## Backlog
 

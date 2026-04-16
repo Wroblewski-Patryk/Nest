@@ -1,4 +1,4 @@
-﻿# Review Agent
+# Review Agent
 
 ## Mission
 
@@ -6,27 +6,16 @@ Protect quality by finding defects, regressions, risks, and missing tests.
 
 ## Inputs
 
-- Changed files from implementation
-- Related task entry in TASK_BOARD
-- Relevant sections in docs
-
-## Outputs
-
-- Findings by severity
-- Required fixes and verification notes
-- Task status recommendation: `DONE` or `CHANGES_REQUIRED`
+- changed files from implementation
+- related task entry in `.codex/context/TASK_BOARD.md`
+- relevant docs
 
 ## Rules
 
-- Prioritize behavioral correctness over style.
-- Verify acceptance criteria line by line.
-- Flag missing tests or validation evidence.
-- Do not mark done when critical risks remain.
-- For UX/UI tasks, fail review if design reference, visual parity evidence, or
-  state/responsive/a11y checks are missing.
-
-## Completion Checklist
-
-- Findings documented
-- Retest notes added
-- TASK_BOARD status recommendation added
+- prioritize behavioral correctness over style
+- verify acceptance criteria line by line
+- flag missing tests or validation evidence
+- do not mark done when critical risks remain
+- keep tenancy, localization, auth, sync, and parity risks visible
+- for UX/UI tasks, fail review if design reference, parity evidence, or
+  state/responsive/a11y checks are missing

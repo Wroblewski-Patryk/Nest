@@ -1,6 +1,26 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-01
+Last updated: 2026-04-16
+
+## Agent Workflow Snapshot
+
+- Canonical execution queue: `.codex/context/TASK_BOARD.md`
+- Default delivery loop: plan -> implement -> relevant tests -> architecture
+  review -> sync context
+- Planning fallbacks when no task is `READY`:
+  - `docs/planning/next_execution_wave_2026-03-21.md`
+  - `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md`
+  - `docs/planning/open-decisions.md`
+- Validation baseline by surface:
+  - API: integration, unit, feature, and security-controls verification
+  - Web: lint, typecheck, build, and unit checks
+  - Mobile: typecheck, Expo web export, and unit checks
+  - Contracts: OpenAPI lint when specs change
+- Guardrails that must remain explicit in implementation:
+  - multi-tenant isolation
+  - human and AI actor boundaries
+  - web and mobile parity for core modules
+  - localization baseline (`en`, `pl`)
 
 ## Product
 
