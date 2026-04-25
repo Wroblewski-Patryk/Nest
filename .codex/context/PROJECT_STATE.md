@@ -945,6 +945,10 @@ Last updated: 2026-04-26
   fixing the tab-layout type regressions that previously blocked mobile
   TypeScript validation and export checks
   (`apps/mobile/app/(tabs)/_layout.tsx`)
+- `NEST-199` completed: mobile `Goals + Targets` is no longer a representational
+  placeholder; it now exposes an API-backed planning flow with create/edit/
+  archive actions for both goals and targets
+  (`apps/mobile/app/(tabs)/goals.tsx`)
 - `NEST-197` completed: one canonical founder-ready gate now exists for the
   `v1` repair wave, defining the minimum readiness baseline across repository
   truth, backend reliability, web closure, mobile parity, cross-surface

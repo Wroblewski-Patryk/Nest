@@ -3533,6 +3533,22 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-199 Replace mobile goals placeholder with API-backed goals and targets flow
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Replaced the static `ModuleScreen` placeholder in
+      `apps/mobile/app/(tabs)/goals.tsx` with a real mobile CRUD surface for
+      `goals` and `targets`.
+    - Mobile flow now supports:
+      goal list/load, create, edit, archive, target list-by-goal, create, edit,
+      and archive.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/mobile`,
+      `pnpm exec expo export --platform web` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`.
+
 - [x] NEST-198 Restore green mobile validation baseline
   - Status: DONE
   - Owner: Execution Agent
