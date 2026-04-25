@@ -50,6 +50,49 @@ const CHANNEL_LABEL: Record<NotificationChannel, string> = {
   email: 'Email',
 };
 
+function getApiErrorStatus(error: unknown): number | null {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    typeof (error as { status?: unknown }).status === 'number'
+  ) {
+    return (error as { status: number }).status;
+  }
+
+  return null;
+}
+
+function describeApiIssue(error: unknown): string {
+  const status = getApiErrorStatus(error);
+
+  if (status === 401) {
+    return 'Please sign in again and retry.';
+  }
+
+  if (status === 403) {
+    return 'This action is not available for your account right now.';
+  }
+
+  if (status === 404) {
+    return 'The requested data is no longer available.';
+  }
+
+  if (status === 422) {
+    return 'Some details need attention before this can be saved.';
+  }
+
+  if (status === 429) {
+    return 'Too many requests were sent at once. Please try again in a moment.';
+  }
+
+  if (status !== null && status >= 500) {
+    return 'Nest is having trouble completing this request right now. Please try again shortly.';
+  }
+
+  return 'Please try again in a moment.';
+}
+
 function resolveMobileNotificationRoute(item: InAppNotificationItem): NotificationRoute | null {
   const normalize = (value: string | null): NotificationRoute | null => {
     if (value === '/tasks') return '/(tabs)';
@@ -114,17 +157,17 @@ export default function ModalScreen() {
   const router = useRouter();
   const [selected, setSelected] = useState<'en' | 'pl'>('en');
   const [queue, setQueue] = useState<MobileOfflineQueueItem[]>([]);
-  const [detail, setDetail] = useState('Queue offline changes and run manual force sync.');
-  const [notificationDetail, setNotificationDetail] = useState('Loading in-app notifications...');
+  const [detail, setDetail] = useState('Queue offline changes here and run a manual sync when you are ready.');
+  const [notificationDetail, setNotificationDetail] = useState('Loading your in-app notifications...');
   const [notifications, setNotifications] = useState<InAppNotificationItem[]>([]);
   const [notificationBusyId, setNotificationBusyId] = useState<string | null>(null);
-  const [matrixDetail, setMatrixDetail] = useState('Loading notification matrix...');
+  const [matrixDetail, setMatrixDetail] = useState('Loading your notification settings...');
   const [notificationPreferences, setNotificationPreferences] =
     useState<NotificationPreferencesItem | null>(null);
   const [channelDeliveries, setChannelDeliveries] = useState<NotificationChannelDeliveryItem[]>([]);
   const [isSavingMatrix, setIsSavingMatrix] = useState(false);
   const [copilotPrompt, setCopilotPrompt] = useState('Help me plan the next 3 high-impact actions.');
-  const [copilotDetail, setCopilotDetail] = useState('Ask copilot about planning, execution, or reflection.');
+  const [copilotDetail, setCopilotDetail] = useState('Ask Copilot about planning, execution, or reflection.');
   const [copilotResult, setCopilotResult] = useState<AiCopilotConversationResponse['data'] | null>(null);
   const [isCopilotBusy, setIsCopilotBusy] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -152,9 +195,13 @@ export default function ModalScreen() {
         include_snoozed: false,
       });
       setNotifications(response.data);
-      setNotificationDetail(`Loaded ${response.data.length} notifications.`);
-    } catch {
-      setNotificationDetail('Could not load notification center.');
+      setNotificationDetail(
+        response.data.length > 0
+          ? `${response.data.length} notification(s) are ready.`
+          : 'No notifications need attention right now.'
+      );
+    } catch (error) {
+      setNotificationDetail(`We could not load notifications right now. ${describeApiIssue(error)}`);
     }
   }, []);
 
@@ -166,9 +213,9 @@ export default function ModalScreen() {
       ]);
       setNotificationPreferences(preferencesResponse.data);
       setChannelDeliveries(deliveriesResponse.data);
-      setMatrixDetail('Notification matrix loaded.');
-    } catch {
-      setMatrixDetail('Could not load notification matrix.');
+      setMatrixDetail('Notification settings are ready.');
+    } catch (error) {
+      setMatrixDetail(`We could not load notification settings right now. ${describeApiIssue(error)}`);
     }
   }, []);
 
@@ -222,11 +269,11 @@ export default function ModalScreen() {
         locale: notificationPreferences.locale,
       });
       setNotificationPreferences(response.data);
-      setMatrixDetail('Notification preferences saved.');
+      setMatrixDetail('Notification settings saved.');
       const deliveriesResponse = await nestApiClient.getNotificationChannelDeliveries({ per_page: 10 });
       setChannelDeliveries(deliveriesResponse.data);
-    } catch {
-      setMatrixDetail('Could not save notification preferences.');
+    } catch (error) {
+      setMatrixDetail(`We could not save notification settings. ${describeApiIssue(error)}`);
     } finally {
       setIsSavingMatrix(false);
     }
@@ -234,12 +281,12 @@ export default function ModalScreen() {
 
   const askCopilot = useCallback(async () => {
     if (!copilotPrompt.trim()) {
-      setCopilotDetail('Type a question before asking copilot.');
+      setCopilotDetail('Type a question before asking Copilot.');
       return;
     }
 
     setIsCopilotBusy(true);
-    setCopilotDetail('Generating copilot response...');
+    setCopilotDetail('Preparing a Copilot answer...');
     try {
       const response = await nestApiClient.askAiCopilot({
         message: copilotPrompt.trim(),
@@ -251,11 +298,11 @@ export default function ModalScreen() {
       setCopilotResult(response.data);
       setCopilotDetail(
         response.data.provider.mode === 'fallback'
-          ? 'Provider unavailable, fallback response returned.'
-          : 'Primary provider response returned.'
+          ? 'Primary AI provider is unavailable, so a fallback answer was returned.'
+          : 'Copilot answer is ready.'
       );
-    } catch {
-      setCopilotDetail('Copilot request failed. Try again in a moment.');
+    } catch (error) {
+      setCopilotDetail(`We could not reach Copilot right now. ${describeApiIssue(error)}`);
     } finally {
       setIsCopilotBusy(false);
     }
@@ -297,7 +344,7 @@ export default function ModalScreen() {
     (item: InAppNotificationItem) => {
       const route = resolveMobileNotificationRoute(item);
       if (!route) {
-        setNotificationDetail('No navigation target is available for this notification.');
+        setNotificationDetail('This notification does not have a destination screen yet.');
         return;
       }
 
@@ -327,7 +374,7 @@ export default function ModalScreen() {
       (item) => item.action === action && item.status === 'pending'
     );
     if (duplicatePending) {
-      setDetail(`Skipped duplicate pending job for ${action}.`);
+      setDetail(`A pending ${action} sync is already queued.`);
       return;
     }
 
@@ -367,25 +414,19 @@ export default function ModalScreen() {
             delete item.retry_count;
             delete item.next_retry_at;
             hadSuccess = true;
-            setDetail(`Synced ${item.action} from ${item.created_at}.`);
+            setDetail(`${item.action} synced successfully.`);
           } catch (error) {
-            const status =
-              typeof error === 'object' &&
-              error !== null &&
-              'status' in error &&
-              typeof (error as { status?: unknown }).status === 'number'
-                ? String((error as { status: number }).status)
-                : 'n/a';
+            const status = getApiErrorStatus(error);
             const retryCount = (item.retry_count ?? 0) + 1;
             const retryDelaySeconds = computeRetryDelaySeconds(retryCount, item.id);
             item.status = 'failed';
             item.retry_count = retryCount;
             item.next_retry_at = new Date(Date.now() + retryDelaySeconds * 1000).toISOString();
-            item.last_error = `HTTP ${status}`;
+            item.last_error = status === null ? 'request_failed' : `HTTP ${status}`;
             hadFailure = true;
-            lastError = `HTTP ${status}`;
+            lastError = item.last_error;
             setDetail(
-              `${options.source === 'auto' ? 'Auto' : 'Force'} sync error at ${item.action} (HTTP ${status}); retry in ${retryDelaySeconds}s.`
+              `${options.source === 'auto' ? 'Auto-sync' : 'Manual sync'} could not finish ${item.action}. ${describeApiIssue(error)} Next retry in ${retryDelaySeconds}s.`
             );
             if (options.stopOnError) {
               break;
@@ -435,7 +476,7 @@ export default function ModalScreen() {
     clearOfflineSyncSchedulerState();
     setQueue([]);
     setScheduler(loadOfflineSyncSchedulerState());
-    setDetail('Encrypted offline cache wiped from this device.');
+    setDetail('Offline cache was securely removed from this device.');
   }, []);
 
   useEffect(() => {
@@ -484,7 +525,7 @@ export default function ModalScreen() {
       <Text style={styles.title}>Pre-Auth Language</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.description}>
-        Select language before authentication and onboarding.
+        Choose your language before signing in and onboarding.
       </Text>
       <View style={styles.actionRow}>
         <Pressable style={[styles.languageButton, selected === 'en' && styles.languageButtonActive]} onPress={() => setSelected('en')}>
@@ -551,7 +592,7 @@ export default function ModalScreen() {
       <Text style={styles.title}>Notification Center</Text>
       <Text style={styles.description}>{notificationDetail}</Text>
       {notifications.length === 0 ? (
-        <Text style={styles.description}>No pending in-app notifications.</Text>
+        <Text style={styles.description}>No notifications need attention right now.</Text>
       ) : null}
       {notifications.map((item) => (
         <View key={item.id} style={styles.notificationCard}>
@@ -710,7 +751,7 @@ export default function ModalScreen() {
             disabled={isSavingMatrix}
           >
             <Text style={styles.languageButtonText}>
-              {isSavingMatrix ? 'Saving notification matrix...' : 'Save notification matrix'}
+              {isSavingMatrix ? 'Saving notification settings...' : 'Save notification settings'}
             </Text>
           </Pressable>
         </View>
@@ -718,7 +759,7 @@ export default function ModalScreen() {
 
       <Text style={styles.title}>Notification Telemetry</Text>
       {channelDeliveries.length === 0 ? (
-        <Text style={styles.description}>No channel telemetry yet.</Text>
+        <Text style={styles.description}>No delivery activity is available yet.</Text>
       ) : null}
       {channelDeliveries.map((delivery) => (
         <View key={delivery.id} style={styles.notificationCard}>
@@ -752,7 +793,7 @@ export default function ModalScreen() {
           <Text style={styles.notificationTitle}>Answer</Text>
           <Text style={styles.description}>{copilotResult.answer}</Text>
           <Text style={styles.description}>
-            Intent: {copilotResult.intent} | Provider: {copilotResult.provider.mode}
+            Intent: {copilotResult.intent} | Provider mode: {copilotResult.provider.mode}
           </Text>
           {copilotResult.source_references.slice(0, 5).map((reference, index) => (
             <Text key={`${reference.entity_id ?? 'n-a'}-${index}`} style={styles.description}>

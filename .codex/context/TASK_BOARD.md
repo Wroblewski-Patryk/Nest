@@ -3533,6 +3533,27 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-204 Harden mobile feedback copy baseline for settings, billing, and insights
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Replaced raw technical and early-stage copy across key mobile support
+      surfaces so feedback is more product-safe and understandable:
+      `apps/mobile/app/modal.tsx`,
+      `apps/mobile/app/(tabs)/billing.tsx`,
+      `apps/mobile/app/(tabs)/insights.tsx`.
+    - Offline sync, notifications, and Copilot status now use calmer
+      user-facing guidance instead of transport-level wording in the mobile
+      settings modal.
+    - Billing and insights fallback states now avoid raw `HTTP` messaging and
+      instead explain that fallback snapshots are being shown when live data is
+      unavailable.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/mobile`,
+      `pnpm exec expo export --platform web` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`.
+
 - [x] NEST-203 Harden web feedback copy and restore green lint baseline
   - Status: DONE
   - Owner: Execution Agent

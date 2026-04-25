@@ -4,6 +4,41 @@ import { ModuleScreen } from '@/components/mvp/ModuleScreen';
 import { nestApiClient } from '@/constants/apiClient';
 import { insightsData } from '@/constants/mvpData';
 
+function getApiErrorStatus(error: unknown): number | null {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    typeof (error as { status?: unknown }).status === 'number'
+  ) {
+    return (error as { status: number }).status;
+  }
+
+  return null;
+}
+
+function describeApiIssue(error: unknown): string {
+  const status = getApiErrorStatus(error);
+
+  if (status === 401) {
+    return 'Please sign in again and retry.';
+  }
+
+  if (status === 404) {
+    return 'Some insight data is not available yet.';
+  }
+
+  if (status === 429) {
+    return 'Too many requests were sent at once. Please try again in a moment.';
+  }
+
+  if (status !== null && status >= 500) {
+    return 'Nest is having trouble refreshing insights right now. Please try again shortly.';
+  }
+
+  return 'Please try again in a moment.';
+}
+
 const emptyBalance: LifeAreaBalanceResponse = {
   data: [],
   meta: {
@@ -16,7 +51,7 @@ const emptyBalance: LifeAreaBalanceResponse = {
 
 export default function InsightsScreen() {
   const [apiState, setApiState] = useState<UiAsyncState>('loading');
-  const [apiDetail, setApiDetail] = useState('Loading life-area balance + trends...');
+  const [apiDetail, setApiDetail] = useState('Loading your balance view, trends, and latest briefing...');
   const [metrics, setMetrics] = useState(insightsData.metrics);
   const [rows, setRows] = useState(insightsData.rows);
   const [briefing, setBriefing] = useState<AiBriefingItem | null>(null);
@@ -40,7 +75,7 @@ export default function InsightsScreen() {
         const dashboard = dashboardResponse.data as AnalyticsLoopDecisionDashboardResponse['data'];
 
         setApiState('success');
-        setApiDetail('Insights API calls succeeded.');
+        setApiDetail('Insights are ready.');
         setBriefing(latestBriefing);
         setMetrics([
           { label: 'Balance', value: balancePayload.meta.global_balance_score.toFixed(1) },
@@ -78,16 +113,8 @@ export default function InsightsScreen() {
       .catch((error) => {
         if (!mounted) return;
 
-        const status =
-          typeof error === 'object' &&
-          error !== null &&
-          'status' in error &&
-          typeof (error as { status?: unknown }).status === 'number'
-            ? String((error as { status: number }).status)
-            : 'n/a';
-
         setApiState('error');
-        setApiDetail(`Insights API calls failed (HTTP ${status}). Showing fallback snapshot.`);
+        setApiDetail(`We could not refresh insights right now. ${describeApiIssue(error)} Showing your fallback snapshot instead.`);
       });
 
     return () => {
@@ -101,7 +128,7 @@ export default function InsightsScreen() {
     <ModuleScreen
       moduleKey={insightsData.module}
       title="Insights"
-      subtitle="Watch life-area balance and weekly trends from one panel."
+      subtitle="Watch balance, weekly trends, and briefing context from one panel."
       state={insightsData.state}
       telemetry={telemetry}
       metrics={metrics}

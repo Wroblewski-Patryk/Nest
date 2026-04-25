@@ -4,9 +4,48 @@ import { ModuleScreen } from '@/components/mvp/ModuleScreen';
 import { nestApiClient } from '@/constants/apiClient';
 import { billingData } from '@/constants/mvpData';
 
+function getApiErrorStatus(error: unknown): number | null {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    typeof (error as { status?: unknown }).status === 'number'
+  ) {
+    return (error as { status: number }).status;
+  }
+
+  return null;
+}
+
+function describeApiIssue(error: unknown): string {
+  const status = getApiErrorStatus(error);
+
+  if (status === 401) {
+    return 'Please sign in again and retry.';
+  }
+
+  if (status === 403) {
+    return 'This billing action is not available for your account right now.';
+  }
+
+  if (status === 404) {
+    return 'Billing data is not available yet.';
+  }
+
+  if (status === 429) {
+    return 'Too many requests were sent at once. Please try again in a moment.';
+  }
+
+  if (status !== null && status >= 500) {
+    return 'Nest is having trouble loading billing details right now. Please try again shortly.';
+  }
+
+  return 'Please try again in a moment.';
+}
+
 export default function BillingScreen() {
   const [apiState, setApiState] = useState<UiAsyncState>('loading');
-  const [apiDetail, setApiDetail] = useState('Loading billing subscription + events...');
+  const [apiDetail, setApiDetail] = useState('Loading your billing status, events, and recovery activity...');
   const [metrics, setMetrics] = useState(billingData.metrics);
   const [rows, setRows] = useState(billingData.rows);
 
@@ -28,7 +67,7 @@ export default function BillingScreen() {
         const reconciliation = reconciliationResponse.data as BillingAuditReconciliationItem | null;
 
         setApiState('success');
-        setApiDetail('Billing self-serve and dunning API calls succeeded.');
+        setApiDetail('Billing status and recovery activity are ready.');
         setMetrics([
           { label: 'Status', value: subscription?.status ?? 'none' },
           { label: 'Plan', value: subscription?.plan?.plan_code ?? 'none' },
@@ -54,16 +93,8 @@ export default function BillingScreen() {
       .catch((error) => {
         if (!mounted) return;
 
-        const status =
-          typeof error === 'object' &&
-          error !== null &&
-          'status' in error &&
-          typeof (error as { status?: unknown }).status === 'number'
-            ? String((error as { status: number }).status)
-            : 'n/a';
-
         setApiState('error');
-        setApiDetail(`Billing API calls failed (HTTP ${status}). Showing fallback snapshot.`);
+        setApiDetail(`We could not load billing details right now. ${describeApiIssue(error)} Showing your fallback snapshot instead.`);
       });
 
     return () => {
@@ -77,7 +108,7 @@ export default function BillingScreen() {
     <ModuleScreen
       moduleKey={billingData.module}
       title="Billing"
-      subtitle="Manage subscription state and inspect billing events."
+      subtitle="Check subscription status and recent billing activity in one place."
       state={billingData.state}
       telemetry={telemetry}
       metrics={metrics}

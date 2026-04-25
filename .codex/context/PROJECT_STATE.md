@@ -899,7 +899,10 @@ Last updated: 2026-04-26
   entry-path onboarding/access truth aligned with the documented product policy,
   the mobile validation baseline restored to green, and web feedback copy
   hardened so key surfaces no longer expose raw technical API messaging while
-  the web lint/typecheck/build/unit baseline remains green.
+  the web lint/typecheck/build/unit baseline remains green; mobile support
+  surfaces (`settings modal`, `billing`, `insights`) now follow the same
+  user-safer feedback standard and keep the mobile validation/export baseline
+  green.
 - Parallel backlog context still includes ongoing V2 launch-window/live-evidence
   closures (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`,
   `NEST-129`) and commercial/release continuation (`NEST-152` onward).
@@ -943,6 +946,13 @@ Last updated: 2026-04-26
 
 ## Documentation Refreshes
 
+- `NEST-204` completed: mobile settings/support surfaces now use calmer,
+  product-safe feedback copy instead of raw technical wording across offline
+  sync, notifications, Copilot, billing, and insights, while keeping the
+  mobile typecheck/export/unit baseline green
+  (`apps/mobile/app/modal.tsx`,
+  `apps/mobile/app/(tabs)/billing.tsx`,
+  `apps/mobile/app/(tabs)/insights.tsx`)
 - `NEST-203` completed: key web status surfaces now use user-safer feedback
   copy instead of raw `HTTP`/`API failed` wording, a shared API issue helper
   exists for consistent product messaging, and lingering web lint blockers were
