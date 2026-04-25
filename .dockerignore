@@ -1,0 +1,17 @@
+**/node_modules
+**/.next
+**/vendor
+**/.turbo
+**/dist
+**/coverage
+**/.cache
+**/.pnpm-store
+**/.DS_Store
+**/*.log
+**/.env
+**/.env.*
+!**/.env.example
+!apps/api/.env.example
+!apps/web/.env.example
+.git
+output
