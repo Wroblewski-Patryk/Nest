@@ -953,6 +953,11 @@ Last updated: 2026-04-26
   representational placeholder; it now exposes an API-backed reflection flow
   with create/edit/delete journal entries and create/edit/archive life areas
   (`apps/mobile/app/(tabs)/journal.tsx`)
+- `NEST-201` completed: mobile `Habits + Routines` is no longer a
+  representational placeholder; it now exposes an API-backed consistency flow
+  with create/edit/pause/delete habits, quick logging, and create/edit/pause/
+  delete routines
+  (`apps/mobile/app/(tabs)/habits.tsx`)
 - `NEST-197` completed: one canonical founder-ready gate now exists for the
   `v1` repair wave, defining the minimum readiness baseline across repository
   truth, backend reliability, web closure, mobile parity, cross-surface

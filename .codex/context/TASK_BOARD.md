@@ -3533,6 +3533,22 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-201 Replace mobile habits placeholder with API-backed habits and routines flow
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Replaced the static `ModuleScreen` placeholder in
+      `apps/mobile/app/(tabs)/habits.tsx` with a real mobile CRUD surface for
+      `habits` and `routines`.
+    - Mobile flow now supports:
+      habit list/load, create, edit, pause/reactivate, delete, quick log, and
+      routine list/load, create, edit, pause/reactivate, and delete.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/mobile`,
+      `pnpm exec expo export --platform web` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`.
+
 - [x] NEST-200 Replace mobile journal placeholder with API-backed journal and life-areas flow
   - Status: DONE
   - Owner: Execution Agent
