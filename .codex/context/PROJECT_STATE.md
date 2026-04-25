@@ -892,10 +892,11 @@ Last updated: 2026-04-26
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: `v1` repair execution has started with a first
-  repo-truth hardening slice completed on 2026-04-26:
-  local startup docs corrected, Laravel testing bootstrap stabilized, and
-  stale async sync regressions updated to the enqueue-first contract.
+- Current execution focus: `v1` repair execution has started with the first two
+  hardening slices completed on 2026-04-26:
+  repository startup truth corrected, Laravel testing bootstrap stabilized,
+  stale async sync regressions updated to the enqueue-first contract, and web
+  entry-path onboarding/access truth aligned with the documented product policy.
 - Parallel backlog context still includes ongoing V2 launch-window/live-evidence
   closures (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`,
   `NEST-129`) and commercial/release continuation (`NEST-152` onward).
@@ -939,6 +940,22 @@ Last updated: 2026-04-26
 
 ## Documentation Refreshes
 
+- `NEST-197` completed: one canonical founder-ready gate now exists for the
+  `v1` repair wave, defining the minimum readiness baseline across repository
+  truth, backend reliability, web closure, mobile parity, cross-surface
+  integrity, and daily-use quality
+  (`docs/planning/v1_founder_ready_checklist_2026-04-26.md`)
+- `NEST-196` completed: web entry-path repair now aligns onboarding-required
+  access behavior with route guards and redirect flows, while auth/onboarding
+  copy and localization baseline are materially cleaner for the first-use path
+  (`apps/web/src/lib/route-guard.ts`,
+  `apps/web/scripts/route-guard-regression.mjs`,
+  `apps/web/src/app/auth/page.tsx`,
+  `apps/web/src/app/onboarding/page.tsx`,
+  `apps/web/src/components/pre-auth-language-selector.tsx`,
+  `apps/web/src/components/public-shell.tsx`,
+  `apps/web/src/lib/ui-language.ts`,
+  `packages/shared-types/src/localization.js`)
 - `NEST-195` completed: repository startup guidance and API sync regression
   truth are aligned with the current architecture, including corrected local
   run docs, deterministic Laravel testing defaults, and async-contract

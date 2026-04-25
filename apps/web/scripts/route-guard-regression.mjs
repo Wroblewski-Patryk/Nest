@@ -16,9 +16,11 @@ assert.equal(
   "/auth"
 );
 
-assert.equal(expectRedirect({ pathname: "/", hasToken: true, onboardingRequired: true }), "/dashboard");
-assert.equal(expectRedirect({ pathname: "/calendar", hasToken: true, onboardingRequired: true }), null);
-assert.equal(expectRedirect({ pathname: "/onboarding", hasToken: true, onboardingRequired: true }), "/dashboard");
+assert.equal(expectRedirect({ pathname: "/", hasToken: true, onboardingRequired: true }), "/onboarding");
+assert.equal(expectRedirect({ pathname: "/calendar", hasToken: true, onboardingRequired: true }), "/onboarding");
+assert.equal(expectRedirect({ pathname: "/dashboard", hasToken: true, onboardingRequired: true }), "/onboarding");
+assert.equal(expectRedirect({ pathname: "/auth", hasToken: true, onboardingRequired: true }), "/onboarding");
+assert.equal(expectRedirect({ pathname: "/onboarding", hasToken: true, onboardingRequired: true }), null);
 
 assert.equal(expectRedirect({ pathname: "/", hasToken: true, onboardingRequired: false }), "/dashboard");
 assert.equal(

@@ -5,17 +5,15 @@ export default function WelcomePage() {
   return (
     <PublicShell
       title="Organize life calmly, one clear dashboard."
-      subtitle="Nest pomaga zarzadzac zadaniami, listami, nawykami, rutynami, celami i kalendarzem w jednym miejscu."
+      subtitle="Nest helps you manage tasks, habits, routines, goals, journal notes, and calendar plans in one place."
     >
       <section className="panel">
         <div className="panel-header">
-          <h2>Start</h2>
+          <h2>Get Started</h2>
         </div>
         <div className="panel-content">
           <p className="callout">
-            Wejdz do modulu auth i zaloguj sie, aby przejsc do prywatnego panelu pod
-            {" "}
-            <strong>/dashboard</strong>.
+            Sign in or create an account to unlock your private workspace at <strong>/dashboard</strong>.
           </p>
           <div className="row-inline">
             <Link href="/auth?mode=login" className="btn-primary">
@@ -35,20 +33,20 @@ export default function WelcomePage() {
         <ul className="list">
           <li className="list-row">
             <div>
-              <strong>Dashboard dnia</strong>
-              <p>Podglad dzisiejszych zadan i najblizszych eventow.</p>
+              <strong>Daily dashboard</strong>
+              <p>A calm overview of today's tasks, habits, and upcoming events.</p>
             </div>
           </li>
           <li className="list-row">
             <div>
-              <strong>Pelne moduly zycia</strong>
-              <p>Tasks/Lists, Habits, Routines, Goals, Targets, Calendar, Journal, Insights.</p>
+              <strong>Core life modules</strong>
+              <p>Planning, habits, routines, calendar, journal, life areas, and settings in one system.</p>
             </div>
           </li>
           <li className="list-row">
             <div>
-              <strong>Prosty model rozwoju</strong>
-              <p>Najpierw porzadny panel do codziennego planowania, potem rozszerzenia AI.</p>
+              <strong>Founder-first product focus</strong>
+              <p>Start with a dependable daily operating system, then grow into advanced capabilities later.</p>
             </div>
           </li>
         </ul>

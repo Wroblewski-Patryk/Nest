@@ -2,16 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { resolveLanguage } from "@nest/shared-types";
+import { resolveLanguage, translate } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
 import { setOnboardingRequired } from "@/lib/auth-session";
+import { getStoredUiLanguage, setStoredUiLanguage } from "@/lib/ui-language";
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [displayName, setDisplayName] = useState("");
   const [language, setLanguage] = useState<"en" | "pl">(resolveLanguage("en"));
-  const [detail, setDetail] = useState("Complete onboarding with language and display name.");
+  const [detail, setDetail] = useState(translate("onboarding.feedback.default", "en"));
   const experiment = useMemo(() => {
     if (typeof window === "undefined") {
       return {
@@ -26,6 +27,14 @@ export default function OnboardingPage() {
       experimentKey: query.get("onboarding_experiment") ?? "onboarding-copy-v2",
       variantKey: query.get("onboarding_variant") ?? "control",
     };
+  }, []);
+
+  useEffect(() => {
+    const storedLanguage = getStoredUiLanguage();
+    if (storedLanguage) {
+      setLanguage(storedLanguage);
+      setDetail(translate("onboarding.feedback.default", storedLanguage));
+    }
   }, []);
 
   useEffect(() => {
@@ -59,36 +68,33 @@ export default function OnboardingPage() {
         },
       }).catch(() => undefined);
       setOnboardingRequired(false);
-      setDetail("Onboarding completed. Redirecting to dashboard...");
+      setStoredUiLanguage(language);
+      setDetail(translate("onboarding.feedback.success", language));
       router.replace("/dashboard");
-    } catch (error) {
-      const status =
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        typeof (error as { status?: unknown }).status === "number"
-          ? String((error as { status: number }).status)
-          : "n/a";
-      setDetail(`Onboarding request failed (HTTP ${status}).`);
+    } catch {
+      setDetail(translate("onboarding.error.generic", language));
     }
   };
 
   return (
     <WorkspaceShell
-      title="Onboarding"
-      subtitle="Set display name and language before entering dashboard."
+      title={translate("onboarding.title", language)}
+      subtitle={translate("onboarding.subtitle", language)}
       module="journal"
     >
       <div className="stack">
-        <MetricCard label="Required field" value="display_name" />
-        <MetricCard label="Required field" value="language" />
-        <MetricCard label="Apply mode" value="Immediate" />
+        <MetricCard label={translate("onboarding.required.display_name", language)} value="display_name" />
+        <MetricCard label={translate("onboarding.required.language", language)} value="language" />
+        <MetricCard
+          label={translate("onboarding.apply_mode", language)}
+          value={translate("onboarding.apply_mode.value", language)}
+        />
       </div>
 
-      <Panel title="Account Setup">
+      <Panel title={translate("onboarding.panel.title", language)}>
         <div className="panel-content">
           <label className="mono-note" htmlFor="display-name">
-            Display name
+            {translate("onboarding.field.display_name", language)}
           </label>
           <input
             id="display-name"
@@ -97,13 +103,17 @@ export default function OnboardingPage() {
             onChange={(event) => setDisplayName(event.target.value)}
           />
           <label className="mono-note" htmlFor="language">
-            Language
+            {translate("onboarding.field.language", language)}
           </label>
           <select
             id="language"
             className="list-row"
             value={language}
-            onChange={(event) => setLanguage(resolveLanguage(event.target.value))}
+            onChange={(event) => {
+              const nextLanguage = setStoredUiLanguage(event.target.value);
+              setLanguage(nextLanguage);
+              setDetail(translate("onboarding.feedback.default", nextLanguage));
+            }}
           >
             <option value="en">English</option>
             <option value="pl">Polski</option>
@@ -114,7 +124,7 @@ export default function OnboardingPage() {
             onClick={() => void submit()}
             disabled={displayName.trim().length === 0}
           >
-            Continue
+            {translate("onboarding.action.continue", language)}
           </button>
           <p className="callout">{detail}</p>
         </div>

@@ -311,7 +311,7 @@ class DatabaseSeeder extends Seeder
             'list_id' => $healthList->id,
             'life_area_id' => $healthLifeAreaId,
             'title' => 'Zapisac jakosc snu z ostatniej nocy',
-            'description' => 'Krótka notatka: godzina snu, pobudki, energia rano.',
+            'description' => 'Krotka notatka: godzina snu, pobudki, energia rano.',
             'status' => 'done',
             'priority' => 'low',
             'due_date' => $today->copy()->subDay()->toDateString(),

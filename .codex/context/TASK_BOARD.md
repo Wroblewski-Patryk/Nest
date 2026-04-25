@@ -3533,6 +3533,39 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-197 Publish canonical founder-ready checklist for V1 repair gate
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Added canonical readiness gate document:
+      `docs/planning/v1_founder_ready_checklist_2026-04-26.md`.
+    - Checklist defines the minimum truth baseline across repository accuracy,
+      backend reliability, web closure, mobile parity, cross-surface integrity,
+      and daily-use quality before Nest can be called `v1 founder-ready`.
+    - Includes an explicit 2026-04-26 status snapshot so future repair slices
+      can be measured against one stable gate.
+
+- [x] NEST-196 Reconcile web onboarding access truth and harden entry-path copy
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Web route guard now enforces mandatory onboarding before protected-route
+      access when `onboarding_required=true`, and the regression script reflects
+      the approved entry policy.
+    - Auth and onboarding flows now redirect to `/onboarding` or `/dashboard`
+      deterministically based on the authenticated user state.
+    - Added entry-path localization resources and stored UI-language baseline
+      for auth/onboarding, plus user-safer auth/onboarding feedback copy.
+    - Cleaned the public welcome page copy and corrected demo seed text
+      encoding drift.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm test:unit` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `php artisan db:seed --class=DatabaseSeeder --env=testing --no-interaction`.
+
 - [x] NEST-195 Recover local-start docs and align API sync regression suite with async contract
   - Status: DONE
   - Owner: Execution Agent
