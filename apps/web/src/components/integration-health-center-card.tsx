@@ -7,7 +7,7 @@ import type {
   UiAsyncState,
 } from "@nest/shared-types";
 import { nestApiClient } from "@/lib/api-client";
-import { STATE_LABELS } from "@/lib/ux-contract";
+import { describeApiIssue, STATE_LABELS } from "@/lib/ux-contract";
 
 type HealthMeta = {
   total: number;
@@ -44,7 +44,7 @@ function asHealthProvider(provider: string): HealthProvider | null {
 
 export function IntegrationHealthCenterCard() {
   const [state, setState] = useState<UiAsyncState>("loading");
-  const [detail, setDetail] = useState("Loading integration health center...");
+  const [detail, setDetail] = useState("Loading provider health and connection status...");
   const [items, setItems] = useState<IntegrationHealthProviderItem[]>([]);
   const [meta, setMeta] = useState<HealthMeta>({
     total: 0,
@@ -59,7 +59,7 @@ export function IntegrationHealthCenterCard() {
 
   const loadHealth = useCallback(async () => {
     setState("loading");
-    setDetail("Loading integration health center...");
+    setDetail("Loading provider health and connection status...");
 
     try {
       const response = await nestApiClient.getIntegrationHealth({ window_hours: 24 });
@@ -77,20 +77,12 @@ export function IntegrationHealthCenterCard() {
       setState(data.length > 0 ? "success" : "empty");
       setDetail(
         data.length > 0
-          ? `Health summary for last ${Number(nextMeta.window_hours ?? 24)}h.`
-          : "No provider health data available."
+          ? `Provider health summary for the last ${Number(nextMeta.window_hours ?? 24)} hours is ready.`
+          : "No provider health data is available yet."
       );
     } catch (error) {
-      const status =
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        typeof (error as { status?: unknown }).status === "number"
-          ? String((error as { status: number }).status)
-          : "n/a";
-
       setState("error");
-      setDetail(`Failed to load integration health center (HTTP ${status}).`);
+      setDetail(`We couldn't load integration health right now. ${describeApiIssue(error)}`);
     }
   }, [meta]);
 
@@ -117,14 +109,7 @@ export function IntegrationHealthCenterCard() {
         );
         await loadHealth();
       } catch (error) {
-        const status =
-          typeof error === "object" &&
-          error !== null &&
-          "status" in error &&
-          typeof (error as { status?: unknown }).status === "number"
-            ? String((error as { status: number }).status)
-            : "n/a";
-        setRemediationMessage(`${provider}: remediation failed (HTTP ${status}).`);
+        setRemediationMessage(`${provider}: remediation could not be completed. ${describeApiIssue(error)}`);
       } finally {
         setBusyKey(null);
       }

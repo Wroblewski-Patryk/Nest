@@ -10,9 +10,10 @@ import { getStoredUiLanguage, setStoredUiLanguage } from "@/lib/ui-language";
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const initialLanguage = getStoredUiLanguage() ?? resolveLanguage("en");
   const [displayName, setDisplayName] = useState("");
-  const [language, setLanguage] = useState<"en" | "pl">(resolveLanguage("en"));
-  const [detail, setDetail] = useState(translate("onboarding.feedback.default", "en"));
+  const [language, setLanguage] = useState<"en" | "pl">(initialLanguage);
+  const [detail, setDetail] = useState(translate("onboarding.feedback.default", initialLanguage));
   const experiment = useMemo(() => {
     if (typeof window === "undefined") {
       return {
@@ -27,14 +28,6 @@ export default function OnboardingPage() {
       experimentKey: query.get("onboarding_experiment") ?? "onboarding-copy-v2",
       variantKey: query.get("onboarding_variant") ?? "control",
     };
-  }, []);
-
-  useEffect(() => {
-    const storedLanguage = getStoredUiLanguage();
-    if (storedLanguage) {
-      setLanguage(storedLanguage);
-      setDetail(translate("onboarding.feedback.default", storedLanguage));
-    }
   }, []);
 
   useEffect(() => {

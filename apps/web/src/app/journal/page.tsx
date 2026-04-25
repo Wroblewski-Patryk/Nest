@@ -76,7 +76,6 @@ export default function JournalPage() {
   const router = useRouter();
   const [entries, setEntries] = useState<JournalEntryItem[]>([]);
   const [lifeAreas, setLifeAreas] = useState<LifeAreaItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isCreatingEntry, setIsCreatingEntry] = useState(false);
   const [isCreatingArea, setIsCreatingArea] = useState(false);
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
@@ -138,12 +137,6 @@ export default function JournalPage() {
         }
         setErrorMessage(getErrorMessage(error));
       })
-      .finally(() => {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      });
-
     return () => {
       mounted = false;
     };

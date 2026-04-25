@@ -16,11 +16,13 @@ type PreAuthLanguageSelectorProps = {
 };
 
 export function PreAuthLanguageSelector({ language, onLanguageChange }: PreAuthLanguageSelectorProps) {
+  const initialLanguage = language ?? getStoredUiLanguage() ?? resolveLanguage("en");
   const [options, setOptions] = useState<LanguageOption[]>([
     { code: "en", label: "English" },
     { code: "pl", label: "Polski" },
   ]);
-  const [selected, setSelected] = useState<"en" | "pl">(language ?? resolveLanguage("en"));
+  const [selected, setSelected] = useState<"en" | "pl">(initialLanguage);
+  const activeLanguage = language ?? selected;
 
   useEffect(() => {
     nestApiClient
@@ -44,28 +46,20 @@ export function PreAuthLanguageSelector({ language, onLanguageChange }: PreAuthL
         onLanguageChange?.(persisted);
         setStoredUiLanguage(persisted);
       });
-  }, []);
-
-  useEffect(() => {
-    if (!language) {
-      return;
-    }
-
-    setSelected(language);
-  }, [language]);
+  }, [language, onLanguageChange]);
 
   return (
     <div className="panel-content">
       <p className="callout">
-        {translate("auth.language.helper", selected)}
+        {translate("auth.language.helper", activeLanguage)}
       </p>
       <label className="mono-note" htmlFor="preauth-language">
-        {translate("auth.section.language", selected)}
+        {translate("auth.section.language", activeLanguage)}
       </label>
       <select
         id="preauth-language"
         className="list-row"
-        value={selected}
+        value={activeLanguage}
         onChange={(event) => {
           const nextLanguage = setStoredUiLanguage(event.target.value);
           setSelected(nextLanguage);

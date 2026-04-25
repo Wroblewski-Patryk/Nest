@@ -59,7 +59,6 @@ export default function HabitsPage() {
   const [newHabitTitle, setNewHabitTitle] = useState("");
   const [newHabitType, setNewHabitType] = useState<HabitItem["type"]>("boolean");
   const [newHabitCadence, setNewHabitCadence] = useState<"daily" | "weekly">("daily");
-  const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [editingHabitId, setEditingHabitId] = useState<string | null>(null);
   const [editHabitTitle, setEditHabitTitle] = useState("");
@@ -99,12 +98,6 @@ export default function HabitsPage() {
         }
         setErrorMessage(getErrorMessage(error));
       })
-      .finally(() => {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      });
-
     return () => {
       mounted = false;
     };

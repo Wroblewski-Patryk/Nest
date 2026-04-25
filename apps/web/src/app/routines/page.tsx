@@ -64,7 +64,6 @@ export default function RoutinesPage() {
   const [newRoutineTitle, setNewRoutineTitle] = useState("");
   const [newRoutineStepTitle, setNewRoutineStepTitle] = useState("");
   const [newRoutineStepDuration, setNewRoutineStepDuration] = useState("15");
-  const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [editingRoutineId, setEditingRoutineId] = useState<string | null>(null);
   const [editRoutineTitle, setEditRoutineTitle] = useState("");
@@ -104,12 +103,6 @@ export default function RoutinesPage() {
         }
         setErrorMessage(getErrorMessage(error));
       })
-      .finally(() => {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      });
-
     return () => {
       mounted = false;
     };

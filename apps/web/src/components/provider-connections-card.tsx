@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { IntegrationConnectionItem, UiAsyncState } from "@nest/shared-types";
 import { nestApiClient } from "@/lib/api-client";
-import { STATE_LABELS } from "@/lib/ux-contract";
+import { describeApiIssue, STATE_LABELS } from "@/lib/ux-contract";
 
 const supportedProviders = [
   "trello",
@@ -85,14 +85,14 @@ function reviewScopes(provider: string, grantedScopes: string[]): ScopeReview {
 
 export function ProviderConnectionsCard() {
   const [state, setState] = useState<UiAsyncState>("loading");
-  const [detail, setDetail] = useState("Loading provider connections...");
+  const [detail, setDetail] = useState("Loading your connected providers...");
   const [connections, setConnections] = useState<IntegrationConnectionItem[]>([]);
   const [busyProvider, setBusyProvider] = useState<string | null>(null);
   const stateClass = useMemo(() => `pill state-${state}`, [state]);
 
   const loadConnections = useCallback(async () => {
     setState("loading");
-    setDetail("Loading provider connections...");
+    setDetail("Loading your connected providers...");
 
     try {
       const response = await nestApiClient.getIntegrationConnections();
@@ -101,20 +101,12 @@ export function ProviderConnectionsCard() {
       setState(items.length > 0 ? "success" : "empty");
       setDetail(
         items.length > 0
-          ? "Connect, reconnect, or revoke providers."
-          : "No providers available."
+          ? "Connect, reconnect, or revoke your integrations."
+          : "No provider connections are available yet."
       );
     } catch (error) {
-      const status =
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        typeof (error as { status?: unknown }).status === "number"
-          ? String((error as { status: number }).status)
-          : "n/a";
-
       setState("error");
-      setDetail(`Failed to load provider connections (HTTP ${status}).`);
+      setDetail(`We couldn't load provider connections right now. ${describeApiIssue(error)}`);
     }
   }, []);
 
@@ -134,6 +126,11 @@ export function ProviderConnectionsCard() {
           scopes: providerScopes[provider] ?? [],
         });
         await loadConnections();
+        setState("success");
+        setDetail(`${providerLabels[provider] ?? provider} is connected and ready.`);
+      } catch (error) {
+        setState("error");
+        setDetail(`We couldn't connect ${providerLabels[provider] ?? provider} right now. ${describeApiIssue(error)}`);
       } finally {
         setBusyProvider(null);
       }
@@ -150,6 +147,11 @@ export function ProviderConnectionsCard() {
       try {
         await nestApiClient.revokeIntegrationConnection(typedProvider);
         await loadConnections();
+        setState("success");
+        setDetail(`${providerLabels[provider] ?? provider} has been disconnected.`);
+      } catch (error) {
+        setState("error");
+        setDetail(`We couldn't disconnect ${providerLabels[provider] ?? provider} right now. ${describeApiIssue(error)}`);
       } finally {
         setBusyProvider(null);
       }

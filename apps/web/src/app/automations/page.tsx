@@ -5,7 +5,7 @@ import type { AutomationRuleItem, AutomationRunItem, UiAsyncState } from "@nest/
 import { formatLocalizedDateTime, resolveLanguage } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
-import { STATE_LABELS } from "@/lib/ux-contract";
+import { describeApiIssue, STATE_LABELS } from "@/lib/ux-contract";
 
 const ACTION_OPTIONS = [
   "create_journal_entry",
@@ -16,7 +16,7 @@ type ActionOption = (typeof ACTION_OPTIONS)[number];
 export default function AutomationsPage() {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const [state, setState] = useState<UiAsyncState>("loading");
-  const [detail, setDetail] = useState("Loading automation rules...");
+  const [detail, setDetail] = useState("Loading your automation rules and recent runs...");
   const [rules, setRules] = useState<AutomationRuleItem[]>([]);
   const [runs, setRuns] = useState<AutomationRunItem[]>([]);
   const [selectedRun, setSelectedRun] = useState<AutomationRunItem | null>(null);
@@ -46,21 +46,13 @@ export default function AutomationsPage() {
       .then(() => {
         if (!mounted) return;
         setState("success");
-        setDetail("Automation API calls succeeded.");
+        setDetail("Automation rules and recent runs are ready.");
       })
       .catch((error) => {
         if (!mounted) return;
 
-        const status =
-          typeof error === "object" &&
-          error !== null &&
-          "status" in error &&
-          typeof (error as { status?: unknown }).status === "number"
-            ? String((error as { status: number }).status)
-            : "n/a";
-
         setState("error");
-        setDetail(`Automation API calls failed (HTTP ${status}).`);
+        setDetail(`We couldn't load automations right now. ${describeApiIssue(error)}`);
       });
 
     return () => {
@@ -111,17 +103,10 @@ export default function AutomationsPage() {
 
       await loadData();
       setState("success");
-      setDetail("Rule created and list refreshed.");
+      setDetail("Automation rule created and the workspace has been refreshed.");
     } catch (error) {
-      const status =
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        typeof (error as { status?: unknown }).status === "number"
-          ? String((error as { status: number }).status)
-          : "n/a";
       setState("error");
-      setDetail(`Rule creation failed (HTTP ${status}).`);
+      setDetail(`We couldn't create that automation rule. ${describeApiIssue(error)}`);
     } finally {
       setIsCreating(false);
     }
@@ -272,9 +257,9 @@ export default function AutomationsPage() {
             onChange={(event) => {
               const value = event.target.value as "all" | "success" | "failed" | "skipped";
               setRunStatusFilter(value);
-              loadData(value).catch(() => {
+              loadData(value).catch((error) => {
                 setState("error");
-                setDetail("Failed to refresh run list with selected filter.");
+                setDetail(`We couldn't refresh runs for that filter. ${describeApiIssue(error)}`);
               });
             }}
           >

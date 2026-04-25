@@ -13,6 +13,7 @@ import {
   decryptOfflineCachePayload,
   encryptOfflineCachePayload,
 } from "@/lib/offline-cache-crypto";
+import { describeApiIssue, getApiErrorStatus } from "@/lib/ux-contract";
 
 type OfflineAction = "sync_list_tasks" | "sync_calendar" | "sync_journal";
 type QueueStatus = "pending" | "synced" | "failed";
@@ -140,7 +141,7 @@ function isRetryDue(item: QueueItem, nowMs: number): boolean {
 
 export function OfflineSyncCard() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
-  const [detail, setDetail] = useState("Queue offline changes and run manual force sync.");
+  const [detail, setDetail] = useState("Queue offline changes here and run a manual sync when you're ready.");
   const [isSyncing, setIsSyncing] = useState(false);
   const [scheduler, setScheduler] = useState<OfflineSyncSchedulerState>(() =>
     loadOfflineSyncSchedulerState()
@@ -174,7 +175,7 @@ export function OfflineSyncCard() {
       (item) => item.action === action && item.status === "pending"
     );
     if (duplicatePending) {
-      setDetail(`Skipped duplicate pending job for ${action}.`);
+      setDetail(`A pending ${action} sync is already queued.`);
       return;
     }
 
@@ -231,25 +232,19 @@ export function OfflineSyncCard() {
             delete item.retry_count;
             delete item.next_retry_at;
             hadSuccess = true;
-            setDetail(`Synced ${item.action} from ${item.created_at}.`);
+            setDetail(`${item.action} synced successfully.`);
           } catch (error) {
-            const status =
-              typeof error === "object" &&
-              error !== null &&
-              "status" in error &&
-              typeof (error as { status?: unknown }).status === "number"
-                ? String((error as { status: number }).status)
-                : "n/a";
+            const status = getApiErrorStatus(error);
             const retryCount = (item.retry_count ?? 0) + 1;
             const retryDelaySeconds = computeRetryDelaySeconds(retryCount, item.id);
             item.status = "failed";
             item.retry_count = retryCount;
             item.next_retry_at = new Date(Date.now() + retryDelaySeconds * 1000).toISOString();
-            item.last_error = `HTTP ${status}`;
+            item.last_error = status === null ? "request_failed" : `HTTP ${status}`;
             hadFailure = true;
-            lastError = `HTTP ${status}`;
+            lastError = item.last_error;
             setDetail(
-              `${options.source === "auto" ? "Auto" : "Force"} sync error at ${item.action} (HTTP ${status}); retry in ${retryDelaySeconds}s.`
+              `${options.source === "auto" ? "Auto-sync" : "Manual sync"} could not finish ${item.action}. ${describeApiIssue(error)} Next retry in ${retryDelaySeconds}s.`
             );
             if (options.stopOnError) {
               break;
@@ -299,7 +294,7 @@ export function OfflineSyncCard() {
     clearOfflineSyncSchedulerState();
     setQueue([]);
     setScheduler(loadOfflineSyncSchedulerState());
-    setDetail("Encrypted offline cache wiped from this device.");
+    setDetail("Offline cache was securely removed from this device.");
   }, []);
 
   useEffect(() => {

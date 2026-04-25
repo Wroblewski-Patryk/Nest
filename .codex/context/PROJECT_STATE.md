@@ -897,7 +897,9 @@ Last updated: 2026-04-26
   repository startup truth corrected, Laravel testing bootstrap stabilized,
   stale async sync regressions updated to the enqueue-first contract, web
   entry-path onboarding/access truth aligned with the documented product policy,
-  and the mobile validation baseline restored to green.
+  the mobile validation baseline restored to green, and web feedback copy
+  hardened so key surfaces no longer expose raw technical API messaging while
+  the web lint/typecheck/build/unit baseline remains green.
 - Parallel backlog context still includes ongoing V2 launch-window/live-evidence
   closures (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`,
   `NEST-129`) and commercial/release continuation (`NEST-152` onward).
@@ -941,6 +943,22 @@ Last updated: 2026-04-26
 
 ## Documentation Refreshes
 
+- `NEST-203` completed: key web status surfaces now use user-safer feedback
+  copy instead of raw `HTTP`/`API failed` wording, a shared API issue helper
+  exists for consistent product messaging, and lingering web lint blockers were
+  removed from onboarding, pre-auth language selection, and several CRUD
+  screens
+  (`apps/web/src/lib/ux-contract.ts`,
+  `apps/web/src/app/automations/page.tsx`,
+  `apps/web/src/app/billing/page.tsx`,
+  `apps/web/src/app/insights/page.tsx`,
+  `apps/web/src/components/api-connect-card.tsx`,
+  `apps/web/src/components/conflict-queue-card.tsx`,
+  `apps/web/src/components/integration-health-center-card.tsx`,
+  `apps/web/src/components/provider-connections-card.tsx`,
+  `apps/web/src/components/offline-sync-card.tsx`,
+  `apps/web/src/app/onboarding/page.tsx`,
+  `apps/web/src/components/pre-auth-language-selector.tsx`)
 - `NEST-198` completed: mobile baseline stabilization is green again after
   fixing the tab-layout type regressions that previously blocked mobile
   TypeScript validation and export checks

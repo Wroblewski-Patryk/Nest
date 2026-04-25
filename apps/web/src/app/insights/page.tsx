@@ -11,7 +11,7 @@ import type {
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
 import { insightsSnapshot } from "@/lib/mvp-snapshot";
-import { STATE_LABELS } from "@/lib/ux-contract";
+import { describeApiIssue, STATE_LABELS } from "@/lib/ux-contract";
 
 const EMPTY_BALANCE: LifeAreaBalanceResponse = {
   data: [],
@@ -37,7 +37,7 @@ const EMPTY_TREND: InsightsTrendResponse = {
 
 export default function InsightsPage() {
   const [state, setState] = useState<UiAsyncState>("loading");
-  const [detail, setDetail] = useState("Loading life-area balance and trends...");
+  const [detail, setDetail] = useState("Loading your balance view, activity trends, and latest briefing...");
   const [balance, setBalance] = useState<LifeAreaBalanceResponse>(EMPTY_BALANCE);
   const [taskTrend, setTaskTrend] = useState<InsightsTrendResponse>(EMPTY_TREND);
   const [habitTrend, setHabitTrend] = useState<InsightsTrendResponse>(EMPTY_TREND);
@@ -91,7 +91,7 @@ export default function InsightsPage() {
   const loadInsights = useCallback(async () => {
     setIsRefreshing(true);
     setState("loading");
-    setDetail("Refreshing insights...");
+    setDetail("Refreshing your latest insights...");
 
     const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
     const briefingId = params?.get("briefing_id");
@@ -120,18 +120,10 @@ export default function InsightsPage() {
       setGrowthLoops(dashboardResponse.data);
       setBriefing(briefingResponse);
       setState("success");
-      setDetail("Insights API calls succeeded.");
+      setDetail("Insights are ready.");
     } catch (error) {
-      const status =
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        typeof (error as { status?: unknown }).status === "number"
-          ? String((error as { status: number }).status)
-          : "n/a";
-
       setState("error");
-      setDetail(`Insights API calls failed (HTTP ${status}). Showing fallback snapshot.`);
+      setDetail(`We couldn't refresh insights right now. ${describeApiIssue(error)} Showing your fallback snapshot instead.`);
     } finally {
       setIsRefreshing(false);
     }
@@ -258,7 +250,7 @@ export default function InsightsPage() {
             </ul>
           </div>
         ) : (
-          <p className="callout">Growth loop dashboard unavailable. Check analytics loop endpoint health.</p>
+          <p className="callout">Growth dashboard is not available right now. Your core insights view is still available.</p>
         )}
       </Panel>
 
@@ -271,7 +263,7 @@ export default function InsightsPage() {
             </p>
           </div>
         ) : (
-          <p className="callout">No generated briefing yet. Trigger one from copilot flow.</p>
+          <p className="callout">No briefing is ready yet. Once one is generated, it will appear here.</p>
         )}
       </Panel>
     </WorkspaceShell>

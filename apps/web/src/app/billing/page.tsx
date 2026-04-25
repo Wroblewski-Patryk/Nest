@@ -12,14 +12,14 @@ import type {
 import { formatLocalizedDateTime, resolveLanguage } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
-import { STATE_LABELS } from "@/lib/ux-contract";
+import { describeApiIssue, STATE_LABELS } from "@/lib/ux-contract";
 
 type BillingAction = "trial" | "activate" | "past_due" | "cancel" | "recover" | "checkout" | "portal";
 
 export default function BillingPage() {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const [state, setState] = useState<UiAsyncState>("loading");
-  const [detail, setDetail] = useState("Loading billing subscription, sessions, and dunning data...");
+  const [detail, setDetail] = useState("Loading billing status, recovery activity, and self-serve sessions...");
   const [subscription, setSubscription] = useState<BillingSubscriptionItem | null>(null);
   const [events, setEvents] = useState<BillingEventItem[]>([]);
   const [dunningAttempts, setDunningAttempts] = useState<BillingDunningAttemptItem[]>([]);
@@ -74,21 +74,13 @@ export default function BillingPage() {
       .then(() => {
         if (!mounted) return;
         setState("success");
-        setDetail("Billing self-serve and dunning APIs are healthy.");
+        setDetail("Billing status and recovery activity are up to date.");
       })
       .catch((error) => {
         if (!mounted) return;
 
-        const status =
-          typeof error === "object" &&
-          error !== null &&
-          "status" in error &&
-          typeof (error as { status?: unknown }).status === "number"
-            ? String((error as { status: number }).status)
-            : "n/a";
-
         setState("error");
-        setDetail(`Billing API calls failed (HTTP ${status}).`);
+        setDetail(`We couldn't load billing details right now. ${describeApiIssue(error)}`);
       });
 
     return () => {
@@ -134,18 +126,10 @@ export default function BillingPage() {
 
         await loadData();
         setState("success");
-        setDetail("Billing action completed.");
+        setDetail("Billing action completed and the latest status has been refreshed.");
       } catch (error) {
-        const status =
-          typeof error === "object" &&
-          error !== null &&
-          "status" in error &&
-          typeof (error as { status?: unknown }).status === "number"
-            ? String((error as { status: number }).status)
-            : "n/a";
-
         setState("error");
-        setDetail(`Billing action failed (HTTP ${status}).`);
+        setDetail(`We couldn't complete that billing action. ${describeApiIssue(error)}`);
       } finally {
         setBusyAction(null);
       }

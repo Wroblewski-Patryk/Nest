@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { IntegrationConflictItem, UiAsyncState } from "@nest/shared-types";
 import { nestApiClient } from "@/lib/api-client";
-import { STATE_LABELS } from "@/lib/ux-contract";
+import { describeApiIssue, STATE_LABELS } from "@/lib/ux-contract";
 
 export function ConflictQueueCard() {
   const [state, setState] = useState<UiAsyncState>("loading");
-  const [detail, setDetail] = useState("Loading open sync conflicts...");
+  const [detail, setDetail] = useState("Loading unresolved sync conflicts...");
   const [items, setItems] = useState<IntegrationConflictItem[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -15,7 +15,7 @@ export function ConflictQueueCard() {
 
   const loadConflicts = useCallback(async () => {
     setState("loading");
-    setDetail("Loading open sync conflicts...");
+    setDetail("Loading unresolved sync conflicts...");
 
     try {
       const response = await nestApiClient.getIntegrationConflicts({
@@ -28,20 +28,12 @@ export function ConflictQueueCard() {
       setState(conflicts.length > 0 ? "success" : "empty");
       setDetail(
         conflicts.length > 0
-          ? `Found ${conflicts.length} open conflict queue item(s).`
-          : "No open conflicts in queue."
+          ? `${conflicts.length} conflict item(s) need your decision.`
+          : "No sync conflicts need attention right now."
       );
     } catch (error) {
-      const status =
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        typeof (error as { status?: unknown }).status === "number"
-          ? String((error as { status: number }).status)
-          : "n/a";
-
       setState("error");
-      setDetail(`Failed to load conflicts (HTTP ${status}).`);
+      setDetail(`We couldn't load sync conflicts right now. ${describeApiIssue(error)}`);
     }
   }, []);
 

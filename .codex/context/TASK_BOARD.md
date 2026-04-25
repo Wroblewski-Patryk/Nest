@@ -3533,6 +3533,33 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-203 Harden web feedback copy and restore green lint baseline
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Replaced raw technical API status copy across key web surfaces with
+      user-safer, action-oriented messaging:
+      `apps/web/src/app/automations/page.tsx`,
+      `apps/web/src/app/billing/page.tsx`,
+      `apps/web/src/app/insights/page.tsx`,
+      `apps/web/src/components/api-connect-card.tsx`,
+      `apps/web/src/components/conflict-queue-card.tsx`,
+      `apps/web/src/components/integration-health-center-card.tsx`,
+      `apps/web/src/components/provider-connections-card.tsx`,
+      `apps/web/src/components/offline-sync-card.tsx`.
+    - Added shared web UX helpers for API issue classification in
+      `apps/web/src/lib/ux-contract.ts` so status panels can show product-safe
+      guidance without leaking transport-level wording.
+    - Cleared lingering web lint blockers by simplifying onboarding and
+      pre-auth language state sync and removing unused loading state variables
+      from CRUD screens.
+    - Validation:
+      `pnpm lint` in `apps/web`,
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-202 Expose mobile settings essentials and navigation coherence for core V1 flows
   - Status: DONE
   - Owner: Execution Agent

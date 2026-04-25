@@ -72,7 +72,6 @@ export default function LifeAreasPage() {
   const router = useRouter();
   const [lifeAreas, setLifeAreas] = useState<LifeAreaItem[]>([]);
   const [balance, setBalance] = useState<LifeAreaBalanceResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [editingAreaId, setEditingAreaId] = useState<string | null>(null);
   const [editAreaName, setEditAreaName] = useState("");
@@ -121,12 +120,6 @@ export default function LifeAreasPage() {
         }
         setErrorMessage(getErrorMessage(error));
       })
-      .finally(() => {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      });
-
     return () => {
       mounted = false;
     };

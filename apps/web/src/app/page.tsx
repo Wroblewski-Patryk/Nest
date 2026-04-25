@@ -34,7 +34,7 @@ export default function WelcomePage() {
           <li className="list-row">
             <div>
               <strong>Daily dashboard</strong>
-              <p>A calm overview of today's tasks, habits, and upcoming events.</p>
+              <p>A calm overview of today&apos;s tasks, habits, and upcoming events.</p>
             </div>
           </li>
           <li className="list-row">
