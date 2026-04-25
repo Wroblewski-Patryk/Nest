@@ -3533,6 +3533,25 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-202 Expose mobile settings essentials and navigation coherence for core V1 flows
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Added a dedicated mobile settings hub in
+      `apps/mobile/app/(tabs)/settings.tsx`.
+    - Updated the mobile tab layout so `Settings` is a first-class reachable
+      surface in the primary navigation instead of leaving advanced controls
+      stranded in the modal route only.
+    - The new settings hub explicitly exposes:
+      advanced settings modal access, routines and life-areas discoverability
+      via the now-API-backed module screens, and navigation to additional
+      non-core surfaces (`billing`, `insights`).
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/mobile`,
+      `pnpm exec expo export --platform web` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`.
+
 - [x] NEST-201 Replace mobile habits placeholder with API-backed habits and routines flow
   - Status: DONE
   - Owner: Execution Agent

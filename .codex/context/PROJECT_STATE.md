@@ -958,6 +958,11 @@ Last updated: 2026-04-26
   with create/edit/pause/delete habits, quick logging, and create/edit/pause/
   delete routines
   (`apps/mobile/app/(tabs)/habits.tsx`)
+- `NEST-202` completed: mobile now has a first-class `Settings + More` hub in
+  the main tab navigation, so advanced controls and non-core mobile surfaces
+  are reachable without relying on hidden modal-only discovery
+  (`apps/mobile/app/(tabs)/settings.tsx`,
+  `apps/mobile/app/(tabs)/_layout.tsx`)
 - `NEST-197` completed: one canonical founder-ready gate now exists for the
   `v1` repair wave, defining the minimum readiness baseline across repository
   truth, backend reliability, web closure, mobile parity, cross-surface

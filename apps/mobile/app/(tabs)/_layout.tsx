@@ -12,7 +12,8 @@ type TabIconName =
   | 'calendar-today'
   | 'insights'
   | 'credit-card'
-  | 'eco';
+  | 'eco'
+  | 'settings';
 
 function TabIcon({ name, color, size = 21 }: { name: TabIconName; color: string; size?: number }) {
   return <MaterialIcons name={name} color={color} size={size} />;
@@ -97,10 +98,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="billing"
+        name="settings"
         options={{
-          title: 'Billing',
-          tabBarIcon: ({ color }) => <TabIcon name="credit-card" color={color} />,
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <TabIcon name="settings" color={color} />,
         }}
       />
     </Tabs>
