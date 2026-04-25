@@ -6,6 +6,9 @@ Nest owns the life data model.
 
 External integrations synchronize with Nest but do not define the structure.
 
+Nest may support bidirectional synchronization with external tools, but the
+canonical internal model still belongs to Nest.
+
 ---
 
 ## 2. API First
@@ -49,6 +52,7 @@ Although the MVP is single-user, the system must support:
 - multiple users
 - data isolation
 - per-user integrations
+- future shareable scopes beyond the private-account baseline
 
 ---
 

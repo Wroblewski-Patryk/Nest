@@ -48,6 +48,15 @@ delivery scope or to later target expansion.
 - deployment, observability, backup, and release readiness required to run the
   product reliably.
 
+## Ownership Model
+
+- `v1` uses a private-account model with one active human user and no shared
+  workspace requirement.
+- `v2` may introduce shareable spaces owned by the initiating user and shared
+  with multiple other people.
+- Core entities should remain compatible with a future transition from
+  private-only ownership to shareable ownership.
+
 ## V1 Architectural Priorities
 
 - Founder-first usefulness over breadth.
@@ -83,6 +92,8 @@ but they do not define the `v1` delivery gate.
 - proactive AI briefings,
 - stronger automation and integration workflows,
 - broader collaboration and notification systems,
+- shareable family/company/custom spaces where the user defines what sphere is
+  being shared and with whom,
 - deeper operational hardening for wider commercial rollout.
 
 ## AI Architecture Decision
@@ -99,6 +110,35 @@ This means:
   actor metadata, and audit logs.
 - AI must never become an alternate source of truth for plans, tasks, or other
   core entities.
+
+## AI Operation Modes
+
+- In-app AI mode:
+  - provides suggestions, reports, and module-level assistance based on data
+    already stored in Nest,
+  - typical surfaces include daily or weekly summaries, planning suggestions,
+    and module-specific recommendations.
+- External agent mode:
+  - allows delegated external AI agents to interact with Nest through API/tool
+    endpoints,
+  - uses the same policy, scope, audit, and actor-boundary rules as in-app AI
+    actions.
+
+Both modes must share one backend policy and audit model.
+
+## Integration Source-Of-Truth Decision
+
+- Nest remains the canonical source of truth for the internal
+  life-management model.
+- Integrations may synchronize data bidirectionally when that improves the
+  user's practical workflow.
+- Connecting a provider may offer an explicit import choice so Nest can ingest
+  existing provider data and build a more complete picture.
+- External user edits in connected tools should normally be treated as valid
+  intent and synchronized back into Nest, subject to conflict policy.
+- Provider-specific policies may differ for content-heavy systems such as files
+  or notes, where Nest may store structured references, metadata, or summaries
+  rather than full canonical content.
 
 ## Delivery Matrix
 

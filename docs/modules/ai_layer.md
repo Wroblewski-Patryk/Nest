@@ -33,6 +33,19 @@ operations without compromising data integrity or security.
 - habit/routine consistency insights,
 - life-area balance analysis.
 
+## Product Surface Modes
+
+- In-app assistive mode:
+  - daily and weekly summaries,
+  - user-facing reports and recommendations,
+  - module-specific suggestions embedded in planning, calendar, habits, and
+    other core surfaces.
+- External delegated-agent mode:
+  - third-party or user-chosen AI agents interact with Nest through API/tool
+    endpoints,
+  - these actions use scoped delegated credentials and the same backend policy
+    rules as any other controlled AI access.
+
 ## Tool Interface (Examples)
 
 - create_task
@@ -117,7 +130,8 @@ operations without compromising data integrity or security.
 ## Delivery Position
 
 - `v1`: no end-user AI surface in the release gate.
-- `v2`: first end-user AI surface and in-app assistant for web and mobile.
+- `v2`: first end-user AI surface and in-app assistant for web and mobile, plus
+  delegated external-agent usage through controlled API tools.
 
 ## V1 Enforcement
 

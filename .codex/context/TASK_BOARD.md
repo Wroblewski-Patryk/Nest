@@ -3533,6 +3533,20 @@ Last updated: 2026-04-16
 
 ## Done
 
+- [x] NEST-193 Capture architecture assumptions for ownership, AI modes, and bidirectional sync
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Confirmed `v1` as private-account only with no shared workspace
+      requirement.
+    - Confirmed `v2` target as user-defined shareable spaces with multiple
+      participants.
+    - Confirmed AI architecture in two modes: in-app assistive surfaces and
+      external delegated-agent operation through API tools.
+    - Confirmed Nest-first bidirectional synchronization policy with optional
+      import-on-connect for connected providers.
+
 - [x] NEST-192 Refresh architecture and planning docs for practical V1 vs V2 split
   - Status: DONE
   - Owner: Documentation Agent

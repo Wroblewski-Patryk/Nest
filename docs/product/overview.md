@@ -72,8 +72,10 @@ capture, review, and daily execution.
 ## Target Expansion
 
 - Primary audience in early phases: private users (B2C).
-- Next expansion: invite-based collaboration for family and friends.
-- Shared workflows: co-planning and co-management of selected plans/lists.
+- Next expansion: shareable spaces where the user defines whether the shared
+  sphere is family, company, or another custom context.
+- Shared workflows: co-planning and co-management of selected plans/lists with
+  multiple invited participants.
 - Product positioning excludes enterprise/corporate workflow focus in favor of
   personal life management in individual and family/friends contexts.
 

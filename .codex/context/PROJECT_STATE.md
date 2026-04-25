@@ -52,6 +52,11 @@ Last updated: 2026-04-26
 - Audience: private users first, then family/friends shared collaboration
 - Product positioning: personal life-management system (not enterprise/corporate
   workflow tooling); collaboration direction is family/friends context.
+- Ownership model (`v1`): one private user account with no shared workspace or
+  shared-scope requirement.
+- Ownership model (`v2` target): user-defined shareable spaces may represent
+  family, company, or another custom sphere and can be shared with multiple
+  participants.
 - Planning hierarchy: goals -> targets -> lists/tasks -> habits/routines ->
   calendar -> journal
 - Core loop priority model (v1): tasks/lists, calendar planning, and
@@ -72,6 +77,10 @@ Last updated: 2026-04-26
   principals in one domain model and policy layer.
 - Delegated AI access policy (v1+): user-issued scoped API credentials are the
   required mechanism for AI agents acting on behalf of user-owned data.
+- AI operation mode policy (`v2` target): AI must support both in-app assistive
+  surfaces (reports, suggestions, module guidance) and external delegated-agent
+  operation through API tool endpoints, while sharing one policy and audit
+  model.
 - Feature integration policy (v1): every new capability must integrate cleanly
   with existing modules and shared contracts before release.
 - Client parity policy (v1): no functional differences between web and mobile
@@ -101,6 +110,10 @@ Last updated: 2026-04-26
   chooses final resolution manually.
 - Conflict recommendation policy (v1): conflict UI is neutral by default and
   does not auto-recommend a winning version.
+- Integration source-of-truth policy (v1+): Nest is the canonical
+  life-management source of truth, while connected tools may synchronize
+  bidirectionally and may offer import-on-connect so existing provider data can
+  be ingested into Nest.
 - Project scope in this workspace: documentation and delivery decisions in this
   repository apply only to Nest; Cryptosparrow is handled independently.
 - Product reach and localization: Nest is a global product with multi-language
@@ -929,6 +942,14 @@ Last updated: 2026-04-26
   `docs/planning/v1_execution_focus_2026-04-26.md`,
   `docs/product/overview.md`,
   `docs/product/roadmap.md`)
+- `NEST-193` completed: architecture assumptions now capture private-first
+  ownership in `v1`, shareable user-defined spaces in `v2`, dual AI operation
+  modes (in-app assist + external delegated agent), and Nest-first
+  bidirectional integration sync policy
+  (`docs/architecture/v1_v2_delivery_split.md`,
+  `docs/architecture/system-architecture.md`,
+  `docs/modules/ai_layer.md`,
+  `docs/architecture/core_principles.md`)
 
 ## Confirmed Decisions (2026-03-15)
 

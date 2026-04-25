@@ -45,6 +45,10 @@ All clients and automations operate through the same API contracts.
 - Idempotent sync jobs, retries, dead-letter handling.
 - Conflict strategy: latest-write with guardrails + manual resolution for
   high-value fields.
+- Sync policy is bidirectional where useful, while Nest remains the canonical
+  source of truth for the internal life-management model.
+- Provider connection flows may offer import-on-connect so existing external
+  data can be pulled into Nest during setup.
 
 ### Data Layer
 
@@ -56,6 +60,11 @@ All clients and automations operate through the same API contracts.
 
 - Shared database model for `v1`: one PostgreSQL cluster/database with
   tenant-scoped records separated by `tenant_id`.
+- Current ownership model in `v1`: one private user account without shared
+  workspace behavior.
+- Planned expansion in `v2`: shareable spaces for family, company, or
+  user-defined collaboration spheres, with multiple participants attached to
+  the same shared scope.
 - Tenant isolation at data access layer.
 - Per-user/provider credentials and scopes.
 - Audit events for security-sensitive actions.
@@ -89,3 +98,6 @@ All clients and automations operate through the same API contracts.
 - AI reads structured context from Nest-owned domain entities.
 - AI writes must go through explicit scoped endpoints, policy checks, actor
   metadata, and audit logging.
+- AI is expected to operate in two forms:
+  - in-app assistive surfaces for suggestions and reports,
+  - external delegated-agent access through tool/API endpoints.
