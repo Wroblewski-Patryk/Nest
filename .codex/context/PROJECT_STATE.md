@@ -892,11 +892,12 @@ Last updated: 2026-04-26
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: `v1` repair execution has started with the first two
+- Current execution focus: `v1` repair execution has started with three early
   hardening slices completed on 2026-04-26:
   repository startup truth corrected, Laravel testing bootstrap stabilized,
-  stale async sync regressions updated to the enqueue-first contract, and web
-  entry-path onboarding/access truth aligned with the documented product policy.
+  stale async sync regressions updated to the enqueue-first contract, web
+  entry-path onboarding/access truth aligned with the documented product policy,
+  and the mobile validation baseline restored to green.
 - Parallel backlog context still includes ongoing V2 launch-window/live-evidence
   closures (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`,
   `NEST-129`) and commercial/release continuation (`NEST-152` onward).
@@ -940,6 +941,10 @@ Last updated: 2026-04-26
 
 ## Documentation Refreshes
 
+- `NEST-198` completed: mobile baseline stabilization is green again after
+  fixing the tab-layout type regressions that previously blocked mobile
+  TypeScript validation and export checks
+  (`apps/mobile/app/(tabs)/_layout.tsx`)
 - `NEST-197` completed: one canonical founder-ready gate now exists for the
   `v1` repair wave, defining the minimum readiness baseline across repository
   truth, backend reliability, web closure, mobile parity, cross-surface

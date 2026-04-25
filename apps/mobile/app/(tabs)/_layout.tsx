@@ -1,20 +1,30 @@
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { SymbolView } from 'expo-symbols';
+import { Pressable, StyleSheet, View, type GestureResponderEvent } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { mobileUiTokens } from '@/constants/uiTokens';
 
-function TabIcon({ name, color, size = 21 }: { name: string; color: string; size?: number }) {
-  return (
-    <SymbolView
-      name={{ ios: name, android: name, web: name }}
-      tintColor={color}
-      size={size}
-    />
-  );
+type TabIconName =
+  | 'list-alt'
+  | 'checklist'
+  | 'flag'
+  | 'menu-book'
+  | 'calendar-today'
+  | 'insights'
+  | 'credit-card'
+  | 'eco';
+
+function TabIcon({ name, color, size = 21 }: { name: TabIconName; color: string; size?: number }) {
+  return <MaterialIcons name={name} color={color} size={size} />;
 }
 
-function SeedlingButton({ onPress, accessibilityState }: { onPress?: () => void; accessibilityState?: { selected?: boolean } }) {
+function SeedlingButton({
+  onPress,
+  accessibilityState,
+}: {
+  onPress?: (event: GestureResponderEvent) => void;
+  accessibilityState?: { selected?: boolean };
+}) {
   const focused = Boolean(accessibilityState?.selected);
 
   return (
@@ -42,7 +52,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Tasks',
-          tabBarIcon: ({ color }) => <TabIcon name="list_alt" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="list-alt" color={color} />,
           tabBarButton: (props) => (
             <SeedlingButton
               onPress={props.onPress}
@@ -69,14 +79,14 @@ export default function TabLayout() {
         name="journal"
         options={{
           title: 'Journal',
-          tabBarIcon: ({ color }) => <TabIcon name="menu_book" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="menu-book" color={color} />,
         }}
       />
       <Tabs.Screen
         name="calendar"
         options={{
           title: 'Calendar',
-          tabBarIcon: ({ color }) => <TabIcon name="calendar_today" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="calendar-today" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -90,7 +100,7 @@ export default function TabLayout() {
         name="billing"
         options={{
           title: 'Billing',
-          tabBarIcon: ({ color }) => <TabIcon name="credit_card" color={color} />,
+          tabBarIcon: ({ color }) => <TabIcon name="credit-card" color={color} />,
         }}
       />
     </Tabs>

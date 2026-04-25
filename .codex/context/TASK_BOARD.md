@@ -3533,6 +3533,21 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-198 Restore green mobile validation baseline
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Replaced unstable tab icon typing in `apps/mobile/app/(tabs)/_layout.tsx`
+      with typed `MaterialIcons` usage and corrected the custom tab button
+      event signature.
+    - Mobile validation baseline is green again:
+      `pnpm exec tsc --noEmit`,
+      `pnpm exec expo export --platform web`,
+      `pnpm test:unit`.
+    - This closes `P2.1` baseline stabilization and unblocks real mobile parity
+      work on API-backed module flows.
+
 - [x] NEST-197 Publish canonical founder-ready checklist for V1 repair gate
   - Status: DONE
   - Owner: Documentation Agent
