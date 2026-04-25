@@ -3533,6 +3533,22 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-200 Replace mobile journal placeholder with API-backed journal and life-areas flow
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Replaced the static `ModuleScreen` placeholder in
+      `apps/mobile/app/(tabs)/journal.tsx` with a real mobile CRUD surface for
+      `journal-entries` and `life-areas`.
+    - Mobile flow now supports:
+      journal entry list/load, create, edit, delete, life-area list/load,
+      create, edit, and archive, including entry-to-life-area assignment.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/mobile`,
+      `pnpm exec expo export --platform web` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`.
+
 - [x] NEST-199 Replace mobile goals placeholder with API-backed goals and targets flow
   - Status: DONE
   - Owner: Execution Agent
