@@ -1,6 +1,6 @@
 ﻿# TASK_BOARD
 
-Last updated: 2026-04-16
+Last updated: 2026-04-26
 
 ## Agent Workflow Refresh (2026-04-16)
 
@@ -3532,6 +3532,19 @@ Last updated: 2026-04-16
 - [ ] (none)
 
 ## Done
+
+- [x] NEST-194 Publish canonical V1 repair execution plan from deep project audit
+  - Status: DONE
+  - Owner: Planning Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Published canonical repair plan in
+      `docs/planning/v1_repair_execution_plan_2026-04-26.md`.
+    - Plan converts the 2026-04-26 architecture/code/UI audit into one
+      sequenced execution contract across repo truth, web closure, mobile
+      parity, contract hardening, and final polish.
+    - Explicitly prioritizes `v1` founder-ready usefulness and architecture
+      consistency over further breadth.
 
 - [x] NEST-193 Capture architecture assumptions for ownership, AI modes, and bidirectional sync
   - Status: DONE

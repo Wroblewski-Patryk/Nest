@@ -920,6 +920,8 @@ Last updated: 2026-04-26
 - Full-product execution backlog: `docs/planning/implementation_plan_full.md`
 - Current practical `v1` execution focus:
   `docs/planning/v1_execution_focus_2026-04-26.md`
+- Current canonical `v1` repair execution plan:
+  `docs/planning/v1_repair_execution_plan_2026-04-26.md`
 - V2 target execution backlog: `docs/planning/v2-target-execution-plan.md`
 - V2 execution roundbook: `docs/planning/v2-execution-roundbook.md`
 - V2 task cards: `docs/planning/v2-task-cards.md`
@@ -934,6 +936,11 @@ Last updated: 2026-04-26
 
 ## Documentation Refreshes
 
+- `NEST-194` completed: deep project audit findings are now converted into one
+  canonical `v1` repair execution plan covering repo truth recovery, web
+  product closure, mobile parity recovery, shared-contract hardening, and
+  final polish sequencing
+  (`docs/planning/v1_repair_execution_plan_2026-04-26.md`)
 - `NEST-192` completed: architecture and planning documentation now separate
   practical `v1` delivery from later `v2` AI-assisted expansion through a
   canonical split doc, refreshed product framing, and a dedicated `v1`
