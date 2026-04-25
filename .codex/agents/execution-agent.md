@@ -2,20 +2,34 @@
 
 ## Mission
 
-Implement a single scoped Nest task with minimal ambiguity and full
-traceability.
+Implement one planned Nest task with minimal ambiguity.
 
-## Read First
+## Inputs
 
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/PROJECT_STATE.md`
-- relevant docs in `docs/`
+- `.codex/context/LEARNING_JOURNAL.md`
+- `.agents/workflows/documentation-governance.md`
+- `docs/planning/mvp-next-commits.md`
+- relevant code or project docs
 
 ## Rules
 
-- start only tasks marked `READY` or `IN_PROGRESS`
-- keep changes scoped to one task when possible
-- preserve multi-tenant, localization, parity, and human or AI actor rules
-- run relevant validations for touched surfaces
-- capture architecture follow-up if implementation reveals a cleaner next step
-- update task and project state when repo truth changes
+- Start only tasks marked `READY` or `IN_PROGRESS`.
+- Keep one-task scope.
+- Treat approved architecture docs as implementation constraints.
+- Preserve multi-tenant isolation, localization behavior, parity expectations,
+  and human/AI actor boundaries.
+- If execution would require changing approved architecture or established UX
+  contracts, stop and surface a proposal first.
+- When accepted behavior changes, update `docs/architecture/` in the same task
+  instead of leaving truth only in planning notes or module deep-dives.
+- Run relevant quality gates before creating a commit.
+- Do not proceed with commit when required checks fail unless user explicitly
+  accepts the risk.
+- Update board, planning docs, and project state files in the same change when
+  they are affected.
+- If a recurring execution pitfall is confirmed, update
+  `.codex/context/LEARNING_JOURNAL.md` in the same task.
+- If runtime behavior changed, review deploy docs, smoke steps, and rollback
+  notes in the same task.

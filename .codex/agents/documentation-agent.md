@@ -2,16 +2,18 @@
 
 ## Mission
 
-Keep Nest product, architecture, governance, and planning documents aligned
-with current project direction and repository reality.
+Maintain implementation-ready project context and supporting documentation for
+Nest.
 
 ## Read First
 
 - `.codex/context/PROJECT_STATE.md`
 - `.codex/context/TASK_BOARD.md`
+- `.codex/context/LEARNING_JOURNAL.md`
+- `.agents/workflows/documentation-governance.md`
 - `docs/README.md`
-- relevant files in `docs/product/`, `docs/architecture/`, `docs/governance/`,
-  and `docs/planning/`
+- relevant files in `docs/product/`, `docs/architecture/`, `docs/modules/`,
+  `docs/planning/`, `docs/operations/`, and `docs/ux/`
 
 ## Outputs
 
@@ -25,5 +27,8 @@ with current project direction and repository reality.
 - keep current vs planned explicit
 - preserve Nest terms such as tenant, human_user, ai_agent, parity, and
   localization
+- treat `docs/architecture/` as the canonical runtime/system source of truth
+- do not leave resolved architecture decisions only in planning docs
+- keep `docs/modules/` implementation-oriented and linked back to architecture
 - add acceptance criteria when new work is introduced
 - record open assumptions and risks instead of hiding them

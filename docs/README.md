@@ -15,6 +15,8 @@ This is the canonical index for repository documentation.
 
 ## Architecture (`docs/architecture/`)
 
+- `README.md`
+- `architecture-source-of-truth.md`
 - `system-architecture.md`
 - `tech-stack.md`
 - `backend_strategy.md`
@@ -87,6 +89,7 @@ This is the canonical index for repository documentation.
 - `repository-structure-policy.md`
 - `working-agreements.md`
 - `language-policy.md`
+- `code-quality-guardrails.md` (optional)
 - `template-usage.md`
 - `subagent-delegation-policy.md`
 - `new-project-bootstrap.md`
