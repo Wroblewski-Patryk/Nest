@@ -10,6 +10,10 @@
 
 - Backend: PHP 8.4, Composer, PostgreSQL, Redis.
 - Frontend: Node.js 24 LTS, pnpm.
+- Repository note:
+  - there is no root `package.json`,
+  - install frontend dependencies per app with `pnpm --dir apps/web install`
+    and `pnpm --dir apps/mobile install`.
 - Use `.env.example` templates for backend and frontend apps.
 - Default local ports:
   - API: `9000`
@@ -35,6 +39,29 @@
 6. Start queue worker:
    - `php artisan queue:work redis --queue=default,integrations`
 
+### Local Web Bring-up
+
+1. Install dependencies:
+   - `pnpm --dir apps/web install`
+2. Start development server:
+   - `pnpm --dir apps/web dev`
+3. Validation commands:
+   - `pnpm --dir apps/web lint`
+   - `pnpm --dir apps/web exec tsc --noEmit`
+   - `pnpm --dir apps/web test:unit`
+   - `pnpm --dir apps/web build`
+
+### Local Mobile Bring-up
+
+1. Install dependencies:
+   - `pnpm --dir apps/mobile install`
+2. Start Expo:
+   - `pnpm --dir apps/mobile start`
+3. Validation commands:
+   - `pnpm --dir apps/mobile exec tsc --noEmit`
+   - `pnpm --dir apps/mobile test:unit`
+   - `pnpm --dir apps/mobile exec expo export --platform web`
+
 ### Local Web Troubleshooting
 
 - Symptom:
@@ -49,6 +76,18 @@
   3. If mobile dependencies were recently changed, also refresh:
      - `cd apps/mobile`
      - `pnpm install`
+
+### Testing Runtime Guarantees
+
+- PHPUnit testing is expected to run with:
+  - `APP_ENV=testing`
+  - `DB_CONNECTION=sqlite`
+  - `DB_DATABASE=:memory:`
+  - `CACHE_STORE=array`
+  - `QUEUE_CONNECTION=sync`
+  - `SESSION_DRIVER=array`
+- If any test starts using `database` cache/session behavior implicitly, treat
+  that as drift and fix the test or explicitly create the required tables.
 
 ## CI Pipeline (Minimum)
 

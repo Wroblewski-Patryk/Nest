@@ -3533,6 +3533,28 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-195 Recover local-start docs and align API sync regression suite with async contract
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Corrected local startup guidance so repository docs no longer instruct a
+      broken root-level `pnpm install` flow; updated:
+      `readme.md`,
+      `docs/engineering/development_and_deployment.md`,
+      `apps/web/README.md`.
+    - Hardened Laravel test bootstrap to force deterministic testing drivers
+      (`array` cache/session, `sync` queue) in `apps/api/tests/TestCase.php`.
+    - Updated stale integration regressions to the enqueue-first sync contract
+      and explicit queue draining in:
+      `apps/api/tests/Integration/ListTaskSyncPipelineTest.php`,
+      `apps/api/tests/Integration/IntegrationProviderRegressionTest.php`,
+      `apps/api/tests/Integration/TenantIsolationVerificationTest.php`.
+    - Validation:
+      `php artisan test --testsuite=Integration --env=testing`,
+      `php artisan test --testsuite=Feature --env=testing`,
+      `pnpm exec tsc --noEmit` in `apps/web`.
+
 - [x] NEST-194 Publish canonical V1 repair execution plan from deep project audit
   - Status: DONE
   - Owner: Planning Agent

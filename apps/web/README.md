@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is the Nest web client.
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies from this app directory or from the repository root using
+`pnpm --dir apps/web install`.
+
+Run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The Nest web client runs on [http://localhost:9001](http://localhost:9001).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+For the full local stack you also need the API running on `http://127.0.0.1:9000`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Typical local flow:
+
+1. `composer install --working-dir ../api`
+2. prepare `../api/.env`
+3. `php artisan migrate --seed` from `../api`
+4. `php artisan serve --host=127.0.0.1 --port=9000` from `../api`
+5. `pnpm dev` from `apps/web`
+
+Key web commands:
+
+- `pnpm lint`
+- `pnpm exec tsc --noEmit`
+- `pnpm test:unit`
+- `pnpm build`
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+Primary repository docs:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `../../README.md`
+- `../../docs/engineering/development_and_deployment.md`
+- `../../docs/architecture/frontend_strategy.md`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+For framework-specific details:
 
-## Deploy on Vercel
+- [Next.js Documentation](https://nextjs.org/docs)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Local Auth Seed
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+After `php artisan migrate --seed` in `apps/api`:
+
+- email: `admin@admin.com`
+- password: `password`

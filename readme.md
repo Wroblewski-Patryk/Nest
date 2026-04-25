@@ -23,24 +23,53 @@ Primary documentation index: `docs/README.md`.
 - Mobile: Expo/React Native
 - Tenancy: multi-tenant architecture with single-user launch profile
 
-## Local Run (Web + API)
+## Local Run
 
-1. Install dependencies:
-   - `pnpm install`
-   - `composer install --working-dir apps/api`
-2. Prepare backend environment:
-   - copy `apps/api/.env.example` to `apps/api/.env`
-   - create database (default local setup can use sqlite file or PostgreSQL, per `apps/api/.env`)
-3. Run migrations and seeders:
-   - `php artisan migrate --seed` (from `apps/api`)
-4. Start API:
-   - `php artisan serve --host=127.0.0.1 --port=9000` (from `apps/api`)
-5. Start web:
-   - `pnpm --dir apps/web dev`
-6. Open app:
-   - welcome page: `http://localhost:9001`
-   - auth module: `http://localhost:9001/auth`
-   - dashboard (after login): `http://localhost:9001/dashboard`
+There is no root `package.json` in this repository.
+
+Install and run each app from its own directory.
+
+### 1. Install dependencies
+
+- API:
+  - `composer install --working-dir apps/api`
+- Web:
+  - `pnpm install --dir apps/web`
+- Mobile:
+  - `pnpm install --dir apps/mobile`
+
+### 2. Prepare backend environment
+
+- copy `apps/api/.env.example` to `apps/api/.env`
+- configure PostgreSQL and Redis values from that file
+- default documented local baseline is PostgreSQL + Redis, not root-level
+  sqlite bootstrap
+
+### 3. Run migrations and seeders
+
+From `apps/api`:
+
+- `php artisan migrate --seed`
+
+### 4. Start backend services
+
+From `apps/api`:
+
+- API: `php artisan serve --host=127.0.0.1 --port=9000`
+- Queue worker: `php artisan queue:work redis --queue=default,integrations`
+
+### 5. Start clients
+
+- Web:
+  - `pnpm --dir apps/web dev`
+- Mobile:
+  - `pnpm --dir apps/mobile start`
+
+### 6. Open app
+
+- welcome page: `http://localhost:9001`
+- auth module: `http://localhost:9001/auth`
+- dashboard (after login): `http://localhost:9001/dashboard`
 
 Default seeded account after `migrate --seed`:
 
@@ -49,6 +78,15 @@ Default seeded account after `migrate --seed`:
 - onboarding: already completed for seeded admin user
 - demo planning dataset: prefilled `Goals + Targets + Lists + Tasks` is added
   for this account so `/tasks` is not empty on first run
+
+For more detailed environment guidance, see
+`docs/engineering/development_and_deployment.md`.
+
+## Coolify
+
+Deploy from the repository root with `docker-compose.coolify.yml`.
+
+Full guide: `docs/operations/coolify.md`
 
 ## License
 

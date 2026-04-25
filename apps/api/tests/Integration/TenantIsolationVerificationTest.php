@@ -11,6 +11,8 @@ use App\Models\TaskList;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Laravel\Sanctum\Sanctum;
@@ -98,6 +100,8 @@ class TenantIsolationVerificationTest extends TestCase
             'provider' => 'trello',
         ])->assertOk();
 
+        $this->drainIntegrationQueue();
+
         $this->assertDatabaseHas('sync_mappings', [
             'tenant_id' => $tenantA->id,
             'provider' => 'trello',
@@ -152,5 +156,16 @@ class TenantIsolationVerificationTest extends TestCase
             'internal_entity_id' => $listB->id,
         ]);
         $this->assertSame(1, IntegrationSyncFailure::query()->count());
+    }
+
+    private function drainIntegrationQueue(): void
+    {
+        while ((int) DB::table('jobs')->count() > 0) {
+            Artisan::call('queue:work', [
+                'connection' => 'database',
+                '--queue' => 'integrations',
+                '--once' => true,
+            ]);
+        }
     }
 }

@@ -892,10 +892,13 @@ Last updated: 2026-04-26
 - `NEST-097` completed: audit remediation execution handoff prepared with
   strict task order, ownership, and DoD for implementation agents
   (`docs/operations/audit_remediation_execution_handoff_2026-03-19.md`)
-- Current execution focus: ongoing V2 launch-window/live-evidence closures
-  (`NEST-122`,
-  `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`, `NEST-129`) and
-  commercial/release continuation (`NEST-152` onward).
+- Current execution focus: `v1` repair execution has started with a first
+  repo-truth hardening slice completed on 2026-04-26:
+  local startup docs corrected, Laravel testing bootstrap stabilized, and
+  stale async sync regressions updated to the enqueue-first contract.
+- Parallel backlog context still includes ongoing V2 launch-window/live-evidence
+  closures (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`,
+  `NEST-129`) and commercial/release continuation (`NEST-152` onward).
 
 ## Auth, AI, Offline, Notifications
 
@@ -936,6 +939,17 @@ Last updated: 2026-04-26
 
 ## Documentation Refreshes
 
+- `NEST-195` completed: repository startup guidance and API sync regression
+  truth are aligned with the current architecture, including corrected local
+  run docs, deterministic Laravel testing defaults, and async-contract
+  integration regressions for queue-first sync behavior
+  (`readme.md`,
+  `docs/engineering/development_and_deployment.md`,
+  `apps/web/README.md`,
+  `apps/api/tests/TestCase.php`,
+  `apps/api/tests/Integration/ListTaskSyncPipelineTest.php`,
+  `apps/api/tests/Integration/IntegrationProviderRegressionTest.php`,
+  `apps/api/tests/Integration/TenantIsolationVerificationTest.php`)
 - `NEST-194` completed: deep project audit findings are now converted into one
   canonical `v1` repair execution plan covering repo truth recovery, web
   product closure, mobile parity recovery, shared-contract hardening, and
