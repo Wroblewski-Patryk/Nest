@@ -20,10 +20,11 @@ Those belong in:
 
 ## Reading Order
 1. `architecture-source-of-truth.md`
-2. `system-architecture.md`
-3. `tech-stack.md`
-4. `core_principles.md`
-5. task-relevant architecture deep-dives
+2. `v1_v2_delivery_split.md`
+3. `system-architecture.md`
+4. `tech-stack.md`
+5. `core_principles.md`
+6. task-relevant architecture deep-dives
 
 ## Architecture Rules
 - One file should have one clear responsibility.

@@ -1,4 +1,13 @@
-﻿# MVP Scope
+# MVP Scope
+
+This file remains the compact product-scope summary for the practical release.
+For current architecture and planning, treat `MVP` here as the active `v1`
+practical product scope.
+
+Canonical split:
+
+- `docs/architecture/v1_v2_delivery_split.md`
+- `docs/planning/v1_execution_focus_2026-04-26.md`
 
 ## Included in MVP
 
@@ -18,7 +27,7 @@
 ## Integration Scope in MVP
 
 - Task/list integration baseline is included in MVP.
-- Google Calendar integration is post-MVP (Phase 2), after list/task baseline.
+- Google Calendar integration is post-MVP.
 - Obsidian integration is post-MVP and intentionally scheduled as the last
   provider in the initial integration wave.
 
@@ -28,10 +37,11 @@
 - Full offline-first with automatic background sync and complex merge
   strategies.
 - Third-party plugin marketplace.
+- Conversational AI copilot, AI write actions, and proactive AI briefings.
 - Advanced predictive analytics and autonomous AI planning.
 - OAuth providers (Google/Apple/etc.) in auth layer.
 - Full notifications matrix (email + full push strategy).
-- Family/friends shared collaboration spaces.
+- Family/friends shared collaboration spaces as a release requirement.
 
 ## Confirmed Product Decisions (March 15, 2026)
 

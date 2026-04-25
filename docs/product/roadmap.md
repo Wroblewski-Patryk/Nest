@@ -1,47 +1,41 @@
-﻿# Roadmap
+# Roadmap
 
 Implementation references:
 
 - MVP delivery backlog: `docs/planning/implementation_plan_mvp.md`
 - Full product delivery backlog: `docs/planning/implementation_plan_full.md`
+- Current `v1` planning focus: `docs/planning/v1_execution_focus_2026-04-26.md`
 - V2 target delivery backlog: `docs/planning/v2-target-execution-plan.md`
 
-## Phase 1 - Foundation and MVP
+## Delivery Framing
 
-- Finalize architecture and contracts.
-- Build backend core modules and API.
-- Deliver web app and mobile app baseline parity.
-- Build list/task integration baseline.
+- `v1` = practical day-to-day Nest product across backend, web, and mobile.
+- `v2` = AI-assisted and broader platform expansion on the same architecture.
+- Canonical split: `docs/architecture/v1_v2_delivery_split.md`
 
-## Phase 2 - Integration Expansion
+## V1 - Practical Product
 
-- Add Google Calendar synchronization after list/task baseline.
-- Add additional list/task providers (up to 3 major providers for the area).
-- Add Obsidian synchronization as last provider in the initial wave.
-- Improve sync conflict resolution workflows.
-- Keep end-user AI surface disabled during this phase.
+- Finalize architecture and contracts needed for the practical product.
+- Keep backend API as the single source of truth.
+- Deliver reliable web experience across all core modules.
+- Deliver mobile parity for the same core module behavior.
+- Keep localization, manual sync, deployment, and operational readiness inside
+  the release gate.
 
-## Phase 3 - Intelligence and Insights
+## V2 - AI-Assisted Expansion
 
-- Introduce first end-user AI features (default ON).
-- Advanced life analytics and trend reporting.
-- Planning assistant with explainable recommendations.
-- Better cross-module automation rules.
+- Introduce end-user AI features on top of the existing backend and domain
+  model.
+- Add explainable planning assistance and approval-gated AI actions.
+- Expand integrations, automation, and broader platform sophistication where
+  they improve the product after `v1` is stable.
 
-## Phase 4 - SaaS Hardening
+## Typical V2 Workstreams
 
-- Multi-tenant operations hardening.
-- Family/friends collaboration model hardening and permissions.
-- Billing and subscription model.
-- Organization-level features and advanced security controls.
-
-## Phase 5 - V2 Target Product
-
-- V1->V2 production reliability hardening and progressive delivery.
-- Offline-first continuity with automatic background sync and resilient merge
-  policy.
-- Collaboration V2 with shared workflows and multi-channel notifications.
-- AI copilot V2 with conversational surface and approval-gated actions.
-- Integration marketplace and near-real-time sync upgrades.
-- V2 commercial readiness, GA release, and stabilization loop.
-
+- conversational AI copilot,
+- explainable recommendations and source references,
+- approval-gated AI write actions,
+- proactive AI briefings,
+- advanced integrations and automation,
+- optional collaboration, billing, and commercial hardening,
+- offline-first and release sophistication beyond the `v1` baseline.

@@ -3533,6 +3533,19 @@ Last updated: 2026-04-16
 
 ## Done
 
+- [x] NEST-192 Refresh architecture and planning docs for practical V1 vs V2 split
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Added canonical split document:
+      `docs/architecture/v1_v2_delivery_split.md`.
+    - Added practical execution planning document:
+      `docs/planning/v1_execution_focus_2026-04-26.md`.
+    - Refreshed overview, roadmap, MVP scope, system architecture, and AI docs
+      so `v1` and `v2` are no longer treated as one mixed delivery track.
+    - Synced documentation indexes and project state with the new framing.
+
 - [x] NEST-000 Create documentation and architecture baseline
   - Status: DONE
   - Owner: Documentation Agent

@@ -1,26 +1,38 @@
 # MVP Next Commits
 
-Last updated: 2026-03-21
+Last updated: 2026-04-26
+
+This file is now aligned to the refreshed `v1` practical-product framing.
+
+Primary planning source:
+
+- `docs/planning/v1_execution_focus_2026-04-26.md`
 
 ## NOW (execute in order)
 
-- [ ] (none - latest execution wave complete)
+- [ ] produce `v1` readiness matrix across backend, web, mobile, parity, and
+  release readiness
+- [ ] publish the first `v1` gap register with blocker vs important vs later
+  labels
 
 ## NEXT
 
-- [ ] `NEST-122` execute production launch window checklist
-  - commit: `ops(release): execute launch window runbook and capture evidence`
-- [ ] `NEST-123` execute day0/day1 operational validation pack
-  - commit: `ops(monitoring): publish day0-day1 validation report`
+- [ ] derive the smallest web usability-closure tasks from the `v1` gap
+  register
+- [ ] derive the smallest mobile parity-closure tasks from the same matrix
+- [ ] derive the first release-readiness reconciliation tasks for docs, smoke,
+  and operations
 
 ## LATER
 
-- [ ] `NEST-124` publish week1 stabilization and follow-up backlog
-- [ ] next product wave planning after week1 post-launch review
+- [ ] publish `v1` launch blocker review
+- [ ] freeze `v1` scope and open the first explicit `v2` planning wave only
+  after `v1` closure evidence exists
 
 ## Refill Rules
 
-- When `NOW` has fewer than 2 items, refill from `docs/planning/mvp-execution-plan.md`.
+- When `NOW` has fewer than 2 items, refill from
+  `docs/planning/v1_execution_focus_2026-04-26.md`.
 - Preserve dependency order from `TASK_BOARD`.
 - Keep one primary execution concern per commit.
-- Never open a new wave until quality gate and evidence updates are complete.
+- Never open a `v2` wave until `v1` quality and evidence gates are explicit.

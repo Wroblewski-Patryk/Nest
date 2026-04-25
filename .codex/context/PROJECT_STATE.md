@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-16
+Last updated: 2026-04-26
 
 ## Agent Workflow Snapshot
 
@@ -194,6 +194,9 @@ Last updated: 2026-04-16
 ## Current Phase
 
 - Architecture and documentation foundation complete
+- V1/V2 documentation split refreshed on 2026-04-26 so current planning can
+  distinguish practical `v1` delivery from later AI-assisted `v2` expansion
+  without changing core architecture
 - Planning baseline complete for MVP, full-product roadmap, and V2 target wave
 - Next execution wave plan documented in
   `docs/planning/next_execution_wave_2026-03-21.md`
@@ -902,6 +905,8 @@ Last updated: 2026-04-16
 
 - MVP execution backlog: `docs/planning/implementation_plan_mvp.md`
 - Full-product execution backlog: `docs/planning/implementation_plan_full.md`
+- Current practical `v1` execution focus:
+  `docs/planning/v1_execution_focus_2026-04-26.md`
 - V2 target execution backlog: `docs/planning/v2-target-execution-plan.md`
 - V2 execution roundbook: `docs/planning/v2-execution-roundbook.md`
 - V2 task cards: `docs/planning/v2-task-cards.md`
@@ -913,6 +918,17 @@ Last updated: 2026-04-16
 - MVP execution track: `docs/planning/mvp-execution-plan.md`
 - V1 launch track: `docs/planning/v1-live-release-plan.md`
 - Function coverage audit: `docs/planning/function_coverage_audit_2026-03-21.md`
+
+## Documentation Refreshes
+
+- `NEST-192` completed: architecture and planning documentation now separate
+  practical `v1` delivery from later `v2` AI-assisted expansion through a
+  canonical split doc, refreshed product framing, and a dedicated `v1`
+  execution-focus plan
+  (`docs/architecture/v1_v2_delivery_split.md`,
+  `docs/planning/v1_execution_focus_2026-04-26.md`,
+  `docs/product/overview.md`,
+  `docs/product/roadmap.md`)
 
 ## Confirmed Decisions (2026-03-15)
 

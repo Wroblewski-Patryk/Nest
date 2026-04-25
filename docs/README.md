@@ -17,6 +17,7 @@ This is the canonical index for repository documentation.
 
 - `README.md`
 - `architecture-source-of-truth.md`
+- `v1_v2_delivery_split.md`
 - `system-architecture.md`
 - `tech-stack.md`
 - `backend_strategy.md`
@@ -48,6 +49,7 @@ This is the canonical index for repository documentation.
 - `post_mvp_hardening_plan.md`
 - `mvp-execution-plan.md`
 - `mvp-next-commits.md`
+- `v1_execution_focus_2026-04-26.md`
 - `v1-live-release-plan.md`
 - `open-decisions.md`
 - `human_ai_dual_actor_execution_plan_2026-03-31.md`

@@ -1,4 +1,4 @@
-﻿# AI Layer
+# AI Layer
 
 ## Goal
 
@@ -7,23 +7,31 @@ operations without compromising data integrity or security.
 
 ## Product Decision
 
-- AI is not part of MVP delivery scope.
-- AI weekly planning surface starts in Phase 3 (`NEST-051`).
-- V1 product/data workflows are intentionally designed as groundwork for a
+- AI is not part of the `v1` release gate.
+- `v1` product/data workflows are intentionally designed as groundwork for a
   future conversational AI agent that can coordinate life management actions
   together with the user.
+- AI is a `v2` expansion over the same backend and domain model, not a
+  separate product backend.
 - AI architecture direction uses dual actor support:
   - Human User principal (interactive owner),
   - AI Agent principal (automation/collaboration operator),
   - delegated "act on behalf of user" mode via scoped user-issued API
     credentials.
 
+## Backend Placement
+
+- AI endpoints live in the same Nest backend API.
+- AI uses the same tenancy, policy, audit, and contract model as the rest of
+  the product.
+- AI must not bypass domain services or write directly to storage.
+
 ## Capability Areas
 
-- schedule analysis and optimization
-- task planning suggestions
-- habit/routine consistency insights
-- life-area balance analysis
+- schedule analysis and optimization,
+- task planning suggestions,
+- habit/routine consistency insights,
+- life-area balance analysis.
 
 ## Tool Interface (Examples)
 
@@ -34,7 +42,7 @@ operations without compromising data integrity or security.
 - create_journal_entry
 - suggest_week_plan
 
-## Phase 3 Baseline API
+## V2 Baseline API
 
 - `GET /api/v1/ai/context-graph`
   - deterministic, versioned retrieval payload (`ai-context.v1`) built from
@@ -106,13 +114,12 @@ operations without compromising data integrity or security.
   - Audit trail must preserve both delegator (human) and executor (agent)
     context for each mutation.
 
-## Delivery Phases
+## Delivery Position
 
-- Phase 1: no end-user AI surface in MVP.
-- Phase 2: no end-user AI surface; focus remains on integration expansion.
-- Phase 3: first end-user AI surface and in-app assistant for web and mobile.
+- `v1`: no end-user AI surface in the release gate.
+- `v2`: first end-user AI surface and in-app assistant for web and mobile.
 
-## MVP Enforcement
+## V1 Enforcement
 
 - Backend feature flag `AI_SURFACE_ENABLED=false` by default.
 - AI routes are protected by feature middleware and return `404` while the flag
@@ -120,9 +127,9 @@ operations without compromising data integrity or security.
 
 ## Observability
 
-- track tool success/error rates
-- monitor latency and retries
-- monitor hallucination-prone intents via guardrail metrics
+- track tool success/error rates,
+- monitor latency and retries,
+- monitor hallucination-prone intents via guardrail metrics.
 
 ## Policy Regression
 
@@ -130,4 +137,3 @@ operations without compromising data integrity or security.
   recommendation generation.
 - Regression suite coverage and CI expectations:
   `docs/modules/ai_policy_testing_suite.md`.
-

@@ -1,4 +1,4 @@
-﻿# System Architecture
+# System Architecture
 
 ## High-Level Flow
 
@@ -7,6 +7,14 @@ Integration Connectors -> PostgreSQL / Redis
 
 The architecture keeps one canonical domain model in backend services.
 All clients and automations operate through the same API contracts.
+
+## Current Delivery Split
+
+- `v1` delivers the practical product across backend, web, and mobile.
+- `v2` extends the same backend with AI-assisted and broader platform
+  capabilities.
+- Canonical scope split:
+  `docs/architecture/v1_v2_delivery_split.md`
 
 ## Main Layers
 
@@ -20,9 +28,9 @@ All clients and automations operate through the same API contracts.
 
 - Authentication and authorization.
 - Request validation and policy checks.
-- Domain command handlers (task, habit, goal, calendar, journal).
+- Domain command handlers for core modules.
 - Read models optimized for UI screens.
-- AI-safe tool endpoints (scoped actions only).
+- AI-safe tool endpoints when the AI surface is enabled.
 
 ### Domain Layer
 
@@ -32,7 +40,7 @@ All clients and automations operate through the same API contracts.
 
 ### Integration Layer
 
-- Provider adapters: ClickUp, Google Calendar, Microsoft To Do, Obsidian.
+- Provider adapters connect external systems to Nest-owned domain entities.
 - Mapping tables between internal and external identifiers.
 - Idempotent sync jobs, retries, dead-letter handling.
 - Conflict strategy: latest-write with guardrails + manual resolution for
@@ -46,7 +54,7 @@ All clients and automations operate through the same API contracts.
 
 ## SaaS and Multi-Tenancy
 
-- Shared database model for v1: one PostgreSQL cluster/database with
+- Shared database model for `v1`: one PostgreSQL cluster/database with
   tenant-scoped records separated by `tenant_id`.
 - Tenant isolation at data access layer.
 - Per-user/provider credentials and scopes.
@@ -73,3 +81,11 @@ All clients and automations operate through the same API contracts.
   - `LifeAreaPolicy` for life area read/update/delete operations
   - `IntegrationSyncConflictPolicy` for conflict queue resolution actions
   - `IntegrationSyncFailurePolicy` for failed sync replay actions
+
+## AI Architecture Position
+
+- AI is not a separate source of truth or separate product backend.
+- AI belongs to the same Laravel backend as a guarded capability layer.
+- AI reads structured context from Nest-owned domain entities.
+- AI writes must go through explicit scoped endpoints, policy checks, actor
+  metadata, and audit logging.
