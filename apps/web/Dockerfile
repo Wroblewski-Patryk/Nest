@@ -9,13 +9,14 @@ COPY packages/shared-types ./packages/shared-types
 COPY apps/web/package.json apps/web/pnpm-lock.yaml apps/web/pnpm-workspace.yaml ./apps/web/
 
 WORKDIR /app/apps/web
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --reporter=silent
 
 WORKDIR /app
 COPY apps/web ./apps/web
 
 WORKDIR /app/apps/web
-RUN pnpm build
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN pnpm build >/tmp/next-build.log
 
 FROM node:22-alpine AS runner
 

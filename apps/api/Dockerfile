@@ -7,25 +7,25 @@ RUN apk add --no-cache \
     icu-dev \
     oniguruma-dev \
     libzip-dev \
-    postgresql-client \
+    postgresql-client >/tmp/apk-build.log \
  && docker-php-ext-install \
     bcmath \
     intl \
     pcntl \
     pdo_pgsql \
-    zip
+    zip >/tmp/php-ext-install.log
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
 COPY apps/api/composer.json apps/api/composer.lock ./
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts --quiet
 
 COPY apps/api ./
 
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
-RUN php artisan package:discover --ansi
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative --quiet
+RUN php artisan package:discover --ansi >/tmp/package-discover.log
 
 FROM php:8.3-cli-alpine AS runtime
 
