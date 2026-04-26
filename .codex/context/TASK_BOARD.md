@@ -3533,6 +3533,29 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-205 Unify settings and support copy across web and mobile
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Replaced mixed Polish/English copy on the web settings surface with one
+      consistent English baseline in:
+      `apps/web/src/app/settings/page.tsx`.
+    - Cleaned remaining mixed-language starter feedback on:
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/life-areas/page.tsx`.
+    - Tightened mobile settings hub wording and removed broken summary
+      separators in:
+      `apps/mobile/app/(tabs)/settings.tsx`.
+    - Validation:
+      `pnpm lint` in `apps/web`,
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`,
+      `pnpm exec tsc --noEmit` in `apps/mobile`,
+      `pnpm exec expo export --platform web` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`.
+
 - [x] NEST-204 Harden mobile feedback copy baseline for settings, billing, and insights
   - Status: DONE
   - Owner: Execution Agent

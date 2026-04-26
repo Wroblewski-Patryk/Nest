@@ -39,8 +39,8 @@ export default function SettingsScreen() {
     setQueueCount(queue.filter((item) => item.status === 'pending').length);
     setSchedulerSummary(
       scheduler.auto_sync_enabled
-        ? `Auto sync on • lag ${scheduler.scheduler_lag_seconds}s`
-        : 'Auto sync paused • manual force sync available'
+        ? `Auto sync on | lag ${scheduler.scheduler_lag_seconds}s`
+        : 'Auto sync paused | manual sync available'
     );
   }, []);
 
@@ -57,7 +57,7 @@ export default function SettingsScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.hero}>
           <Text style={styles.heroTitle}>Settings + More</Text>
-          <Text style={styles.heroSubtitle}>Reach mobile settings essentials, advanced sync tools, and the extra surfaces that do not belong in the core tab loop.</Text>
+          <Text style={styles.heroSubtitle}>Reach core mobile settings, sync tools, and the extra surfaces that do not belong in the main daily tab loop.</Text>
           <View style={styles.metricsRow}>
             <Text style={styles.metric}>Language: {language}</Text>
             <Text style={styles.metric}>Pending sync items: {queueCount}</Text>
@@ -68,7 +68,7 @@ export default function SettingsScreen() {
         <View style={styles.panel}>
           <Text style={styles.panelTitle}>Core settings</Text>
           <Text style={styles.panelText}>
-            Open the advanced settings modal for language selection, offline sync, notification center, notification matrix, and copilot controls.
+            Open the advanced settings modal for language selection, offline sync, notifications, and Copilot controls.
           </Text>
           <Pressable style={styles.primaryButton} onPress={() => openRoute('/modal')}>
             <Text style={styles.primaryButtonText}>Open advanced settings</Text>
@@ -78,7 +78,7 @@ export default function SettingsScreen() {
         <View style={styles.panel}>
           <Text style={styles.panelTitle}>Module access</Text>
           <Text style={styles.panelText}>
-            Routines and life areas are now managed from the mobile habits and journal flows. These shortcuts make that explicit.
+            Routines and life areas are managed from the mobile habits and journal flows. These shortcuts make that easier to reach.
           </Text>
           <View style={styles.rowWrap}>
             <Pressable style={styles.ghostButton} onPress={() => openRoute('/(tabs)/habits')}>
@@ -99,7 +99,7 @@ export default function SettingsScreen() {
         <View style={styles.panel}>
           <Text style={styles.panelTitle}>Additional surfaces</Text>
           <Text style={styles.panelText}>
-            Keep the main tab bar focused on the founder daily loop while still exposing the non-core surfaces that already exist in the app.
+            Keep the main tab bar focused on the daily loop while still exposing the non-core surfaces already available in the app.
           </Text>
           <View style={styles.rowWrap}>
             <Pressable style={styles.ghostButton} onPress={() => openRoute('/(tabs)/calendar')}>

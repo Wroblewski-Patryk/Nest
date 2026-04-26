@@ -902,7 +902,9 @@ Last updated: 2026-04-26
   the web lint/typecheck/build/unit baseline remains green; mobile support
   surfaces (`settings modal`, `billing`, `insights`) now follow the same
   user-safer feedback standard and keep the mobile validation/export baseline
-  green.
+  green; settings/support copy is also more consistent across web and mobile,
+  with the web settings page no longer mixing Polish and English and the mobile
+  settings hub using cleaner founder-ready wording.
 - Parallel backlog context still includes ongoing V2 launch-window/live-evidence
   closures (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`,
   `NEST-129`) and commercial/release continuation (`NEST-152` onward).
@@ -946,6 +948,13 @@ Last updated: 2026-04-26
 
 ## Documentation Refreshes
 
+- `NEST-205` completed: settings and support-adjacent copy is more consistent
+  across both clients, including English-baseline web settings labels and
+  cleaner mobile settings hub wording without broken separator characters
+  (`apps/web/src/app/settings/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/life-areas/page.tsx`,
+  `apps/mobile/app/(tabs)/settings.tsx`)
 - `NEST-204` completed: mobile settings/support surfaces now use calmer,
   product-safe feedback copy instead of raw technical wording across offline
   sync, notifications, Copilot, billing, and insights, while keeping the

@@ -90,7 +90,7 @@ export default function JournalPage() {
   const [editAreaColor, setEditAreaColor] = useState("#789262");
   const [editAreaWeight, setEditAreaWeight] = useState("50");
   const [busyAreaId, setBusyAreaId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState("Dodaj refleksje i oznacz obszary zycia, aby latwiej zobaczyc balans.");
+  const [feedback, setFeedback] = useState("Add a reflection and tag life areas to make your balance easier to review.");
   const [errorMessage, setErrorMessage] = useState("");
 
   const [entryTitle, setEntryTitle] = useState("");

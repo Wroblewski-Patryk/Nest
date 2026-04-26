@@ -83,7 +83,7 @@ export default function LifeAreasPage() {
   const [newAreaColor, setNewAreaColor] = useState("#789262");
   const [newAreaWeight, setNewAreaWeight] = useState("50");
 
-  const [feedback, setFeedback] = useState("Zarzadzaj obszarami zycia i sprawdzaj balans.");
+  const [feedback, setFeedback] = useState("Manage life areas here and keep an eye on your current balance.");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleUnauthorized = useCallback(() => {

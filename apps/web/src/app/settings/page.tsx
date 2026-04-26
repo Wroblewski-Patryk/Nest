@@ -119,7 +119,7 @@ function getErrorMessage(error: unknown): string {
     return error.message;
   }
 
-  return "Unexpected API error.";
+  return "Something went wrong. Please try again.";
 }
 
 function toIsoDateTime(localDateTimeValue: string): string | undefined {
@@ -528,43 +528,43 @@ export default function SettingsPage() {
             className={`settings-tab ${activeTab === "profile" ? "is-active" : ""}`}
             onClick={() => selectTab("profile")}
           >
-            <strong>Moj profil</strong>
-            <small>konto i podstawowe dane</small>
+            <strong>Profile</strong>
+            <small>account basics</small>
           </button>
           <button
             type="button"
             className={`settings-tab ${activeTab === "application" ? "is-active" : ""}`}
             onClick={() => selectTab("application")}
           >
-            <strong>Ustawienia aplikacji</strong>
-            <small>jezyk i preferencje UI</small>
+            <strong>App Preferences</strong>
+            <small>language and UI defaults</small>
           </button>
           <button
             type="button"
             className={`settings-tab ${activeTab === "access" ? "is-active" : ""}`}
             onClick={() => selectTab("access")}
           >
-            <strong>Access i API</strong>
-            <small>tokeny, agenci AI, audyt</small>
+            <strong>Access & API</strong>
+            <small>tokens, AI agents, audit trail</small>
           </button>
           <button
             type="button"
             className={`settings-tab ${activeTab === "subscription" ? "is-active" : ""}`}
             onClick={() => selectTab("subscription")}
           >
-            <strong>Subskrypcja</strong>
-            <small>plan i billing</small>
+            <strong>Subscription</strong>
+            <small>plan and billing</small>
           </button>
         </div>
       </Panel>
 
       {activeTab === "profile" ? (
         <>
-          <Panel title="Moj profil">
+          <Panel title="Profile">
             <form className="form-grid" onSubmit={saveProfilePreferences}>
               <div className="settings-grid-dual">
                 <label className="field">
-                  <span>Twoje imie / ksywa</span>
+                  <span>Display name</span>
                   <input
                     className="list-row"
                     type="text"
@@ -574,7 +574,7 @@ export default function SettingsPage() {
                   />
                 </label>
                 <label className="field">
-                  <span>Email logowania</span>
+                  <span>Sign-in email</span>
                   <input className="list-row" type="email" value={user?.email ?? ""} disabled />
                 </label>
               </div>
@@ -590,8 +590,8 @@ export default function SettingsPage() {
 
           <Panel title="Security">
             <p className="callout">
-              Wylogowanie jest dostepne w lewym menu aplikacji. Zmiana hasla i dodatkowe zabezpieczenia konta pojda
-              tutaj w kolejnym kroku.
+              Sign out is available from the main left navigation. Password changes and additional account security
+              controls will land here in a later slice.
             </p>
           </Panel>
         </>
@@ -599,10 +599,10 @@ export default function SettingsPage() {
 
       {activeTab === "application" ? (
         <>
-          <Panel title="Preferencje aplikacji">
+          <Panel title="App Preferences">
             <form className="form-grid" onSubmit={saveApplicationPreferences}>
               <label className="field">
-                <span>Jezyk aplikacji</span>
+                <span>App language</span>
                 <select
                   className="list-row"
                   value={profileLanguage}
@@ -614,7 +614,7 @@ export default function SettingsPage() {
                 </select>
               </label>
               <p className="form-hint">
-                Zmiana jezyka odswieza tlumaczenia UI i domyslny locale (`en-US` lub `pl-PL`) po zapisaniu.
+                Changing the language refreshes UI copy and the default locale (`en-US` or `pl-PL`) after save.
               </p>
               <button type="submit" className="btn-primary" disabled={isSavingProfile || isBootstrapping}>
                 {isSavingProfile ? "Saving..." : "Save application settings"}
@@ -622,10 +622,9 @@ export default function SettingsPage() {
             </form>
           </Panel>
 
-          <Panel title="Planowane opcje">
+          <Panel title="Planned Preferences">
             <p className="callout">
-              Kolejne ustawienia aplikacji: start tygodnia, format czasu, personalizacja dashboardu i preferencje
-              powiadomien.
+              Next up for this area: week start, time format, dashboard personalization, and notification preferences.
             </p>
           </Panel>
         </>
@@ -912,17 +911,17 @@ export default function SettingsPage() {
 
       {activeTab === "subscription" ? (
         <>
-          <Panel title="Subskrypcja">
+          <Panel title="Subscription">
             <p className="callout">
-              Tutaj bedzie panel planu, historii platnosci i statusu subskrypcji. Na ten moment konto dziala w trybie
-              rozwojowym.
+              This area will hold your plan, billing history, and subscription status. For now, the account remains in
+              development mode.
             </p>
           </Panel>
 
-          <Panel title="API i aplikacje zewnetrzne">
+          <Panel title="API & External Apps">
             <p className="callout">
-              Generowanie kluczy API i podpinanie zewnetrznych aplikacji zostaje w tabie <strong>Access i API</strong>,
-              zeby wszystkie uprawnienia i tokeny byly w jednym miejscu.
+              API keys and external app connections stay in the <strong>Access & API</strong> tab so permissions and
+              tokens remain in one place.
             </p>
           </Panel>
         </>
