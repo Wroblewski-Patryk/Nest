@@ -24,6 +24,40 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-222 Review canonical finish pass after phase G capture
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-221
+  - Done on: 2026-04-26
+  - Notes:
+    - Compared refreshed phase G dashboard and assistant captures against the
+      canonical founder target.
+    - Recorded remaining micro-gaps and next finish/propagation slices in:
+      `docs/ux/nest_222_canonical_finish_review_phaseG_2026-04-26.md`.
+
+- [x] NEST-221 Apply canonical finish pass to dashboard shell and assistant
+  idle state
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-220
+  - Done on: 2026-04-26
+  - Notes:
+    - Softened the remaining dashboard hero typography, quieted the rail
+      footer/account rhythm, reduced focus-card dominance, and enriched the
+      assistant idle state.
+    - Updated implementation in:
+      `apps/web/src/app/assistant/page.tsx`,
+      `apps/web/src/components/ai-copilot-card.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifacts:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseG.png`,
+      `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseG.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-220 Review dashboard and assistant living parity after phase F pass
   - Status: DONE
   - Owner: Review Agent

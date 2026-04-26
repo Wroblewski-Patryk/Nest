@@ -31,6 +31,12 @@ const ASSISTANT_PRINCIPLES = [
   "Reflect without judgment",
 ];
 
+const ASSISTANT_ROOM_SIGNALS = [
+  "The best prompt is usually one honest question, not five clever ones.",
+  "If the day feels crowded, ask what can safely become later.",
+  "If your energy feels scattered, ask for a smaller truer next move.",
+];
+
 export default function AssistantPage() {
   return (
     <WorkspaceShell
@@ -57,6 +63,13 @@ export default function AssistantPage() {
               <blockquote className="assistant-quote">
                 <p>Ask for the smallest truthful next step, then let the rest quiet down.</p>
               </blockquote>
+              <div className="assistant-room-signals">
+                {ASSISTANT_ROOM_SIGNALS.map((item) => (
+                  <span key={item} className="assistant-room-signal">
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
             <AiCopilotCard />
           </Panel>

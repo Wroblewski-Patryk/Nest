@@ -323,6 +323,19 @@ Last updated: 2026-04-26
   quietness, focus-card dominance, assistant warmth, and reusable propagation
   rules; see:
   `docs/ux/nest_220_dashboard_living_parity_review_phaseF_2026-04-26.md`
+- Canonical finish phase G landed on 2026-04-26 with softer dashboard hero
+  typography, quieter rail identity/account rhythm, reduced focus-card
+  dominance, and a warmer assistant idle state in:
+  `apps/web/src/app/assistant/page.tsx`,
+  `apps/web/src/components/ai-copilot-card.tsx`,
+  `apps/web/src/app/globals.css`
+  with refreshed artifacts:
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseG.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseG.png`
+- A fifth parity review on 2026-04-26 confirms the app is now in a narrow-gap
+  state relative to the canonical target, with remaining work focused on final
+  dashboard closure and propagation rules for other modules; see:
+  `docs/ux/nest_222_canonical_finish_review_phaseG_2026-04-26.md`
 - Mobile dashboard parity decision remains open on 2026-04-26 because the
   mobile app still lands in `Tasks` and has no dedicated dashboard route; see
   `docs/planning/open-decisions.md` item `OD-2026-04-26-01`
@@ -1171,6 +1184,18 @@ Last updated: 2026-04-26
 - `NEST-220` completed: a new parity review now records the remaining final
   finish-pass gaps after the phase F living-ui pass
   (`docs/ux/nest_220_dashboard_living_parity_review_phaseF_2026-04-26.md`)
+- `NEST-221` completed: the dashboard and assistant received a narrow canonical
+  finish pass that further softened hero and rail assertiveness while warming
+  the assistant idle state
+  (`apps/web/src/app/assistant/page.tsx`,
+  `apps/web/src/components/ai-copilot-card.tsx`,
+  `apps/web/src/app/globals.css`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseG.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseG.png`)
+- `NEST-222` completed: the latest review records the now-narrow remaining gap
+  against the canonical founder target and points the next work toward final
+  dashboard closure plus propagation rules for further module rebuilds
+  (`docs/ux/nest_222_canonical_finish_review_phaseG_2026-04-26.md`)
 - `NEST-207` completed: the active `v1` repair wave now has a canonical
   detailed execution queue and refill strategy through
   `docs/planning/v1_execution_backlog_2026-04-26.md`, with

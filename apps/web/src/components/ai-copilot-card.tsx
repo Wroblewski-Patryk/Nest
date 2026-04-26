@@ -66,6 +66,28 @@ export function AiCopilotCard() {
           {state === "loading" ? "Thinking..." : "Ask Copilot"}
         </button>
       </div>
+      {!result ? (
+        <div className="assistant-copilot-idle">
+          <div className="assistant-copilot-idle-head">
+            <strong>Good prompts feel grounded.</strong>
+            <small>Bring one tension, one decision, or one messy signal.</small>
+          </div>
+          <div className="assistant-copilot-idle-grid">
+            <article className="assistant-copilot-idle-card">
+              <small>Planning</small>
+              <p>Ask what deserves your cleanest energy before the day gets noisy.</p>
+            </article>
+            <article className="assistant-copilot-idle-card">
+              <small>Execution</small>
+              <p>Ask what to protect, postpone, or simplify so movement feels lighter.</p>
+            </article>
+            <article className="assistant-copilot-idle-card">
+              <small>Reflection</small>
+              <p>Ask the room to turn scattered impressions into one honest sentence.</p>
+            </article>
+          </div>
+        </div>
+      ) : null}
       {result ? (
         <div className="assistant-copilot-result">
           <div className="assistant-copilot-status">
