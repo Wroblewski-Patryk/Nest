@@ -1408,3 +1408,13 @@ Last updated: 2026-04-26
   softness, right-rail atmosphere, and lower-card ornamental detail, recorded
   in:
   `docs/ux/nest_230_dashboard_parity_review_phaseK_2026-04-26.md`
+- Dashboard ultra-narrow finish pass landed on 2026-04-26 to refine top-entry
+  cadence, hero story proportion, hero metric spacing, and lower-card finish
+  in:
+  `apps/web/src/app/globals.css`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseL.png`
+- Phase L review on 2026-04-26 confirmed that the dashboard is now extremely
+  close to the canonical founder target, with remaining differences limited to
+  painterly softness and tiny decorative nuance, recorded in:
+  `docs/ux/nest_232_dashboard_parity_review_phaseL_2026-04-26.md`
