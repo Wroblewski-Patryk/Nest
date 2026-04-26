@@ -9,6 +9,12 @@ if [ -z "${APP_KEY:-}" ]; then
 fi
 
 if [ "${DB_CONNECTION:-}" = "sqlite" ] && [ -n "${DB_DATABASE:-}" ]; then
+  case "${DB_DATABASE}" in
+    /app/*)
+      DB_DATABASE="/var/www/html/${DB_DATABASE#/app/}"
+      export DB_DATABASE
+      ;;
+  esac
   mkdir -p "$(dirname "${DB_DATABASE}")"
   touch "${DB_DATABASE}"
 fi
