@@ -42,25 +42,10 @@ Set these in Coolify:
 
 ## Database options
 
-### Current fallback
+### Current production setup
 
-The current deploy can run on SQLite.
-Recommended value:
-
-- `DB_CONNECTION=sqlite`
-- `DB_DATABASE=/var/www/html/database/database.sqlite`
-
-The API entrypoint automatically:
-
-- normalizes the legacy `/app/...` sqlite path to `/var/www/html/...`
-- creates the sqlite file if missing
-- runs `php artisan migrate --force` on startup
-
-That means a normal redeploy is enough to apply pending Laravel migrations.
-
-### Preferred long-term setup
-
-If you want a more production-ready database, switch to Postgres and set:
+Production now runs on a managed PostgreSQL resource in Coolify.
+Set:
 
 - `DB_CONNECTION=pgsql`
 - `DB_HOST`
@@ -68,6 +53,23 @@ If you want a more production-ready database, switch to Postgres and set:
 - `DB_DATABASE`
 - `DB_USERNAME`
 - `DB_PASSWORD`
+
+The API entrypoint still runs `php artisan migrate --force` on startup, so a
+normal redeploy applies pending Laravel migrations to PostgreSQL.
+
+### SQLite fallback
+
+SQLite is still supported as a fallback for temporary environments.
+Recommended value:
+
+- `DB_CONNECTION=sqlite`
+- `DB_DATABASE=/var/www/html/database/database.sqlite`
+
+If SQLite is used, the API entrypoint automatically:
+
+- normalizes the legacy `/app/...` sqlite path to `/var/www/html/...`
+- creates the sqlite file if missing
+- runs `php artisan migrate --force` on startup
 
 The repository already contains [docker-compose.coolify.yml](/C:/Personal/Projekty/Aplikacje/Nest/docker-compose.coolify.yml)
 if you later decide to move the whole stack to a single Coolify Compose
