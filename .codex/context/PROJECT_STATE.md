@@ -207,6 +207,9 @@ Last updated: 2026-04-26
 ## Current Phase
 
 - Architecture and documentation foundation complete
+- Canonical dashboard direction package added on 2026-04-26 with founder-approved
+  preview artifact and reusable UX implementation contract in
+  `docs/ux/nest_197_dashboard_canonical_direction_2026-04-26.md`
 - V1/V2 documentation split refreshed on 2026-04-26 so current planning can
   distinguish practical `v1` delivery from later AI-assisted `v2` expansion
   without changing core architecture

@@ -24,6 +24,21 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-197 Capture canonical dashboard direction and reusable implementation plan
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Depends on: NEST-190, NEST-196
+  - Done on: 2026-04-26
+  - Notes:
+    - Added canonical dashboard direction document:
+      `docs/ux/nest_197_dashboard_canonical_direction_2026-04-26.md`.
+    - Stored founder-approved dashboard preview artifact in:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-canonical-preview.png`.
+    - Published task contract and release evidence in:
+      `docs/planning/nest_197_dashboard_canonicalization_2026-04-26.md`.
+    - Updated UX foundation, design memory, target assumptions, and project
+      state so future module work can reuse one shared dashboard grammar.
+
 - [x] NEST-108 Operationalize Stitch unified screen workflow for Mix Ideal v2
   - Status: DONE
   - Owner: Documentation Agent

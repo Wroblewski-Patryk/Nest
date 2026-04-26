@@ -170,3 +170,7 @@ Every screen should answer one user question within 3 seconds:
 ## Execution Implication
 
 This document is a target contract for upcoming implementation tasks. Next execution wave should prioritize shell hierarchy and interaction clarity first, then module-by-module visual and workflow refinement against the same baseline.
+
+Dashboard-specific canonical direction is now further specified in:
+
+- `docs/ux/nest_197_dashboard_canonical_direction_2026-04-26.md`

@@ -6,6 +6,8 @@
 - Secondary (ideation + execution benchmark): Stitch project `projects/11122321523690086751`.
 - Current target assumptions baseline:
   - `docs/ux/nest_190_full_system_ux_target_assumptions_2026-04-01.md`
+- Current canonical dashboard direction:
+  - `docs/ux/nest_197_dashboard_canonical_direction_2026-04-26.md`
 
 ## Tokens and Components
 
@@ -13,11 +15,17 @@
 - Shared UI components are required for cross-module consistency:
   - shell/navigation primitives,
   - cards/metrics/panels,
+  - hero bands and dominant focus cards,
+  - timeline group blocks,
   - status chips,
   - date/time and picker controls,
   - multi-select chips for life-area context,
-  - inline feedback blocks.
+  - inline feedback blocks,
+  - warm quick-capture reflection composers,
+  - compact quick-action clusters.
 - One primary action per screen section; secondary actions must be visually de-emphasized.
+- Dashboard and module entry views must expose one dominant "what now" affordance
+  before broad management tools.
 
 ## State Requirements
 
