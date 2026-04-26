@@ -56,3 +56,15 @@
   when the account is sparse or preview data is unavailable; fallback content
   may be presentation-oriented as long as it does not alter real stored data or
   fake write outcomes.
+
+## Workspace Shell Patterns (2026-04-26)
+
+- Sanctuary application frame:
+  The authenticated app should feel like one crafted object placed on a calm
+  surface, not like separate pages floating independently.
+- Branded editorial rail:
+  The left navigation rail should combine brand presence, quiet atmosphere,
+  module guidance, and account grounding in one cohesive composition.
+- Assistant room:
+  AI support should exist as a first-class room inside the same shell rather
+  than only as an embedded helper card.

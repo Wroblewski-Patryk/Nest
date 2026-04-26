@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { formatLocalizedDateTime, resolveAuraVariant, resolveLanguage, translate, type ModuleKey } from "@nest/shared-types";
 import { WorkspaceLogoutButton } from "@/components/workspace-logout-button";
 
-type WorkspaceNavKey = ModuleKey | "dashboard" | "settings";
+type WorkspaceNavKey = ModuleKey | "dashboard" | "settings" | "assistant";
 type PlanningSubnavKey = "tasks" | "lists" | "targets" | "goals";
 
 type WorkspaceShellProps = {
@@ -29,6 +29,7 @@ type NavIconName =
   | "journal"
   | "life_areas"
   | "insights"
+  | "assistant"
   | "settings";
 
 const NAV_ITEMS: Array<{
@@ -45,6 +46,7 @@ const NAV_ITEMS: Array<{
   { href: "/journal", label: "Journal", key: "journal", icon: "journal" },
   { href: "/life-areas", label: "Life Areas", key: "life_areas", icon: "life_areas" },
   { href: "/insights", label: "Insights", key: "insights", icon: "insights" },
+  { href: "/assistant", label: "Assistant", key: "assistant", icon: "assistant" },
   { href: "/settings", label: "Settings", key: "settings", icon: "settings" },
 ];
 
@@ -151,24 +153,35 @@ function MenuIcon({ name }: { name: NavIconName }) {
     );
   }
 
-  if (name === "settings") {
+  if (name === "insights") {
     return (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M12 8.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5Z" stroke="currentColor" strokeWidth="1.7" />
-        <path
-          d="M4.7 13.3V10.7l2.1-.5c.2-.6.4-1.1.8-1.6L6.3 6.8l1.9-1.9 1.8 1.3c.5-.3 1-.6 1.6-.8l.5-2.1h2.6l.5 2.1c.6.2 1.1.4 1.6.8l1.8-1.3 1.9 1.9-1.3 1.8c.3.5.6 1 .8 1.6l2.1.5v2.6l-2.1.5c-.2.6-.4 1.1-.8 1.6l1.3 1.8-1.9 1.9-1.8-1.3c-.5.3-1 .6-1.6.8l-.5 2.1h-2.6l-.5-2.1c-.6-.2-1.1-.4-1.6-.8l-1.8 1.3-1.9-1.9 1.3-1.8c-.3-.5-.6-1-.8-1.6l-2.1-.5Z"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-        />
+        <path d="M4 19h16M7 15h3M11 11h3M15 7h2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <path d="M6 15l2-2 2 2 3-3 2 2 3-3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (name === "assistant") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="5" y="6" width="14" height="10" rx="4" stroke="currentColor" strokeWidth="1.7" />
+        <path d="M9 12h6M12 16v2.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <circle cx="10" cy="11" r="1" fill="currentColor" />
+        <circle cx="14" cy="11" r="1" fill="currentColor" />
       </svg>
     );
   }
 
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4 19h16M7 15h3M11 11h3M15 7h2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-      <path d="M6 15l2-2 2 2 3-3 2 2 3-3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 8.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5Z" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        d="M4.7 13.3V10.7l2.1-.5c.2-.6.4-1.1.8-1.6L6.3 6.8l1.9-1.9 1.8 1.3c.5-.3 1-.6 1.6-.8l.5-2.1h2.6l.5 2.1c.6.2 1.1.4 1.6.8l1.8-1.3 1.9 1.9-1.3 1.8c.3.5.6 1 .8 1.6l2.1.5v2.6l-2.1.5c-.2.6-.4 1.1-.8 1.6l1.3 1.8-1.9 1.9-1.8-1.3c-.5.3-1 .6-1.6.8l-.5 2.1h-2.6l-.5-2.1c-.6-.2-1.1-.4-1.6-.8l-1.8 1.3-1.9-1.9 1.3-1.8c-.3-.5-.6-1-.8-1.6l-2.1-.5Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -205,124 +218,139 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
 
   return (
     <div className={`workspace-bg aura-${auraVariant}`}>
-      <aside className="workspace-rail">
-        <div className="workspace-rail-brand">
-          <div className="workspace-brand-row">
-            <div className="workspace-brand-mark" aria-hidden="true">
-              <span className="workspace-brand-nest" />
-            </div>
-            <p className="workspace-logo">Nest</p>
-            <span className="workspace-brand-collapse" aria-hidden="true">
-              ‹
-            </span>
-          </div>
-          <p className="workspace-kicker">{translate("app.kicker", language)}</p>
-        </div>
-
-        <nav className="workspace-rail-nav" aria-label="Core modules">
-          {NAV_ITEMS.map((item) => {
-            const isActive = activeNavKey === item.key;
-            const isPlanning = item.key === "tasks";
-
-            if (!isPlanning || !planningSubnav) {
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`workspace-rail-link ${isActive ? "is-active" : ""}`}
-                >
-                  <span className="workspace-rail-icon">
-                    <MenuIcon name={item.icon} />
-                  </span>
-                  <span>{item.label}</span>
-                </Link>
-              );
-            }
-
-            return (
-              <div key={item.href} className={`workspace-rail-group ${isActive ? "is-active" : ""}`}>
-                <Link href={item.href} className={`workspace-rail-link ${isActive ? "is-active" : ""}`}>
-                  <span className="workspace-rail-icon">
-                    <MenuIcon name={item.icon} />
-                  </span>
-                  <span>{item.label}</span>
-                </Link>
-                <nav className="workspace-rail-subnav" aria-label="Planning sections">
-                  {PLANNING_SUBNAV_ITEMS.map((subitem) => (
-                    <Link
-                      key={subitem.key}
-                      href={subitem.href}
-                      className={`workspace-rail-sublink ${planningSubnav.active === subitem.key ? "is-active" : ""}`}
-                    >
-                      {subitem.label}
-                    </Link>
-                  ))}
-                </nav>
+      <div className="workspace-stage">
+        <aside className="workspace-rail">
+          <div className="workspace-rail-brand">
+            <div className="workspace-brand-row">
+              <div className="workspace-brand-mark" aria-hidden="true">
+                <span className="workspace-brand-nest" />
               </div>
-            );
-          })}
-        </nav>
+              <p className="workspace-logo">Nest</p>
+              <span className="workspace-brand-collapse" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="m14 7-5 5 5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </div>
+            <p className="workspace-kicker">{translate("app.kicker", language)}</p>
+          </div>
 
-        <div className="workspace-rail-footer">
-          <blockquote className="workspace-rail-quote">
-            <p>&ldquo;A life well lived is built daily, intentionally.&rdquo;</p>
-            <span>Nest</span>
-          </blockquote>
-          <div className="workspace-account-card">
-            <div className="workspace-account-avatar" aria-hidden="true">
-              A
+          <nav className="workspace-rail-nav" aria-label="Core modules">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeNavKey === item.key;
+              const isPlanning = item.key === "tasks";
+
+              if (!isPlanning || !planningSubnav) {
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`workspace-rail-link ${isActive ? "is-active" : ""}`}
+                  >
+                    <span className="workspace-rail-icon">
+                      <MenuIcon name={item.icon} />
+                    </span>
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              }
+
+              return (
+                <div key={item.href} className={`workspace-rail-group ${isActive ? "is-active" : ""}`}>
+                  <Link href={item.href} className={`workspace-rail-link ${isActive ? "is-active" : ""}`}>
+                    <span className="workspace-rail-icon">
+                      <MenuIcon name={item.icon} />
+                    </span>
+                    <span>{item.label}</span>
+                  </Link>
+                  <nav className="workspace-rail-subnav" aria-label="Planning sections">
+                    {PLANNING_SUBNAV_ITEMS.map((subitem) => (
+                      <Link
+                        key={subitem.key}
+                        href={subitem.href}
+                        className={`workspace-rail-sublink ${planningSubnav.active === subitem.key ? "is-active" : ""}`}
+                      >
+                        {subitem.label}
+                      </Link>
+                    ))}
+                  </nav>
+                </div>
+              );
+            })}
+          </nav>
+
+          <div className="workspace-rail-footer">
+            <div className="workspace-rail-atmosphere" aria-hidden="true">
+              <span className="workspace-rail-plant-pot" />
+              <span className="workspace-rail-plant-stem workspace-rail-plant-stem-left" />
+              <span className="workspace-rail-plant-stem workspace-rail-plant-stem-right" />
+              <span className="workspace-rail-plant-leaf workspace-rail-plant-leaf-left" />
+              <span className="workspace-rail-plant-leaf workspace-rail-plant-leaf-right" />
             </div>
-            <div>
-              <small>Welcome back,</small>
-              <strong>Alexandra</strong>
+            <blockquote className="workspace-rail-quote">
+              <p>&ldquo;A life well lived is built daily, intentionally.&rdquo;</p>
+              <span>Nest</span>
+            </blockquote>
+            <div className="workspace-account-card">
+              <div className="workspace-account-avatar" aria-hidden="true">
+                A
+              </div>
+              <div>
+                <small>Welcome back,</small>
+                <strong>Alexandra</strong>
+              </div>
+            </div>
+            <div className="workspace-rail-footer-actions">
+              <Link href="/settings" className="workspace-settings-link">
+                Settings
+              </Link>
+              <WorkspaceLogoutButton />
             </div>
           </div>
-          <div className="workspace-rail-footer-actions">
-            <Link href="/settings" className="workspace-settings-link">
-              Settings
-            </Link>
-            <WorkspaceLogoutButton />
+        </aside>
+
+        <div className="workspace-main">
+          <div className="workspace-main-shell">
+            <header className="workspace-topbar">
+              <div className="workspace-brand">
+                <p className="workspace-date">{formatLocalizedDateTime(new Date(), language)}</p>
+                <h1>{title}</h1>
+                <p>{subtitle}</p>
+              </div>
+              <div className="workspace-hero-tools">
+                <div className="workspace-utility-meta">
+                  <span>{utilityDateLabel}</span>
+                  <small>18 C</small>
+                </div>
+                <Link href="/assistant" className="workspace-utility-button" aria-label="Search or ask Assistant">
+                  <UtilityIcon name="search" />
+                </Link>
+                <Link href="/settings" className="workspace-utility-button" aria-label="Notifications">
+                  <UtilityIcon name="bell" />
+                  <span className="workspace-utility-badge">3</span>
+                </Link>
+              </div>
+            </header>
+
+            <main className="workspace-content-shell">
+              <div className={`workspace-grid ${layoutClass}`}>{children}</div>
+            </main>
           </div>
+
+          <nav className="workspace-mobile-nav" aria-label="Mobile modules">
+            {NAV_ITEMS.filter((item) =>
+              ["dashboard", "tasks", "assistant", "calendar", "settings"].includes(item.key)
+            ).map((item) => (
+              <Link
+                key={`mobile-${item.href}`}
+                href={item.href}
+                className={`workspace-mobile-link ${activeNavKey === item.key ? "is-active" : ""}`}
+              >
+                <MenuIcon name={item.icon} />
+              </Link>
+            ))}
+          </nav>
         </div>
-      </aside>
-
-      <div className="workspace-main">
-        <header className="workspace-topbar">
-          <div className="workspace-brand">
-            <p className="workspace-date">{formatLocalizedDateTime(new Date(), language)}</p>
-            <h1>{title}</h1>
-            <p>{subtitle}</p>
-          </div>
-          <div className="workspace-hero-tools">
-            <div className="workspace-utility-meta">
-              <span>{utilityDateLabel}</span>
-              <small>18 C</small>
-            </div>
-            <Link href="/dashboard" className="workspace-utility-button" aria-label="Search">
-              <UtilityIcon name="search" />
-            </Link>
-            <Link href="/settings" className="workspace-utility-button" aria-label="Notifications">
-              <UtilityIcon name="bell" />
-              <span className="workspace-utility-badge">3</span>
-            </Link>
-          </div>
-        </header>
-
-        <main className={`workspace-grid ${layoutClass}`}>{children}</main>
-
-        <nav className="workspace-mobile-nav" aria-label="Mobile modules">
-          {NAV_ITEMS.filter((item) =>
-            ["dashboard", "tasks", "habits", "calendar", "settings"].includes(item.key)
-          ).map((item) => (
-            <Link
-              key={`mobile-${item.href}`}
-              href={item.href}
-              className={`workspace-mobile-link ${activeNavKey === item.key ? "is-active" : ""}`}
-            >
-              <MenuIcon name={item.icon} />
-            </Link>
-          ))}
-        </nav>
       </div>
     </div>
   );

@@ -24,6 +24,56 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-213 Implement shell truth and first-class assistant surface on web
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-212
+  - Done on: 2026-04-26
+  - Notes:
+    - Strengthened the web root and shared shell so the app now sits inside a
+      clearer sanctuary-style frame instead of relying only on per-route
+      polish.
+    - Added a first-class `Assistant` route in:
+      `apps/web/src/app/assistant/page.tsx`.
+    - Updated shared shell and typography foundation in:
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/app/layout.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Captured fresh local evidence artifacts:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseA.png`,
+      `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseA.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
+- [x] NEST-214 Review dashboard and shell parity after shell-truth implementation
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-213
+  - Done on: 2026-04-26
+  - Notes:
+    - Compared fresh dashboard and assistant screenshots against the canonical
+      founder target.
+    - Recorded remaining gaps and next iteration slices in:
+      `docs/ux/nest_214_dashboard_shell_parity_review_2026-04-26.md`.
+
+- [x] NEST-212 Publish shell-level canonical alignment plan for dashboard and
+  assistant surfaces
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Depends on: NEST-201, NEST-209, NEST-210, NEST-211
+  - Done on: 2026-04-26
+  - Notes:
+    - Added shell-and-dashboard canonical alignment analysis in:
+      `docs/ux/nest_212_workspace_shell_and_dashboard_canonical_alignment_2026-04-26.md`.
+    - The new plan expands parity work from dashboard-only polish into a full
+      workspace model covering root shell, sidebar/topbar, assistant/chat
+      surface placement, and later module propagation.
+    - Published release-stage task contract in:
+      `docs/planning/nest_212_workspace_shell_and_dashboard_alignment_2026-04-26.md`.
+
 - [x] NEST-211 Apply premium finish pass to dashboard parity on web
   - Status: DONE
   - Owner: Execution Agent

@@ -251,6 +251,28 @@ Last updated: 2026-04-26
   polish in:
   `apps/web/src/components/workspace-shell.tsx`,
   `apps/web/src/app/globals.css`
+- Shell-level canonical alignment planning was extended on 2026-04-26 so the
+  remaining founder-target gap is now modeled as a full workspace-system task,
+  not only a dashboard polishing task, in:
+  `docs/ux/nest_212_workspace_shell_and_dashboard_canonical_alignment_2026-04-26.md`
+  with matching task contract:
+  `docs/planning/nest_212_workspace_shell_and_dashboard_alignment_2026-04-26.md`
+  covering root shell responsibilities, assistant/chat surface placement, and
+  cross-module propagation rules
+- Shell truth implementation landed on 2026-04-26 with a stronger sanctuary
+  frame, upgraded shared shell, richer display typography, and a first-class
+  assistant route in:
+  `apps/web/src/app/layout.tsx`,
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/app/assistant/page.tsx`,
+  `apps/web/src/app/globals.css`
+  with fresh local evidence artifacts:
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseA.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseA.png`
+- A fresh parity review after shell-truth implementation confirms the app is
+  closer to the founder target but still not yet fully canonical; remaining
+  gaps and next iteration slices are recorded in:
+  `docs/ux/nest_214_dashboard_shell_parity_review_2026-04-26.md`
 - Mobile dashboard parity decision remains open on 2026-04-26 because the
   mobile app still lands in `Tasks` and has no dedicated dashboard route; see
   `docs/planning/open-decisions.md` item `OD-2026-04-26-01`
@@ -1035,6 +1057,26 @@ Last updated: 2026-04-26
   (`apps/web/src/components/workspace-shell.tsx`,
   `apps/web/src/app/globals.css`,
   `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview.png`)
+- `NEST-212` completed: shell-level canonical parity is now explicitly planned
+  as a full workspace-system alignment problem, including root layout
+  responsibility, sidebar/topbar refinement, dashboard residual parity, future
+  assistant/chat surface framing, and a propagation model for later module
+  rebuilds
+  (`docs/ux/nest_212_workspace_shell_and_dashboard_canonical_alignment_2026-04-26.md`,
+  `docs/planning/nest_212_workspace_shell_and_dashboard_alignment_2026-04-26.md`)
+- `NEST-213` completed: the web app now has a stronger canonical sanctuary
+  frame plus a first-class `Assistant` room, moving parity work from
+  dashboard-only refinement into a broader reusable shell system
+  (`apps/web/src/app/layout.tsx`,
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/app/assistant/page.tsx`,
+  `apps/web/src/app/globals.css`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseA.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseA.png`)
+- `NEST-214` completed: a fresh parity review now explicitly records the
+  remaining dashboard/shell gaps after the shell-truth implementation and
+  defines the next iteration slices toward full canonical founder parity
+  (`docs/ux/nest_214_dashboard_shell_parity_review_2026-04-26.md`)
 - `NEST-207` completed: the active `v1` repair wave now has a canonical
   detailed execution queue and refill strategy through
   `docs/planning/v1_execution_backlog_2026-04-26.md`, with
