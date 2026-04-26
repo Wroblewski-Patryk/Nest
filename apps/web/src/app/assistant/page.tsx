@@ -25,6 +25,12 @@ const SUGGESTED_PROMPTS = [
   "Turn today's signals into a short evening reflection.",
 ];
 
+const ASSISTANT_PRINCIPLES = [
+  "Clarity before complexity",
+  "Protect what matters now",
+  "Reflect without judgment",
+];
+
 export default function AssistantPage() {
   return (
     <WorkspaceShell
@@ -41,11 +47,16 @@ export default function AssistantPage() {
             className="assistant-panel assistant-panel-primary"
             actions={<span className="dashboard-panel-kicker">Planning / Execution / Reflection</span>}
           >
-            <div className="assistant-intro">
-              <p>
-                This space should feel like another room in Nest, not a bolted-on tool. Ask for direction, clarity,
-                prioritization, or a cleaner next step.
-              </p>
+            <div className="assistant-stage">
+              <div className="assistant-intro">
+                <p>
+                  This space should feel like another room in Nest, not a bolted-on tool. Ask for direction, clarity,
+                  prioritization, or a cleaner next step.
+                </p>
+              </div>
+              <blockquote className="assistant-quote">
+                <p>Ask for the smallest truthful next step, then let the rest quiet down.</p>
+              </blockquote>
             </div>
             <AiCopilotCard />
           </Panel>
@@ -84,6 +95,16 @@ export default function AssistantPage() {
                   Open Journal
                 </Link>
               </div>
+            </Panel>
+
+            <Panel title="Conversation principles" className="assistant-panel assistant-panel-support">
+              <ul className="assistant-principle-list">
+                {ASSISTANT_PRINCIPLES.map((item) => (
+                  <li key={item} className="assistant-principle-item">
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </Panel>
           </div>
         </div>

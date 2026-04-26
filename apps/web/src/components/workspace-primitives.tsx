@@ -29,7 +29,7 @@ type FocusCardProps = {
 
 type HeroBandProps = {
   brand?: string;
-  dateLabel: string;
+  dateLabel?: string;
   weatherLabel?: string;
   title: string;
   summary: string;
@@ -130,15 +130,19 @@ export function DashboardHeroBand({
   progressPercent,
   metrics,
 }: HeroBandProps) {
+  const showHeroHeader = Boolean(brand || dateLabel || weatherLabel);
+
   return (
     <article className="dashboard-hero-band">
-      <div className="dashboard-hero-header">
-        {brand ? <span className="dashboard-hero-kicker">{brand}</span> : <span />}
-        <div className="dashboard-hero-utility">
-          <span>{dateLabel}</span>
-          {weatherLabel ? <small>{weatherLabel}</small> : null}
+      {showHeroHeader ? (
+        <div className="dashboard-hero-header">
+          {brand ? <span className="dashboard-hero-kicker">{brand}</span> : <span />}
+          <div className="dashboard-hero-utility">
+            {dateLabel ? <span>{dateLabel}</span> : null}
+            {weatherLabel ? <small>{weatherLabel}</small> : null}
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <div className="dashboard-hero-scene">
         <CircularProgress value={progressPercent} />
@@ -335,7 +339,7 @@ export function ReflectionSidebarCard({ title, excerpt, prompt, href }: Reflecti
     <article className="dashboard-sidebar-card dashboard-sidebar-card-journal">
       <div className="dashboard-sidebar-card-head">
         <h3>Journal</h3>
-        <span>...</span>
+        <span>•••</span>
       </div>
       <strong className="dashboard-sidebar-card-title">{title}</strong>
       <p className="dashboard-sidebar-card-script">{excerpt}</p>
@@ -357,6 +361,7 @@ export function QuickAddCard({ items }: QuickAddCardProps) {
       <div className="dashboard-sidebar-card-head">
         <h3>Quick add</h3>
       </div>
+      <p className="dashboard-sidebar-card-note">Capture the next small thing before it disappears.</p>
       <div className="dashboard-quick-add-grid">
         {items.map((item) => (
           <Link key={item.label} href={item.href} className="dashboard-quick-add-tile">
@@ -386,6 +391,7 @@ export function BalanceMiniCard({ value, items, href }: BalanceMiniCardProps) {
         <h3>Life areas</h3>
         <Link href={href}>View all</Link>
       </div>
+      <p className="dashboard-sidebar-card-note">A soft monthly signal of where life feels nourished and where it needs care.</p>
 
       <div className="dashboard-balance-grid">
         <div className="dashboard-balance-donut" style={{ background: `conic-gradient(${gradient})` }}>

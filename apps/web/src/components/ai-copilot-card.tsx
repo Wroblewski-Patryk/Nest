@@ -43,16 +43,20 @@ export function AiCopilotCard() {
   };
 
   return (
-    <div className="stack">
-      <p className="mono-note">{detail}</p>
-      <textarea
-        className="list-row"
-        rows={3}
-        value={message}
-        onChange={(event) => setMessage(event.target.value)}
-        placeholder="Ask about priorities, schedule, habits, goals, or reflection."
-      />
-      <div className="row-inline">
+    <div className="assistant-copilot-card">
+      <div className="assistant-copilot-intro">
+        <p className="assistant-copilot-detail">{detail}</p>
+      </div>
+      <div className="assistant-copilot-composer">
+        <textarea
+          className="list-row assistant-copilot-textarea"
+          rows={4}
+          value={message}
+          onChange={(event) => setMessage(event.target.value)}
+          placeholder="Ask about priorities, schedule, habits, goals, or reflection."
+        />
+      </div>
+      <div className="row-inline assistant-copilot-actions">
         <button
           type="button"
           className="btn-primary"
@@ -63,15 +67,17 @@ export function AiCopilotCard() {
         </button>
       </div>
       {result ? (
-        <div className="stack">
-          <p>{result.answer}</p>
-          <p className="mono-note">
+        <div className="assistant-copilot-result">
+          <div className="assistant-copilot-answer">
+            <p>{result.answer}</p>
+          </div>
+          <p className="mono-note assistant-copilot-meta">
             Intent: {result.intent} | Provider: {result.provider.mode} | Snapshot:{" "}
             {result.context_snapshot.fingerprint.slice(0, 12)}
           </p>
-          <ul className="list">
+          <ul className="list assistant-copilot-reference-list">
             {result.source_references.slice(0, 5).map((reference, index) => (
-              <li key={`${reference.entity_id ?? "n/a"}-${index}`} className="list-row">
+              <li key={`${reference.entity_id ?? "n/a"}-${index}`} className="list-row assistant-copilot-reference-item">
                 <div>
                   <strong>{reference.title ?? "Untitled"}</strong>
                   <p className="mono-note">

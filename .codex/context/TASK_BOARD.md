@@ -24,6 +24,42 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-215 Apply dashboard shell finish pass and assistant conversational
+  polish on web
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-213, NEST-214
+  - Done on: 2026-04-26
+  - Notes:
+    - Tightened dashboard hero composition, softened support-rail support copy,
+      and made the assistant composer/conversation stage feel more native to
+      Nest.
+    - Updated implementation in:
+      `apps/web/src/app/dashboard/page.tsx`,
+      `apps/web/src/components/workspace-primitives.tsx`,
+      `apps/web/src/components/ai-copilot-card.tsx`,
+      `apps/web/src/app/assistant/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifacts:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseB.png`,
+      `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseB.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
+- [x] NEST-216 Review dashboard and shell parity after phase B finish pass
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-215
+  - Done on: 2026-04-26
+  - Notes:
+    - Compared refreshed phase B dashboard and assistant captures against the
+      canonical founder target.
+    - Recorded remaining gaps and the next iteration tasks in:
+      `docs/ux/nest_216_dashboard_shell_parity_review_phaseB_2026-04-26.md`.
+
 - [x] NEST-213 Implement shell truth and first-class assistant surface on web
   - Status: DONE
   - Owner: Execution Agent

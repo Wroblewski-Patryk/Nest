@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import {
   BalanceMiniCard,
@@ -79,21 +79,8 @@ function toIsoDateOnly(dateValue: Date): string {
   return new Date(dateValue.getTime() - dateValue.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 }
 
-function formatHeroDate(value: Date): string {
-  return value.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
 function formatHourMinute(value: string): string {
   return new Date(value).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-}
-
-function formatWeatherFallback(): string {
-  return "18 C";
 }
 
 function getErrorStatus(error: unknown): number | null {
@@ -425,8 +412,6 @@ export default function DashboardPage() {
       <section className={`dashboard-shell ${isLoading ? "is-loading" : ""}`}>
         <div className="dashboard-hero-layout">
           <DashboardHeroBand
-            dateLabel={formatHeroDate(new Date())}
-            weatherLabel={formatWeatherFallback()}
             title="Today at a glance"
             summary={useShowcaseFallback ? "You're making steady progress." : "You're making steady progress."}
             progressLabel={
