@@ -210,6 +210,11 @@ Last updated: 2026-04-26
 - Canonical dashboard direction package added on 2026-04-26 with founder-approved
   preview artifact and reusable UX implementation contract in
   `docs/ux/nest_197_dashboard_canonical_direction_2026-04-26.md`
+- Web dashboard implementation updated on 2026-04-26 to adopt the canonical
+  hierarchy and reusable primitives in:
+  `apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/components/dashboard-primitives.tsx`,
+  `apps/web/src/app/globals.css`
 - V1/V2 documentation split refreshed on 2026-04-26 so current planning can
   distinguish practical `v1` delivery from later AI-assisted `v2` expansion
   without changing core architecture
