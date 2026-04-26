@@ -24,6 +24,36 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-228 Review dashboard parity after phase J capture
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-227
+  - Done on: 2026-04-26
+  - Notes:
+    - Compared refreshed phase J dashboard capture against the canonical
+      founder target.
+    - Recorded the remaining pixel-perfect micro-gaps in:
+      `docs/ux/nest_228_dashboard_parity_review_phaseJ_2026-04-26.md`.
+
+- [x] NEST-227 Apply dashboard founder finish pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-226
+  - Done on: 2026-04-26
+  - Notes:
+    - Softened the rail icon treatment, refined the editorial title/hero, and
+      enriched right-rail atmosphere to move the dashboard closer to the
+      founder image.
+    - Updated implementation in:
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifact:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseJ.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-226 Review dashboard parity after phase I capture
   - Status: DONE
   - Owner: Review Agent
