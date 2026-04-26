@@ -5,6 +5,12 @@ type HeroMetric = {
   label: string;
   value: string;
   emphasis?: "default" | "accent";
+  icon?: ReactNode;
+};
+
+type FocusCardMeta = {
+  label: string;
+  value: string;
 };
 
 type FocusCardProps = {
@@ -15,12 +21,16 @@ type FocusCardProps = {
   supportingValue?: string;
   href: string;
   cta: string;
+  rationaleHref?: string;
+  rationaleLabel?: string;
+  meta?: FocusCardMeta[];
   secondaryAction?: ReactNode;
 };
 
 type HeroBandProps = {
   brand: string;
   dateLabel: string;
+  weatherLabel?: string;
   title: string;
   summary: string;
   progressLabel: string;
@@ -28,17 +38,19 @@ type HeroBandProps = {
   metrics: HeroMetric[];
 };
 
-type TimelineGroupProps = {
-  title: string;
-  subtitle: string;
-  items: Array<{
-    id: string;
-    label: string;
-    detail: string;
-    timeLabel: string;
-    isNow?: boolean;
-  }>;
-  emptyLabel: string;
+type DayFlowItem = {
+  id: string;
+  label: string;
+  detail: string;
+  timeLabel: string;
+};
+
+type DayFlowProps = {
+  morningItems: DayFlowItem[];
+  nowItem: DayFlowItem | null;
+  eveningItems: DayFlowItem[];
+  footerHref: string;
+  footerLabel: string;
 };
 
 type ContextRibbonItem = {
@@ -53,9 +65,65 @@ type ContextRibbonProps = {
   items: ContextRibbonItem[];
 };
 
+type ReflectionSidebarCardProps = {
+  title: string;
+  excerpt: string;
+  prompt: string;
+  href: string;
+};
+
+type QuickAddItem = {
+  label: string;
+  href: string;
+  icon: ReactNode;
+};
+
+type QuickAddCardProps = {
+  items: QuickAddItem[];
+};
+
+type BalanceMiniCardProps = {
+  value: number;
+  items: Array<{
+    label: string;
+    value: number;
+    color: string;
+  }>;
+  href: string;
+};
+
+type InsightStripProps = {
+  title: string;
+  quote: string;
+  href: string;
+  cta: string;
+};
+
+function CircularProgress({ value }: { value: number }) {
+  const degrees = Math.max(0, Math.min(100, value)) * 3.6;
+
+  return (
+    <div
+      className="dashboard-progress-ring"
+      style={{ background: `conic-gradient(var(--accent) 0deg ${degrees}deg, rgb(228 224 215 / 92%) ${degrees}deg 360deg)` }}
+      role="progressbar"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={value}
+    >
+      <div className="dashboard-progress-ring-inner">
+        <strong>{value}%</strong>
+        <span>Daily progress</span>
+      </div>
+      <div className="dashboard-progress-ring-leaf" aria-hidden="true" />
+    </div>
+  );
+}
+
 export function DashboardHeroBand({
   brand,
   dateLabel,
+  weatherLabel,
   title,
   summary,
   progressLabel,
@@ -65,47 +133,46 @@ export function DashboardHeroBand({
   return (
     <article className="dashboard-hero-band">
       <div className="dashboard-hero-header">
-        <div className="dashboard-hero-copy">
-          <p className="dashboard-hero-brand">{brand}</p>
-          <p className="dashboard-hero-date">{dateLabel}</p>
+        <div className="dashboard-hero-brand-lockup">
+          <h2>{brand}</h2>
+          <p>{title}</p>
         </div>
-        <div className="dashboard-hero-progress-pill">
-          <span>{progressPercent}%</span>
-          <small>complete</small>
+        <div className="dashboard-hero-utility">
+          <span>{dateLabel}</span>
+          {weatherLabel ? <small>{weatherLabel}</small> : null}
         </div>
       </div>
 
-      <div className="dashboard-hero-body">
+      <div className="dashboard-hero-scene">
+        <CircularProgress value={progressPercent} />
+
         <div className="dashboard-hero-story">
-          <h2>{title}</h2>
+          <strong>Today at a glance</strong>
           <p>{summary}</p>
+          <small>{progressLabel}</small>
         </div>
 
-        <div className="dashboard-hero-progress">
-          <div className="dashboard-hero-progress-copy">
-            <span>{progressLabel}</span>
-            <strong>{progressPercent}%</strong>
-          </div>
-          <div
-            className="dashboard-progress-track"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={progressPercent}
-          >
-            <span style={{ width: `${progressPercent}%` }} />
-          </div>
+        <ul className="dashboard-hero-stat-row" aria-label="Daily dashboard metrics">
+          {metrics.map((metric) => (
+            <li key={metric.label} className={`dashboard-hero-stat ${metric.emphasis === "accent" ? "is-accent" : ""}`}>
+              <span className="dashboard-hero-stat-icon" aria-hidden="true">
+                {metric.icon}
+              </span>
+              <div>
+                <strong>{metric.value}</strong>
+                <small>{metric.label}</small>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div className="dashboard-hero-landscape" aria-hidden="true">
+          <span className="dashboard-sun-wash" />
+          <span className="dashboard-mountain-back" />
+          <span className="dashboard-mountain-front" />
+          <span className="dashboard-tree-wash" />
         </div>
       </div>
-
-      <ul className="dashboard-hero-metrics" aria-label="Daily dashboard metrics">
-        {metrics.map((metric) => (
-          <li key={metric.label} className={`dashboard-hero-metric ${metric.emphasis === "accent" ? "is-accent" : ""}`}>
-            <small>{metric.label}</small>
-            <strong>{metric.value}</strong>
-          </li>
-        ))}
-      </ul>
     </article>
   );
 }
@@ -118,6 +185,9 @@ export function DashboardFocusCard({
   supportingValue,
   href,
   cta,
+  rationaleHref,
+  rationaleLabel,
+  meta,
   secondaryAction,
 }: FocusCardProps) {
   return (
@@ -127,6 +197,17 @@ export function DashboardFocusCard({
         <h2>{title}</h2>
         <p>{detail}</p>
       </div>
+
+      {meta?.length ? (
+        <div className="dashboard-focus-meta" aria-label="Focus metadata">
+          {meta.map((item) => (
+            <div key={item.label} className="dashboard-focus-meta-item">
+              <small>{item.label}</small>
+              <strong>{item.value}</strong>
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       {supportingLabel && supportingValue ? (
         <div className="dashboard-focus-support">
@@ -141,34 +222,77 @@ export function DashboardFocusCard({
         </Link>
         {secondaryAction}
       </div>
+
+      {rationaleHref && rationaleLabel ? (
+        <Link href={rationaleHref} className="dashboard-rationale-link">
+          {rationaleLabel}
+        </Link>
+      ) : null}
     </article>
   );
 }
 
-export function DashboardTimelineGroup({ title, subtitle, items, emptyLabel }: TimelineGroupProps) {
-  return (
-    <article className="dashboard-timeline-group">
-      <header>
-        <p>{title}</p>
-        <small>{subtitle}</small>
-      </header>
+function TimelineList({ items }: { items: DayFlowItem[] }) {
+  if (items.length === 0) {
+    return <p className="dashboard-dayflow-empty">Nothing anchored here yet.</p>;
+  }
 
-      {items.length === 0 ? (
-        <p className="dashboard-timeline-empty">{emptyLabel}</p>
-      ) : (
-        <ul className="dashboard-timeline-list">
-          {items.map((item) => (
-            <li key={item.id} className={`dashboard-timeline-item ${item.isNow ? "is-now" : ""}`}>
-              <span className="dashboard-timeline-time">{item.timeLabel}</span>
-              <div>
-                <strong>{item.label}</strong>
-                <small>{item.detail}</small>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </article>
+  return (
+    <ul className="dashboard-dayflow-list">
+      {items.map((item) => (
+        <li key={item.id} className="dashboard-dayflow-list-item">
+          <span className="dashboard-dayflow-check" aria-hidden="true" />
+          <span className="dashboard-dayflow-time">{item.timeLabel}</span>
+          <div>
+            <strong>{item.label}</strong>
+            <small>{item.detail}</small>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export function DashboardDayFlow({ morningItems, nowItem, eveningItems, footerHref, footerLabel }: DayFlowProps) {
+  return (
+    <section className="dashboard-dayflow">
+      <div className="dashboard-dayflow-head">
+        <span>Morning</span>
+        <strong>Now</strong>
+        <span>Evening</span>
+      </div>
+
+      <div className="dashboard-dayflow-grid">
+        <div className="dashboard-dayflow-lane">
+          <TimelineList items={morningItems} />
+        </div>
+
+        <div className="dashboard-dayflow-now-column">
+          <span className="dashboard-dayflow-now-dot" aria-hidden="true" />
+          {nowItem ? (
+            <article className="dashboard-dayflow-now-card">
+              <small>{nowItem.timeLabel}</small>
+              <strong>{nowItem.label}</strong>
+              <p>{nowItem.detail}</p>
+            </article>
+          ) : (
+            <article className="dashboard-dayflow-now-card is-empty">
+              <small>Now</small>
+              <strong>Space is still open.</strong>
+              <p>Protect this slot for the next meaningful action.</p>
+            </article>
+          )}
+        </div>
+
+        <div className="dashboard-dayflow-lane">
+          <TimelineList items={eveningItems} />
+        </div>
+      </div>
+
+      <Link href={footerHref} className="dashboard-dayflow-footer">
+        {footerLabel}
+      </Link>
+    </section>
   );
 }
 
@@ -205,6 +329,98 @@ export function DashboardContextRibbon({ title, items }: ContextRibbonProps) {
           );
         })}
       </div>
+    </section>
+  );
+}
+
+export function ReflectionSidebarCard({ title, excerpt, prompt, href }: ReflectionSidebarCardProps) {
+  return (
+    <article className="dashboard-sidebar-card dashboard-sidebar-card-journal">
+      <div className="dashboard-sidebar-card-head">
+        <h3>Journal</h3>
+        <span>...</span>
+      </div>
+      <strong className="dashboard-sidebar-card-title">{title}</strong>
+      <p className="dashboard-sidebar-card-script">{excerpt}</p>
+      <div className="dashboard-sidebar-card-footer">
+        <span>{prompt}</span>
+        <Link href={href} className="dashboard-floating-action" aria-label="Open journal">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 17 17 7M10 7h7v7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </Link>
+      </div>
+    </article>
+  );
+}
+
+export function QuickAddCard({ items }: QuickAddCardProps) {
+  return (
+    <article className="dashboard-sidebar-card">
+      <div className="dashboard-sidebar-card-head">
+        <h3>Quick add</h3>
+      </div>
+      <div className="dashboard-quick-add-grid">
+        {items.map((item) => (
+          <Link key={item.label} href={item.href} className="dashboard-quick-add-tile">
+            <span className="dashboard-quick-add-icon" aria-hidden="true">
+              {item.icon}
+            </span>
+            <small>{item.label}</small>
+          </Link>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+export function BalanceMiniCard({ value, items, href }: BalanceMiniCardProps) {
+  const gradient = items
+    .map((item, index) => {
+      const start = (index / Math.max(items.length, 1)) * 360;
+      const end = ((index + 1) / Math.max(items.length, 1)) * 360;
+      return `${item.color} ${start}deg ${end}deg`;
+    })
+    .join(", ");
+
+  return (
+    <article className="dashboard-sidebar-card">
+      <div className="dashboard-sidebar-card-head">
+        <h3>Life areas</h3>
+        <Link href={href}>View all</Link>
+      </div>
+
+      <div className="dashboard-balance-grid">
+        <div className="dashboard-balance-donut" style={{ background: `conic-gradient(${gradient})` }}>
+          <div className="dashboard-balance-donut-inner">
+            <strong>{value.toFixed(1)}</strong>
+          </div>
+        </div>
+
+        <ul className="dashboard-balance-legend">
+          {items.map((item) => (
+            <li key={item.label}>
+              <span className="dashboard-balance-dot" style={{ backgroundColor: item.color }} aria-hidden="true" />
+              <small>{item.label}</small>
+              <strong>{item.value.toFixed(1)}</strong>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p className="dashboard-balance-caption">Monthly balance overview</p>
+    </article>
+  );
+}
+
+export function InsightStrip({ title, quote, href, cta }: InsightStripProps) {
+  return (
+    <section className="dashboard-insight-strip">
+      <div className="dashboard-insight-strip-title">
+        <span>{title}</span>
+      </div>
+      <p>{quote}</p>
+      <Link href={href}>{cta}</Link>
     </section>
   );
 }

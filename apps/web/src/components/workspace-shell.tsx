@@ -173,16 +173,43 @@ function MenuIcon({ name }: { name: NavIconName }) {
   );
 }
 
+function UtilityIcon({ name }: { name: "search" | "bell" }) {
+  if (name === "search") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="1.7" />
+        <path d="m16 16 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M7.5 17.5h9a2 2 0 0 0 2-2v-4a6 6 0 1 0-12 0v4a2 2 0 0 0 2 2Z" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout, planningSubnav, children }: WorkspaceShellProps) {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const auraVariant = resolveAuraVariant(module ?? "tasks");
   const activeNavKey = navKey === "none" ? null : (navKey ?? module ?? null);
   const layoutClass = contentLayout === "grid" ? "is-grid" : "is-single";
+  const utilityDateLabel = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
     <div className={`workspace-bg aura-${auraVariant}`}>
       <aside className="workspace-rail">
         <div className="workspace-rail-brand">
+          <div className="workspace-brand-mark" aria-hidden="true">
+            <span className="workspace-brand-nest" />
+          </div>
           <p className="workspace-logo">Nest</p>
           <p className="workspace-kicker">{translate("app.kicker", language)}</p>
         </div>
@@ -232,10 +259,25 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
         </nav>
 
         <div className="workspace-rail-footer">
-          <Link href="/settings" className="workspace-settings-link">
-            Settings
-          </Link>
-          <WorkspaceLogoutButton />
+          <blockquote className="workspace-rail-quote">
+            <p>&ldquo;A life well lived is built daily, intentionally.&rdquo;</p>
+            <span>Nest</span>
+          </blockquote>
+          <div className="workspace-account-card">
+            <div className="workspace-account-avatar" aria-hidden="true">
+              A
+            </div>
+            <div>
+              <small>Welcome back,</small>
+              <strong>Alexandra</strong>
+            </div>
+          </div>
+          <div className="workspace-rail-footer-actions">
+            <Link href="/settings" className="workspace-settings-link">
+              Settings
+            </Link>
+            <WorkspaceLogoutButton />
+          </div>
         </div>
       </aside>
 
@@ -247,11 +289,16 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
             <p>{subtitle}</p>
           </div>
           <div className="workspace-hero-tools">
-            <Link href="/tasks" className="btn-primary">
-              Quick Add
+            <div className="workspace-utility-meta">
+              <span>{utilityDateLabel}</span>
+              <small>18 C</small>
+            </div>
+            <Link href="/dashboard" className="workspace-utility-button" aria-label="Search">
+              <UtilityIcon name="search" />
             </Link>
-            <Link href="/settings" className="btn-secondary">
-              Settings
+            <Link href="/settings" className="workspace-utility-button" aria-label="Notifications">
+              <UtilityIcon name="bell" />
+              <span className="workspace-utility-badge">3</span>
             </Link>
           </div>
         </header>

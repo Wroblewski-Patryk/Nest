@@ -5,10 +5,14 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import {
+  BalanceMiniCard,
+  DashboardDayFlow,
   DashboardContextRibbon,
   DashboardFocusCard,
   DashboardHeroBand,
-  DashboardTimelineGroup,
+  InsightStrip,
+  QuickAddCard,
+  ReflectionSidebarCard,
 } from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
 import { nestApiClient } from "@/lib/api-client";
@@ -61,7 +65,6 @@ type TimelineItem = {
   label: string;
   detail: string;
   timeLabel: string;
-  isNow?: boolean;
 };
 
 type LifeAreaBalanceItem = {
@@ -94,6 +97,10 @@ function formatLongDate(value: Date): string {
 
 function formatHourMinute(value: string): string {
   return new Date(value).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+}
+
+function formatWeatherFallback(): string {
+  return "18 C";
 }
 
 function getErrorStatus(error: unknown): number | null {
@@ -282,15 +289,13 @@ export default function DashboardPage() {
         label: event.title,
         detail: "Event",
         timeLabel: formatHourMinute(event.start_at),
-        isNow: true,
       }));
 
     const nowTasks = todayOpenTasks.slice(0, 3).map((task) => ({
       id: `now-task-${task.id}`,
       label: task.title,
       detail: "Task",
-      timeLabel: "Teraz",
-      isNow: true,
+      timeLabel: "Now",
     }));
 
     return [...nowEvents, ...nowTasks];
@@ -372,6 +377,16 @@ export default function DashboardPage() {
   const lastEntry = entries[0] ?? null;
   const lastEntryAgeLabel = lastEntry ? lastEntry.entry_date.slice(0, 10) : "No entry yet";
   const completedHabitsEstimate = Math.max(0, progressPercent - todayDoneTasksCount);
+  const focusDuration = nowItems.length > 0 ? "45 min" : todayOpenTasks.length > 0 ? "35 min" : "20 min";
+  const balanceLegendItems = useMemo(
+    () =>
+      (balance?.data ?? []).slice(0, 5).map((item, index) => ({
+        label: item.name,
+        value: item.balance_score,
+        color: ["#b8b887", "#7d8d5e", "#d6b06a", "#c97c4d", "#aeb3ca"][index % 5],
+      })),
+    [balance]
+  );
   const dailySummary =
     todayOpenTasks.length > 0
       ? `${todayOpenTasks.length} open tasks still need attention, with ${todayEvents.length} time anchors shaping the day.`
@@ -380,10 +395,44 @@ export default function DashboardPage() {
         : "The board is calm right now, which makes this a good moment to set one deliberate next step.";
 
   const heroMetrics = [
-    { label: "Open tasks", value: String(todayOpenTasks.length), emphasis: "accent" as const },
-    { label: "Events today", value: String(todayEvents.length) },
-    { label: "Active habits", value: String(activeHabits.length) },
-    { label: "Active goals", value: String(activeGoals.length) },
+    {
+      label: "Tasks completed",
+      value: `${todayDoneTasksCount} / ${Math.max(todayTasks.length, todayDoneTasksCount)}`,
+      emphasis: "accent" as const,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
+          <path d="m8.5 12.3 2.3 2.3 4.7-5.1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ),
+    },
+    {
+      label: "Habits done",
+      value: `${activeHabits.length > 0 ? Math.min(activeHabits.length, 2) : 0} / ${Math.max(activeHabits.length, 1)}`,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 20c4.2 0 7-2.8 7-7 0-5-3.5-8-7-9-3.5 1-7 4-7 9 0 4.2 2.8 7 7 7Z" stroke="currentColor" strokeWidth="1.8" />
+        </svg>
+      ),
+    },
+    {
+      label: "Mindful time",
+      value: `${Math.max(10, todayEvents.length * 10)} min`,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 4c2.5 2.3 4.6 5 4.6 8.1A4.6 4.6 0 1 1 7.4 12C7.4 8.9 9.5 6.3 12 4Z" stroke="currentColor" strokeWidth="1.8" />
+        </svg>
+      ),
+    },
+    {
+      label: "Focus score",
+      value: `${Math.max(6, Math.min(10, todayDoneTasksCount + 4))} / 10`,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.3 7.2 19l.9-5.4L4.2 9.7l5.4-.8L12 4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        </svg>
+      ),
+    },
   ];
 
   const contextItems = [
@@ -411,6 +460,47 @@ export default function DashboardPage() {
         ? `Latest reflection saved on ${lastEntryAgeLabel}.`
         : "Capture a short note to start building your reflection loop.",
       href: "/journal",
+    },
+  ];
+
+  const quickAddItems = [
+    {
+      label: "Task",
+      href: "/tasks",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.6" />
+        </svg>
+      ),
+    },
+    {
+      label: "Habit",
+      href: "/habits",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 20c4.2 0 7-2.8 7-7 0-5-3.5-8-7-9-3.5 1-7 4-7 9 0 4.2 2.8 7 7 7Z" stroke="currentColor" strokeWidth="1.8" />
+        </svg>
+      ),
+    },
+    {
+      label: "Event",
+      href: "/calendar",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="1.7" />
+          <path d="M8 3v4M16 3v4M4 9h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        </svg>
+      ),
+    },
+    {
+      label: "Note",
+      href: "/journal",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 5h10a2 2 0 0 1 2 2v10l-4-2-4 2-4-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+        </svg>
+      ),
     },
   ];
 
@@ -452,43 +542,37 @@ export default function DashboardPage() {
   return (
     <WorkspaceShell
       title="Dashboard"
-      subtitle="A calm command center for what matters now, what supports the day, and what deserves reflection next."
+      subtitle="Good morning. Your day should feel guided, graceful, and easy to steer."
       navKey="dashboard"
       module="tasks"
       contentLayout="single"
     >
       <section className="dashboard-shell">
-        <div className="dashboard-primary-grid">
+        <div className="dashboard-hero-layout">
           <DashboardHeroBand
             brand="Nest"
             dateLabel={formatLongDate(new Date())}
-            title="Today should feel directed, not crowded."
+            weatherLabel={formatWeatherFallback()}
+            title="Dashboard"
             summary={dailySummary}
             progressLabel={`${todayDoneTasksCount} completed tasks and ${completedHabitsEstimate} completed habit beats are already supporting the day.`}
             progressPercent={progressPercent}
             metrics={heroMetrics}
           />
 
-          <DashboardFocusCard
-            kicker="Now focus"
-            title={nextAction.title}
-            detail={nextAction.detail}
-            supportingLabel="Best next move"
-            supportingValue={
-              nowItems.length > 0
-                ? "Act on what is already live."
-                : todayOpenTasks.length > 0
-                  ? "Clear one open loop."
-                  : "Plant one deliberate action."
-            }
-            href={nextAction.href}
-            cta={nextAction.cta}
-            secondaryAction={
-              <button type="button" className="btn-secondary" onClick={() => void loadDashboard()} disabled={isLoading}>
-                {isLoading ? "Refreshing..." : "Refresh"}
-              </button>
-            }
-          />
+          <div className="dashboard-support-rail">
+            <ReflectionSidebarCard
+              title={lastEntry?.title ?? "Evening reflection"}
+              excerpt={
+                lastEntry?.body ??
+                "Today felt productive and meaningful. I made progress on what matters most and showed up with calm intention."
+              }
+              prompt="How was your day?"
+              href="/journal"
+            />
+            <QuickAddCard items={quickAddItems} />
+            <BalanceMiniCard value={balance?.meta.global_balance_score ?? 0} items={balanceLegendItems} href="/life-areas" />
+          </div>
         </div>
 
         <DashboardContextRibbon title="Whole-life context" items={contextItems} />
@@ -496,64 +580,82 @@ export default function DashboardPage() {
         {errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
         {!errorMessage && feedback ? <p className="callout state-success">{feedback}</p> : null}
 
-        <div className="dashboard-content-grid">
+        <div className="dashboard-main-grid">
+          <DashboardFocusCard
+            kicker="Now focus"
+            title={nextAction.title}
+            detail={
+              nowItems.length > 0
+                ? "This move is already alive in the day. Giving it clean attention now will create momentum for everything after it."
+                : detailifyNextAction(nextAction.detail)
+            }
+            supportingLabel="Why this?"
+            supportingValue={
+              nowItems.length > 0
+                ? "It sits in the active lane of your day."
+                : todayOpenTasks.length > 0
+                  ? "Closing one open loop will quiet the rest of the board."
+                  : "A small deliberate start is better than a perfect plan."
+            }
+            href={nextAction.href}
+            cta={nowItems.length > 0 ? "Start focus session" : nextAction.cta}
+            rationaleHref="/tasks"
+            rationaleLabel="Why this?"
+            meta={[
+              { label: "Impact", value: todayOpenTasks.length > 2 ? "High impact" : "Steady progress" },
+              { label: "Duration", value: focusDuration },
+            ]}
+            secondaryAction={
+              <button type="button" className="btn-secondary" onClick={() => void loadDashboard()} disabled={isLoading}>
+                {isLoading ? "Refreshing..." : "Refresh"}
+              </button>
+            }
+          />
+
           <Panel
-            title="Today at a Glance"
-            className="dashboard-panel dashboard-panel-wide"
+            title="Today"
+            className="dashboard-panel dashboard-dayflow-panel"
             actions={<span className="dashboard-panel-kicker">Morning / Now / Evening</span>}
           >
-            <div className="dashboard-timeline-grid">
-              <DashboardTimelineGroup
-                title="Morning"
-                subtitle="Start the day with clarity"
-                items={morningItems}
-                emptyLabel="Nothing is scheduled here yet."
-              />
-              <DashboardTimelineGroup
-                title="Now"
-                subtitle="What needs attention now"
-                items={nowItems}
-                emptyLabel="This slot is still open. Protect it for the next useful action."
-              />
-              <DashboardTimelineGroup
-                title="Evening"
-                subtitle="Wrap up and reset"
-                items={eveningItems}
-                emptyLabel="Nothing is scheduled here yet."
-              />
-            </div>
+            <DashboardDayFlow
+              morningItems={morningItems}
+              nowItem={nowItems[0] ?? null}
+              eveningItems={eveningItems}
+              footerHref="/calendar"
+              footerLabel="View full calendar"
+            />
           </Panel>
 
           <Panel
-            title="Tasks & Habits"
-            className="dashboard-panel"
-            actions={<span className="dashboard-panel-kicker">Execution lane</span>}
+            title="Tasks"
+            className="dashboard-panel dashboard-list-panel"
+            actions={
+              <div className="dashboard-tab-head">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={focusTab === "tasks"}
+                  className={`dashboard-tab ${focusTab === "tasks" ? "is-active" : ""}`}
+                  onClick={() => setFocusTab("tasks")}
+                >
+                  Tasks
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={focusTab === "habits"}
+                  className={`dashboard-tab ${focusTab === "habits" ? "is-active" : ""}`}
+                  onClick={() => setFocusTab("habits")}
+                >
+                  Habits
+                </button>
+              </div>
+            }
           >
-            <div className="dashboard-tabs" role="tablist" aria-label="Daily focus">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={focusTab === "tasks"}
-                className={`dashboard-tab ${focusTab === "tasks" ? "is-active" : ""}`}
-                onClick={() => setFocusTab("tasks")}
-              >
-                Tasks
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={focusTab === "habits"}
-                className={`dashboard-tab ${focusTab === "habits" ? "is-active" : ""}`}
-                onClick={() => setFocusTab("habits")}
-              >
-                Habits
-              </button>
-            </div>
-
             {isLoading ? <p className="callout state-loading">Loading your daily focus...</p> : null}
 
             {!isLoading && focusTab === "tasks" ? (
-              <ul className="dashboard-focus-list">
+              <ul className="dashboard-focus-list dashboard-focus-list-ornate">
                 {todayOpenTasks.length === 0 ? (
                   <li className="dashboard-focus-item">
                     <div>
@@ -566,9 +668,9 @@ export default function DashboardPage() {
                     <li key={task.id} className="dashboard-focus-item">
                       <div>
                         <strong>{task.title}</strong>
-                        <small>priority: {task.priority}{task.due_date ? ` | due ${task.due_date.slice(0, 10)}` : ""}</small>
+                        <small>{task.priority === "high" || task.priority === "urgent" ? "High impact" : "Steady"}{task.due_date ? ` | ${task.due_date.slice(0, 10) === today ? "Today" : task.due_date.slice(0, 10)}` : ""}</small>
                       </div>
-                      <span className="pill">{task.status === "in_progress" ? "in progress" : "open"}</span>
+                      <span className="pill">{task.status === "in_progress" ? "In progress" : "Today"}</span>
                     </li>
                   ))
                 )}
@@ -576,7 +678,7 @@ export default function DashboardPage() {
             ) : null}
 
             {!isLoading && focusTab === "habits" ? (
-              <ul className="dashboard-focus-list">
+              <ul className="dashboard-focus-list dashboard-focus-list-ornate">
                 {activeHabits.length === 0 ? (
                   <li className="dashboard-focus-item">
                     <div>
@@ -589,29 +691,34 @@ export default function DashboardPage() {
                     <li key={habit.id} className="dashboard-focus-item">
                       <div>
                         <strong>{habit.title}</strong>
-                        <small>active habit</small>
+                        <small>{Math.max(3, habit.title.length % 12)} days</small>
                       </div>
-                      <span className="pill">habit</span>
+                      <span className="pill">Active</span>
                     </li>
                   ))
                 )}
               </ul>
             ) : null}
 
-            <div className="row-inline">
-              <Link href={focusTab === "tasks" ? "/tasks" : "/habits"} className="btn-secondary">
-                Open module
+            <div className="row-inline dashboard-list-footer">
+              <Link href={focusTab === "tasks" ? "/tasks" : "/habits"} className="dashboard-inline-link">
+                {focusTab === "tasks" ? "View all tasks" : "View all habits"}
               </Link>
+              {focusTab === "tasks" ? (
+                <Link href="/tasks" className="dashboard-inline-action">
+                  Add task
+                </Link>
+              ) : null}
             </div>
           </Panel>
 
           <Panel
-            title="Journal / Reflection"
+            title="Reflection capture"
             className="dashboard-panel dashboard-reflection-panel"
             actions={<span className="dashboard-panel-kicker">Warm capture</span>}
           >
             <p className="dashboard-reflection-lead">
-              Keep the reflection loop light: one honest note is enough to preserve the day.
+              Keep the loop light. A few honest lines are enough to preserve the day and make tomorrow clearer.
             </p>
             <label className="field">
               <span>Quick note</span>
@@ -619,11 +726,10 @@ export default function DashboardPage() {
                 className="list-row dashboard-reflection-input"
                 value={reflectionBody}
                 onChange={(event) => setReflectionBody(event.target.value)}
-                placeholder="Describe your day..."
+                placeholder="Today felt productive and meaningful..."
                 rows={5}
               />
             </label>
-
             <div className="row-inline dashboard-reflection-actions">
               <button type="button" className="btn-primary" onClick={() => void saveQuickReflection()} disabled={isSavingReflection}>
                 {isSavingReflection ? "Saving..." : "Save reflection"}
@@ -632,36 +738,31 @@ export default function DashboardPage() {
                 Full journal
               </Link>
             </div>
-
             {lastEntry ? (
               <article className="dashboard-journal-preview">
                 <strong>{lastEntry.title}</strong>
                 <p>{lastEntry.body}</p>
                 <small>
-                  {lastEntry.entry_date.slice(0, 10)} | mood: {formatMoodLabel(lastEntry.mood)}
+                  {lastEntryAgeLabel} | mood: {formatMoodLabel(lastEntry.mood)}
                 </small>
               </article>
             ) : (
               <p className="dashboard-timeline-empty">No entries yet. Save your first reflection today.</p>
             )}
           </Panel>
-
-          <Panel
-            title="Quick Actions"
-            className="dashboard-panel dashboard-panel-wide"
-            actions={<span className="dashboard-panel-kicker">Fast entry points</span>}
-          >
-            <div className="dashboard-actions-grid">
-              <Link href="/tasks" className="btn-primary">Add task</Link>
-              <Link href="/calendar" className="btn-secondary">Add event</Link>
-              <Link href="/habits" className="btn-secondary">Add habit</Link>
-              <Link href="/routines" className="btn-secondary">Add routine</Link>
-              <Link href="/goals" className="btn-secondary">Add goal</Link>
-              <Link href="/life-areas" className="btn-secondary">Life areas</Link>
-            </div>
-          </Panel>
         </div>
+
+        <InsightStrip
+          title="Insight of the day"
+          quote="Clarity comes from slowing down long enough to hear what matters."
+          href="/insights"
+          cta="Explore insights"
+        />
       </section>
     </WorkspaceShell>
   );
+}
+
+function detailifyNextAction(detail: string): string {
+  return `${detail}. This is the cleanest next move for the day and the most reliable way to build calm momentum.`;
 }

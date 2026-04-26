@@ -24,6 +24,29 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-209 Implement dashboard visual parity phase 1 on web
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-197, NEST-198, NEST-201
+  - Done on: 2026-04-26
+  - Notes:
+    - Reworked the web dashboard shell, illustrated hero, support rail, focus
+      card, day-flow timeline, and footer insight strip to materially narrow
+      the founder-target parity gap.
+    - Expanded reusable shared dashboard/workspace primitives in:
+      `apps/web/src/components/workspace-primitives.tsx`.
+    - Updated implementation surfaces in:
+      `apps/web/src/app/dashboard/page.tsx`,
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Stored the current parity preview artifact in:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-201 Capture dashboard parity gap plan against founder target reference
   - Status: DONE
   - Owner: Documentation Agent

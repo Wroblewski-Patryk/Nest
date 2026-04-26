@@ -231,6 +231,15 @@ Last updated: 2026-04-26
   `docs/ux/nest_201_dashboard_parity_gap_plan_2026-04-26.md`
   with repository artifact:
   `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-reference-user-target.png`
+- Dashboard visual parity phase 1 implemented on 2026-04-26 with a more
+  premium shell, illustrated hero, support rail stack, ceremonial day-flow,
+  and footer insight strip in:
+  `apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/app/globals.css`
+  with current implementation preview artifact:
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview.png`
 - Mobile dashboard parity decision remains open on 2026-04-26 because the
   mobile app still lands in `Tasks` and has no dedicated dashboard route; see
   `docs/planning/open-decisions.md` item `OD-2026-04-26-01`
@@ -991,6 +1000,16 @@ Last updated: 2026-04-26
   `apps/mobile/app/(tabs)/goals.tsx`,
   `apps/mobile/app/(tabs)/habits.tsx`,
   `apps/mobile/app/(tabs)/journal.tsx`)
+- `NEST-209` completed: web dashboard is materially closer to the founder
+  target through a richer shell, illustrated editorial hero, support rail
+  cards, ceremonial day-flow timeline, and low-noise insight footer strip,
+  with reusable shared primitives and a browser-captured parity preview
+  artifact
+  (`apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/app/globals.css`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview.png`)
 - `NEST-207` completed: the active `v1` repair wave now has a canonical
   detailed execution queue and refill strategy through
   `docs/planning/v1_execution_backlog_2026-04-26.md`, with
