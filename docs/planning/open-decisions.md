@@ -37,3 +37,24 @@
 - Owner: Product + Review Agent
 - Due date: 2026-04-05
 - Status: OPEN
+
+## Decision Item
+- ID: OD-2026-04-26-01
+- Context: approved product policy says users land on the main dashboard after
+  onboarding/authentication, but the current mobile app still opens into the
+  `Tasks` tab (`apps/mobile/app/(tabs)/index.tsx`) and has no dedicated
+  dashboard route yet.
+- Options:
+  - Add a dedicated mobile dashboard tab/route and make it the authenticated
+    landing surface, then shift `Tasks` into its own tab position.
+  - Keep `Tasks` as the mobile home surface and reinterpret it as the mobile
+    dashboard, then align architecture/docs to that rule explicitly.
+  - Add a dedicated mobile dashboard route as the post-login landing surface,
+    but keep it outside the persistent tab bar and leave `Tasks` as the central
+    primary tab action.
+- Recommendation: prefer a dedicated mobile dashboard route so the product
+  keeps one clear post-login concept across web and mobile without turning
+  `Tasks` into an overloaded home substitute.
+- Owner: Founder + Planning Agent
+- Due date: 2026-04-27
+- Status: OPEN

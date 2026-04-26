@@ -9,7 +9,7 @@ import {
   DashboardFocusCard,
   DashboardHeroBand,
   DashboardTimelineGroup,
-} from "@/components/dashboard-primitives";
+} from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
 import { nestApiClient } from "@/lib/api-client";
 

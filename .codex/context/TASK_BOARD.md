@@ -24,6 +24,25 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-199 Implement canonical journal and reflection entry surface on web
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-198
+  - Done on: 2026-04-26
+  - Notes:
+    - Rebuilt web `/journal` around the canonical hero/focus/context grammar
+      while preserving journal-entry and life-area CRUD flows.
+    - Generalized reusable view primitives into:
+      `apps/web/src/components/workspace-primitives.tsx`.
+    - Updated journal route and shared styling in:
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-198 Implement canonical web dashboard hierarchy with reusable primitives
   - Status: DONE
   - Owner: Execution Agent
@@ -32,8 +51,8 @@ Last updated: 2026-04-26
   - Notes:
     - Rebuilt web `/dashboard` around the canonical hero/focus/timeline/context
       hierarchy.
-    - Added reusable dashboard primitives in:
-      `apps/web/src/components/dashboard-primitives.tsx`.
+    - Added reusable workspace primitives in:
+      `apps/web/src/components/workspace-primitives.tsx`.
     - Updated dashboard route and shared styling in:
       `apps/web/src/app/dashboard/page.tsx`,
       `apps/web/src/app/globals.css`.

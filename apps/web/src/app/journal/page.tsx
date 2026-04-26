@@ -3,6 +3,11 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
+import {
+  DashboardContextRibbon,
+  DashboardFocusCard,
+  DashboardHeroBand,
+} from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
 import { nestApiClient } from "@/lib/api-client";
 
@@ -22,6 +27,19 @@ type JournalEntryItem = {
   entry_date: string;
   life_areas?: LifeAreaItem[];
   lifeAreas?: LifeAreaItem[];
+};
+
+type LifeAreaBalanceResponse = {
+  data: Array<{
+    life_area_id: string;
+    name: string;
+    target_share: number;
+    actual_share: number;
+    balance_score: number;
+  }>;
+  meta: {
+    global_balance_score: number;
+  };
 };
 
 type ApiRequestInit = Omit<RequestInit, "body"> & {
@@ -76,6 +94,7 @@ export default function JournalPage() {
   const router = useRouter();
   const [entries, setEntries] = useState<JournalEntryItem[]>([]);
   const [lifeAreas, setLifeAreas] = useState<LifeAreaItem[]>([]);
+  const [balance, setBalance] = useState<LifeAreaBalanceResponse | null>(null);
   const [isCreatingEntry, setIsCreatingEntry] = useState(false);
   const [isCreatingArea, setIsCreatingArea] = useState(false);
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
@@ -109,13 +128,15 @@ export default function JournalPage() {
   }, [router]);
 
   const loadData = useCallback(async () => {
-    const [entriesResponse, lifeAreasResponse] = await Promise.all([
+    const [entriesResponse, lifeAreasResponse, balanceResponse] = await Promise.all([
       nestApiClient.getJournalEntries({ per_page: 100 }),
       apiRequest<{ data: LifeAreaItem[] }>("/life-areas"),
+      nestApiClient.getLifeAreaBalance({ window_days: 30 }),
     ]);
 
     setEntries((entriesResponse.data ?? []) as JournalEntryItem[]);
     setLifeAreas((lifeAreasResponse.data ?? []) as LifeAreaItem[]);
+    setBalance(balanceResponse as LifeAreaBalanceResponse);
   }, []);
 
   useEffect(() => {
@@ -136,7 +157,7 @@ export default function JournalPage() {
           return;
         }
         setErrorMessage(getErrorMessage(error));
-      })
+      });
     return () => {
       mounted = false;
     };
@@ -372,335 +393,323 @@ export default function JournalPage() {
     return [...lifeAreas].sort((a, b) => b.weight - a.weight)[0]?.name ?? "n/a";
   }, [lifeAreas]);
 
+  const latestEntry = entries[0] ?? null;
+  const latestEntryAreas = latestEntry ? latestEntry.life_areas ?? latestEntry.lifeAreas ?? [] : [];
+  const latestEntryDate = latestEntry?.entry_date ? latestEntry.entry_date.slice(0, 10) : "No entry yet";
+  const strongestBalanceDrift = useMemo(() => {
+    if (!balance?.data.length) {
+      return null;
+    }
+
+    return [...balance.data].sort(
+      (left, right) =>
+        Math.abs(right.actual_share - right.target_share) -
+        Math.abs(left.actual_share - left.target_share)
+    )[0];
+  }, [balance]);
+
+  const journalSummary =
+    entries.length > 0
+      ? `You already have ${entries.length} reflections in the system. Keep the loop honest and lightweight instead of turning it into admin work.`
+      : "This space should feel like a warm checkpoint for the day. Start with one clear reflection and let the rhythm build naturally.";
+
+  const contextItems = [
+    {
+      label: "Reflection cadence",
+      value: entries.length > 0 ? `${entries.length} entries` : "Fresh start",
+      detail: latestEntry
+        ? `Latest note saved on ${latestEntryDate}.`
+        : "No reflections yet. One honest note is enough to begin.",
+    },
+    {
+      label: "Life-area weight",
+      value: lifeAreas.length > 0 ? topLifeArea : "Unmapped",
+      detail: lifeAreas.length > 0
+        ? `${topLifeArea} currently carries the strongest declared weight.`
+        : "Create your first life area to anchor reflections in real context.",
+      href: "/life-areas",
+    },
+    {
+      label: "Balance signal",
+      value: balance ? `${balance.meta.global_balance_score.toFixed(1)} / 100` : "Pending",
+      detail: strongestBalanceDrift
+        ? `${strongestBalanceDrift.name} is drifting most from target share.`
+        : "Balance insight appears after activity starts accumulating.",
+      href: "/life-areas",
+    },
+  ];
+
+  const focusCard = latestEntry
+    ? {
+        title: latestEntry.title,
+        detail: `Continue the reflection loop from ${latestEntryDate} or review how it connects to the rest of life.`,
+        href: "/life-areas",
+        cta: "Review life balance",
+        supportingValue: latestEntryAreas.length > 0 ? latestEntryAreas.map((area) => area.name).join(", ") : "No life areas linked yet",
+      }
+    : {
+        title: "Capture today's first honest reflection",
+        detail: "Write one short note about what worked, what felt heavy, and what deserves a calmer tomorrow.",
+        href: "#journal-quick-reflection",
+        cta: "Start reflection",
+        supportingValue: "Keep it light and concrete",
+      };
+
   return (
     <WorkspaceShell
       title="Journal + Reflection"
-      subtitle="Capture what happened, how you felt, and which life areas need attention."
+      subtitle="Capture what happened, how it felt, and where life is asking for more care."
       module="journal"
     >
+      <div className="journal-shell">
+        <div className="journal-primary-grid">
+          <DashboardHeroBand
+            brand="Nest"
+            dateLabel={new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            })}
+            title="Reflection should feel warm, not clinical."
+            summary={journalSummary}
+            progressLabel={
+              latestEntry
+                ? `Latest mood: ${formatMood(latestEntry.mood)}. ${latestEntryAreas.length} linked life areas help give the note context.`
+                : "Once you save your first entry, this space will start building a usable memory and balance signal."
+            }
+            progressPercent={Math.min(100, Math.max(12, entries.length * 8))}
+            metrics={[
+              { label: "Entries", value: String(entries.length), emphasis: "accent" },
+              { label: "Life areas", value: String(lifeAreas.length) },
+              { label: "Top area", value: topLifeArea },
+              { label: "Balance", value: balance ? balance.meta.global_balance_score.toFixed(1) : "n/a" },
+            ]}
+          />
+
+          <DashboardFocusCard
+            kicker="Reflection focus"
+            title={focusCard.title}
+            detail={focusCard.detail}
+            supportingLabel="Current context"
+            supportingValue={focusCard.supportingValue}
+            href={focusCard.href}
+            cta={focusCard.cta}
+          />
+        </div>
+
+        <DashboardContextRibbon title="Journal context" items={contextItems} />
+      </div>
+
       <div className="stack">
         <MetricCard label="Entries total" value={String(entries.length)} />
         <MetricCard label="Life areas" value={String(lifeAreas.length)} />
         <MetricCard label="Top weighted area" value={topLifeArea} />
       </div>
 
-      <Panel title="Quick Reflection">
-        <form className="form-grid" onSubmit={createJournalEntry}>
-          <label className="field">
-            <span>Title</span>
-            <input
-              className="list-row"
-              type="text"
-              value={entryTitle}
-              onChange={(event) => setEntryTitle(event.target.value)}
-              placeholder="Example: Calm planning evening"
-              disabled={isCreatingEntry}
-            />
-          </label>
-          <label className="field">
-            <span>Reflection</span>
-            <textarea
-              className="list-row"
-              value={entryBody}
-              onChange={(event) => setEntryBody(event.target.value)}
-              placeholder="What worked? What felt heavy? What to improve tomorrow?"
-              rows={4}
-              disabled={isCreatingEntry}
-            />
-          </label>
-          <div className="row-inline">
+      <div className="journal-grid">
+        <Panel
+          title="Quick Reflection"
+          className="journal-panel journal-panel-reflection"
+          actions={<span className="dashboard-panel-kicker">Warm capture</span>}
+        >
+          <p className="journal-intro">
+            Use this as a short daily checkpoint. The goal is clarity, not a perfect diary entry.
+          </p>
+
+          <form id="journal-quick-reflection" className="form-grid" onSubmit={createJournalEntry}>
             <label className="field">
-              <span>Mood</span>
-              <select
-                className="list-row"
-                value={entryMood}
-                onChange={(event) =>
-                  setEntryMood(event.target.value as "low" | "neutral" | "good" | "great")
-                }
-                disabled={isCreatingEntry}
-              >
-                <option value="low">Low</option>
-                <option value="neutral">Neutral</option>
-                <option value="good">Good</option>
-                <option value="great">Great</option>
-              </select>
-            </label>
-            <label className="field">
-              <span>Entry date</span>
+              <span>Title</span>
               <input
                 className="list-row"
-                type="date"
-                value={entryDate}
-                onChange={(event) => setEntryDate(event.target.value)}
+                type="text"
+                value={entryTitle}
+                onChange={(event) => setEntryTitle(event.target.value)}
+                placeholder="Example: Calm planning evening"
                 disabled={isCreatingEntry}
               />
             </label>
-          </div>
-          <div className="field">
-            <span>Life areas</span>
-            <div className="row-inline">
-              {lifeAreas.map((area) => (
-                <label key={area.id} className="pill-link">
-                  <input
-                    type="checkbox"
-                    checked={entryLifeAreaIds.includes(area.id)}
-                    onChange={() =>
-                      setEntryLifeAreaIds((current) =>
-                        current.includes(area.id)
-                          ? current.filter((id) => id !== area.id)
-                          : [...current, area.id]
-                      )
-                    }
-                    disabled={isCreatingEntry}
-                  />{" "}
-                  {area.name}
-                </label>
-              ))}
+            <label className="field">
+              <span>Reflection</span>
+              <textarea
+                className="list-row"
+                value={entryBody}
+                onChange={(event) => setEntryBody(event.target.value)}
+                placeholder="What worked? What felt heavy? What to improve tomorrow?"
+                rows={5}
+                disabled={isCreatingEntry}
+              />
+            </label>
+            <div className="journal-form-grid">
+              <label className="field">
+                <span>Mood</span>
+                <select
+                  className="list-row"
+                  value={entryMood}
+                  onChange={(event) =>
+                    setEntryMood(event.target.value as "low" | "neutral" | "good" | "great")
+                  }
+                  disabled={isCreatingEntry}
+                >
+                  <option value="low">Low</option>
+                  <option value="neutral">Neutral</option>
+                  <option value="good">Good</option>
+                  <option value="great">Great</option>
+                </select>
+              </label>
+              <label className="field">
+                <span>Entry date</span>
+                <input
+                  className="list-row"
+                  type="date"
+                  value={entryDate}
+                  onChange={(event) => setEntryDate(event.target.value)}
+                  disabled={isCreatingEntry}
+                />
+              </label>
             </div>
-          </div>
-          <button type="submit" className="btn-primary" disabled={isCreatingEntry}>
-            {isCreatingEntry ? "Saving..." : "Save reflection"}
-          </button>
-        </form>
-      </Panel>
-
-      <Panel title="Life Areas">
-        <form className="form-grid" onSubmit={createLifeArea}>
-          <label className="field">
-            <span>Name</span>
-            <input
-              className="list-row"
-              type="text"
-              value={newAreaName}
-              onChange={(event) => setNewAreaName(event.target.value)}
-              placeholder="Example: Relationships"
-              disabled={isCreatingArea}
-            />
-          </label>
-          <div className="row-inline">
-            <label className="field">
-              <span>Color</span>
-              <input
-                className="list-row"
-                type="color"
-                value={newAreaColor}
-                onChange={(event) => setNewAreaColor(event.target.value)}
-                disabled={isCreatingArea}
-              />
-            </label>
-            <label className="field">
-              <span>Weight</span>
-              <input
-                className="list-row"
-                type="number"
-                min={0}
-                max={100}
-                value={newAreaWeight}
-                onChange={(event) => setNewAreaWeight(event.target.value)}
-                disabled={isCreatingArea}
-              />
-            </label>
-            <button type="submit" className="btn-secondary" disabled={isCreatingArea}>
-              {isCreatingArea ? "Adding..." : "Add area"}
-            </button>
-          </div>
-        </form>
-
-        <ul className="list">
-          {lifeAreas.length === 0 ? (
-            <li className="list-row">
-              <p>No life areas yet. Create one above.</p>
-            </li>
-          ) : (
-            lifeAreas.map((area) => (
-              <li key={area.id} className="list-row">
-                {editingAreaId === area.id ? (
-                  <div className="form-grid">
-                    <label className="field">
-                      <span>Name</span>
-                      <input
-                        className="list-row"
-                        type="text"
-                        value={editAreaName}
-                        onChange={(event) => setEditAreaName(event.target.value)}
-                        disabled={busyAreaId === area.id}
-                      />
-                    </label>
-                    <div className="row-inline">
-                      <label className="field">
-                        <span>Color</span>
-                        <input
-                          className="list-row"
-                          type="color"
-                          value={editAreaColor}
-                          onChange={(event) => setEditAreaColor(event.target.value)}
-                          disabled={busyAreaId === area.id}
-                        />
-                      </label>
-                      <label className="field">
-                        <span>Weight</span>
-                        <input
-                          className="list-row"
-                          type="number"
-                          min={0}
-                          max={100}
-                          value={editAreaWeight}
-                          onChange={(event) => setEditAreaWeight(event.target.value)}
-                          disabled={busyAreaId === area.id}
-                        />
-                      </label>
-                    </div>
-                    <div className="row-inline">
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => void saveLifeAreaEdit(area.id)}
-                        disabled={busyAreaId === area.id}
-                      >
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => setEditingAreaId(null)}
-                        disabled={busyAreaId === area.id}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
+            <div className="field">
+              <span>Life areas</span>
+              <div className="journal-chip-row">
+                {lifeAreas.length === 0 ? (
+                  <p className="journal-empty-copy">No life areas yet. Add one below to make reflections richer.</p>
                 ) : (
-                  <>
-                    <div>
-                      <div className="row-inline">
-                        <span className="dot" style={{ backgroundColor: area.color }} />
-                        <strong>{area.name}</strong>
-                      </div>
-                      <p>Weight: {area.weight}%</p>
-                    </div>
-                    <div className="row-inline">
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => startLifeAreaEdit(area)}
-                        disabled={busyAreaId === area.id}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => void deleteLifeArea(area.id)}
-                        disabled={busyAreaId === area.id}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </>
+                  lifeAreas.map((area) => (
+                    <label key={area.id} className="journal-chip">
+                      <input
+                        type="checkbox"
+                        checked={entryLifeAreaIds.includes(area.id)}
+                        onChange={() =>
+                          setEntryLifeAreaIds((current) =>
+                            current.includes(area.id)
+                              ? current.filter((id) => id !== area.id)
+                              : [...current, area.id]
+                          )
+                        }
+                        disabled={isCreatingEntry}
+                      />
+                      <span>{area.name}</span>
+                    </label>
+                  ))
                 )}
-              </li>
-            ))
-          )}
-        </ul>
-      </Panel>
+              </div>
+            </div>
+            <div className="journal-action-row">
+              <button type="submit" className="btn-primary" disabled={isCreatingEntry}>
+                {isCreatingEntry ? "Saving..." : "Save reflection"}
+              </button>
+            </div>
+          </form>
+        </Panel>
 
-      <Panel title="Recent Entries">
-        <ul className="list">
-          {entries.length === 0 ? (
-            <li className="list-row">
-              <p>No entries yet. Add the first one above.</p>
-            </li>
-          ) : (
-            entries.map((entry) => {
-              const linkedAreas = entry.life_areas ?? entry.lifeAreas ?? [];
-              return (
-                <li key={entry.id} className="list-row">
-                  {editingEntryId === entry.id ? (
+        <Panel
+          title="Life Areas"
+          className="journal-panel"
+          actions={<span className="dashboard-panel-kicker">Weight and context</span>}
+        >
+          <p className="journal-intro">
+            Life areas keep reflection tied to reality. Weight shows what should matter; balance shows what is actually getting time.
+          </p>
+          <form className="form-grid" onSubmit={createLifeArea}>
+            <label className="field">
+              <span>Name</span>
+              <input
+                className="list-row"
+                type="text"
+                value={newAreaName}
+                onChange={(event) => setNewAreaName(event.target.value)}
+                placeholder="Example: Relationships"
+                disabled={isCreatingArea}
+              />
+            </label>
+            <div className="journal-form-grid journal-life-area-form">
+              <label className="field">
+                <span>Color</span>
+                <input
+                  className="list-row"
+                  type="color"
+                  value={newAreaColor}
+                  onChange={(event) => setNewAreaColor(event.target.value)}
+                  disabled={isCreatingArea}
+                />
+              </label>
+              <label className="field">
+                <span>Weight</span>
+                <input
+                  className="list-row"
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={newAreaWeight}
+                  onChange={(event) => setNewAreaWeight(event.target.value)}
+                  disabled={isCreatingArea}
+                />
+              </label>
+            </div>
+            <div className="journal-action-row">
+              <button type="submit" className="btn-secondary" disabled={isCreatingArea}>
+                {isCreatingArea ? "Adding..." : "Add area"}
+              </button>
+            </div>
+          </form>
+
+          <ul className="list journal-life-area-list">
+            {lifeAreas.length === 0 ? (
+              <li className="list-row journal-life-area-card">
+                <p>No life areas yet. Create one above.</p>
+              </li>
+            ) : (
+              lifeAreas.map((area) => (
+                <li key={area.id} className="list-row journal-life-area-card">
+                  {editingAreaId === area.id ? (
                     <div className="form-grid">
                       <label className="field">
-                        <span>Title</span>
+                        <span>Name</span>
                         <input
                           className="list-row"
                           type="text"
-                          value={editEntryTitle}
-                          onChange={(event) => setEditEntryTitle(event.target.value)}
-                          disabled={busyEntryId === entry.id}
+                          value={editAreaName}
+                          onChange={(event) => setEditAreaName(event.target.value)}
+                          disabled={busyAreaId === area.id}
                         />
                       </label>
-                      <label className="field">
-                        <span>Reflection</span>
-                        <textarea
-                          className="list-row"
-                          rows={4}
-                          value={editEntryBody}
-                          onChange={(event) => setEditEntryBody(event.target.value)}
-                          disabled={busyEntryId === entry.id}
-                        />
-                      </label>
-                      <div className="row-inline">
+                      <div className="journal-form-grid">
                         <label className="field">
-                          <span>Mood</span>
-                          <select
-                            className="list-row"
-                            value={editEntryMood}
-                            onChange={(event) =>
-                              setEditEntryMood(event.target.value as "low" | "neutral" | "good" | "great")
-                            }
-                            disabled={busyEntryId === entry.id}
-                          >
-                            <option value="low">Low</option>
-                            <option value="neutral">Neutral</option>
-                            <option value="good">Good</option>
-                            <option value="great">Great</option>
-                          </select>
-                        </label>
-                        <label className="field">
-                          <span>Entry date</span>
+                          <span>Color</span>
                           <input
                             className="list-row"
-                            type="date"
-                            value={editEntryDate}
-                            onChange={(event) => setEditEntryDate(event.target.value)}
-                            disabled={busyEntryId === entry.id}
+                            type="color"
+                            value={editAreaColor}
+                            onChange={(event) => setEditAreaColor(event.target.value)}
+                            disabled={busyAreaId === area.id}
                           />
                         </label>
-                      </div>
-                      <div className="field">
-                        <span>Life areas</span>
-                        <div className="row-inline">
-                          {lifeAreas.map((area) => (
-                            <label key={`edit-${entry.id}-${area.id}`} className="pill-link">
-                              <input
-                                type="checkbox"
-                                checked={editEntryLifeAreaIds.includes(area.id)}
-                                onChange={() =>
-                                  setEditEntryLifeAreaIds((current) =>
-                                    current.includes(area.id)
-                                      ? current.filter((id) => id !== area.id)
-                                      : [...current, area.id]
-                                  )
-                                }
-                                disabled={busyEntryId === entry.id}
-                              />{" "}
-                              {area.name}
-                            </label>
-                          ))}
-                        </div>
+                        <label className="field">
+                          <span>Weight</span>
+                          <input
+                            className="list-row"
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={editAreaWeight}
+                            onChange={(event) => setEditAreaWeight(event.target.value)}
+                            disabled={busyAreaId === area.id}
+                          />
+                        </label>
                       </div>
                       <div className="row-inline">
                         <button
                           type="button"
                           className="pill-link"
-                          onClick={() => void saveEntryEdit(entry.id)}
-                          disabled={busyEntryId === entry.id}
+                          onClick={() => void saveLifeAreaEdit(area.id)}
+                          disabled={busyAreaId === area.id}
                         >
                           Save
                         </button>
                         <button
                           type="button"
                           className="pill-link"
-                          onClick={() => setEditingEntryId(null)}
-                          disabled={busyEntryId === entry.id}
+                          onClick={() => setEditingAreaId(null)}
+                          disabled={busyAreaId === area.id}
                         >
                           Cancel
                         </button>
@@ -709,29 +718,28 @@ export default function JournalPage() {
                   ) : (
                     <>
                       <div>
-                        <strong>{entry.title}</strong>
+                        <div className="row-inline">
+                          <span className="dot" style={{ backgroundColor: area.color }} />
+                          <strong>{area.name}</strong>
+                        </div>
                         <p>
-                          {entry.entry_date?.slice(0, 10)} | mood: {formatMood(entry.mood)}
+                          Weight: {area.weight}%{balance?.data ? ` | balance ${balance.data.find((item) => item.life_area_id === area.id)?.balance_score.toFixed(1) ?? "n/a"}` : ""}
                         </p>
-                        <p>{entry.body.slice(0, 140)}</p>
-                        {linkedAreas.length > 0 ? (
-                          <p>Areas: {linkedAreas.map((area) => area.name).join(", ")}</p>
-                        ) : null}
                       </div>
                       <div className="row-inline">
                         <button
                           type="button"
                           className="pill-link"
-                          onClick={() => startEntryEdit(entry)}
-                          disabled={busyEntryId === entry.id}
+                          onClick={() => startLifeAreaEdit(area)}
+                          disabled={busyAreaId === area.id}
                         >
                           Edit
                         </button>
                         <button
                           type="button"
                           className="pill-link"
-                          onClick={() => void deleteEntry(entry.id)}
-                          disabled={busyEntryId === entry.id}
+                          onClick={() => void deleteLifeArea(area.id)}
+                          disabled={busyAreaId === area.id}
                         >
                           Delete
                         </button>
@@ -739,23 +747,159 @@ export default function JournalPage() {
                     </>
                   )}
                 </li>
-              );
-            })
-          )}
-        </ul>
-      </Panel>
-
-      {feedback ? (
-        <Panel title="Status">
-          <p className="callout">{feedback}</p>
+              ))
+            )}
+          </ul>
         </Panel>
-      ) : null}
 
-      {errorMessage ? (
-        <Panel title="Error">
-          <p className="callout state-error">{errorMessage}</p>
+        <Panel
+          title="Recent Entries"
+          className="journal-panel journal-panel-wide"
+          actions={<span className="dashboard-panel-kicker">Memory in motion</span>}
+        >
+          <ul className="list journal-entry-list">
+            {entries.length === 0 ? (
+              <li className="list-row journal-entry-card">
+                <p>No entries yet. Add the first one above.</p>
+              </li>
+            ) : (
+              entries.map((entry) => {
+                const linkedAreas = entry.life_areas ?? entry.lifeAreas ?? [];
+                return (
+                  <li key={entry.id} className="list-row journal-entry-card">
+                    {editingEntryId === entry.id ? (
+                      <div className="form-grid">
+                        <label className="field">
+                          <span>Title</span>
+                          <input
+                            className="list-row"
+                            type="text"
+                            value={editEntryTitle}
+                            onChange={(event) => setEditEntryTitle(event.target.value)}
+                            disabled={busyEntryId === entry.id}
+                          />
+                        </label>
+                        <label className="field">
+                          <span>Reflection</span>
+                          <textarea
+                            className="list-row"
+                            rows={4}
+                            value={editEntryBody}
+                            onChange={(event) => setEditEntryBody(event.target.value)}
+                            disabled={busyEntryId === entry.id}
+                          />
+                        </label>
+                        <div className="journal-form-grid">
+                          <label className="field">
+                            <span>Mood</span>
+                            <select
+                              className="list-row"
+                              value={editEntryMood}
+                              onChange={(event) =>
+                                setEditEntryMood(event.target.value as "low" | "neutral" | "good" | "great")
+                              }
+                              disabled={busyEntryId === entry.id}
+                            >
+                              <option value="low">Low</option>
+                              <option value="neutral">Neutral</option>
+                              <option value="good">Good</option>
+                              <option value="great">Great</option>
+                            </select>
+                          </label>
+                          <label className="field">
+                            <span>Entry date</span>
+                            <input
+                              className="list-row"
+                              type="date"
+                              value={editEntryDate}
+                              onChange={(event) => setEditEntryDate(event.target.value)}
+                              disabled={busyEntryId === entry.id}
+                            />
+                          </label>
+                        </div>
+                        <div className="field">
+                          <span>Life areas</span>
+                          <div className="journal-chip-row">
+                            {lifeAreas.map((area) => (
+                              <label key={`edit-${entry.id}-${area.id}`} className="journal-chip">
+                                <input
+                                  type="checkbox"
+                                  checked={editEntryLifeAreaIds.includes(area.id)}
+                                  onChange={() =>
+                                    setEditEntryLifeAreaIds((current) =>
+                                      current.includes(area.id)
+                                        ? current.filter((id) => id !== area.id)
+                                        : [...current, area.id]
+                                    )
+                                  }
+                                  disabled={busyEntryId === entry.id}
+                                />
+                                <span>{area.name}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="row-inline">
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => void saveEntryEdit(entry.id)}
+                            disabled={busyEntryId === entry.id}
+                          >
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => setEditingEntryId(null)}
+                            disabled={busyEntryId === entry.id}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div>
+                          <strong>{entry.title}</strong>
+                          <p>
+                            {entry.entry_date?.slice(0, 10)} | mood: {formatMood(entry.mood)}
+                          </p>
+                          <p className="journal-entry-body">{entry.body.slice(0, 240)}</p>
+                          {linkedAreas.length > 0 ? (
+                            <p>Areas: {linkedAreas.map((area) => area.name).join(", ")}</p>
+                          ) : null}
+                        </div>
+                        <div className="row-inline">
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => startEntryEdit(entry)}
+                            disabled={busyEntryId === entry.id}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="pill-link"
+                            onClick={() => void deleteEntry(entry.id)}
+                            disabled={busyEntryId === entry.id}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </li>
+                );
+              })
+            )}
+          </ul>
         </Panel>
-      ) : null}
+      </div>
+
+      {errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
+      {!errorMessage && feedback ? <p className="callout state-success">{feedback}</p> : null}
     </WorkspaceShell>
   );
 }
