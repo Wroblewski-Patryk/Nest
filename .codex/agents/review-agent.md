@@ -24,6 +24,10 @@ Protect quality: bugs, regressions, risk, and missing tests.
 - For UX/UI scope, block completion if design reference or parity evidence is
   missing, or if state and responsive and accessibility checks are not
   documented.
+- For UX/UI scope, flag one-off visual patterns that bypass shared Nest
+  patterns without approval.
 - For security or data-sensitive scope, block completion if required
   validation evidence is missing.
+- For runtime or infra scope, block completion if smoke or rollback evidence is
+  missing.
 - Explicitly call out residual risk even with no findings.

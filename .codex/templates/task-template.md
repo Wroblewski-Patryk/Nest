@@ -4,6 +4,8 @@
 
 - ID: NEST-XXX
 - Title:
+- Task Type: fix | feature | refactor | design | research | release
+- Current Stage: intake | analysis | planning | implementation | verification | release | post-release
 - Status: BACKLOG | READY | IN_PROGRESS | BLOCKED | REVIEW | DONE
 - Owner: Documentation Agent | Planning Agent | Execution Agent | Review Agent
 - Depends on:
@@ -15,23 +17,33 @@ Where this work sits in the current Nest architecture and execution wave.
 ## Goal
 What must be achieved by this task.
 
+## Deliverable For This Stage
+Describe exactly what should be produced in the current stage only.
+
 ## Constraints
 - use existing systems and approved mechanisms
 - preserve tenancy, localization, and actor boundaries
 - preserve web/mobile parity for core module behavior
 - do not introduce workaround-only paths
 - do not duplicate logic
+- stay within the declared current stage unless explicit approval changes it
 
 ## Definition of Done
 - [ ] concrete completion condition 1
 - [ ] concrete completion condition 2
 - [ ] concrete completion condition 3
 
+## Stage Exit Criteria
+- [ ] The output matches the declared `Current Stage`.
+- [ ] Work from later stages was not mixed in without explicit approval.
+- [ ] Risks and assumptions for this stage are stated clearly.
+
 ## Forbidden
 - new systems without approval
 - duplicated logic or parallel implementations of the same contract
 - temporary bypasses, hacks, or workaround-only paths
 - architecture changes without explicit approval
+- implicit stage skipping
 
 ## Validation Evidence
 
@@ -49,22 +61,29 @@ What must be achieved by this task.
 - Approval reference if architecture changed:
 - Follow-up architecture doc updates:
 
-## UX Source and MCP Evidence (required for UX/UI tasks)
+## UX/UI Evidence (required for UX/UI tasks)
 
 - Source of truth type: figma | approved_snapshot | stitch_exception
 - Design source reference:
 - Stitch used: yes | no
 - Exception workflow reference (if stitch_exception):
+- Experience-quality bar reviewed: yes | no
+- Visual-direction brief reviewed: yes | no
 - Existing shared pattern reused:
 - New shared pattern introduced: yes | no
+- Design-memory entry reused:
+- Design-memory update required: yes | no
 - State checks: loading | empty | error | success
 - Responsive checks: desktop | tablet | mobile
+- Input-mode checks: touch | pointer | keyboard
 - Accessibility checks:
 - Parity evidence:
 - MCP evidence links:
 
 ## Review Checklist (mandatory)
 
+- [ ] Current stage is declared and respected.
+- [ ] Deliverable for the current stage is complete.
 - [ ] Architecture alignment confirmed.
 - [ ] Existing systems were reused where applicable.
 - [ ] No workaround paths were introduced.

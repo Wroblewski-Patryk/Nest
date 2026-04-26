@@ -3,8 +3,8 @@
 ## Purpose
 
 This repository follows a project-specific multi-agent workflow so execution
-can move quickly without losing architecture truth, parity discipline, or task
-context across API, web, mobile, and docs.
+can move quickly without losing architecture truth, parity discipline, UX
+quality, or task context across API, web, mobile, and docs.
 
 ## Canonical Files
 
@@ -23,7 +23,8 @@ context across API, web, mobile, and docs.
 - `docs/planning/mvp-next-commits.md`
 - `docs/planning/open-decisions.md`
 - `docs/planning/next_execution_wave_2026-03-21.md` (fallback context)
-- `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md` (fallback context)
+- `docs/planning/human_ai_dual_actor_execution_plan_2026-03-31.md`
+  (fallback context)
 
 ### Governance
 
@@ -42,6 +43,12 @@ context across API, web, mobile, and docs.
 - `docs/architecture/system-architecture.md`
 - `docs/architecture/tech-stack.md`
 - `docs/ux/ux-ui-mcp-collaboration.md`
+- `docs/ux/visual-direction-brief.md`
+- `docs/ux/experience-quality-bar.md`
+- `docs/ux/design-memory.md`
+- `docs/ux/screen-quality-checklist.md`
+- `docs/ux/anti-patterns.md`
+- `docs/ux/brand-personality-tokens.md`
 
 ## Core Rules
 
@@ -67,7 +74,18 @@ When architecture and implementation clash:
 2. propose 2 to 3 valid options
 3. wait for explicit user decision
 
-### 4. Scope And Delivery Discipline
+### 4. Task Contract Is Mandatory
+
+Every task must be written using `.codex/templates/task-template.md` and must
+include:
+
+- `Context`
+- `Goal`
+- `Constraints`
+- `Definition of Done`
+- `Forbidden`
+
+### 5. Scope And Delivery Discipline
 
 - Keep changes tiny, testable, and reversible.
 - Run relevant validations before commit.
@@ -75,20 +93,79 @@ When architecture and implementation clash:
 - Keep planning docs, task board, project state, and architecture docs in sync
   when repo truth changes.
 
-### 5. Nest-Specific Runtime Constraints
+### 6. Stage-Based Delivery Workflow
+
+Every task must declare its current delivery stage and the output expected from
+that stage.
+
+Supported stages:
+- `intake`
+- `analysis`
+- `planning`
+- `implementation`
+- `verification`
+- `release`
+- `post-release`
+
+Rules:
+- Do not skip stages implicitly.
+- Do not implement during `analysis` or `planning` unless explicitly requested.
+- Do not declare a task complete without `verification` evidence.
+- If missing information materially affects quality or risk, stop at the
+  current stage and surface the gap.
+
+### 7. Nest-Specific Runtime Constraints
 
 - preserve multi-tenant isolation and data ownership boundaries
 - preserve human and AI actor contract boundaries
 - preserve web and mobile parity for core module behavior
 - preserve localization baseline (`en`, `pl`) and locale-aware routing behavior
 
-### 6. UX/UI Contract
+### 8. UX/UI Contract
 
 - Primary source: Figma MCP when available.
 - Stitch may be used for ideation only, except approved exception workflow:
   - `docs/ux/ux_stitch_source_of_truth_exception_workflow.md`
 - For UX-heavy work, require states, responsive checks, accessibility checks,
   and parity evidence.
+- Reuse existing shared patterns before shipping route-local styling.
+- If no approved pattern fits, create a reusable pattern and record it in
+  `docs/ux/design-memory.md`.
+- Use `docs/ux/visual-direction-brief.md` before broad UI refresh work.
+- Use `docs/ux/screen-quality-checklist.md` before calling a screen polished.
+- Avoid normalizing mistakes listed in `docs/ux/anti-patterns.md`.
+- Translate brand intent into practical UI decisions through
+  `docs/ux/brand-personality-tokens.md`.
+
+### 9. Commit And Validation Contract
+
+- Keep commits tiny, single-purpose, and reversible.
+- Before creating a commit, run local quality gates relevant to the touched
+  scope.
+- Do not create a commit when required quality gates fail, unless the user
+  explicitly approves a temporary exception.
+
+## Agent Catalog
+
+- Planner: `.agents/prompts/planner.md` or `.claude/agents/planner.agent.md`
+- Product Docs: `.agents/prompts/product-docs.md` or
+  `.claude/agents/product-docs.agent.md`
+- Backend Builder: `.agents/prompts/backend-builder.md` or
+  `.claude/agents/backend-builder.agent.md`
+- Frontend Builder: `.agents/prompts/frontend-builder.md` or
+  `.claude/agents/frontend-builder.agent.md`
+- QA/Test: `.agents/prompts/qa-test.md` or `.claude/agents/qa-test.agent.md`
+- Security: `.agents/prompts/security-auditor.md` or
+  `.claude/agents/security-auditor.agent.md`
+- DB/Migrations: `.agents/prompts/db-migrations.md` or
+  `.claude/agents/db-migrations.agent.md`
+- Ops/Release: `.agents/prompts/ops-release.md` or
+  `.claude/agents/ops-release.agent.md`
+- Code Review: `.agents/prompts/code-reviewer.md`
+- Codex Documentation Agent: `.codex/agents/documentation-agent.md`
+- Codex Planning Agent: `.codex/agents/planning-agent.md`
+- Codex Execution Agent: `.codex/agents/execution-agent.md`
+- Codex Review Agent: `.codex/agents/review-agent.md`
 
 ## Project Validation Baseline
 

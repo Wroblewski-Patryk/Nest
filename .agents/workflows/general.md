@@ -41,6 +41,12 @@ description: Workspace rules for Nest (LifeOS)
 - Keep desktop, tablet, mobile, and accessibility evidence explicit.
 - Maintain parity between web and mobile for core module behavior.
 - Reuse existing shared UI patterns before adding one-off variants.
+- Use `docs/ux/visual-direction-brief.md` when setting or changing visual
+  direction.
+- Use `docs/ux/experience-quality-bar.md` for substantial UI review.
+- Record reusable UI decisions and proven patterns in `docs/ux/design-memory.md`.
+- Use `docs/ux/screen-quality-checklist.md` before calling a screen polished.
+- Avoid recurring traps in `docs/ux/anti-patterns.md`.
 - Figma is primary when available.
 - Stitch is draft-only unless approved exception workflow is documented.
 
@@ -56,6 +62,10 @@ description: Workspace rules for Nest (LifeOS)
 - Keep changes scoped and reversible.
 - Require acceptance evidence before completion.
 - Keep planning docs and task board synchronized.
+- Declare the current delivery stage in each task and keep output aligned to
+  that stage only.
+- Do not skip from analysis or planning straight to implementation unless
+  explicitly requested.
 - Follow the loop:
   `plan -> implement -> test -> architecture review -> sync context -> repeat`.
 - Apply validation commands from `.codex/context/PROJECT_STATE.md` before every

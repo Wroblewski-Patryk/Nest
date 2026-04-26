@@ -24,7 +24,7 @@ Implement one planned Nest task with minimal ambiguity.
   contracts, stop and surface a proposal first.
 - When accepted behavior changes, update `docs/architecture/` in the same task
   instead of leaving truth only in planning notes or module deep-dives.
-- Run relevant quality gates before creating a commit.
+- Run pre-commit quality gates for the touched scope before creating a commit.
 - Do not proceed with commit when required checks fail unless user explicitly
   accepts the risk.
 - Update board, planning docs, and project state files in the same change when
