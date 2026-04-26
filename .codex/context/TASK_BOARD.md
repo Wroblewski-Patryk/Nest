@@ -24,6 +24,28 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-210 Refine dashboard parity toward founder reference on web
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-209
+  - Done on: 2026-04-26
+  - Notes:
+    - Removed duplicate hero/header feel from the dashboard and moved the page
+      closer to the founder reference lower-card arrangement.
+    - Replaced the secondary lower reflection block with a target-closer
+      `Tasks + Habits` pair and refined sparse-data fallback presentation.
+    - Updated implementation in:
+      `apps/web/src/app/dashboard/page.tsx`,
+      `apps/web/src/components/workspace-primitives.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Refreshed preview artifact:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-209 Implement dashboard visual parity phase 1 on web
   - Status: DONE
   - Owner: Execution Agent

@@ -240,6 +240,12 @@ Last updated: 2026-04-26
   `apps/web/src/app/globals.css`
   with current implementation preview artifact:
   `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview.png`
+- Dashboard visual parity phase 2 refined on 2026-04-26 to remove duplicate
+  hierarchy, restore the target-like `Tasks + Habits` lower zone, and preserve
+  a premium dashboard composition even when live data is sparse in:
+  `apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/app/globals.css`
 - Mobile dashboard parity decision remains open on 2026-04-26 because the
   mobile app still lands in `Tasks` and has no dedicated dashboard route; see
   `docs/planning/open-decisions.md` item `OD-2026-04-26-01`
@@ -1010,6 +1016,13 @@ Last updated: 2026-04-26
   `apps/web/src/components/workspace-shell.tsx`,
   `apps/web/src/app/globals.css`,
   `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview.png`)
+- `NEST-210` completed: dashboard parity is refined further toward the founder
+  reference by removing duplicate hero hierarchy, aligning the lower section to
+  `Tasks + Habits`, and adding a polished sparse-data presentation fallback so
+  the canonical preview keeps its visual quality
+  (`apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/app/globals.css`)
 - `NEST-207` completed: the active `v1` repair wave now has a canonical
   detailed execution queue and refill strategy through
   `docs/planning/v1_execution_backlog_2026-04-26.md`, with

@@ -28,7 +28,7 @@ type FocusCardProps = {
 };
 
 type HeroBandProps = {
-  brand: string;
+  brand?: string;
   dateLabel: string;
   weatherLabel?: string;
   title: string;
@@ -133,10 +133,7 @@ export function DashboardHeroBand({
   return (
     <article className="dashboard-hero-band">
       <div className="dashboard-hero-header">
-        <div className="dashboard-hero-brand-lockup">
-          <h2>{brand}</h2>
-          <p>{title}</p>
-        </div>
+        {brand ? <span className="dashboard-hero-kicker">{brand}</span> : <span />}
         <div className="dashboard-hero-utility">
           <span>{dateLabel}</span>
           {weatherLabel ? <small>{weatherLabel}</small> : null}
@@ -147,7 +144,7 @@ export function DashboardHeroBand({
         <CircularProgress value={progressPercent} />
 
         <div className="dashboard-hero-story">
-          <strong>Today at a glance</strong>
+          <strong>{title}</strong>
           <p>{summary}</p>
           <small>{progressLabel}</small>
         </div>

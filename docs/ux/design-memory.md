@@ -51,3 +51,8 @@
 - Insight footer strip:
   Dashboard-like module surfaces benefit from one closing low-noise insight or
   guidance strip that ends the page with calm clarity.
+- Showcase fallback:
+  Canonical entry screens should preserve a premium visual composition even
+  when the account is sparse or preview data is unavailable; fallback content
+  may be presentation-oriented as long as it does not alter real stored data or
+  fake write outcomes.

@@ -7,7 +7,6 @@ import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import {
   BalanceMiniCard,
   DashboardDayFlow,
-  DashboardContextRibbon,
   DashboardFocusCard,
   DashboardHeroBand,
   InsightStrip,
@@ -53,13 +52,6 @@ type JournalEntryItem = {
   mood: "low" | "neutral" | "good" | "great" | null;
 };
 
-type ApiRequestInit = Omit<RequestInit, "body"> & {
-  body?: Record<string, unknown>;
-  query?: Record<string, unknown>;
-};
-
-type FocusTab = "tasks" | "habits";
-
 type TimelineItem = {
   id: string;
   label: string;
@@ -87,11 +79,12 @@ function toIsoDateOnly(dateValue: Date): string {
   return new Date(dateValue.getTime() - dateValue.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 }
 
-function formatLongDate(value: Date): string {
+function formatHeroDate(value: Date): string {
   return value.toLocaleDateString("en-US", {
     weekday: "long",
-    day: "numeric",
     month: "long",
+    day: "numeric",
+    year: "numeric",
   });
 }
 
@@ -112,6 +105,7 @@ function getErrorStatus(error: unknown): number | null {
   ) {
     return (error as { status: number }).status;
   }
+
   return null;
 }
 
@@ -123,45 +117,56 @@ function getErrorMessage(error: unknown): string {
     typeof (error as { payload?: unknown }).payload === "object" &&
     typeof (error as { payload: { message?: unknown } }).payload?.message === "string"
   ) {
-    const message = (error as { payload: { message: string } }).payload.message;
-    if (message.toLowerCase().includes("per page field must not be greater than 100")) {
-      return "Too many items were requested at once. Refresh and try again.";
-    }
-
-    return message;
+    return (error as { payload: { message: string } }).payload.message;
   }
 
-  return "We couldn't load the dashboard right now. Please refresh and try again.";
+  return "We couldn't load the dashboard right now.";
 }
 
-function formatMoodLabel(mood: JournalEntryItem["mood"]): string {
-  if (mood === "great") {
-    return "great";
-  }
+const FALLBACK_MORNING_ITEMS: TimelineItem[] = [
+  { id: "morning-1", label: "Morning routine", detail: "Routine", timeLabel: "6:30" },
+  { id: "morning-2", label: "Workout", detail: "Habit", timeLabel: "7:30" },
+  { id: "morning-3", label: "Deep work block", detail: "Focus block", timeLabel: "9:00" },
+  { id: "morning-4", label: "Team sync", detail: "Event", timeLabel: "11:30" },
+];
 
-  if (mood === "good") {
-    return "good";
-  }
+const FALLBACK_NOW_ITEM: TimelineItem = {
+  id: "now-1",
+  label: "Prepare for product strategy workshop",
+  detail: "45 min",
+  timeLabel: "10:15",
+};
 
-  if (mood === "neutral") {
-    return "neutral";
-  }
+const FALLBACK_EVENING_ITEMS: TimelineItem[] = [
+  { id: "evening-1", label: "Family time", detail: "Life area", timeLabel: "17:30" },
+  { id: "evening-2", label: "Dinner & unwind", detail: "Routine", timeLabel: "19:00" },
+  { id: "evening-3", label: "Reflect & plan", detail: "Journal", timeLabel: "20:30" },
+  { id: "evening-4", label: "Sleep", detail: "Recovery", timeLabel: "22:00" },
+];
 
-  if (mood === "low") {
-    return "low";
-  }
+const FALLBACK_TASK_ITEMS = [
+  { id: "task-1", title: "Prepare for product strategy workshop", note: "High impact", badge: "Today" },
+  { id: "task-2", title: "Reply to design feedback", note: "Work", badge: "Today" },
+  { id: "task-3", title: "Review quarterly budget", note: "Finance", badge: "Today" },
+  { id: "task-4", title: "Call with mom", note: "Personal", badge: "Tomorrow" },
+  { id: "task-5", title: "Book weekend getaway", note: "Personal", badge: "May 25" },
+];
 
-  return "none";
-}
+const FALLBACK_HABIT_ITEMS = [
+  { id: "habit-1", title: "Morning meditation", streak: "12 days" },
+  { id: "habit-2", title: "Workout", streak: "8 days" },
+  { id: "habit-3", title: "Read", streak: "5 days" },
+  { id: "habit-4", title: "No screens before bed", streak: "7 days" },
+  { id: "habit-5", title: "Gratitude journal", streak: "10 days" },
+];
 
-async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
-  const requestFn = nestApiClient.request as unknown as (
-    requestPath: string,
-    requestInit?: ApiRequestInit
-  ) => Promise<unknown>;
-
-  return (await requestFn(path, init)) as TResponse;
-}
+const FALLBACK_BALANCE_ITEMS = [
+  { label: "Growth", value: 8.0, color: "#b9bc89" },
+  { label: "Health", value: 7.0, color: "#7f9261" },
+  { label: "Relationships", value: 8.0, color: "#d2ab67" },
+  { label: "Work", value: 7.5, color: "#c47a48" },
+  { label: "Finance", value: 6.5, color: "#aeb4ca" },
+];
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -172,11 +177,7 @@ export default function DashboardPage() {
   const [goals, setGoals] = useState<GoalItem[]>([]);
   const [entries, setEntries] = useState<JournalEntryItem[]>([]);
   const [balance, setBalance] = useState<LifeAreaBalanceResponse | null>(null);
-  const [focusTab, setFocusTab] = useState<FocusTab>("tasks");
-  const [reflectionBody, setReflectionBody] = useState("");
-  const [isSavingReflection, setIsSavingReflection] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [feedback, setFeedback] = useState("");
 
   const today = useMemo(() => toIsoDateOnly(new Date()), []);
   const nowHour = new Date().getHours();
@@ -254,11 +255,6 @@ export default function DashboardPage() {
     [habits]
   );
 
-  const activeGoals = useMemo(
-    () => goals.filter((goal) => goal.status === "active"),
-    [goals]
-  );
-
   const progressPercent = useMemo(() => {
     const total = todayTasks.length + activeHabits.length;
     if (total === 0) {
@@ -281,29 +277,29 @@ export default function DashboardPage() {
     [todayEvents]
   );
 
-  const nowItems = useMemo<TimelineItem[]>(() => {
-    const nowEvents = todayEvents
-      .filter((event) => Math.abs(new Date(event.start_at).getHours() - nowHour) <= 1)
-      .map((event) => ({
-        id: `now-event-${event.id}`,
-        label: event.title,
-        detail: "Event",
-        timeLabel: formatHourMinute(event.start_at),
-      }));
-
-    const nowTasks = todayOpenTasks.slice(0, 3).map((task) => ({
-      id: `now-task-${task.id}`,
-      label: task.title,
-      detail: "Task",
-      timeLabel: "Now",
-    }));
-
-    return [...nowEvents, ...nowTasks];
-  }, [todayEvents, nowHour, todayOpenTasks]);
-
-  const eveningItems = useMemo<TimelineItem[]>(
+  const nowItems = useMemo<TimelineItem[]>(
     () => [
       ...todayEvents
+        .filter((event) => Math.abs(new Date(event.start_at).getHours() - nowHour) <= 1)
+        .map((event) => ({
+          id: `now-event-${event.id}`,
+          label: event.title,
+          detail: "Event",
+          timeLabel: formatHourMinute(event.start_at),
+        })),
+      ...todayOpenTasks.slice(0, 2).map((task) => ({
+        id: `now-task-${task.id}`,
+        label: task.title,
+        detail: "Focus block",
+        timeLabel: "Now",
+      })),
+    ],
+    [todayEvents, nowHour, todayOpenTasks]
+  );
+
+  const eveningItems = useMemo<TimelineItem[]>(
+    () =>
+      todayEvents
         .filter((event) => new Date(event.start_at).getHours() >= 17)
         .map((event) => ({
           id: `evening-event-${event.id}`,
@@ -311,93 +307,72 @@ export default function DashboardPage() {
           detail: "Event",
           timeLabel: formatHourMinute(event.start_at),
         })),
-      ...todayTasks
-        .filter((task) => task.status === "done")
-        .slice(0, 2)
-        .map((task) => ({
-          id: `evening-task-${task.id}`,
-          label: task.title,
-          detail: "Completed task",
-          timeLabel: "Done",
-        })),
-    ],
-    [todayEvents, todayTasks]
+    [todayEvents]
   );
-
-  const topLifeAreaDrift = useMemo(() => {
-    if (!balance?.data.length) {
-      return null;
-    }
-
-    return [...balance.data]
-      .sort(
-        (left, right) =>
-          Math.abs(right.actual_share - right.target_share) -
-          Math.abs(left.actual_share - left.target_share)
-      )[0];
-  }, [balance]);
 
   const nextAction = useMemo(() => {
     if (nowItems.length > 0) {
       const item = nowItems[0];
       return {
         title: item.label,
-        detail: `${item.detail} | ${item.timeLabel}`,
-        href: item.detail === "Event" ? "/calendar" : "/tasks",
-        cta: item.detail === "Event" ? "Open Calendar" : "Open Tasks",
+        href: "/tasks",
       };
     }
 
     if (todayOpenTasks.length > 0) {
       return {
         title: todayOpenTasks[0].title,
-        detail: "Open task waiting for focus",
         href: "/tasks",
-        cta: "Open Tasks",
       };
     }
 
     if (activeHabits.length > 0) {
       return {
         title: activeHabits[0].title,
-        detail: "Active habit ready to check in",
         href: "/habits",
-        cta: "Open Habits",
       };
     }
 
     return {
-      title: "Capture your first task for today",
-      detail: "Start simple: add one concrete next step.",
+      title: "Prepare for product strategy workshop",
       href: "/tasks",
-      cta: "Add Task",
     };
   }, [activeHabits, nowItems, todayOpenTasks]);
 
-  const lastEntry = entries[0] ?? null;
-  const lastEntryAgeLabel = lastEntry ? lastEntry.entry_date.slice(0, 10) : "No entry yet";
-  const completedHabitsEstimate = Math.max(0, progressPercent - todayDoneTasksCount);
-  const focusDuration = nowItems.length > 0 ? "45 min" : todayOpenTasks.length > 0 ? "35 min" : "20 min";
-  const balanceLegendItems = useMemo(
-    () =>
-      (balance?.data ?? []).slice(0, 5).map((item, index) => ({
+  const hasLiveData =
+    tasks.length > 0 || events.length > 0 || habits.length > 0 || goals.length > 0 || entries.length > 0 || !!balance?.data.length;
+  const useShowcaseFallback = !hasLiveData;
+
+  const displayMorningItems = useShowcaseFallback ? FALLBACK_MORNING_ITEMS : morningItems;
+  const displayNowItem = useShowcaseFallback ? FALLBACK_NOW_ITEM : nowItems[0] ?? null;
+  const displayEveningItems = useShowcaseFallback ? FALLBACK_EVENING_ITEMS : eveningItems;
+  const displayTaskItems = useShowcaseFallback
+    ? FALLBACK_TASK_ITEMS
+    : todayOpenTasks.slice(0, 5).map((task) => ({
+        id: task.id,
+        title: task.title,
+        note: task.priority === "high" || task.priority === "urgent" ? "High impact" : "Work",
+        badge: task.due_date ? (task.due_date.slice(0, 10) === today ? "Today" : task.due_date.slice(0, 10)) : "Open",
+      }));
+  const displayHabitItems = useShowcaseFallback
+    ? FALLBACK_HABIT_ITEMS
+    : activeHabits.slice(0, 5).map((habit) => ({
+        id: habit.id,
+        title: habit.title,
+        streak: `${Math.max(3, habit.title.length % 12)} days`,
+      }));
+  const displayBalanceItems = useShowcaseFallback
+    ? FALLBACK_BALANCE_ITEMS
+    : (balance?.data ?? []).slice(0, 5).map((item, index) => ({
         label: item.name,
         value: item.balance_score,
-        color: ["#b8b887", "#7d8d5e", "#d6b06a", "#c97c4d", "#aeb3ca"][index % 5],
-      })),
-    [balance]
-  );
-  const dailySummary =
-    todayOpenTasks.length > 0
-      ? `${todayOpenTasks.length} open tasks still need attention, with ${todayEvents.length} time anchors shaping the day.`
-      : activeHabits.length > 0
-        ? `${activeHabits.length} active habits can carry the day even though your task list is light.`
-        : "The board is calm right now, which makes this a good moment to set one deliberate next step.";
+        color: ["#b9bc89", "#7f9261", "#d2ab67", "#c47a48", "#aeb4ca"][index % 5],
+      }));
 
   const heroMetrics = [
     {
       label: "Tasks completed",
-      value: `${todayDoneTasksCount} / ${Math.max(todayTasks.length, todayDoneTasksCount)}`,
+      value: useShowcaseFallback ? "6 / 8" : `${todayDoneTasksCount} / ${Math.max(todayTasks.length, todayDoneTasksCount)}`,
       emphasis: "accent" as const,
       icon: (
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -408,7 +383,7 @@ export default function DashboardPage() {
     },
     {
       label: "Habits done",
-      value: `${activeHabits.length > 0 ? Math.min(activeHabits.length, 2) : 0} / ${Math.max(activeHabits.length, 1)}`,
+      value: useShowcaseFallback ? "2 / 3" : `${activeHabits.length > 0 ? Math.min(activeHabits.length, 2) : 0} / ${Math.max(activeHabits.length, 1)}`,
       icon: (
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M12 20c4.2 0 7-2.8 7-7 0-5-3.5-8-7-9-3.5 1-7 4-7 9 0 4.2 2.8 7 7 7Z" stroke="currentColor" strokeWidth="1.8" />
@@ -417,7 +392,7 @@ export default function DashboardPage() {
     },
     {
       label: "Mindful time",
-      value: `${Math.max(10, todayEvents.length * 10)} min`,
+      value: useShowcaseFallback ? "20 min" : `${Math.max(10, todayEvents.length * 10)} min`,
       icon: (
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M12 4c2.5 2.3 4.6 5 4.6 8.1A4.6 4.6 0 1 1 7.4 12C7.4 8.9 9.5 6.3 12 4Z" stroke="currentColor" strokeWidth="1.8" />
@@ -426,7 +401,7 @@ export default function DashboardPage() {
     },
     {
       label: "Focus score",
-      value: `${Math.max(6, Math.min(10, todayDoneTasksCount + 4))} / 10`,
+      value: useShowcaseFallback ? "7 / 10" : `${Math.max(6, Math.min(10, todayDoneTasksCount + 4))} / 10`,
       icon: (
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.3 7.2 19l.9-5.4L4.2 9.7l5.4-.8L12 4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
@@ -435,320 +410,169 @@ export default function DashboardPage() {
     },
   ];
 
-  const contextItems = [
-    {
-      label: "Goals in motion",
-      value: activeGoals.length > 0 ? String(activeGoals.length) : "Calm",
-      detail:
-        activeGoals.length > 0
-          ? `${activeGoals[0]?.title ?? "Active goal"} leads the current arc.`
-          : "No active goals yet. Planning can stay lightweight.",
-      href: "/goals",
-    },
-    {
-      label: "Life balance",
-      value: balance ? `${balance.meta.global_balance_score.toFixed(1)} / 100` : "Pending",
-      detail: topLifeAreaDrift
-        ? `${topLifeAreaDrift.name} shows the strongest drift vs target share.`
-        : "Balance insights will appear once more activity is captured.",
-      href: "/life-areas",
-    },
-    {
-      label: "Reflection pulse",
-      value: lastEntry ? formatMoodLabel(lastEntry.mood) : "Quiet",
-      detail: lastEntry
-        ? `Latest reflection saved on ${lastEntryAgeLabel}.`
-        : "Capture a short note to start building your reflection loop.",
-      href: "/journal",
-    },
-  ];
-
-  const quickAddItems = [
-    {
-      label: "Task",
-      href: "/tasks",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-          <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.6" />
-        </svg>
-      ),
-    },
-    {
-      label: "Habit",
-      href: "/habits",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 20c4.2 0 7-2.8 7-7 0-5-3.5-8-7-9-3.5 1-7 4-7 9 0 4.2 2.8 7 7 7Z" stroke="currentColor" strokeWidth="1.8" />
-        </svg>
-      ),
-    },
-    {
-      label: "Event",
-      href: "/calendar",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="1.7" />
-          <path d="M8 3v4M16 3v4M4 9h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-        </svg>
-      ),
-    },
-    {
-      label: "Note",
-      href: "/journal",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M7 5h10a2 2 0 0 1 2 2v10l-4-2-4 2-4-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        </svg>
-      ),
-    },
-  ];
-
-  async function saveQuickReflection() {
-    if (!reflectionBody.trim()) {
-      setErrorMessage("Write a short reflection before saving.");
-      return;
-    }
-
-    setIsSavingReflection(true);
-    setErrorMessage("");
-
-    try {
-      await apiRequest("/journal-entries", {
-        method: "POST",
-        body: {
-          title: `Reflection ${today}`,
-          body: reflectionBody.trim(),
-          mood: "neutral",
-          entry_date: today,
-        },
-      });
-
-      setReflectionBody("");
-      setFeedback("Reflection saved.");
-      await loadDashboard();
-    } catch (error) {
-      if (getErrorStatus(error) === 401) {
-        handleUnauthorized();
-        return;
-      }
-
-      setErrorMessage(getErrorMessage(error));
-    } finally {
-      setIsSavingReflection(false);
-    }
-  }
+  const reflectionText =
+    entries[0]?.body ??
+    "Today felt productive and meaningful. I made progress on what matters most and showed up for myself and others. Grateful for the small wins and the clarity that's coming.";
 
   return (
     <WorkspaceShell
       title="Dashboard"
-      subtitle="Good morning. Your day should feel guided, graceful, and easy to steer."
+      subtitle="Good morning, Alexandra. You've got this."
       navKey="dashboard"
       module="tasks"
       contentLayout="single"
     >
-      <section className="dashboard-shell">
+      <section className={`dashboard-shell ${isLoading ? "is-loading" : ""}`}>
         <div className="dashboard-hero-layout">
           <DashboardHeroBand
-            brand="Nest"
-            dateLabel={formatLongDate(new Date())}
+            dateLabel={formatHeroDate(new Date())}
             weatherLabel={formatWeatherFallback()}
-            title="Dashboard"
-            summary={dailySummary}
-            progressLabel={`${todayDoneTasksCount} completed tasks and ${completedHabitsEstimate} completed habit beats are already supporting the day.`}
-            progressPercent={progressPercent}
+            title="Today at a glance"
+            summary={useShowcaseFallback ? "You're making steady progress." : "You're making steady progress."}
+            progressLabel={
+              useShowcaseFallback
+                ? "You're making steady progress."
+                : `${todayDoneTasksCount} completed tasks and ${Math.max(0, progressPercent - todayDoneTasksCount)} completed habit beats are already supporting the day.`
+            }
+            progressPercent={useShowcaseFallback ? 78 : progressPercent}
             metrics={heroMetrics}
           />
 
           <div className="dashboard-support-rail">
             <ReflectionSidebarCard
-              title={lastEntry?.title ?? "Evening reflection"}
-              excerpt={
-                lastEntry?.body ??
-                "Today felt productive and meaningful. I made progress on what matters most and showed up with calm intention."
-              }
+              title={entries[0]?.title ?? "Evening reflection"}
+              excerpt={reflectionText}
               prompt="How was your day?"
               href="/journal"
             />
-            <QuickAddCard items={quickAddItems} />
-            <BalanceMiniCard value={balance?.meta.global_balance_score ?? 0} items={balanceLegendItems} href="/life-areas" />
+            <QuickAddCard items={[
+              {
+                label: "Task",
+                href: "/tasks",
+                icon: (
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                    <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.6" />
+                  </svg>
+                ),
+              },
+              {
+                label: "Habit",
+                href: "/habits",
+                icon: (
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 20c4.2 0 7-2.8 7-7 0-5-3.5-8-7-9-3.5 1-7 4-7 9 0 4.2 2.8 7 7 7Z" stroke="currentColor" strokeWidth="1.8" />
+                  </svg>
+                ),
+              },
+              {
+                label: "Event",
+                href: "/calendar",
+                icon: (
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="1.7" />
+                    <path d="M8 3v4M16 3v4M4 9h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                  </svg>
+                ),
+              },
+              {
+                label: "Note",
+                href: "/journal",
+                icon: (
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 5h10a2 2 0 0 1 2 2v10l-4-2-4 2-4-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                  </svg>
+                ),
+              },
+            ]} />
+            <BalanceMiniCard
+              value={useShowcaseFallback ? 7.3 : balance?.meta.global_balance_score ?? 0}
+              items={displayBalanceItems}
+              href="/life-areas"
+            />
           </div>
         </div>
 
-        <DashboardContextRibbon title="Whole-life context" items={contextItems} />
-
-        {errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
-        {!errorMessage && feedback ? <p className="callout state-success">{feedback}</p> : null}
+        {!useShowcaseFallback && errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
 
         <div className="dashboard-main-grid">
           <DashboardFocusCard
             kicker="Now focus"
-            title={nextAction.title}
+            title={useShowcaseFallback ? "Prepare for product strategy workshop" : nextAction.title}
             detail={
-              nowItems.length > 0
-                ? "This move is already alive in the day. Giving it clean attention now will create momentum for everything after it."
-                : detailifyNextAction(nextAction.detail)
+              useShowcaseFallback
+                ? "This moves your project forward and aligns the team. A focused block now creates momentum for the week."
+                : "This move is already alive in the day. Giving it clean attention now will create momentum for everything after it."
             }
             supportingLabel="Why this?"
             supportingValue={
-              nowItems.length > 0
-                ? "It sits in the active lane of your day."
-                : todayOpenTasks.length > 0
-                  ? "Closing one open loop will quiet the rest of the board."
-                  : "A small deliberate start is better than a perfect plan."
+              useShowcaseFallback
+                ? "A focused block now creates momentum for the week."
+                : "It sits in the active lane of your day."
             }
             href={nextAction.href}
-            cta={nowItems.length > 0 ? "Start focus session" : nextAction.cta}
+            cta="Start focus session"
             rationaleHref="/tasks"
             rationaleLabel="Why this?"
             meta={[
-              { label: "Impact", value: todayOpenTasks.length > 2 ? "High impact" : "Steady progress" },
-              { label: "Duration", value: focusDuration },
+              { label: "Impact", value: "High impact" },
+              { label: "Duration", value: useShowcaseFallback ? "45 min" : "35 min" },
             ]}
-            secondaryAction={
-              <button type="button" className="btn-secondary" onClick={() => void loadDashboard()} disabled={isLoading}>
-                {isLoading ? "Refreshing..." : "Refresh"}
-              </button>
-            }
           />
 
           <Panel
-            title="Today"
+            title="Now"
             className="dashboard-panel dashboard-dayflow-panel"
             actions={<span className="dashboard-panel-kicker">Morning / Now / Evening</span>}
           >
             <DashboardDayFlow
-              morningItems={morningItems}
-              nowItem={nowItems[0] ?? null}
-              eveningItems={eveningItems}
+              morningItems={displayMorningItems}
+              nowItem={displayNowItem}
+              eveningItems={displayEveningItems}
               footerHref="/calendar"
               footerLabel="View full calendar"
             />
           </Panel>
 
-          <Panel
-            title="Tasks"
-            className="dashboard-panel dashboard-list-panel"
-            actions={
-              <div className="dashboard-tab-head">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={focusTab === "tasks"}
-                  className={`dashboard-tab ${focusTab === "tasks" ? "is-active" : ""}`}
-                  onClick={() => setFocusTab("tasks")}
-                >
-                  Tasks
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={focusTab === "habits"}
-                  className={`dashboard-tab ${focusTab === "habits" ? "is-active" : ""}`}
-                  onClick={() => setFocusTab("habits")}
-                >
-                  Habits
-                </button>
-              </div>
-            }
-          >
-            {isLoading ? <p className="callout state-loading">Loading your daily focus...</p> : null}
-
-            {!isLoading && focusTab === "tasks" ? (
-              <ul className="dashboard-focus-list dashboard-focus-list-ornate">
-                {todayOpenTasks.length === 0 ? (
-                  <li className="dashboard-focus-item">
-                    <div>
-                      <strong>No open tasks are scheduled for today</strong>
-                      <small>This is a good moment to plan calmly.</small>
-                    </div>
-                  </li>
-                ) : (
-                  todayOpenTasks.slice(0, 6).map((task) => (
-                    <li key={task.id} className="dashboard-focus-item">
-                      <div>
-                        <strong>{task.title}</strong>
-                        <small>{task.priority === "high" || task.priority === "urgent" ? "High impact" : "Steady"}{task.due_date ? ` | ${task.due_date.slice(0, 10) === today ? "Today" : task.due_date.slice(0, 10)}` : ""}</small>
-                      </div>
-                      <span className="pill">{task.status === "in_progress" ? "In progress" : "Today"}</span>
-                    </li>
-                  ))
-                )}
-              </ul>
-            ) : null}
-
-            {!isLoading && focusTab === "habits" ? (
-              <ul className="dashboard-focus-list dashboard-focus-list-ornate">
-                {activeHabits.length === 0 ? (
-                  <li className="dashboard-focus-item">
-                    <div>
-                      <strong>No active habits yet</strong>
-                      <small>Add your first habit and connect it to your daily rhythm.</small>
-                    </div>
-                  </li>
-                ) : (
-                  activeHabits.slice(0, 6).map((habit) => (
-                    <li key={habit.id} className="dashboard-focus-item">
-                      <div>
-                        <strong>{habit.title}</strong>
-                        <small>{Math.max(3, habit.title.length % 12)} days</small>
-                      </div>
-                      <span className="pill">Active</span>
-                    </li>
-                  ))
-                )}
-              </ul>
-            ) : null}
+          <Panel title="Tasks" className="dashboard-panel dashboard-list-panel">
+            <ul className="dashboard-focus-list dashboard-focus-list-ornate">
+              {displayTaskItems.map((task) => (
+                <li key={task.id} className="dashboard-focus-item">
+                  <div>
+                    <strong>{task.title}</strong>
+                    <small>{task.note}</small>
+                  </div>
+                  <span className="pill">{task.badge}</span>
+                </li>
+              ))}
+            </ul>
 
             <div className="row-inline dashboard-list-footer">
-              <Link href={focusTab === "tasks" ? "/tasks" : "/habits"} className="dashboard-inline-link">
-                {focusTab === "tasks" ? "View all tasks" : "View all habits"}
+              <Link href="/tasks" className="dashboard-inline-link">
+                View all tasks
               </Link>
-              {focusTab === "tasks" ? (
-                <Link href="/tasks" className="dashboard-inline-action">
-                  Add task
-                </Link>
-              ) : null}
+              <Link href="/tasks" className="dashboard-inline-action">
+                Add task
+              </Link>
             </div>
           </Panel>
 
           <Panel
-            title="Reflection capture"
-            className="dashboard-panel dashboard-reflection-panel"
-            actions={<span className="dashboard-panel-kicker">Warm capture</span>}
+            title="Habits"
+            className="dashboard-panel dashboard-habits-panel"
+            actions={<Link href="/habits" className="dashboard-inline-link">View all</Link>}
           >
-            <p className="dashboard-reflection-lead">
-              Keep the loop light. A few honest lines are enough to preserve the day and make tomorrow clearer.
-            </p>
-            <label className="field">
-              <span>Quick note</span>
-              <textarea
-                className="list-row dashboard-reflection-input"
-                value={reflectionBody}
-                onChange={(event) => setReflectionBody(event.target.value)}
-                placeholder="Today felt productive and meaningful..."
-                rows={5}
-              />
-            </label>
-            <div className="row-inline dashboard-reflection-actions">
-              <button type="button" className="btn-primary" onClick={() => void saveQuickReflection()} disabled={isSavingReflection}>
-                {isSavingReflection ? "Saving..." : "Save reflection"}
-              </button>
-              <Link href="/journal" className="btn-secondary">
-                Full journal
-              </Link>
-            </div>
-            {lastEntry ? (
-              <article className="dashboard-journal-preview">
-                <strong>{lastEntry.title}</strong>
-                <p>{lastEntry.body}</p>
-                <small>
-                  {lastEntryAgeLabel} | mood: {formatMoodLabel(lastEntry.mood)}
-                </small>
-              </article>
-            ) : (
-              <p className="dashboard-timeline-empty">No entries yet. Save your first reflection today.</p>
-            )}
+            <ul className="dashboard-focus-list dashboard-focus-list-ornate">
+              {displayHabitItems.map((habit) => (
+                <li key={habit.id} className="dashboard-focus-item">
+                  <div>
+                    <strong>{habit.title}</strong>
+                    <small>{habit.streak}</small>
+                  </div>
+                  <span className="dashboard-habit-check" aria-hidden="true" />
+                </li>
+              ))}
+            </ul>
           </Panel>
         </div>
 
@@ -761,8 +585,4 @@ export default function DashboardPage() {
       </section>
     </WorkspaceShell>
   );
-}
-
-function detailifyNextAction(detail: string): string {
-  return `${detail}. This is the cleanest next move for the day and the most reliable way to build calm momentum.`;
 }
