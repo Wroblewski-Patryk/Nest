@@ -24,6 +24,21 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-201 Capture dashboard parity gap plan against founder target reference
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Depends on: NEST-197, NEST-198, NEST-199, NEST-200
+  - Done on: 2026-04-26
+  - Notes:
+    - Added detailed dashboard gap analysis and rollout model in:
+      `docs/ux/nest_201_dashboard_parity_gap_plan_2026-04-26.md`.
+    - Stored founder target reference image in:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-reference-user-target.png`.
+    - Published task contract and release evidence in:
+      `docs/planning/nest_201_dashboard_parity_gap_planning_2026-04-26.md`.
+    - Plan now serves as the detailed parity baseline for dashboard polish and
+      for module-by-module UI-system rebuild work.
+
 - [x] NEST-200 Implement canonical planning entry hierarchy on web
   - Status: DONE
   - Owner: Execution Agent

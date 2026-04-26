@@ -226,6 +226,11 @@ Last updated: 2026-04-26
   `apps/web/src/components/workspace-primitives.tsx`,
   `apps/web/src/components/workspace-shell.tsx`,
   `apps/web/src/app/globals.css`
+- Dashboard parity gap plan against the founder target image added on
+  2026-04-26 in:
+  `docs/ux/nest_201_dashboard_parity_gap_plan_2026-04-26.md`
+  with repository artifact:
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-reference-user-target.png`
 - Mobile dashboard parity decision remains open on 2026-04-26 because the
   mobile app still lands in `Tasks` and has no dedicated dashboard route; see
   `docs/planning/open-decisions.md` item `OD-2026-04-26-01`
