@@ -81,6 +81,12 @@
   Interactive tiles, support cards, and utility actions should respond with
   small material shifts so the product feels touchable, not static.
 
+## Canonical Fidelity Notes
+
+- When a canonical screenshot drives implementation, record background and
+  decorative fidelity rules here so future parity passes reuse them instead of
+  flattening them into generic gradients.
+
 ## Finish Propagation Rules (2026-04-26)
 
 - Shell first, screen second:

@@ -65,6 +65,8 @@ Describe exactly what should be produced in the current stage only.
 
 - Source of truth type: figma | approved_snapshot | stitch_exception
 - Design source reference:
+- Canonical visual target:
+- Fidelity target: pixel_close | structurally_faithful | style_inspired
 - Stitch used: yes | no
 - Exception workflow reference (if stitch_exception):
 - Experience-quality bar reviewed: yes | no
@@ -73,6 +75,11 @@ Describe exactly what should be produced in the current stage only.
 - New shared pattern introduced: yes | no
 - Design-memory entry reused:
 - Design-memory update required: yes | no
+- Visual gap audit completed: yes | no
+- Background or decorative asset strategy:
+- Canonical asset extraction required: yes | no
+- Screenshot comparison pass completed: yes | no
+- Remaining mismatches:
 - State checks: loading | empty | error | success
 - Responsive checks: desktop | tablet | mobile
 - Input-mode checks: touch | pointer | keyboard

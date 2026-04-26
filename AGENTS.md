@@ -49,6 +49,8 @@ quality, or task context across API, web, mobile, and docs.
 - `docs/ux/screen-quality-checklist.md`
 - `docs/ux/anti-patterns.md`
 - `docs/ux/brand-personality-tokens.md`
+- `docs/ux/canonical-visual-implementation-workflow.md`
+- `docs/ux/background-and-decorative-asset-strategy.md`
 
 ## Core Rules
 
@@ -133,9 +135,15 @@ Rules:
   `docs/ux/design-memory.md`.
 - Use `docs/ux/visual-direction-brief.md` before broad UI refresh work.
 - Use `docs/ux/screen-quality-checklist.md` before calling a screen polished.
+- Use `docs/ux/canonical-visual-implementation-workflow.md` for canonical
+  screenshot or mockup parity tasks.
+- Use `docs/ux/background-and-decorative-asset-strategy.md` when dashboard art
+  direction depends on illustration-rich or painterly backgrounds.
 - Avoid normalizing mistakes listed in `docs/ux/anti-patterns.md`.
 - Translate brand intent into practical UI decisions through
   `docs/ux/brand-personality-tokens.md`.
+- Treat canonical visuals as implementation specs, not inspiration, when the
+  fidelity target is pixel-close or structurally faithful.
 
 ### 9. Commit And Validation Contract
 

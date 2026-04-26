@@ -22,6 +22,8 @@
 - [ ] Localized flow checked if language or locale behavior changed
 - [ ] Web/mobile parity checked if shared module behavior changed
 - [ ] OpenAPI lint run if contracts changed
+- [ ] If this was a canonical-visual UI task, browser screenshots were compared
+  to the approved reference and remaining mismatches were documented
 
 Flows executed:
 -
@@ -29,6 +31,7 @@ Flows executed:
 ## Evidence Links
 - Artifact folder or location:
 - Screenshots:
+- Canonical comparison notes:
 - Logs:
 
 ## Context Updated

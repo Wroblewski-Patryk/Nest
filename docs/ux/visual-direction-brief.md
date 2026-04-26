@@ -19,3 +19,10 @@
 - loud crypto-style neon
 - card soup with equal visual weight
 - childish habit-tracker aesthetics
+
+## Canonical Asset Addendum
+- Background style:
+- Illustration or motif style:
+- Raster assets expected: yes | no
+- SVG assets preferred: yes | no
+- Approximation tolerance:

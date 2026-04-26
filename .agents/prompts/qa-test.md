@@ -11,6 +11,8 @@ Rules:
 - Include tenant, localization, and permission coverage when relevant.
 - Use browser-driven validation when web UX or parity-sensitive flows are
   affected.
+- For canonical-visual UI tasks, include browser screenshots compared against
+  the approved reference and report remaining visual gaps explicitly.
 - Include one negative path when auth, validation, sync, or onboarding behavior
   changes.
 - Capture minimal reproducible notes for bugs or regressions.

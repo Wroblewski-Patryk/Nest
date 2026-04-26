@@ -8,3 +8,6 @@
 - Desktop should use width for planning, review, and multi-step workflows.
 - Motion should explain transitions and state changes, never slow work down.
 - Interfaces should feel intentional, trustworthy, and pleasant under daily use.
+- Fidelity to approved art direction matters when a canonical visual exists.
+- Use real assets when texture or illustration matters and code would flatten
+  the result.

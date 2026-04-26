@@ -20,6 +20,10 @@ Rules:
 - Read `docs/ux/experience-quality-bar.md` for substantial UI tasks.
 - Read `docs/ux/visual-direction-brief.md` when establishing or changing the
   visual direction.
+- Follow `docs/ux/canonical-visual-implementation-workflow.md` when a
+  screenshot, mockup, or approved frame is the target.
+- Follow `docs/ux/background-and-decorative-asset-strategy.md` when
+  illustration-rich or painterly backgrounds matter to dashboard fidelity.
 - Reuse approved entries from `docs/ux/design-memory.md` when relevant.
 - Use `docs/ux/screen-quality-checklist.md` before calling a screen polished.
 - Avoid recurring mistakes listed in `docs/ux/anti-patterns.md`.
@@ -31,11 +35,16 @@ Rules:
 - Validate the changed flow for active input modes: touch on mobile and tablet,
   pointer and keyboard on desktop when relevant.
 - Pull design context before coding for UX or UI tasks.
+- Treat canonical visuals as specs, not inspiration, when parity is the goal.
 - Keep localization, onboarding ergonomics, and empty/error and success states
   visible in implementation notes.
 - Capture parity evidence in task notes when UI changes are shipped.
+- Do not approximate painterly or illustrated backgrounds with generic
+  gradients when the correct solution is an actual asset.
 - Do not bypass approved architecture or design-system docs. If the better path
   requires changing them, propose it first.
+- For pixel-close tasks, finish with a screenshot comparison pass and list the
+  remaining mismatches explicitly.
 
 Output:
 1) Task completed

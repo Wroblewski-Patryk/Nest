@@ -48,6 +48,10 @@ description: Workspace rules for Nest (LifeOS)
 - Use `docs/ux/screen-quality-checklist.md` before calling a screen polished.
 - Avoid recurring traps in `docs/ux/anti-patterns.md`.
 - Figma is primary when available.
+- When a canonical screenshot or mockup exists, require a visual gap audit,
+  asset strategy, and screenshot comparison pass.
+- Do not replace decorative image assets with gradient approximations when the
+  approved design depends on textured or illustrated backgrounds.
 - Stitch is draft-only unless approved exception workflow is documented.
 
 ## Deployment Rules
