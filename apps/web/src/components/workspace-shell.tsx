@@ -207,10 +207,15 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
     <div className={`workspace-bg aura-${auraVariant}`}>
       <aside className="workspace-rail">
         <div className="workspace-rail-brand">
-          <div className="workspace-brand-mark" aria-hidden="true">
-            <span className="workspace-brand-nest" />
+          <div className="workspace-brand-row">
+            <div className="workspace-brand-mark" aria-hidden="true">
+              <span className="workspace-brand-nest" />
+            </div>
+            <p className="workspace-logo">Nest</p>
+            <span className="workspace-brand-collapse" aria-hidden="true">
+              ‹
+            </span>
           </div>
-          <p className="workspace-logo">Nest</p>
           <p className="workspace-kicker">{translate("app.kicker", language)}</p>
         </div>
 

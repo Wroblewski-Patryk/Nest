@@ -24,6 +24,26 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-211 Apply premium finish pass to dashboard parity on web
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-210
+  - Done on: 2026-04-26
+  - Notes:
+    - Refined sidebar presence, topbar utility chrome, hero rhythm, right-rail
+      density, and lower-card finish to move the dashboard closer to the
+      founder reference.
+    - Updated implementation in:
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Refreshed preview artifact:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-210 Refine dashboard parity toward founder reference on web
   - Status: DONE
   - Owner: Execution Agent

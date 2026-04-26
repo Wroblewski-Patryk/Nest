@@ -246,6 +246,11 @@ Last updated: 2026-04-26
   `apps/web/src/app/dashboard/page.tsx`,
   `apps/web/src/components/workspace-primitives.tsx`,
   `apps/web/src/app/globals.css`
+- Dashboard finish pass refined on 2026-04-26 to further improve shell
+  elegance, topbar lightness, hero rhythm, right-rail density, and lower-card
+  polish in:
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/app/globals.css`
 - Mobile dashboard parity decision remains open on 2026-04-26 because the
   mobile app still lands in `Tasks` and has no dedicated dashboard route; see
   `docs/planning/open-decisions.md` item `OD-2026-04-26-01`
@@ -1023,6 +1028,13 @@ Last updated: 2026-04-26
   (`apps/web/src/app/dashboard/page.tsx`,
   `apps/web/src/components/workspace-primitives.tsx`,
   `apps/web/src/app/globals.css`)
+- `NEST-211` completed: the dashboard received a premium finish pass on shell
+  chrome, sidebar presence, hero spacing, support-rail density, and lower-card
+  typography rhythm, bringing the web preview materially closer to the founder
+  reference in overall feel
+  (`apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/app/globals.css`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview.png`)
 - `NEST-207` completed: the active `v1` repair wave now has a canonical
   detailed execution queue and refill strategy through
   `docs/planning/v1_execution_backlog_2026-04-26.md`, with
