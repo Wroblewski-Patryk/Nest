@@ -2,6 +2,7 @@
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { nestApiClient } from '@/constants/apiClient';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
+import { getUserSafeErrorMessage } from '@/lib/ux-contract';
 
 type TaskStatus = 'todo' | 'in_progress' | 'done' | 'canceled';
 type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
@@ -49,19 +50,6 @@ async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promi
     requestInit?: ApiRequestInit
   ) => Promise<unknown>;
   return (await requestFn(path, init)) as TResponse;
-}
-
-function getErrorMessage(error: unknown): string {
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'payload' in error &&
-    typeof (error as { payload?: unknown }).payload === 'object' &&
-    typeof (error as { payload: { message?: unknown } }).payload?.message === 'string'
-  ) {
-    return (error as { payload: { message: string } }).payload.message;
-  }
-  return 'Something went wrong. Please try again.';
 }
 
 function formatPriority(priority: TaskPriority): string {
@@ -152,7 +140,7 @@ export default function TasksScreen() {
       })
       .catch((error) => {
         if (!mounted) return;
-        setErrorMessage(getErrorMessage(error));
+        setErrorMessage(getUserSafeErrorMessage(error));
       })
       .finally(() => {
         if (mounted) setIsLoading(false);
@@ -201,7 +189,7 @@ export default function TasksScreen() {
       await loadWorkspace();
       setFeedback('Tasks and lists have been refreshed.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setIsRefreshing(false);
     }
@@ -235,7 +223,7 @@ export default function TasksScreen() {
       await loadWorkspace();
       setFeedback('List created successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     }
   }
 
@@ -268,7 +256,7 @@ export default function TasksScreen() {
       await loadWorkspace();
       setFeedback('List updated successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyListId(null);
     }
@@ -288,7 +276,7 @@ export default function TasksScreen() {
               await loadWorkspace();
               setFeedback('List deleted successfully.');
             } catch (error) {
-              setErrorMessage(getErrorMessage(error));
+              setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
               setBusyListId(null);
             }
@@ -320,7 +308,7 @@ export default function TasksScreen() {
       await loadWorkspace();
       setFeedback('Task created successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     }
   }
 
@@ -354,7 +342,7 @@ export default function TasksScreen() {
       await loadWorkspace();
       setFeedback('Task updated successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyTaskId(null);
     }
@@ -370,7 +358,7 @@ export default function TasksScreen() {
       await loadWorkspace();
       setFeedback(task.status === 'done' ? 'Task reopened.' : 'Task completed.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyTaskId(null);
     }
@@ -390,7 +378,7 @@ export default function TasksScreen() {
               await loadWorkspace();
               setFeedback('Task deleted successfully.');
             } catch (error) {
-              setErrorMessage(getErrorMessage(error));
+              setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
               setBusyTaskId(null);
             }

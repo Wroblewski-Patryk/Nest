@@ -907,7 +907,9 @@ Last updated: 2026-04-26
   settings hub using cleaner founder-ready wording; the remaining daily-flow
   dashboard/support surfaces and API-backed mobile CRUD tabs also now use one
   calmer English baseline instead of mixed-language or generic low-signal
-  feedback.
+  feedback. The active `v1` wave is now also sequenced through
+  `docs/planning/v1_execution_backlog_2026-04-26.md`, and mobile support/core
+  tabs now share one UX error helper instead of screen-local duplicates.
 - Parallel backlog context still includes ongoing V2 launch-window/live-evidence
   closures (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`,
   `NEST-129`) and commercial/release continuation (`NEST-152` onward).
@@ -951,6 +953,22 @@ Last updated: 2026-04-26
 
 ## Documentation Refreshes
 
+- `NEST-208` completed: mobile support surfaces and API-backed CRUD tabs now
+  share one UX error contract helper for API issue descriptions and payload
+  fallback handling, removing duplicated mobile-only status mapping logic
+  (`apps/mobile/lib/ux-contract.ts`,
+  `apps/mobile/app/modal.tsx`,
+  `apps/mobile/app/(tabs)/billing.tsx`,
+  `apps/mobile/app/(tabs)/insights.tsx`,
+  `apps/mobile/app/(tabs)/index.tsx`,
+  `apps/mobile/app/(tabs)/goals.tsx`,
+  `apps/mobile/app/(tabs)/habits.tsx`,
+  `apps/mobile/app/(tabs)/journal.tsx`)
+- `NEST-207` completed: the active `v1` repair wave now has a canonical
+  detailed execution queue and refill strategy through
+  `docs/planning/v1_execution_backlog_2026-04-26.md`, with
+  `docs/planning/mvp-next-commits.md` pointing to the next sequenced tasks
+  instead of generic gap-derivation placeholders
 - `NEST-206` completed: remaining daily-use copy drift is reduced across the
   web dashboard/support cards and the mobile API-backed CRUD tabs, including
   cleaner success/error/loading messages and removal of broken separator

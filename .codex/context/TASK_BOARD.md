@@ -3533,6 +3533,42 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-208 Unify mobile user-safe error and recovery messaging helpers
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Added one shared mobile UX contract helper in
+      `apps/mobile/lib/ux-contract.ts` for API status classification,
+      product-safe issue descriptions, and payload-message fallback handling.
+    - Replaced duplicated local error helper implementations across:
+      `apps/mobile/app/modal.tsx`,
+      `apps/mobile/app/(tabs)/billing.tsx`,
+      `apps/mobile/app/(tabs)/insights.tsx`,
+      `apps/mobile/app/(tabs)/index.tsx`,
+      `apps/mobile/app/(tabs)/goals.tsx`,
+      `apps/mobile/app/(tabs)/habits.tsx`,
+      `apps/mobile/app/(tabs)/journal.tsx`.
+    - This creates a cleaner base for the upcoming cross-surface error taxonomy
+      reconciliation task (`NEST-209`) and removes mobile-only drift inside the
+      founder-critical path.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/mobile`,
+      `pnpm exec expo export --platform web` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`.
+
+- [x] NEST-207 Publish detailed V1 execution backlog and refill strategy
+  - Status: DONE
+  - Owner: Planning Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Added canonical detailed execution queue in
+      `docs/planning/v1_execution_backlog_2026-04-26.md`.
+    - Updated `docs/planning/mvp-next-commits.md` so it now refills from the
+      new backlog and points the immediate queue at `NEST-209` to `NEST-213`.
+    - The active `v1` wave now has one durable `NEST-207+` sequence instead of
+      relying on loosely derived next steps.
+
 - [x] NEST-206 Harden remaining daily-flow and CRUD copy across web and mobile
   - Status: DONE
   - Owner: Execution Agent

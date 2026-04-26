@@ -3,41 +3,7 @@ import type { AiBriefingItem, AnalyticsLoopDecisionDashboardResponse, LifeAreaBa
 import { ModuleScreen } from '@/components/mvp/ModuleScreen';
 import { nestApiClient } from '@/constants/apiClient';
 import { insightsData } from '@/constants/mvpData';
-
-function getApiErrorStatus(error: unknown): number | null {
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'status' in error &&
-    typeof (error as { status?: unknown }).status === 'number'
-  ) {
-    return (error as { status: number }).status;
-  }
-
-  return null;
-}
-
-function describeApiIssue(error: unknown): string {
-  const status = getApiErrorStatus(error);
-
-  if (status === 401) {
-    return 'Please sign in again and retry.';
-  }
-
-  if (status === 404) {
-    return 'Some insight data is not available yet.';
-  }
-
-  if (status === 429) {
-    return 'Too many requests were sent at once. Please try again in a moment.';
-  }
-
-  if (status !== null && status >= 500) {
-    return 'Nest is having trouble refreshing insights right now. Please try again shortly.';
-  }
-
-  return 'Please try again in a moment.';
-}
+import { describeApiIssue } from '@/lib/ux-contract';
 
 const emptyBalance: LifeAreaBalanceResponse = {
   data: [],

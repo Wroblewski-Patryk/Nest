@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { nestApiClient } from '@/constants/apiClient';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
+import { getUserSafeErrorMessage } from '@/lib/ux-contract';
 
 type GoalStatus = 'active' | 'paused' | 'completed' | 'archived';
 type TargetStatus = GoalStatus;
@@ -30,20 +31,6 @@ type ApiRequestInit = Omit<RequestInit, 'body'> & {
   body?: Record<string, unknown>;
   query?: Record<string, unknown>;
 };
-
-function getErrorMessage(error: unknown): string {
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'payload' in error &&
-    typeof (error as { payload?: unknown }).payload === 'object' &&
-    typeof (error as { payload: { message?: unknown } }).payload?.message === 'string'
-  ) {
-    return (error as { payload: { message: string } }).payload.message;
-  }
-
-  return 'Something went wrong. Please try again.';
-}
 
 async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
   const requestFn = nestApiClient.request as unknown as (
@@ -122,7 +109,7 @@ export default function GoalsScreen() {
         if (mounted) setFeedback('Goals and targets are loaded.');
       })
       .catch((error) => {
-        if (mounted) setErrorMessage(getErrorMessage(error));
+        if (mounted) setErrorMessage(getUserSafeErrorMessage(error));
       })
       .finally(() => {
         if (mounted) setIsLoading(false);
@@ -159,7 +146,7 @@ export default function GoalsScreen() {
       await loadWorkspace();
       setFeedback('Goals and targets have been refreshed.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setIsRefreshing(false);
     }
@@ -187,7 +174,7 @@ export default function GoalsScreen() {
       await loadWorkspace();
       setFeedback('Goal created successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     }
   }
 
@@ -221,7 +208,7 @@ export default function GoalsScreen() {
       await loadWorkspace();
       setFeedback('Goal updated successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyGoalId(null);
     }
@@ -241,7 +228,7 @@ export default function GoalsScreen() {
               await loadWorkspace();
               setFeedback('Goal archived successfully.');
             } catch (error) {
-              setErrorMessage(getErrorMessage(error));
+              setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
               setBusyGoalId(null);
             }
@@ -285,7 +272,7 @@ export default function GoalsScreen() {
       await loadWorkspace();
       setFeedback('Target created successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     }
   }
 
@@ -325,7 +312,7 @@ export default function GoalsScreen() {
       await loadWorkspace();
       setFeedback('Target updated successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyTargetId(null);
     }
@@ -345,7 +332,7 @@ export default function GoalsScreen() {
               await loadWorkspace();
               setFeedback('Target archived successfully.');
             } catch (error) {
-              setErrorMessage(getErrorMessage(error));
+              setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
               setBusyTargetId(null);
             }

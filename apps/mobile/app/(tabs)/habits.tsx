@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { nestApiClient } from '@/constants/apiClient';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
+import { getUserSafeErrorMessage } from '@/lib/ux-contract';
 
 type HabitType = 'boolean' | 'numeric' | 'duration';
 
@@ -41,20 +42,6 @@ async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promi
   ) => Promise<unknown>;
 
   return (await requestFn(path, init)) as TResponse;
-}
-
-function getErrorMessage(error: unknown): string {
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'payload' in error &&
-    typeof (error as { payload?: unknown }).payload === 'object' &&
-    typeof (error as { payload: { message?: unknown } }).payload?.message === 'string'
-  ) {
-    return (error as { payload: { message: string } }).payload.message;
-  }
-
-  return 'Something went wrong. Please try again.';
 }
 
 function resolveCadenceType(cadence: Record<string, unknown> | null | undefined): 'daily' | 'weekly' {
@@ -115,7 +102,7 @@ export default function HabitsScreen() {
         if (mounted) setFeedback('Habits and routines are loaded.');
       })
       .catch((error) => {
-        if (mounted) setErrorMessage(getErrorMessage(error));
+        if (mounted) setErrorMessage(getUserSafeErrorMessage(error));
       })
       .finally(() => {
         if (mounted) setIsLoading(false);
@@ -137,7 +124,7 @@ export default function HabitsScreen() {
       await loadWorkspace();
       setFeedback('Habits and routines have been refreshed.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setIsRefreshing(false);
     }
@@ -166,7 +153,7 @@ export default function HabitsScreen() {
       await loadWorkspace();
       setFeedback('Habit created successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     }
   }
 
@@ -200,7 +187,7 @@ export default function HabitsScreen() {
       await loadWorkspace();
       setFeedback('Habit updated successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyHabitId(null);
     }
@@ -216,7 +203,7 @@ export default function HabitsScreen() {
       await loadWorkspace();
       setFeedback(habit.is_active ? 'Habit paused.' : 'Habit reactivated.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyHabitId(null);
     }
@@ -238,7 +225,7 @@ export default function HabitsScreen() {
       });
       setFeedback('Habit log saved.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyHabitId(null);
     }
@@ -261,7 +248,7 @@ export default function HabitsScreen() {
               await loadWorkspace();
               setFeedback('Habit deleted successfully.');
             } catch (error) {
-              setErrorMessage(getErrorMessage(error));
+              setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
               setBusyHabitId(null);
             }
@@ -303,7 +290,7 @@ export default function HabitsScreen() {
       await loadWorkspace();
       setFeedback('Routine created successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     }
   }
 
@@ -346,7 +333,7 @@ export default function HabitsScreen() {
       await loadWorkspace();
       setFeedback('Routine updated successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyRoutineId(null);
     }
@@ -369,7 +356,7 @@ export default function HabitsScreen() {
       await loadWorkspace();
       setFeedback(routine.is_active ? 'Routine paused.' : 'Routine reactivated.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyRoutineId(null);
     }
@@ -392,7 +379,7 @@ export default function HabitsScreen() {
               await loadWorkspace();
               setFeedback('Routine deleted successfully.');
             } catch (error) {
-              setErrorMessage(getErrorMessage(error));
+              setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
               setBusyRoutineId(null);
             }

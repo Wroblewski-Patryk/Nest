@@ -29,6 +29,7 @@ import {
   saveOfflineSyncSchedulerState,
   type MobileOfflineSyncSchedulerState,
 } from '@/constants/offlineSyncScheduler';
+import { describeApiIssue, getApiErrorStatus } from '@/lib/ux-contract';
 
 const AUTO_SYNC_INTERVAL_MS = 15000;
 const BASE_RETRY_SECONDS = 15;
@@ -49,49 +50,6 @@ const CHANNEL_LABEL: Record<NotificationChannel, string> = {
   push: 'Push',
   email: 'Email',
 };
-
-function getApiErrorStatus(error: unknown): number | null {
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'status' in error &&
-    typeof (error as { status?: unknown }).status === 'number'
-  ) {
-    return (error as { status: number }).status;
-  }
-
-  return null;
-}
-
-function describeApiIssue(error: unknown): string {
-  const status = getApiErrorStatus(error);
-
-  if (status === 401) {
-    return 'Please sign in again and retry.';
-  }
-
-  if (status === 403) {
-    return 'This action is not available for your account right now.';
-  }
-
-  if (status === 404) {
-    return 'The requested data is no longer available.';
-  }
-
-  if (status === 422) {
-    return 'Some details need attention before this can be saved.';
-  }
-
-  if (status === 429) {
-    return 'Too many requests were sent at once. Please try again in a moment.';
-  }
-
-  if (status !== null && status >= 500) {
-    return 'Nest is having trouble completing this request right now. Please try again shortly.';
-  }
-
-  return 'Please try again in a moment.';
-}
 
 function resolveMobileNotificationRoute(item: InAppNotificationItem): NotificationRoute | null {
   const normalize = (value: string | null): NotificationRoute | null => {

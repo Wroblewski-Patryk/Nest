@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { nestApiClient } from '@/constants/apiClient';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
+import { getUserSafeErrorMessage } from '@/lib/ux-contract';
 
 type LifeAreaItem = {
   id: string;
@@ -33,20 +34,6 @@ async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promi
   ) => Promise<unknown>;
 
   return (await requestFn(path, init)) as TResponse;
-}
-
-function getErrorMessage(error: unknown): string {
-  if (
-    typeof error === 'object' &&
-    error !== null &&
-    'payload' in error &&
-    typeof (error as { payload?: unknown }).payload === 'object' &&
-    typeof (error as { payload: { message?: unknown } }).payload?.message === 'string'
-  ) {
-    return (error as { payload: { message: string } }).payload.message;
-  }
-
-  return 'Something went wrong. Please try again.';
 }
 
 function formatMood(mood: JournalEntryItem['mood']): string {
@@ -109,7 +96,7 @@ export default function JournalScreen() {
         if (mounted) setFeedback('Journal and life areas are loaded.');
       })
       .catch((error) => {
-        if (mounted) setErrorMessage(getErrorMessage(error));
+        if (mounted) setErrorMessage(getUserSafeErrorMessage(error));
       })
       .finally(() => {
         if (mounted) setIsLoading(false);
@@ -133,7 +120,7 @@ export default function JournalScreen() {
       await loadWorkspace();
       setFeedback('Journal and life areas have been refreshed.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setIsRefreshing(false);
     }
@@ -170,7 +157,7 @@ export default function JournalScreen() {
       await loadWorkspace();
       setFeedback('Journal entry created successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     }
   }
 
@@ -196,7 +183,7 @@ export default function JournalScreen() {
       await loadWorkspace();
       setFeedback('Life area created successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     }
   }
 
@@ -238,7 +225,7 @@ export default function JournalScreen() {
       await loadWorkspace();
       setFeedback('Journal entry updated successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyEntryId(null);
     }
@@ -261,7 +248,7 @@ export default function JournalScreen() {
               await loadWorkspace();
               setFeedback('Journal entry deleted successfully.');
             } catch (error) {
-              setErrorMessage(getErrorMessage(error));
+              setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
               setBusyEntryId(null);
             }
@@ -299,7 +286,7 @@ export default function JournalScreen() {
       await loadWorkspace();
       setFeedback('Life area updated successfully.');
     } catch (error) {
-      setErrorMessage(getErrorMessage(error));
+      setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
       setBusyAreaId(null);
     }
@@ -322,7 +309,7 @@ export default function JournalScreen() {
               await loadWorkspace();
               setFeedback('Life area archived successfully.');
             } catch (error) {
-              setErrorMessage(getErrorMessage(error));
+              setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
               setBusyAreaId(null);
             }
