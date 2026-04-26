@@ -18,7 +18,7 @@ const CHANNEL_LABEL: Record<NotificationChannel, string> = {
 export function NotificationChannelMatrixCard() {
   const [preferences, setPreferences] = useState<NotificationPreferencesItem | null>(null);
   const [deliveries, setDeliveries] = useState<NotificationChannelDeliveryItem[]>([]);
-  const [detail, setDetail] = useState("Loading notification preferences...");
+  const [detail, setDetail] = useState("Loading your notification settings...");
   const [isSaving, setIsSaving] = useState(false);
 
   const load = async () => {
@@ -29,9 +29,9 @@ export function NotificationChannelMatrixCard() {
       ]);
       setPreferences(preferenceResponse.data);
       setDeliveries(deliveriesResponse.data);
-      setDetail("Notification matrix loaded.");
+      setDetail("Notification settings are ready.");
     } catch {
-      setDetail("Could not load notification matrix.");
+      setDetail("We couldn't load notification settings right now.");
     }
   };
 
@@ -92,11 +92,11 @@ export function NotificationChannelMatrixCard() {
         locale: preferences.locale,
       });
       setPreferences(response.data);
-      setDetail("Notification preferences saved.");
+      setDetail("Notification settings saved.");
       const telemetry = await nestApiClient.getNotificationChannelDeliveries({ per_page: 12 });
       setDeliveries(telemetry.data);
     } catch {
-      setDetail("Could not save notification preferences.");
+      setDetail("We couldn't save notification settings.");
     } finally {
       setIsSaving(false);
     }
@@ -200,13 +200,13 @@ export function NotificationChannelMatrixCard() {
       })}
 
       <button type="button" className="pill-link" onClick={() => void save()} disabled={isSaving}>
-        {isSaving ? "Saving..." : "Save notification preferences"}
+        {isSaving ? "Saving..." : "Save notification settings"}
       </button>
 
       <div className="list-row">
         <strong>Recent channel telemetry</strong>
       </div>
-      {deliveries.length === 0 ? <p className="mono-note">No telemetry entries yet.</p> : null}
+      {deliveries.length === 0 ? <p className="mono-note">No delivery activity is available yet.</p> : null}
       <ul className="list">
         {deliveries.map((entry) => (
           <li key={entry.id} className="list-row">

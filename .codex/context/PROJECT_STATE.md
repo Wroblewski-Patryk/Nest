@@ -904,7 +904,10 @@ Last updated: 2026-04-26
   user-safer feedback standard and keep the mobile validation/export baseline
   green; settings/support copy is also more consistent across web and mobile,
   with the web settings page no longer mixing Polish and English and the mobile
-  settings hub using cleaner founder-ready wording.
+  settings hub using cleaner founder-ready wording; the remaining daily-flow
+  dashboard/support surfaces and API-backed mobile CRUD tabs also now use one
+  calmer English baseline instead of mixed-language or generic low-signal
+  feedback.
 - Parallel backlog context still includes ongoing V2 launch-window/live-evidence
   closures (`NEST-122`, `NEST-123`, `NEST-124`, `NEST-125`, `NEST-128`,
   `NEST-129`) and commercial/release continuation (`NEST-152` onward).
@@ -948,6 +951,19 @@ Last updated: 2026-04-26
 
 ## Documentation Refreshes
 
+- `NEST-206` completed: remaining daily-use copy drift is reduced across the
+  web dashboard/support cards and the mobile API-backed CRUD tabs, including
+  cleaner success/error/loading messages and removal of broken separator
+  rendering
+  (`apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/components/workspace-logout-button.tsx`,
+  `apps/web/src/components/ai-copilot-card.tsx`,
+  `apps/web/src/components/notification-center-card.tsx`,
+  `apps/web/src/components/notification-channel-matrix-card.tsx`,
+  `apps/mobile/app/(tabs)/index.tsx`,
+  `apps/mobile/app/(tabs)/goals.tsx`,
+  `apps/mobile/app/(tabs)/habits.tsx`,
+  `apps/mobile/app/(tabs)/journal.tsx`)
 - `NEST-205` completed: settings and support-adjacent copy is more consistent
   across both clients, including English-baseline web settings labels and
   cleaner mobile settings hub wording without broken separator characters

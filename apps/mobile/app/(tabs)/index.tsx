@@ -61,7 +61,7 @@ function getErrorMessage(error: unknown): string {
   ) {
     return (error as { payload: { message: string } }).payload.message;
   }
-  return 'Request failed.';
+  return 'Something went wrong. Please try again.';
 }
 
 function formatPriority(priority: TaskPriority): string {
@@ -86,7 +86,7 @@ export default function TasksScreen() {
   const [busyListId, setBusyListId] = useState<string | null>(null);
   const [busyTaskId, setBusyTaskId] = useState<string | null>(null);
 
-  const [feedback, setFeedback] = useState('Tasks + Lists ready.');
+  const [feedback, setFeedback] = useState('Tasks and lists are ready.');
   const [errorMessage, setErrorMessage] = useState('');
 
   const [newListName, setNewListName] = useState('');
@@ -148,7 +148,7 @@ export default function TasksScreen() {
 
     loadWorkspace()
       .then(() => {
-        if (mounted) setFeedback('Workspace loaded.');
+        if (mounted) setFeedback('Tasks and lists are loaded.');
       })
       .catch((error) => {
         if (!mounted) return;
@@ -199,7 +199,7 @@ export default function TasksScreen() {
 
     try {
       await loadWorkspace();
-      setFeedback('Workspace refreshed.');
+      setFeedback('Tasks and lists have been refreshed.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -233,7 +233,7 @@ export default function TasksScreen() {
       setNewListParentType('none');
       setNewListParentId('');
       await loadWorkspace();
-      setFeedback('List created.');
+      setFeedback('List created successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -266,7 +266,7 @@ export default function TasksScreen() {
       });
       setEditingListId(null);
       await loadWorkspace();
-      setFeedback('List updated.');
+      setFeedback('List updated successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -286,7 +286,7 @@ export default function TasksScreen() {
             try {
               await apiRequest(`/lists/${listId}`, { method: 'DELETE' });
               await loadWorkspace();
-              setFeedback('List deleted.');
+              setFeedback('List deleted successfully.');
             } catch (error) {
               setErrorMessage(getErrorMessage(error));
             } finally {
@@ -318,7 +318,7 @@ export default function TasksScreen() {
       setNewTaskPriority('medium');
       setNewTaskListId('');
       await loadWorkspace();
-      setFeedback('Task created.');
+      setFeedback('Task created successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -352,7 +352,7 @@ export default function TasksScreen() {
       });
       setEditingTaskId(null);
       await loadWorkspace();
-      setFeedback('Task updated.');
+      setFeedback('Task updated successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -388,7 +388,7 @@ export default function TasksScreen() {
             try {
               await apiRequest(`/tasks/${taskId}`, { method: 'DELETE' });
               await loadWorkspace();
-              setFeedback('Task deleted.');
+              setFeedback('Task deleted successfully.');
             } catch (error) {
               setErrorMessage(getErrorMessage(error));
             } finally {
@@ -413,7 +413,7 @@ export default function TasksScreen() {
     return (
       <View style={styles.loadingWrap}>
         <ActivityIndicator color={mobileUiTokens.accent} />
-        <Text style={styles.loadingText}>Loading Tasks + Lists...</Text>
+        <Text style={styles.loadingText}>Loading tasks and lists...</Text>
       </View>
     );
   }
@@ -427,7 +427,7 @@ export default function TasksScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.hero}>
           <Text style={styles.heroTitle}>Tasks + Lists</Text>
-          <Text style={styles.heroSubtitle}>Practical mobile flow: standalone tasks + list hierarchy.</Text>
+          <Text style={styles.heroSubtitle}>Practical mobile flow for standalone tasks and list structure.</Text>
           <View style={styles.metricsRow}>
             <Text style={styles.metric}>Open: {openTasksCount}</Text>
             <Text style={styles.metric}>Lists: {lists.length}</Text>

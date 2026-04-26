@@ -46,7 +46,7 @@ function getErrorMessage(error: unknown): string {
     return (error as { payload: { message: string } }).payload.message;
   }
 
-  return 'Request failed.';
+  return 'Something went wrong. Please try again.';
 }
 
 function formatMood(mood: JournalEntryItem['mood']): string {
@@ -66,7 +66,7 @@ export default function JournalScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [busyEntryId, setBusyEntryId] = useState<string | null>(null);
   const [busyAreaId, setBusyAreaId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState('Journal + Life Areas ready.');
+  const [feedback, setFeedback] = useState('Journal and life areas are ready.');
   const [errorMessage, setErrorMessage] = useState('');
 
   const [entryTitle, setEntryTitle] = useState('');
@@ -106,7 +106,7 @@ export default function JournalScreen() {
 
     loadWorkspace()
       .then(() => {
-        if (mounted) setFeedback('Journal workspace loaded.');
+        if (mounted) setFeedback('Journal and life areas are loaded.');
       })
       .catch((error) => {
         if (mounted) setErrorMessage(getErrorMessage(error));
@@ -131,7 +131,7 @@ export default function JournalScreen() {
 
     try {
       await loadWorkspace();
-      setFeedback('Journal workspace refreshed.');
+      setFeedback('Journal and life areas have been refreshed.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -168,7 +168,7 @@ export default function JournalScreen() {
       setEntryDate('');
       setEntryLifeAreaIds([]);
       await loadWorkspace();
-      setFeedback('Journal entry created.');
+      setFeedback('Journal entry created successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -194,7 +194,7 @@ export default function JournalScreen() {
       setNewAreaColor('#789262');
       setNewAreaWeight('50');
       await loadWorkspace();
-      setFeedback('Life area created.');
+      setFeedback('Life area created successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -236,7 +236,7 @@ export default function JournalScreen() {
       });
       setEditingEntryId(null);
       await loadWorkspace();
-      setFeedback('Journal entry updated.');
+      setFeedback('Journal entry updated successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -259,7 +259,7 @@ export default function JournalScreen() {
                 setEditingEntryId(null);
               }
               await loadWorkspace();
-              setFeedback('Journal entry deleted.');
+              setFeedback('Journal entry deleted successfully.');
             } catch (error) {
               setErrorMessage(getErrorMessage(error));
             } finally {
@@ -297,7 +297,7 @@ export default function JournalScreen() {
       });
       setEditingAreaId(null);
       await loadWorkspace();
-      setFeedback('Life area updated.');
+      setFeedback('Life area updated successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -320,7 +320,7 @@ export default function JournalScreen() {
                 setEditingAreaId(null);
               }
               await loadWorkspace();
-              setFeedback('Life area archived.');
+              setFeedback('Life area archived successfully.');
             } catch (error) {
               setErrorMessage(getErrorMessage(error));
             } finally {
@@ -336,7 +336,7 @@ export default function JournalScreen() {
     return (
       <View style={styles.loadingWrap}>
         <ActivityIndicator color={mobileUiTokens.accent} />
-        <Text style={styles.loadingText}>Loading Journal + Life Areas...</Text>
+        <Text style={styles.loadingText}>Loading journal and life areas...</Text>
       </View>
     );
   }
@@ -433,7 +433,7 @@ export default function JournalScreen() {
                   <View style={styles.headerRow}>
                     <View style={styles.headerTextWrap}>
                       <Text style={styles.targetTitle}>{area.name}</Text>
-                      <Text style={styles.targetMeta}>Weight: {area.weight}% • Color: {area.color}</Text>
+                      <Text style={styles.targetMeta}>Weight: {area.weight}% | Color: {area.color}</Text>
                     </View>
                     <View style={styles.rowWrap}>
                       <Pressable style={styles.ghostButton} onPress={() => startLifeAreaEdit(area)}>
@@ -505,7 +505,7 @@ export default function JournalScreen() {
                       <View style={styles.headerTextWrap}>
                         <Text style={styles.targetTitle}>{entry.title}</Text>
                         <Text style={styles.targetMeta}>
-                          {entry.entry_date?.slice(0, 10)} • Mood: {formatMood(entry.mood)}
+                          {entry.entry_date?.slice(0, 10)} | Mood: {formatMood(entry.mood)}
                         </Text>
                       </View>
                       <View style={styles.rowWrap}>

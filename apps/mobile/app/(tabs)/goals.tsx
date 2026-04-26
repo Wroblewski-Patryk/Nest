@@ -42,7 +42,7 @@ function getErrorMessage(error: unknown): string {
     return (error as { payload: { message: string } }).payload.message;
   }
 
-  return 'Request failed.';
+  return 'Something went wrong. Please try again.';
 }
 
 async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
@@ -74,7 +74,7 @@ export default function GoalsScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [busyGoalId, setBusyGoalId] = useState<string | null>(null);
   const [busyTargetId, setBusyTargetId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState('Goals + Targets ready.');
+  const [feedback, setFeedback] = useState('Goals and targets are ready.');
   const [errorMessage, setErrorMessage] = useState('');
 
   const [newGoalTitle, setNewGoalTitle] = useState('');
@@ -119,7 +119,7 @@ export default function GoalsScreen() {
 
     loadWorkspace()
       .then(() => {
-        if (mounted) setFeedback('Goals workspace loaded.');
+        if (mounted) setFeedback('Goals and targets are loaded.');
       })
       .catch((error) => {
         if (mounted) setErrorMessage(getErrorMessage(error));
@@ -157,7 +157,7 @@ export default function GoalsScreen() {
 
     try {
       await loadWorkspace();
-      setFeedback('Goals workspace refreshed.');
+      setFeedback('Goals and targets have been refreshed.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -185,7 +185,7 @@ export default function GoalsScreen() {
       setNewGoalDescription('');
       setNewGoalTargetDate('');
       await loadWorkspace();
-      setFeedback('Goal created.');
+      setFeedback('Goal created successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -219,7 +219,7 @@ export default function GoalsScreen() {
       });
       setEditingGoalId(null);
       await loadWorkspace();
-      setFeedback('Goal updated.');
+      setFeedback('Goal updated successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -239,7 +239,7 @@ export default function GoalsScreen() {
             try {
               await apiRequest(`/goals/${goalId}`, { method: 'DELETE' });
               await loadWorkspace();
-              setFeedback('Goal archived.');
+              setFeedback('Goal archived successfully.');
             } catch (error) {
               setErrorMessage(getErrorMessage(error));
             } finally {
@@ -283,7 +283,7 @@ export default function GoalsScreen() {
       setNewTargetUnit('');
       setNewTargetDueDate('');
       await loadWorkspace();
-      setFeedback('Target created.');
+      setFeedback('Target created successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -323,7 +323,7 @@ export default function GoalsScreen() {
       });
       setEditingTargetId(null);
       await loadWorkspace();
-      setFeedback('Target updated.');
+      setFeedback('Target updated successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -343,7 +343,7 @@ export default function GoalsScreen() {
             try {
               await apiRequest(`/targets/${targetId}`, { method: 'DELETE' });
               await loadWorkspace();
-              setFeedback('Target archived.');
+              setFeedback('Target archived successfully.');
             } catch (error) {
               setErrorMessage(getErrorMessage(error));
             } finally {
@@ -359,7 +359,7 @@ export default function GoalsScreen() {
     return (
       <View style={styles.loadingWrap}>
         <ActivityIndicator color={mobileUiTokens.accent} />
-        <Text style={styles.loadingText}>Loading Goals + Targets...</Text>
+        <Text style={styles.loadingText}>Loading goals and targets...</Text>
       </View>
     );
   }
@@ -438,7 +438,7 @@ export default function GoalsScreen() {
                 <Text style={styles.panelTitle}>{goal.title}</Text>
                 <Text style={styles.goalMeta}>
                   {formatStatus(goal.status)}
-                  {goal.target_date ? ` • ${goal.target_date}` : ''}
+                  {goal.target_date ? ` | ${goal.target_date}` : ''}
                 </Text>
               </View>
               <View style={styles.rowWrap}>
@@ -516,7 +516,7 @@ export default function GoalsScreen() {
                   <>
                     <Text style={styles.targetTitle}>{target.title}</Text>
                     <Text style={styles.targetMeta}>
-                      {formatStatus(target.status)} • {target.metric_type} • {formatTargetProgress(target)}
+                      {formatStatus(target.status)} | {target.metric_type} | {formatTargetProgress(target)}
                     </Text>
                     {target.due_date ? <Text style={styles.targetMeta}>Due: {target.due_date}</Text> : null}
                     <View style={styles.rowWrap}>

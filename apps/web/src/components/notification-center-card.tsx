@@ -21,7 +21,7 @@ function groupNotifications(items: InAppNotificationItem[]): Array<[string, InAp
 
 export function NotificationCenterCard() {
   const [state, setState] = useState<LoadState>("loading");
-  const [detail, setDetail] = useState("Loading notifications...");
+  const [detail, setDetail] = useState("Loading your notifications...");
   const [items, setItems] = useState<InAppNotificationItem[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -34,10 +34,14 @@ export function NotificationCenterCard() {
       });
       setItems(response.data);
       setState("success");
-      setDetail(`Loaded ${response.data.length} notifications.`);
+      setDetail(
+        response.data.length > 0
+          ? `${response.data.length} notification(s) are ready.`
+          : "No notifications need attention right now."
+      );
     } catch {
       setState("error");
-      setDetail("Could not load in-app notifications.");
+      setDetail("We couldn't load notifications right now.");
     }
   };
 
@@ -82,9 +86,9 @@ export function NotificationCenterCard() {
   return (
     <div className="stack">
       <p className="mono-note">{detail}</p>
-      {state === "loading" ? <p>Loading...</p> : null}
-      {state === "error" ? <p>Try again in a moment.</p> : null}
-      {state === "success" && grouped.length === 0 ? <p>No pending notifications.</p> : null}
+      {state === "loading" ? <p>Loading…</p> : null}
+      {state === "error" ? <p>Please try again in a moment.</p> : null}
+      {state === "success" && grouped.length === 0 ? <p>No notifications need attention right now.</p> : null}
       {grouped.map(([group, notifications]) => (
         <div key={group} className="stack">
           <h3>{group.toUpperCase()}</h3>

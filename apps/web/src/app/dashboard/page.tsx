@@ -56,7 +56,7 @@ function toIsoDateOnly(dateValue: Date): string {
 }
 
 function formatLongDate(value: Date): string {
-  return value.toLocaleDateString("pl-PL", {
+  return value.toLocaleDateString("en-US", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -64,7 +64,7 @@ function formatLongDate(value: Date): string {
 }
 
 function formatHourMinute(value: string): string {
-  return new Date(value).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" });
+  return new Date(value).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 }
 
 function getErrorStatus(error: unknown): number | null {
@@ -95,27 +95,27 @@ function getErrorMessage(error: unknown): string {
     return message;
   }
 
-  return "Dashboard request failed. Try refreshing this view.";
+  return "We couldn't load the dashboard right now. Please refresh and try again.";
 }
 
 function formatMoodLabel(mood: JournalEntryItem["mood"]): string {
   if (mood === "great") {
-    return "swietnie";
+    return "great";
   }
 
   if (mood === "good") {
-    return "dobrze";
+    return "good";
   }
 
   if (mood === "neutral") {
-    return "neutralnie";
+    return "neutral";
   }
 
   if (mood === "low") {
-    return "slabiej";
+    return "low";
   }
 
-  return "brak";
+  return "none";
 }
 
 async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
@@ -228,7 +228,7 @@ export default function DashboardPage() {
         .map((event) => ({
           id: `morning-event-${event.id}`,
           label: event.title,
-          detail: "Wydarzenie",
+          detail: "Event",
           timeLabel: formatHourMinute(event.start_at),
         })),
     [todayEvents]
@@ -240,7 +240,7 @@ export default function DashboardPage() {
       .map((event) => ({
         id: `now-event-${event.id}`,
         label: event.title,
-        detail: "Wydarzenie",
+        detail: "Event",
         timeLabel: formatHourMinute(event.start_at),
         isNow: true,
       }));
@@ -248,7 +248,7 @@ export default function DashboardPage() {
     const nowTasks = todayOpenTasks.slice(0, 3).map((task) => ({
       id: `now-task-${task.id}`,
       label: task.title,
-      detail: "Zadanie",
+      detail: "Task",
       timeLabel: "Teraz",
       isNow: true,
     }));
@@ -263,7 +263,7 @@ export default function DashboardPage() {
         .map((event) => ({
           id: `evening-event-${event.id}`,
           label: event.title,
-          detail: "Wydarzenie",
+          detail: "Event",
           timeLabel: formatHourMinute(event.start_at),
         })),
       ...todayTasks
@@ -272,7 +272,7 @@ export default function DashboardPage() {
         .map((task) => ({
           id: `evening-task-${task.id}`,
           label: task.title,
-          detail: "Zadanie zakonczone",
+          detail: "Completed task",
           timeLabel: "Done",
         })),
     ],
@@ -284,9 +284,9 @@ export default function DashboardPage() {
       const item = nowItems[0];
       return {
         title: item.label,
-        detail: `${item.detail} • ${item.timeLabel}`,
-        href: item.detail === "Wydarzenie" ? "/calendar" : "/tasks",
-        cta: item.detail === "Wydarzenie" ? "Open Calendar" : "Open Tasks",
+        detail: `${item.detail} | ${item.timeLabel}`,
+        href: item.detail === "Event" ? "/calendar" : "/tasks",
+        cta: item.detail === "Event" ? "Open Calendar" : "Open Tasks",
       };
     }
 
@@ -320,7 +320,7 @@ export default function DashboardPage() {
 
   async function saveQuickReflection() {
     if (!reflectionBody.trim()) {
-      setErrorMessage("Wpisz krotka refleksje przed zapisem.");
+      setErrorMessage("Write a short reflection before saving.");
       return;
     }
 
@@ -331,7 +331,7 @@ export default function DashboardPage() {
       await apiRequest("/journal-entries", {
         method: "POST",
         body: {
-          title: `Refleksja ${today}`,
+          title: `Reflection ${today}`,
           body: reflectionBody.trim(),
           mood: "neutral",
           entry_date: today,
@@ -339,7 +339,7 @@ export default function DashboardPage() {
       });
 
       setReflectionBody("");
-      setFeedback("Refleksja zapisana.");
+      setFeedback("Reflection saved.");
       await loadDashboard();
     } catch (error) {
       if (getErrorStatus(error) === 401) {
@@ -362,7 +362,7 @@ export default function DashboardPage() {
         </header>
 
         {items.length === 0 ? (
-          <p className="dashboard-timeline-empty">Brak zaplanowanych elementow.</p>
+          <p className="dashboard-timeline-empty">Nothing is scheduled here yet.</p>
         ) : (
           <ul className="dashboard-timeline-list">
             {items.map((item) => (
@@ -383,7 +383,7 @@ export default function DashboardPage() {
   return (
     <WorkspaceShell
       title="Dashboard"
-      subtitle="Widok dnia: najpierw co teraz, potem co doplanowac spokojnie."
+      subtitle="Your day at a glance: what matters now, and what to shape calmly next."
       navKey="dashboard"
       module="tasks"
       contentLayout="single"
@@ -396,16 +396,16 @@ export default function DashboardPage() {
           </div>
 
           <div className="dashboard-progress-wrap">
-            <p>{progressPercent}% Twoich intencji zamkniete dzisiaj</p>
+            <p>{progressPercent}% of today&apos;s intentions are already complete</p>
             <div className="dashboard-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}>
               <span style={{ width: `${progressPercent}%` }} />
             </div>
           </div>
 
           <div className="dashboard-hero-metrics">
-            <span>{todayOpenTasks.length} otwartych zadan</span>
-            <span>{todayEvents.length} wydarzen</span>
-            <span>{activeHabits.length} aktywnych nawykow</span>
+            <span>{todayOpenTasks.length} open tasks</span>
+            <span>{todayEvents.length} events</span>
+            <span>{activeHabits.length} active habits</span>
           </div>
         </article>
 
@@ -427,16 +427,16 @@ export default function DashboardPage() {
         {!errorMessage && feedback ? <p className="callout state-success">{feedback}</p> : null}
 
         <div className="dashboard-content-grid">
-          <Panel title="Twoje Dzisiaj">
+          <Panel title="Today at a Glance">
             <div className="dashboard-timeline-grid">
-              {renderTimelineGroup("Morning", "Poranek", morningItems)}
-              {renderTimelineGroup("Now", "Teraz", nowItems)}
-              {renderTimelineGroup("Evening", "Wieczor", eveningItems)}
+              {renderTimelineGroup("Morning", "Start the day with clarity", morningItems)}
+              {renderTimelineGroup("Now", "What needs attention now", nowItems)}
+              {renderTimelineGroup("Evening", "Wrap up and reset", eveningItems)}
             </div>
           </Panel>
 
-          <Panel title="Zadania & Nawyki">
-            <div className="dashboard-tabs" role="tablist" aria-label="Dzienny fokus">
+          <Panel title="Tasks & Habits">
+            <div className="dashboard-tabs" role="tablist" aria-label="Daily focus">
               <button
                 type="button"
                 role="tab"
@@ -444,7 +444,7 @@ export default function DashboardPage() {
                 className={`dashboard-tab ${focusTab === "tasks" ? "is-active" : ""}`}
                 onClick={() => setFocusTab("tasks")}
               >
-                Zadania
+                Tasks
               </button>
               <button
                 type="button"
@@ -453,19 +453,19 @@ export default function DashboardPage() {
                 className={`dashboard-tab ${focusTab === "habits" ? "is-active" : ""}`}
                 onClick={() => setFocusTab("habits")}
               >
-                Nawyki
+                Habits
               </button>
             </div>
 
-            {isLoading ? <p className="callout state-loading">Ladowanie dziennego fokusu...</p> : null}
+            {isLoading ? <p className="callout state-loading">Loading your daily focus...</p> : null}
 
             {!isLoading && focusTab === "tasks" ? (
               <ul className="dashboard-focus-list">
                 {todayOpenTasks.length === 0 ? (
                   <li className="dashboard-focus-item">
                     <div>
-                      <strong>Brak otwartych zadan na dzisiaj</strong>
-                      <small>To dobry moment na spokojne doplanowanie.</small>
+                      <strong>No open tasks are scheduled for today</strong>
+                      <small>This is a good moment to plan calmly.</small>
                     </div>
                   </li>
                 ) : (
@@ -473,9 +473,9 @@ export default function DashboardPage() {
                     <li key={task.id} className="dashboard-focus-item">
                       <div>
                         <strong>{task.title}</strong>
-                        <small>priorytet: {task.priority}</small>
+                        <small>priority: {task.priority}</small>
                       </div>
-                      <span className="pill">{task.status === "in_progress" ? "w trakcie" : "otwarte"}</span>
+                      <span className="pill">{task.status === "in_progress" ? "in progress" : "open"}</span>
                     </li>
                   ))
                 )}
@@ -487,8 +487,8 @@ export default function DashboardPage() {
                 {activeHabits.length === 0 ? (
                   <li className="dashboard-focus-item">
                     <div>
-                      <strong>Brak aktywnych nawykow</strong>
-                      <small>Dodaj pierwszy nawyk i polacz go z codziennym rytmem.</small>
+                      <strong>No active habits yet</strong>
+                      <small>Add your first habit and connect it to your daily rhythm.</small>
                     </div>
                   </li>
                 ) : (
@@ -496,7 +496,7 @@ export default function DashboardPage() {
                     <li key={habit.id} className="dashboard-focus-item">
                       <div>
                         <strong>{habit.title}</strong>
-                        <small>nawyk aktywny</small>
+                        <small>active habit</small>
                       </div>
                       <span className="pill">habit</span>
                     </li>
@@ -507,29 +507,29 @@ export default function DashboardPage() {
 
             <div className="row-inline">
               <Link href={focusTab === "tasks" ? "/tasks" : "/habits"} className="btn-secondary">
-                Otworz modul
+                Open module
               </Link>
             </div>
           </Panel>
 
-          <Panel title="Dziennik / Refleksja">
+          <Panel title="Journal / Reflection">
             <label className="field">
-              <span>Szybki wpis</span>
+              <span>Quick note</span>
               <textarea
                 className="list-row dashboard-reflection-input"
                 value={reflectionBody}
                 onChange={(event) => setReflectionBody(event.target.value)}
-                placeholder="Opisz swoj dzien..."
+                placeholder="Describe your day..."
                 rows={5}
               />
             </label>
 
             <div className="row-inline">
               <button type="button" className="btn-primary" onClick={() => void saveQuickReflection()} disabled={isSavingReflection}>
-                {isSavingReflection ? "Zapisywanie..." : "Zapisz refleksje"}
+                {isSavingReflection ? "Saving..." : "Save reflection"}
               </button>
               <Link href="/journal" className="btn-secondary">
-                Pelny dziennik
+                Full journal
               </Link>
             </div>
 
@@ -538,21 +538,21 @@ export default function DashboardPage() {
                 <strong>{lastEntry.title}</strong>
                 <p>{lastEntry.body}</p>
                 <small>
-                  {lastEntry.entry_date.slice(0, 10)} | nastroj: {formatMoodLabel(lastEntry.mood)}
+                  {lastEntry.entry_date.slice(0, 10)} | mood: {formatMoodLabel(lastEntry.mood)}
                 </small>
               </article>
             ) : (
-              <p className="dashboard-timeline-empty">Brak wpisow. Zapisz pierwsza refleksje dzisiaj.</p>
+              <p className="dashboard-timeline-empty">No entries yet. Save your first reflection today.</p>
             )}
           </Panel>
 
           <Panel title="Quick Actions">
             <div className="dashboard-actions-grid">
-              <Link href="/tasks" className="btn-primary">Dodaj zadanie</Link>
-              <Link href="/calendar" className="btn-secondary">Dodaj wydarzenie</Link>
-              <Link href="/habits" className="btn-secondary">Dodaj nawyk</Link>
-              <Link href="/routines" className="btn-secondary">Dodaj rutyne</Link>
-              <Link href="/goals" className="btn-secondary">Dodaj cel</Link>
+              <Link href="/tasks" className="btn-primary">Add task</Link>
+              <Link href="/calendar" className="btn-secondary">Add event</Link>
+              <Link href="/habits" className="btn-secondary">Add habit</Link>
+              <Link href="/routines" className="btn-secondary">Add routine</Link>
+              <Link href="/goals" className="btn-secondary">Add goal</Link>
               <Link href="/life-areas" className="btn-secondary">Life areas</Link>
             </div>
           </Panel>

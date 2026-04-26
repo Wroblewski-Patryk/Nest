@@ -3533,6 +3533,35 @@ Last updated: 2026-04-26
 
 ## Done
 
+- [x] NEST-206 Harden remaining daily-flow and CRUD copy across web and mobile
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-26
+  - Notes:
+    - Cleaned remaining mixed-language and low-quality user-facing copy on the
+      web daily-use/support surfaces:
+      `apps/web/src/app/dashboard/page.tsx`,
+      `apps/web/src/components/workspace-logout-button.tsx`,
+      `apps/web/src/components/ai-copilot-card.tsx`,
+      `apps/web/src/components/notification-center-card.tsx`,
+      `apps/web/src/components/notification-channel-matrix-card.tsx`.
+    - Cleaned mobile CRUD success/error/loading feedback on the API-backed core
+      tabs:
+      `apps/mobile/app/(tabs)/index.tsx`,
+      `apps/mobile/app/(tabs)/goals.tsx`,
+      `apps/mobile/app/(tabs)/habits.tsx`,
+      `apps/mobile/app/(tabs)/journal.tsx`.
+    - Removed broken separator rendering on multiple mobile/web strings and
+      aligned copy to one calmer English baseline for this founder-ready wave.
+    - Validation:
+      `pnpm lint` in `apps/web`,
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`,
+      `pnpm exec tsc --noEmit` in `apps/mobile`,
+      `pnpm exec expo export --platform web` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`.
+
 - [x] NEST-205 Unify settings and support copy across web and mobile
   - Status: DONE
   - Owner: Execution Agent

@@ -33,7 +33,7 @@ export function WorkspaceLogoutButton() {
 
   return (
     <button type="button" className="workspace-logout-button" onClick={handleLogout} disabled={isLoggingOut}>
-      {isLoggingOut ? "Signing out..." : "Wyloguj"}
+      {isLoggingOut ? "Signing out..." : "Sign out"}
     </button>
   );
 }

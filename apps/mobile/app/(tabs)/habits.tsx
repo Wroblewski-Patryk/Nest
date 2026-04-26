@@ -54,7 +54,7 @@ function getErrorMessage(error: unknown): string {
     return (error as { payload: { message: string } }).payload.message;
   }
 
-  return 'Request failed.';
+  return 'Something went wrong. Please try again.';
 }
 
 function resolveCadenceType(cadence: Record<string, unknown> | null | undefined): 'daily' | 'weekly' {
@@ -74,7 +74,7 @@ export default function HabitsScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [busyHabitId, setBusyHabitId] = useState<string | null>(null);
   const [busyRoutineId, setBusyRoutineId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState('Habits + Routines ready.');
+  const [feedback, setFeedback] = useState('Habits and routines are ready.');
   const [errorMessage, setErrorMessage] = useState('');
 
   const [newHabitTitle, setNewHabitTitle] = useState('');
@@ -112,7 +112,7 @@ export default function HabitsScreen() {
 
     loadWorkspace()
       .then(() => {
-        if (mounted) setFeedback('Habits workspace loaded.');
+        if (mounted) setFeedback('Habits and routines are loaded.');
       })
       .catch((error) => {
         if (mounted) setErrorMessage(getErrorMessage(error));
@@ -135,7 +135,7 @@ export default function HabitsScreen() {
 
     try {
       await loadWorkspace();
-      setFeedback('Habits workspace refreshed.');
+      setFeedback('Habits and routines have been refreshed.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -164,7 +164,7 @@ export default function HabitsScreen() {
       setNewHabitType('boolean');
       setNewHabitCadence('daily');
       await loadWorkspace();
-      setFeedback('Habit created.');
+      setFeedback('Habit created successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -198,7 +198,7 @@ export default function HabitsScreen() {
       });
       setEditingHabitId(null);
       await loadWorkspace();
-      setFeedback('Habit updated.');
+      setFeedback('Habit updated successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -259,7 +259,7 @@ export default function HabitsScreen() {
                 setEditingHabitId(null);
               }
               await loadWorkspace();
-              setFeedback('Habit deleted.');
+              setFeedback('Habit deleted successfully.');
             } catch (error) {
               setErrorMessage(getErrorMessage(error));
             } finally {
@@ -301,7 +301,7 @@ export default function HabitsScreen() {
       setNewRoutineStepTitle('');
       setNewRoutineStepDuration('15');
       await loadWorkspace();
-      setFeedback('Routine created.');
+      setFeedback('Routine created successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -344,7 +344,7 @@ export default function HabitsScreen() {
       });
       setEditingRoutineId(null);
       await loadWorkspace();
-      setFeedback('Routine updated.');
+      setFeedback('Routine updated successfully.');
     } catch (error) {
       setErrorMessage(getErrorMessage(error));
     } finally {
@@ -390,7 +390,7 @@ export default function HabitsScreen() {
                 setEditingRoutineId(null);
               }
               await loadWorkspace();
-              setFeedback('Routine deleted.');
+              setFeedback('Routine deleted successfully.');
             } catch (error) {
               setErrorMessage(getErrorMessage(error));
             } finally {
@@ -406,7 +406,7 @@ export default function HabitsScreen() {
     return (
       <View style={styles.loadingWrap}>
         <ActivityIndicator color={mobileUiTokens.accent} />
-        <Text style={styles.loadingText}>Loading Habits + Routines...</Text>
+        <Text style={styles.loadingText}>Loading habits and routines...</Text>
       </View>
     );
   }
@@ -506,7 +506,7 @@ export default function HabitsScreen() {
                     <View style={styles.headerTextWrap}>
                       <Text style={styles.cardTitle}>{habit.title}</Text>
                       <Text style={styles.cardMeta}>
-                        {habit.type} • cadence: {resolveCadenceType(habit.cadence)} • {habit.is_active ? 'active' : 'inactive'}
+                        {habit.type} | cadence: {resolveCadenceType(habit.cadence)} | {habit.is_active ? 'active' : 'inactive'}
                       </Text>
                     </View>
                     <View style={styles.rowWrap}>
@@ -558,7 +558,7 @@ export default function HabitsScreen() {
                     <View style={styles.headerTextWrap}>
                       <Text style={styles.cardTitle}>{routine.title}</Text>
                       <Text style={styles.cardMeta}>
-                        {routine.steps.length} steps • {routine.is_active ? 'active' : 'inactive'}
+                        {routine.steps.length} steps | {routine.is_active ? 'active' : 'inactive'}
                       </Text>
                       {routine.steps[0] ? (
                         <Text style={styles.cardMeta}>

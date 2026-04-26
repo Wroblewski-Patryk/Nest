@@ -19,7 +19,7 @@ export function AiCopilotCard() {
     }
 
     setState("loading");
-    setDetail("Generating copilot response...");
+    setDetail("Preparing a Copilot answer...");
 
     try {
       const response = await nestApiClient.askAiCopilot({
@@ -33,12 +33,12 @@ export function AiCopilotCard() {
       setState("success");
       setDetail(
         response.data.provider.mode === "fallback"
-          ? "Provider unavailable, fallback response returned."
-          : "Primary provider response returned."
+          ? "Primary AI provider is unavailable, so a fallback answer was returned."
+          : "Copilot answer is ready."
       );
     } catch {
       setState("error");
-      setDetail("Copilot request failed. Try again in a moment.");
+      setDetail("We couldn't reach Copilot right now. Please try again in a moment.");
     }
   };
 
