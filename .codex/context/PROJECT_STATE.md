@@ -1397,3 +1397,14 @@ Last updated: 2026-04-26
   the founder target, with remaining gap now concentrated in title typography,
   hero metric rhythm, and lower-zone ornament balance, recorded in:
   `docs/ux/nest_228_dashboard_parity_review_phaseJ_2026-04-26.md`
+- Dashboard micro-finish pass landed on 2026-04-26 to calm the title/subtitle
+  cadence, tighten hero metric rhythm, and soften lower dashboard detailing
+  in:
+  `apps/web/src/app/globals.css`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseK.png`
+- Phase K review on 2026-04-26 confirmed another step toward founder parity,
+  with remaining gap now narrowed to final title proportion, hero landscape
+  softness, right-rail atmosphere, and lower-card ornamental detail, recorded
+  in:
+  `docs/ux/nest_230_dashboard_parity_review_phaseK_2026-04-26.md`

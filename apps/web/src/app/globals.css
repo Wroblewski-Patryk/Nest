@@ -555,24 +555,25 @@ body {
 
 .workspace-brand {
   display: grid;
-  gap: 0.28rem;
+  gap: 0.2rem;
 }
 
 .workspace-topbar h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2.62rem, 3.65vw, 3.6rem);
-  letter-spacing: -0.045em;
+  font-size: clamp(2.42rem, 3.22vw, 3.18rem);
+  letter-spacing: -0.05em;
   font-weight: 400;
-  line-height: 0.92;
+  line-height: 0.95;
+  color: color-mix(in srgb, var(--ink), #000 3%);
 }
 
 .workspace-topbar p {
   margin: 0;
   color: var(--muted);
-  line-height: 1.22;
-  font-size: 0.88rem;
-  max-width: 26rem;
+  line-height: 1.18;
+  font-size: 0.84rem;
+  max-width: 24rem;
 }
 
 .workspace-hero-tools {
@@ -1496,8 +1497,8 @@ input[type="color"].list-row {
 
 .dashboard-hero-story {
   display: grid;
-  gap: 0.06rem;
-  max-width: 15rem;
+  gap: 0.1rem;
+  max-width: 14.2rem;
   position: relative;
   z-index: 1;
 }
@@ -1505,8 +1506,8 @@ input[type="color"].list-row {
 .dashboard-hero-story strong {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.68rem, 2.12vw, 2.02rem);
-  line-height: 0.92;
+  font-size: clamp(1.56rem, 1.88vw, 1.82rem);
+  line-height: 0.94;
   letter-spacing: -0.04em;
   font-weight: 400;
 }
@@ -1514,15 +1515,15 @@ input[type="color"].list-row {
 .dashboard-hero-story p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.24;
+  font-size: 0.84rem;
+  line-height: 1.2;
 }
 
 .dashboard-hero-story small {
   color: color-mix(in srgb, var(--ink), #fff 12%);
-  font-size: 0.71rem;
-  line-height: 1.28;
-  max-width: 12.6rem;
+  font-size: 0.68rem;
+  line-height: 1.24;
+  max-width: 11.8rem;
 }
 
 .dashboard-hero-stat-row {
@@ -1530,7 +1531,7 @@ input[type="color"].list-row {
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 0.28rem;
+  gap: 0.32rem;
   position: relative;
   z-index: 1;
   align-self: center;
@@ -1539,10 +1540,10 @@ input[type="color"].list-row {
 .dashboard-hero-stat {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.34rem;
+  gap: 0.4rem;
   align-items: center;
-  padding-right: 0.5rem;
-  border-right: 1px solid rgb(216 210 198 / 34%);
+  padding-right: 0.62rem;
+  border-right: 1px solid rgb(216 210 198 / 28%);
 }
 
 .dashboard-hero-stat:last-child {
@@ -1551,15 +1552,15 @@ input[type="color"].list-row {
 }
 
 .dashboard-hero-stat-icon {
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 1.78rem;
+  height: 1.78rem;
   border-radius: 999px;
   display: grid;
   place-items: center;
   color: color-mix(in srgb, var(--accent), #000 16%);
-  background: rgb(255 255 255 / 66%);
-  border: 1px solid rgb(208 200 184 / 56%);
-  opacity: 0.92;
+  background: rgb(255 255 255 / 56%);
+  border: 1px solid rgb(208 200 184 / 42%);
+  opacity: 0.88;
 }
 
 .dashboard-hero-stat-icon svg {
@@ -1569,15 +1570,15 @@ input[type="color"].list-row {
 
 .dashboard-hero-stat strong {
   font-family: var(--font-display);
-  font-size: 1.14rem;
+  font-size: 1.08rem;
   line-height: 1;
   font-weight: 400;
 }
 
 .dashboard-hero-stat small {
   color: var(--muted);
-  font-size: 0.67rem;
-  opacity: 0.92;
+  font-size: 0.64rem;
+  opacity: 0.86;
 }
 
 .dashboard-hero-landscape {
@@ -2105,7 +2106,7 @@ input[type="color"].list-row {
 
 .dashboard-focus-item {
   border-bottom: 1px solid rgb(221 214 203 / 68%);
-  padding: 0.66rem 0.1rem;
+  padding: 0.62rem 0.1rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.45rem;
@@ -2115,7 +2116,7 @@ input[type="color"].list-row {
 
 .dashboard-focus-item strong {
   display: block;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 500;
 }
 
@@ -2324,7 +2325,7 @@ input[type="color"].list-row {
 .dashboard-quick-add-tile {
   border: 1px solid rgb(218 210 197 / 60%);
   border-radius: 0.95rem;
-  padding: 0.8rem 0.45rem;
+  padding: 0.76rem 0.42rem;
   text-decoration: none;
   color: inherit;
   display: grid;
@@ -2341,8 +2342,8 @@ input[type="color"].list-row {
 }
 
 .dashboard-quick-add-icon {
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 1.82rem;
+  height: 1.82rem;
   border-radius: 999px;
   display: grid;
   place-items: center;
@@ -2483,8 +2484,8 @@ input[type="color"].list-row {
 .dashboard-insight-strip p {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.16rem;
-  line-height: 1.32;
+  font-size: 1.12rem;
+  line-height: 1.3;
   color: color-mix(in srgb, var(--ink), #000 6%);
 }
 
@@ -3010,7 +3011,7 @@ input[type="color"].list-row {
   }
 
   .dashboard-hero-scene {
-    grid-template-columns: auto minmax(186px, 0.5fr) minmax(0, 1.44fr);
+    grid-template-columns: auto minmax(170px, 0.46fr) minmax(0, 1.5fr);
     align-items: center;
     min-height: 132px;
   }

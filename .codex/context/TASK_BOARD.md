@@ -24,6 +24,35 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-230 Review dashboard parity after phase K capture
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-229
+  - Done on: 2026-04-26
+  - Notes:
+    - Compared refreshed phase K dashboard capture against the canonical
+      founder target.
+    - Recorded the remaining ultra-narrow gaps in:
+      `docs/ux/nest_230_dashboard_parity_review_phaseK_2026-04-26.md`.
+
+- [x] NEST-229 Apply dashboard micro finish pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-228
+  - Done on: 2026-04-26
+  - Notes:
+    - Refined entry typography, hero metric rhythm, lower-row softness, and
+      quick-add restraint to move closer to pixel-perfect parity.
+    - Updated implementation in:
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifact:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseK.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-228 Review dashboard parity after phase J capture
   - Status: DONE
   - Owner: Review Agent
