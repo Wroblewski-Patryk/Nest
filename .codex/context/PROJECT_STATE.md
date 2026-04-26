@@ -307,6 +307,22 @@ Last updated: 2026-04-26
   serenity, hero typography/metrics, focus-timeline proportion, support-card
   material softness, and assistant finish; see:
   `docs/ux/nest_218_dashboard_shell_parity_review_phaseE_2026-04-26.md`
+- Dashboard/assistant living parity phase F landed on 2026-04-26 with softer
+  rail weight, calmer hero density, refined focus/timeline balance, richer
+  support-card materials, subtle living motion, and improved assistant
+  response-state preparation in:
+  `apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/components/ai-copilot-card.tsx`,
+  `apps/web/src/app/globals.css`
+  with refreshed artifacts:
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseF.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseF.png`
+- A fourth parity review on 2026-04-26 confirms the app feels more alive and
+  premium, but still needs one final narrow finish pass on hero softness, rail
+  quietness, focus-card dominance, assistant warmth, and reusable propagation
+  rules; see:
+  `docs/ux/nest_220_dashboard_living_parity_review_phaseF_2026-04-26.md`
 - Mobile dashboard parity decision remains open on 2026-04-26 because the
   mobile app still lands in `Tasks` and has no dedicated dashboard route; see
   `docs/planning/open-decisions.md` item `OD-2026-04-26-01`
@@ -1141,6 +1157,20 @@ Last updated: 2026-04-26
   after the phase E shell pass and defines the next slices toward full
   canonical founder parity
   (`docs/ux/nest_218_dashboard_shell_parity_review_phaseE_2026-04-26.md`)
+- `NEST-219` completed: the dashboard and assistant now feel calmer and more
+  alive through reduced rail heaviness, softer card materials, subtler center
+  proportions, time-aware dashboard greeting, and reusable living-ui guidance
+  for future module work
+  (`apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/components/ai-copilot-card.tsx`,
+  `apps/web/src/app/globals.css`,
+  `docs/ux/design-memory.md`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseF.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseF.png`)
+- `NEST-220` completed: a new parity review now records the remaining final
+  finish-pass gaps after the phase F living-ui pass
+  (`docs/ux/nest_220_dashboard_living_parity_review_phaseF_2026-04-26.md`)
 - `NEST-207` completed: the active `v1` repair wave now has a canonical
   detailed execution queue and refill strategy through
   `docs/planning/v1_execution_backlog_2026-04-26.md`, with

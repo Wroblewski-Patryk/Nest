@@ -24,6 +24,42 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-220 Review dashboard and assistant living parity after phase F pass
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-219
+  - Done on: 2026-04-26
+  - Notes:
+    - Compared refreshed phase F dashboard and assistant captures against the
+      canonical founder target.
+    - Recorded remaining gaps and the next finish-pass slices in:
+      `docs/ux/nest_220_dashboard_living_parity_review_phaseF_2026-04-26.md`.
+
+- [x] NEST-219 Apply living parity pass to dashboard shell and assistant on web
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-218
+  - Done on: 2026-04-26
+  - Notes:
+    - Softened rail weight, refined hero density, tuned focus/timeline balance,
+      improved support-card materials, and prepared richer assistant
+      response-state styling.
+    - Added reusable living-ui guidance in:
+      `docs/ux/design-memory.md`.
+    - Updated implementation in:
+      `apps/web/src/app/dashboard/page.tsx`,
+      `apps/web/src/components/workspace-primitives.tsx`,
+      `apps/web/src/components/ai-copilot-card.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifacts:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseF.png`,
+      `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseF.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-218 Review dashboard and shell parity after phase E shell pass
   - Status: DONE
   - Owner: Review Agent

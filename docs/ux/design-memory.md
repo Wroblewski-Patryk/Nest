@@ -68,3 +68,15 @@
 - Assistant room:
   AI support should exist as a first-class room inside the same shell rather
   than only as an embedded helper card.
+
+## Living UI Patterns (2026-04-26)
+
+- Gentle presence, never noisy motion:
+  Use subtle pulses, drift, and hover-lift only to make the interface feel
+  alive; motion should suggest breath and attention, not productivity theater.
+- Time-aware warmth:
+  Core entry surfaces may react to time of day or current context when it
+  increases emotional fit without adding decision noise.
+- Premium hover rhythm:
+  Interactive tiles, support cards, and utility actions should respond with
+  small material shifts so the product feels touchable, not static.

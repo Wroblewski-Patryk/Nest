@@ -68,13 +68,22 @@ export function AiCopilotCard() {
       </div>
       {result ? (
         <div className="assistant-copilot-result">
+          <div className="assistant-copilot-status">
+            <span className={`pill ${result.provider.mode === "fallback" ? "" : "is-live"}`}>
+              {result.provider.mode === "fallback" ? "Fallback guidance" : "Live guidance"}
+            </span>
+            <small>Snapshot {result.context_snapshot.fingerprint.slice(0, 12)}</small>
+          </div>
           <div className="assistant-copilot-answer">
+            <strong>Response</strong>
             <p>{result.answer}</p>
           </div>
-          <p className="mono-note assistant-copilot-meta">
-            Intent: {result.intent} | Provider: {result.provider.mode} | Snapshot:{" "}
-            {result.context_snapshot.fingerprint.slice(0, 12)}
-          </p>
+          <p className="mono-note assistant-copilot-meta">Intent: {result.intent} | Provider: {result.provider.mode}</p>
+          <div className="assistant-copilot-sources">
+            <div className="assistant-copilot-sources-head">
+              <strong>Context sources</strong>
+              <small>{Math.min(result.source_references.length, 5)} signals surfaced</small>
+            </div>
           <ul className="list assistant-copilot-reference-list">
             {result.source_references.slice(0, 5).map((reference, index) => (
               <li key={`${reference.entity_id ?? "n/a"}-${index}`} className="list-row assistant-copilot-reference-item">
@@ -87,6 +96,7 @@ export function AiCopilotCard() {
               </li>
             ))}
           </ul>
+          </div>
         </div>
       ) : null}
     </div>

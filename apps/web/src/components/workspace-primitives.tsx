@@ -361,7 +361,7 @@ export function QuickAddCard({ items }: QuickAddCardProps) {
       <div className="dashboard-sidebar-card-head">
         <h3>Quick add</h3>
       </div>
-      <p className="dashboard-sidebar-card-note">Capture the next small thing before it disappears.</p>
+      <p className="dashboard-sidebar-card-note">Catch the next small intention before the day carries it away.</p>
       <div className="dashboard-quick-add-grid">
         {items.map((item) => (
           <Link key={item.label} href={item.href} className="dashboard-quick-add-tile">
@@ -391,7 +391,7 @@ export function BalanceMiniCard({ value, items, href }: BalanceMiniCardProps) {
         <h3>Life areas</h3>
         <Link href={href}>View all</Link>
       </div>
-      <p className="dashboard-sidebar-card-note">A soft monthly signal of where life feels nourished and where it needs care.</p>
+      <p className="dashboard-sidebar-card-note">A quiet monthly signal of what feels nourished, steady, and ready for gentler care.</p>
 
       <div className="dashboard-balance-grid">
         <div className="dashboard-balance-donut" style={{ background: `conic-gradient(${gradient})` }}>

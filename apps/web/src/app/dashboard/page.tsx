@@ -168,6 +168,7 @@ export default function DashboardPage() {
 
   const today = useMemo(() => toIsoDateOnly(new Date()), []);
   const nowHour = new Date().getHours();
+  const greeting = nowHour < 12 ? "Good morning" : nowHour < 18 ? "Good afternoon" : "Good evening";
 
   const handleUnauthorized = useCallback(() => {
     clearAuthSession();
@@ -404,7 +405,7 @@ export default function DashboardPage() {
   return (
     <WorkspaceShell
       title="Dashboard"
-      subtitle="Good morning, Alexandra. You've got this."
+      subtitle={`${greeting}, Alexandra. You've got this.`}
       navKey="dashboard"
       module="tasks"
       contentLayout="single"
