@@ -3,6 +3,11 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
+import {
+  DashboardContextRibbon,
+  DashboardFocusCard,
+  DashboardHeroBand,
+} from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
 import { nestApiClient } from "@/lib/api-client";
 
@@ -471,6 +476,114 @@ export default function TasksPage() {
     () => targets.filter((target) => target.status === "active").length,
     [targets]
   );
+  const contextualListsCount = useMemo(
+    () => lists.filter((list) => list.goal_id || list.target_id || list.life_area_id).length,
+    [lists]
+  );
+  const unassignedTasksCount = useMemo(
+    () => tasks.filter((task) => !task.list_id).length,
+    [tasks]
+  );
+  const nextTask = useMemo(
+    () =>
+      tasks.find((task) => task.status === "in_progress") ??
+      tasks.find((task) => task.status === "todo" && task.due_date?.slice(0, 10) === todayKey) ??
+      tasks.find((task) => task.status === "todo") ??
+      null,
+    [tasks, todayKey]
+  );
+  const hottestGoal = useMemo(
+    () =>
+      goals.find((goal) => goal.status === "active" && goal.target_date) ??
+      goals.find((goal) => goal.status === "active") ??
+      null,
+    [goals]
+  );
+  const largestLifeArea = useMemo(
+    () => lifeAreas[0] ?? null,
+    [lifeAreas]
+  );
+  const focusCard =
+    planningTab === "tasks"
+      ? {
+          kicker: "Planning focus",
+          title: nextTask?.title ?? "Capture one concrete task to start the board",
+          detail: nextTask
+            ? `${nextTask.status === "in_progress" ? "Already in motion" : "Best next step"}${nextTask.due_date ? ` | due ${nextTask.due_date.slice(0, 10)}` : ""}`
+            : "Use No List for speed, then structure only what truly needs context.",
+          href: "#planning-today-focus",
+          cta: nextTask ? "Work the board" : "Start fast capture",
+          supportingValue: nextTask
+            ? `Priority ${formatPriority(nextTask.priority)}`
+            : `${unassignedTasksCount} standalone tasks can stay light`,
+        }
+      : planningTab === "lists"
+        ? {
+            kicker: "List strategy",
+            title: contextualListsCount > 0 ? `${contextualListsCount} lists already carry context` : "Lists do not need parent context to be useful",
+            detail: contextualListsCount > 0
+              ? "Keep parent links only where they sharpen clarity. The rest can stay flexible."
+              : "Start simple, then connect a list to a goal, target, or life area only when it adds meaning.",
+            href: "/tasks?tab=lists",
+            cta: "Shape list structure",
+            supportingValue: `${lists.length} total lists`,
+          }
+        : planningTab === "goals"
+          ? {
+              kicker: "Goal focus",
+              title: hottestGoal?.title ?? "Clarify the next active goal",
+              detail: hottestGoal
+                ? `${hottestGoal.target_date ? `Target date ${hottestGoal.target_date.slice(0, 10)}.` : "No target date yet."} Link the goal to targets and lists that make progress visible.`
+                : "Goals should name the bigger arc, not duplicate tasks.",
+              href: "/tasks?tab=goals",
+              cta: "Open goals",
+              supportingValue: `${activeGoalsCount} active goals`,
+            }
+          : {
+              kicker: "Target focus",
+              title: activeTargetsCount > 0 ? `${activeTargetsCount} active targets are measurable` : "Create the first measurable target",
+              detail: activeTargetsCount > 0
+                ? "Targets turn intent into evidence. Keep them measurable, due-dated, and connected to goals."
+                : "A good target should make progress legible within a week, not just aspirational.",
+              href: "/tasks?tab=targets",
+              cta: "Open targets",
+              supportingValue: hottestGoal?.title ?? "Attach the first target to an active goal",
+            };
+
+  const planningSummary =
+    planningTab === "tasks"
+      ? `${openTasksCount} open tasks are active across ${lists.length} lists. ${dueTodayCount} are due today and ${overdueCount} are already asking for triage.`
+      : planningTab === "lists"
+        ? `${lists.length} lists exist today, with ${contextualListsCount} already linked to broader context and ${unassignedTasksCount} standalone tasks still moving outside list structure.`
+        : planningTab === "goals"
+          ? `${activeGoalsCount} goals are active right now, supported by ${activeTargetsCount} active targets and ${contextualListsCount} contextualized lists.`
+          : `${activeTargetsCount} active targets are currently translating goals into measurable movement.`;
+
+  const planningContextItems = [
+    {
+      label: "Board pressure",
+      value: overdueCount > 0 ? `${overdueCount} overdue` : "Calm",
+      detail: overdueCount > 0
+        ? "Clear overdue work first so the board starts breathing again."
+        : "No overdue pressure right now.",
+    },
+    {
+      label: "Structure level",
+      value: `${contextualListsCount}/${lists.length || 0}`,
+      detail:
+        contextualListsCount > 0
+          ? "Lists are gradually gaining context without forcing every task into hierarchy."
+          : "Most planning is still intentionally lightweight.",
+    },
+    {
+      label: "Life anchor",
+      value: largestLifeArea?.name ?? "None yet",
+      detail: largestLifeArea
+        ? `${largestLifeArea.name} is available as a life-area context for planning.`
+        : "Life areas can be added later when planning needs more meaning, not more complexity.",
+      href: "/life-areas",
+    },
+  ];
 
   const filteredTasksByListId = useMemo(() => {
     const grouped = new Map<string, TaskItem[]>();
@@ -1283,6 +1396,55 @@ export default function TasksPage() {
       contentLayout="single"
       planningSubnav={{ active: planningTab }}
     >
+      <div className="planning-shell">
+        <div className="planning-primary-grid">
+          <DashboardHeroBand
+            brand="Nest"
+            dateLabel={new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            })}
+            title="Planning should create direction, not drag."
+            summary={planningSummary}
+            progressLabel={
+              planningTab === "tasks"
+                ? `${dueTodayCount} due today, ${overdueCount} overdue, and ${unassignedTasksCount} fast-capture tasks still outside list structure.`
+                : `${activeGoalsCount} goals and ${activeTargetsCount} targets are giving the board longer-range shape.`
+            }
+            progressPercent={Math.min(100, Math.max(14, 100 - overdueCount * 12 + dueTodayCount * 4))}
+            metrics={[
+              { label: "Open tasks", value: String(openTasksCount), emphasis: "accent" },
+              { label: "Due today", value: String(dueTodayCount) },
+              { label: "Overdue", value: String(overdueCount) },
+              { label: "Active goals", value: String(activeGoalsCount) },
+            ]}
+          />
+
+          <DashboardFocusCard
+            kicker={focusCard.kicker}
+            title={focusCard.title}
+            detail={focusCard.detail}
+            supportingLabel="Current planning context"
+            supportingValue={focusCard.supportingValue}
+            href={focusCard.href}
+            cta={focusCard.cta}
+            secondaryAction={
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => void loadWorkspace()}
+                disabled={isLoading}
+              >
+                {isLoading ? "Refreshing..." : "Refresh"}
+              </button>
+            }
+          />
+        </div>
+
+        <DashboardContextRibbon title="Planning context" items={planningContextItems} />
+      </div>
+
       <div className="stack">
         <MetricCard label="Lists" value={String(lists.length)} />
         <MetricCard label="Open tasks" value={String(openTasksCount)} />
@@ -1295,7 +1457,7 @@ export default function TasksPage() {
       {errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
       {!errorMessage && feedback ? <p className="callout state-success">{feedback}</p> : null}
 
-      <Panel title="View">
+      <Panel title="View" className="planning-view-panel">
         <div className="tasks-filter-group" role="tablist" aria-label="Planning module views">
           <button
             type="button"
@@ -1338,7 +1500,7 @@ export default function TasksPage() {
       </Panel>
 
       {planningTab === "tasks" ? (
-        <Panel title="Today Focus" className="planning-focus-primary">
+        <Panel id="planning-today-focus" title="Today Focus" className="planning-focus-primary">
           <p className="callout">
             Capture work fast in <strong>No List</strong>, then organize only what needs structure.
           </p>

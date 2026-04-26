@@ -1664,6 +1664,20 @@ input[type="color"].list-row {
   line-height: 1.58;
 }
 
+.planning-shell {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.planning-primary-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.planning-view-panel {
+  background: rgb(255 255 255 / 76%);
+}
+
 @media (min-width: 920px) {
   .public-main {
     padding: 1.9rem 1.35rem 2.4rem;
@@ -1715,6 +1729,11 @@ input[type="color"].list-row {
   }
 
   .journal-primary-grid {
+    grid-template-columns: minmax(0, 1.16fr) minmax(320px, 0.84fr);
+    align-items: stretch;
+  }
+
+  .planning-primary-grid {
     grid-template-columns: minmax(0, 1.16fr) minmax(320px, 0.84fr);
     align-items: stretch;
   }

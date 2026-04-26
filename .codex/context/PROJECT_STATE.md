@@ -220,6 +220,12 @@ Last updated: 2026-04-26
   `apps/web/src/app/journal/page.tsx`,
   `apps/web/src/components/workspace-primitives.tsx`,
   `apps/web/src/app/globals.css`
+- Web planning implementation updated on 2026-04-26 to adopt the same
+  hero/focus/context hierarchy while preserving existing board workflows in:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/app/globals.css`
 - Mobile dashboard parity decision remains open on 2026-04-26 because the
   mobile app still lands in `Tasks` and has no dedicated dashboard route; see
   `docs/planning/open-decisions.md` item `OD-2026-04-26-01`

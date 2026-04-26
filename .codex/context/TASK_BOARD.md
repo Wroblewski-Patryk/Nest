@@ -24,6 +24,24 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-200 Implement canonical planning entry hierarchy on web
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-198, NEST-199
+  - Done on: 2026-04-26
+  - Notes:
+    - Reframed web `/tasks` with canonical hero, focus, and planning-context
+      layers without rewriting the underlying planning workflows.
+    - Updated planning route and shared panel support in:
+      `apps/web/src/app/tasks/page.tsx`,
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-199 Implement canonical journal and reflection entry surface on web
   - Status: DONE
   - Owner: Execution Agent
