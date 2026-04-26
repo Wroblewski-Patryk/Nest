@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { formatLocalizedDateTime, resolveAuraVariant, resolveLanguage, translate, type ModuleKey } from "@nest/shared-types";
+import { resolveAuraVariant, resolveLanguage, translate, type ModuleKey } from "@nest/shared-types";
 import { WorkspaceLogoutButton } from "@/components/workspace-logout-button";
 
 type WorkspaceNavKey = ModuleKey | "dashboard" | "settings" | "assistant";
@@ -299,11 +299,13 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
                 <small>Welcome back,</small>
                 <strong>Alexandra</strong>
               </div>
+              <span className="workspace-account-chevron" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="m9 7 5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
             </div>
             <div className="workspace-rail-footer-actions">
-              <Link href="/settings" className="workspace-settings-link">
-                Settings
-              </Link>
               <WorkspaceLogoutButton />
             </div>
           </div>
@@ -313,7 +315,6 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
           <div className="workspace-main-shell">
             <header className="workspace-topbar">
               <div className="workspace-brand">
-                <p className="workspace-date">{formatLocalizedDateTime(new Date(), language)}</p>
                 <h1>{title}</h1>
                 <p>{subtitle}</p>
               </div>

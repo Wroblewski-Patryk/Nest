@@ -24,6 +24,46 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-218 Review dashboard and shell parity after phase E shell pass
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-217
+  - Done on: 2026-04-26
+  - Notes:
+    - Compared refreshed phase E dashboard and assistant captures against the
+      canonical founder target.
+    - Recorded remaining gaps and next iteration slices in:
+      `docs/ux/nest_218_dashboard_shell_parity_review_phaseE_2026-04-26.md`.
+
+- [x] NEST-217 Refine dashboard shell composition and editorial entry on web
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-216
+  - Done on: 2026-04-26
+  - Notes:
+    - Replaced the remaining split hero/rail wrapper with one canonical
+      dashboard shell grid and lightened the top entry so the heading now feels
+      closer to the founder reference.
+    - Softened the shared sidebar/account rhythm and refined the assistant room
+      while preserving the existing route and shell architecture.
+    - Updated implementation in:
+      `apps/web/src/app/dashboard/page.tsx`,
+      `apps/web/src/components/workspace-primitives.tsx`,
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/components/ai-copilot-card.tsx`,
+      `apps/web/src/app/assistant/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifacts:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseD.png`,
+      `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseD.png`,
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseE.png`,
+      `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseE.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-215 Apply dashboard shell finish pass and assistant conversational
   polish on web
   - Status: DONE

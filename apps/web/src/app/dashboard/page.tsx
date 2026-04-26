@@ -410,72 +410,70 @@ export default function DashboardPage() {
       contentLayout="single"
     >
       <section className={`dashboard-shell ${isLoading ? "is-loading" : ""}`}>
-        <div className="dashboard-hero-layout">
-          <DashboardHeroBand
-            title="Today at a glance"
-            summary={useShowcaseFallback ? "You're making steady progress." : "You're making steady progress."}
-            progressLabel={
-              useShowcaseFallback
-                ? "You're making steady progress."
-                : `${todayDoneTasksCount} completed tasks and ${Math.max(0, progressPercent - todayDoneTasksCount)} completed habit beats are already supporting the day.`
-            }
-            progressPercent={useShowcaseFallback ? 78 : progressPercent}
-            metrics={heroMetrics}
-          />
+        <DashboardHeroBand
+          title="Today at a glance"
+          summary={useShowcaseFallback ? "You're making steady progress." : "You're making steady progress."}
+          progressLabel={
+            useShowcaseFallback
+              ? "You're making steady progress."
+              : `${todayDoneTasksCount} completed tasks and ${Math.max(0, progressPercent - todayDoneTasksCount)} completed habit beats are already supporting the day.`
+          }
+          progressPercent={useShowcaseFallback ? 78 : progressPercent}
+          metrics={heroMetrics}
+        />
 
-          <div className="dashboard-support-rail">
-            <ReflectionSidebarCard
-              title={entries[0]?.title ?? "Evening reflection"}
-              excerpt={reflectionText}
-              prompt="How was your day?"
-              href="/journal"
-            />
-            <QuickAddCard items={[
-              {
-                label: "Task",
-                href: "/tasks",
-                icon: (
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                    <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.6" />
-                  </svg>
-                ),
-              },
-              {
-                label: "Habit",
-                href: "/habits",
-                icon: (
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M12 20c4.2 0 7-2.8 7-7 0-5-3.5-8-7-9-3.5 1-7 4-7 9 0 4.2 2.8 7 7 7Z" stroke="currentColor" strokeWidth="1.8" />
-                  </svg>
-                ),
-              },
-              {
-                label: "Event",
-                href: "/calendar",
-                icon: (
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="1.7" />
-                    <path d="M8 3v4M16 3v4M4 9h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-                  </svg>
-                ),
-              },
-              {
-                label: "Note",
-                href: "/journal",
-                icon: (
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M7 5h10a2 2 0 0 1 2 2v10l-4-2-4 2-4-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-                  </svg>
-                ),
-              },
-            ]} />
-            <BalanceMiniCard
-              value={useShowcaseFallback ? 7.3 : balance?.meta.global_balance_score ?? 0}
-              items={displayBalanceItems}
-              href="/life-areas"
-            />
-          </div>
+        <div className="dashboard-support-rail">
+          <ReflectionSidebarCard
+            title={entries[0]?.title ?? "Evening reflection"}
+            excerpt={reflectionText}
+            prompt="How was your day?"
+            href="/journal"
+          />
+          <QuickAddCard items={[
+            {
+              label: "Task",
+              href: "/tasks",
+              icon: (
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth="1.6" />
+                </svg>
+              ),
+            },
+            {
+              label: "Habit",
+              href: "/habits",
+              icon: (
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 20c4.2 0 7-2.8 7-7 0-5-3.5-8-7-9-3.5 1-7 4-7 9 0 4.2 2.8 7 7 7Z" stroke="currentColor" strokeWidth="1.8" />
+                </svg>
+              ),
+            },
+            {
+              label: "Event",
+              href: "/calendar",
+              icon: (
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="1.7" />
+                  <path d="M8 3v4M16 3v4M4 9h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                </svg>
+              ),
+            },
+            {
+              label: "Note",
+              href: "/journal",
+              icon: (
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 5h10a2 2 0 0 1 2 2v10l-4-2-4 2-4-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                </svg>
+              ),
+            },
+          ]} />
+          <BalanceMiniCard
+            value={useShowcaseFallback ? 7.3 : balance?.meta.global_balance_score ?? 0}
+            items={displayBalanceItems}
+            href="/life-areas"
+          />
         </div>
 
         {!useShowcaseFallback && errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}

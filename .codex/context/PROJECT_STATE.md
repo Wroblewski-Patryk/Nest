@@ -288,6 +288,25 @@ Last updated: 2026-04-26
   editorial entry merge, rail luxury finish, and assistant response-state
   polish; see:
   `docs/ux/nest_216_dashboard_shell_parity_review_phaseB_2026-04-26.md`
+- Dashboard/shell phase E refinement landed on 2026-04-26 with a true
+  dashboard shell grid, lighter editorial entry, calmer sidebar/account
+  rhythm, and further assistant polish in:
+  `apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/components/ai-copilot-card.tsx`,
+  `apps/web/src/app/assistant/page.tsx`,
+  `apps/web/src/app/globals.css`
+  with refreshed artifacts:
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseD.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseD.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseE.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseE.png`
+- A third parity review on 2026-04-26 confirms the shell is materially closer
+  to the founder target, but still needs one more focused pass on sidebar
+  serenity, hero typography/metrics, focus-timeline proportion, support-card
+  material softness, and assistant finish; see:
+  `docs/ux/nest_218_dashboard_shell_parity_review_phaseE_2026-04-26.md`
 - Mobile dashboard parity decision remains open on 2026-04-26 because the
   mobile app still lands in `Tasks` and has no dedicated dashboard route; see
   `docs/planning/open-decisions.md` item `OD-2026-04-26-01`
@@ -1106,6 +1125,22 @@ Last updated: 2026-04-26
   the remaining hero, entry-merge, rail-luxury, and assistant response-state
   gaps after the phase B finish pass
   (`docs/ux/nest_216_dashboard_shell_parity_review_phaseB_2026-04-26.md`)
+- `NEST-217` completed: the shared web shell is closer to the canonical
+  reference through one real dashboard shell grid, a lighter page entry,
+  calmer sidebar/account rhythm, and refreshed dashboard/assistant evidence
+  artifacts
+  (`apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/components/ai-copilot-card.tsx`,
+  `apps/web/src/app/assistant/page.tsx`,
+  `apps/web/src/app/globals.css`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseE.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseE.png`)
+- `NEST-218` completed: a fresh parity review now records the remaining gaps
+  after the phase E shell pass and defines the next slices toward full
+  canonical founder parity
+  (`docs/ux/nest_218_dashboard_shell_parity_review_phaseE_2026-04-26.md`)
 - `NEST-207` completed: the active `v1` repair wave now has a canonical
   detailed execution queue and refill strategy through
   `docs/planning/v1_execution_backlog_2026-04-26.md`, with
