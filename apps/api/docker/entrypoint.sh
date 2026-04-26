@@ -8,17 +8,6 @@ if [ -z "${APP_KEY:-}" ]; then
   exit 1
 fi
 
-if [ "${DB_CONNECTION:-}" = "sqlite" ] && [ -n "${DB_DATABASE:-}" ]; then
-  case "${DB_DATABASE}" in
-    /app/*)
-      DB_DATABASE="/var/www/html/${DB_DATABASE#/app/}"
-      export DB_DATABASE
-      ;;
-  esac
-  mkdir -p "$(dirname "${DB_DATABASE}")"
-  touch "${DB_DATABASE}"
-fi
-
 php artisan config:clear >/dev/null 2>&1 || true
 php artisan cache:clear >/dev/null 2>&1 || true
 php artisan route:clear >/dev/null 2>&1 || true

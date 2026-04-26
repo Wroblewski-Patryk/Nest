@@ -57,20 +57,6 @@ Set:
 The API entrypoint still runs `php artisan migrate --force` on startup, so a
 normal redeploy applies pending Laravel migrations to PostgreSQL.
 
-### SQLite fallback
-
-SQLite is still supported as a fallback for temporary environments.
-Recommended value:
-
-- `DB_CONNECTION=sqlite`
-- `DB_DATABASE=/var/www/html/database/database.sqlite`
-
-If SQLite is used, the API entrypoint automatically:
-
-- normalizes the legacy `/app/...` sqlite path to `/var/www/html/...`
-- creates the sqlite file if missing
-- runs `php artisan migrate --force` on startup
-
 The repository already contains [docker-compose.coolify.yml](/C:/Personal/Projekty/Aplikacje/Nest/docker-compose.coolify.yml)
 if you later decide to move the whole stack to a single Coolify Compose
 resource with bundled Postgres and worker.
