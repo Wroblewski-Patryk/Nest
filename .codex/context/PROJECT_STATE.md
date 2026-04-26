@@ -336,6 +336,18 @@ Last updated: 2026-04-26
   state relative to the canonical target, with remaining work focused on final
   dashboard closure and propagation rules for other modules; see:
   `docs/ux/nest_222_canonical_finish_review_phaseG_2026-04-26.md`
+- Final closure phase H landed on 2026-04-26 with additional dashboard
+  micro-softness in hero, rail, focus card, and support rail, plus explicit
+  finish propagation rules for future modules in:
+  `apps/web/src/app/globals.css`,
+  `docs/ux/design-memory.md`
+  with refreshed artifacts:
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseH.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseH.png`
+- A sixth parity review on 2026-04-26 confirms the dashboard and assistant are
+  now very close to the canonical founder direction and the remaining gap is
+  primarily micro-aesthetic rather than structural; see:
+  `docs/ux/nest_224_final_closure_review_phaseH_2026-04-26.md`
 - Mobile dashboard parity decision remains open on 2026-04-26 because the
   mobile app still lands in `Tasks` and has no dedicated dashboard route; see
   `docs/planning/open-decisions.md` item `OD-2026-04-26-01`
@@ -1196,6 +1208,17 @@ Last updated: 2026-04-26
   against the canonical founder target and points the next work toward final
   dashboard closure plus propagation rules for further module rebuilds
   (`docs/ux/nest_222_canonical_finish_review_phaseG_2026-04-26.md`)
+- `NEST-223` completed: the dashboard and assistant received a last closure
+  pass that further softened remaining micro-structure while design memory now
+  records finish-language propagation rules for future module refreshes
+  (`apps/web/src/app/globals.css`,
+  `docs/ux/design-memory.md`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseH.png`,
+  `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseH.png`)
+- `NEST-224` completed: the latest review confirms the current dashboard and
+  assistant are near-closed against the canonical founder target, with
+  remaining differences mostly aesthetic rather than systemic
+  (`docs/ux/nest_224_final_closure_review_phaseH_2026-04-26.md`)
 - `NEST-207` completed: the active `v1` repair wave now has a canonical
   detailed execution queue and refill strategy through
   `docs/planning/v1_execution_backlog_2026-04-26.md`, with

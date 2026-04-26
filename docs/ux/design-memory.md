@@ -80,3 +80,21 @@
 - Premium hover rhythm:
   Interactive tiles, support cards, and utility actions should respond with
   small material shifts so the product feels touchable, not static.
+
+## Finish Propagation Rules (2026-04-26)
+
+- Shell first, screen second:
+  Future module upgrades should inherit the sanctuary frame, softened rail, and
+  editorial page entry before adding route-local polish.
+- One dominant emotional block per screen:
+  Each module should have one area that carries the emotional center of the
+  screen, while supporting surfaces stay quieter and lighter.
+- Support rail stays intimate:
+  Right-column support cards should use softer borders, warmer gradients, and
+  lighter copy density than primary work panels.
+- Calm hierarchy beats more widgets:
+  If a screen feels weak, first adjust spacing, contrast, and material weight
+  before adding new UI objects.
+- Living cues stay subtle:
+  Motion, time-awareness, and hover response should be shared language across
+  modules, but always secondary to clarity and calm.

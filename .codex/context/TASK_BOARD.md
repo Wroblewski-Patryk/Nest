@@ -24,6 +24,39 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-224 Review final closure pass after phase H capture
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-223
+  - Done on: 2026-04-26
+  - Notes:
+    - Compared refreshed phase H dashboard and assistant captures against the
+      canonical founder target.
+    - Recorded the now-small remaining gap and propagation guidance direction
+      in:
+      `docs/ux/nest_224_final_closure_review_phaseH_2026-04-26.md`.
+
+- [x] NEST-223 Apply final dashboard closure pass and propagation rules
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-222
+  - Done on: 2026-04-26
+  - Notes:
+    - Softened remaining dashboard micro-structure in hero, rail, focus card,
+      and right-rail materials.
+    - Added explicit finish propagation rules in:
+      `docs/ux/design-memory.md`.
+    - Updated implementation in:
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifacts:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseH.png`,
+      `docs/ux_canonical_artifacts/2026-04-26/nest-assistant-web-preview-phaseH.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-222 Review canonical finish pass after phase G capture
   - Status: DONE
   - Owner: Review Agent
