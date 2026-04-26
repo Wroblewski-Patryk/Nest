@@ -1377,3 +1377,13 @@ Last updated: 2026-04-26
 - `docs/engineering/contracts/openapi_core_modules_v1.yaml`
 - `docs/engineering/mvp_database_schema.md`
 
+- Dashboard editorial-entry and shell-serenity pass landed on 2026-04-26 to
+  further soften the rail, tighten the hero/focus composition, and calm the
+  lower dashboard zone in:
+  `apps/web/src/app/globals.css`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseI.png`
+- Phase I review on 2026-04-26 confirmed that the dashboard is again closer to
+  the canonical founder reference, with remaining gaps now mostly in
+  title/art-direction nuance and support-rail softness, recorded in:
+  `docs/ux/nest_226_dashboard_parity_review_phaseI_2026-04-26.md`

@@ -24,6 +24,35 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-226 Review dashboard parity after phase I capture
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-225
+  - Done on: 2026-04-26
+  - Notes:
+    - Compared refreshed phase I dashboard capture against the canonical
+      founder target.
+    - Recorded the remaining editorial/art-direction gaps in:
+      `docs/ux/nest_226_dashboard_parity_review_phaseI_2026-04-26.md`.
+
+- [x] NEST-225 Apply dashboard editorial entry and shell serenity pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-224
+  - Done on: 2026-04-26
+  - Notes:
+    - Softened the dashboard shell, header rhythm, hero compression, and lower
+      card density to move the screen closer to the canonical founder image.
+    - Updated implementation in:
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifact:
+      `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-web-parity-preview-phaseI.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-224 Review final closure pass after phase H capture
   - Status: DONE
   - Owner: Review Agent
