@@ -1418,3 +1418,13 @@ Last updated: 2026-04-26
   close to the canonical founder target, with remaining differences limited to
   painterly softness and tiny decorative nuance, recorded in:
   `docs/ux/nest_232_dashboard_parity_review_phaseL_2026-04-26.md`
+- Dashboard painterly finish pass landed on 2026-04-28 to further soften the
+  hero landscape, warm the right rail, calm the top entry, and reduce lower
+  card mechanical feel in:
+  `apps/web/src/app/globals.css`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-28/nest-dashboard-web-parity-preview-phaseM.png`
+- Phase M review on 2026-04-28 confirmed that the remaining gap is now almost
+  entirely art-directional nuance rather than layout or hierarchy mismatch,
+  recorded in:
+  `docs/ux/nest_234_dashboard_parity_review_phaseM_2026-04-28.md`

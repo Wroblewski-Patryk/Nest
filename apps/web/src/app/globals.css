@@ -561,18 +561,18 @@ body {
 .workspace-topbar h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2.42rem, 3.22vw, 3.18rem);
-  letter-spacing: -0.05em;
+  font-size: clamp(2.34rem, 3.04vw, 2.96rem);
+  letter-spacing: -0.052em;
   font-weight: 400;
-  line-height: 0.95;
+  line-height: 0.98;
   color: color-mix(in srgb, var(--ink), #000 3%);
 }
 
 .workspace-topbar p {
   margin: 0;
   color: var(--muted);
-  line-height: 1.18;
-  font-size: 0.84rem;
+  line-height: 1.14;
+  font-size: 0.81rem;
   max-width: 24rem;
 }
 
@@ -1383,9 +1383,9 @@ input[type="color"].list-row {
   gap: 0.48rem;
   background:
     radial-gradient(circle at 8% 20%, rgb(255 255 255 / 82%) 0%, transparent 28%),
-    radial-gradient(circle at 90% 18%, rgb(221 212 189 / 26%) 0%, transparent 24%),
+    radial-gradient(circle at 90% 18%, rgb(221 212 189 / 22%) 0%, transparent 24%),
     linear-gradient(180deg, rgb(255 255 255 / 88%), rgb(252 248 240 / 82%));
-  box-shadow: 0 20px 46px -30px rgb(75 63 52 / 20%);
+  box-shadow: 0 18px 40px -32px rgb(75 63 52 / 18%);
   align-self: start;
 }
 
@@ -1423,10 +1423,11 @@ input[type="color"].list-row {
   position: relative;
   display: grid;
   gap: 0.5rem;
-  border: 1px solid rgb(210 203 188 / 62%);
+  border: 1px solid rgb(210 203 188 / 56%);
   border-radius: 1.45rem;
   background:
-    radial-gradient(circle at 84% 22%, rgb(237 229 198 / 28%) 0%, transparent 24%),
+    radial-gradient(circle at 84% 22%, rgb(237 229 198 / 24%) 0%, transparent 24%),
+    radial-gradient(circle at 94% 16%, rgb(222 231 212 / 16%) 0%, transparent 22%),
     linear-gradient(180deg, rgb(255 255 255 / 84%), rgb(247 242 230 / 76%));
   padding: 0.68rem 0.74rem 0.64rem;
   min-height: 138px;
@@ -1596,12 +1597,13 @@ input[type="color"].list-row {
 }
 
 .dashboard-sun-wash {
-  right: 7.5rem;
-  top: 1.2rem;
-  width: 4.4rem;
-  height: 4.4rem;
+  right: 7.2rem;
+  top: 1rem;
+  width: 5rem;
+  height: 5rem;
   border-radius: 999px;
-  background: radial-gradient(circle, rgb(240 223 170 / 72%) 0%, rgb(240 223 170 / 18%) 65%, transparent 100%);
+  background: radial-gradient(circle, rgb(240 223 170 / 62%) 0%, rgb(240 223 170 / 14%) 68%, transparent 100%);
+  filter: blur(1px);
   animation: nestDrift 13s ease-in-out infinite;
 }
 
@@ -1612,7 +1614,8 @@ input[type="color"].list-row {
   height: 7.8rem;
   background: linear-gradient(180deg, rgb(208 214 205 / 16%), rgb(182 190 175 / 66%));
   clip-path: polygon(0 100%, 15% 55%, 38% 32%, 58% 18%, 78% 34%, 100% 8%, 100% 100%);
-  opacity: 0.62;
+  opacity: 0.52;
+  filter: blur(1.6px);
 }
 
 .dashboard-mountain-front {
@@ -1622,7 +1625,8 @@ input[type="color"].list-row {
   height: 8.4rem;
   background: linear-gradient(180deg, rgb(202 212 188 / 14%), rgb(185 198 169 / 70%));
   clip-path: polygon(0 100%, 10% 64%, 26% 50%, 43% 33%, 62% 44%, 80% 18%, 100% 35%, 100% 100%);
-  opacity: 0.68;
+  opacity: 0.58;
+  filter: blur(0.8px);
 }
 
 .dashboard-tree-wash {
@@ -1633,8 +1637,8 @@ input[type="color"].list-row {
   background:
     radial-gradient(circle at 50% 28%, rgb(165 185 140 / 58%) 0%, transparent 55%),
     linear-gradient(180deg, transparent 0%, rgb(119 137 92 / 24%) 100%);
-  filter: blur(0.3px);
-  opacity: 0.78;
+  filter: blur(1.8px);
+  opacity: 0.68;
   animation: nestBreathe 9.5s ease-in-out infinite;
 }
 
@@ -2232,9 +2236,10 @@ input[type="color"].list-row {
   min-height: 372px;
   align-content: start;
   background:
-    radial-gradient(circle at 86% 76%, rgb(225 214 186 / 38%) 0%, transparent 22%),
-    radial-gradient(circle at 84% 92%, rgb(217 228 212 / 34%) 0%, transparent 26%),
-    radial-gradient(circle at 88% 18%, rgb(239 228 201 / 16%) 0%, transparent 28%),
+    radial-gradient(circle at 86% 76%, rgb(225 214 186 / 42%) 0%, transparent 22%),
+    radial-gradient(circle at 84% 92%, rgb(217 228 212 / 36%) 0%, transparent 26%),
+    radial-gradient(circle at 88% 18%, rgb(239 228 201 / 18%) 0%, transparent 28%),
+    radial-gradient(circle at 92% 64%, rgb(220 210 184 / 16%) 0%, transparent 18%),
     linear-gradient(180deg, rgb(255 255 255 / 82%), rgb(251 247 238 / 74%));
 }
 
@@ -2269,7 +2274,7 @@ input[type="color"].list-row {
   color: color-mix(in srgb, var(--ink), #fff 10%);
   font-family: var(--font-display);
   font-size: 1rem;
-  line-height: 1.62;
+  line-height: 1.64;
   font-style: italic;
 }
 
@@ -2283,7 +2288,7 @@ input[type="color"].list-row {
 .dashboard-sidebar-card-footer {
   margin-top: auto;
   padding-top: 0.85rem;
-  border-top: 1px solid rgb(222 214 202 / 65%);
+  border-top: 1px solid rgb(222 214 202 / 52%);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2432,6 +2437,13 @@ input[type="color"].list-row {
 .dashboard-habits-panel,
 .dashboard-reflection-panel {
   align-content: start;
+}
+
+.dashboard-list-panel.panel,
+.dashboard-habits-panel.panel {
+  background:
+    radial-gradient(circle at 88% 14%, rgb(240 231 205 / 14%) 0%, transparent 26%),
+    linear-gradient(180deg, rgb(255 255 255 / 80%), rgb(251 247 238 / 72%));
 }
 
 .dashboard-habit-check {

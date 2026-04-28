@@ -24,6 +24,35 @@ Last updated: 2026-04-26
 
 ## Backlog
 
+- [x] NEST-234 Review dashboard parity after phase M capture
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-233
+  - Done on: 2026-04-28
+  - Notes:
+    - Compared refreshed phase M dashboard capture against the canonical
+      founder target.
+    - Recorded the now almost purely art-directional remaining gap in:
+      `docs/ux/nest_234_dashboard_parity_review_phaseM_2026-04-28.md`.
+
+- [x] NEST-233 Apply dashboard painterly finish pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-232
+  - Done on: 2026-04-28
+  - Notes:
+    - Refined hero landscape softness, right-rail atmosphere, top entry calm,
+      and lower-card warmth to move the dashboard closer to canonical parity.
+    - Updated implementation in:
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifact:
+      `docs/ux_canonical_artifacts/2026-04-28/nest-dashboard-web-parity-preview-phaseM.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-232 Review dashboard parity after phase L capture
   - Status: DONE
   - Owner: Review Agent
