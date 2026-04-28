@@ -24,6 +24,20 @@ Last updated: 2026-04-28
 
 ## Backlog
 
+- [x] NEST-238 Record full canonical dashboard closure plan
+  - Status: DONE
+  - Owner: Planning Agent
+  - Depends on: NEST-236
+  - Done on: 2026-04-28
+  - Notes:
+    - Decomposed the canonical dashboard into element-level regions and
+      recorded current-vs-target gaps, root causes, and execution sequence in:
+      `docs/ux/nest_237_dashboard_canonical_element_audit_2026-04-28.md`.
+    - Stored the planning task contract in:
+      `docs/planning/nest_238_dashboard_canonical_closure_plan_2026-04-28.md`.
+    - Established the next closure sequence around asset strategy, shell
+      serenity, hero fidelity, focus/timeline harmony, and support-rail finish.
+
 - [x] NEST-236 Review dashboard parity after phase N capture
   - Status: DONE
   - Owner: Review Agent

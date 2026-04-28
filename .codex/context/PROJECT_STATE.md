@@ -24,6 +24,14 @@ Last updated: 2026-04-28
 
 ## Recent Execution Updates
 
+- 2026-04-28: Completed `NEST-238` canonical dashboard closure planning.
+  Added a full element-by-element audit in
+  `docs/ux/nest_237_dashboard_canonical_element_audit_2026-04-28.md` and a
+  task contract in
+  `docs/planning/nest_238_dashboard_canonical_closure_plan_2026-04-28.md`.
+  Main conclusion: remaining dashboard gap should no longer be treated as
+  generic CSS polish only; hero and decorative fidelity now require explicit
+  asset-strategy decisions and a staged closure sequence.
 - 2026-04-28: Completed `NEST-235` dashboard editorial detail pass. Refined
   `apps/web/src/components/workspace-shell.tsx`,
   `apps/web/src/components/workspace-primitives.tsx`, and
