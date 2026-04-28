@@ -1,4 +1,4 @@
-# Deployment Agent Checklist Template
+﻿# Deployment Agent Checklist Template
 
 ## Mission
 Deploy `Nest (LifeOS)` to `<ENV>` using SHA `<SHA>` and return only after API,
@@ -42,3 +42,13 @@ web, mobile-web, and contract validation is complete.
 3. Passed or failed checks
 4. Exact failing endpoint or error if blocked
 5. Recommended next action
+
+## Deployment Gate Evidence
+
+- [ ] `DEPLOYMENT_GATE.md` has no hard blocks.
+- [ ] Build passes without errors.
+- [ ] Runtime startup logs have no blocking errors.
+- [ ] API contracts match deployed clients.
+- [ ] Required migrations are applied.
+- [ ] Environment variables and secrets are configured.
+- [ ] Rollback path is prepared and appropriate for the risk level.

@@ -1,4 +1,4 @@
----
+﻿---
 description: Workspace rules for Nest (LifeOS)
 ---
 
@@ -76,3 +76,15 @@ description: Workspace rules for Nest (LifeOS)
   commit.
 - Use subagents only according to `.agents/workflows/subagent-orchestration.md`.
 - Update context files whenever repo truth changes.
+
+## Production Hardening Delivery Rules
+
+- Use `.codex/templates/task-template.md` for every task and include Goal, Scope, Implementation Plan, Acceptance Criteria, Definition of Done, and Result Report.
+- Check `DEFINITION_OF_DONE.md` before any task moves to `DONE`.
+- Check `INTEGRATION_CHECKLIST.md` before integrated runtime work is accepted.
+- Check `NO_TEMPORARY_SOLUTIONS.md` whenever a blocker appears.
+- Check `AI_TESTING_PROTOCOL.md` for AI features.
+- Check `DEPLOYMENT_GATE.md` before release or deploy handoff.
+- Implement features as vertical slices across UI, logic, API, DB, validation, error handling, and tests.
+- Do not mark partial runtime work as done.
+- Stop and report when the proper solution is blocked.
