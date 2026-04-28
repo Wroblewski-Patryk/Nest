@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-26
+Last updated: 2026-04-28
 
 ## Agent Workflow Snapshot
 
@@ -21,6 +21,19 @@ Last updated: 2026-04-26
   - human and AI actor boundaries
   - web and mobile parity for core modules
   - localization baseline (`en`, `pl`)
+
+## Recent Execution Updates
+
+- 2026-04-28: Completed `NEST-235` dashboard editorial detail pass. Refined
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`, and
+  `apps/web/src/app/globals.css` to improve topbar editorial rhythm, right-rail
+  fidelity, and insight-strip finish. Fresh evidence:
+  `docs/ux_canonical_artifacts/2026-04-28/nest-dashboard-web-parity-preview-phaseN.png`.
+- 2026-04-28: Completed `NEST-236` review of the phase N dashboard capture.
+  Outcome: dashboard is again closer to the canonical founder image; remaining
+  work is now a final cosmetic finish pass focused on hero watercolor softness,
+  left-rail calm, and slight reduction of `Now focus` contrast.
 
 ## Product
 

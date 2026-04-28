@@ -321,7 +321,18 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
               <div className="workspace-hero-tools">
                 <div className="workspace-utility-meta">
                   <span>{utilityDateLabel}</span>
-                  <small>18 C</small>
+                  <small>
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.7" />
+                      <path
+                        d="M12 2.8v3M12 18.2v3M21.2 12h-3M5.8 12h-3M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1M18.6 18.6l-2.1-2.1M7.5 7.5 5.4 5.4"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <span>18 C</span>
+                  </small>
                 </div>
                 <Link href="/assistant" className="workspace-utility-button" aria-label="Search or ask Assistant">
                   <UtilityIcon name="search" />

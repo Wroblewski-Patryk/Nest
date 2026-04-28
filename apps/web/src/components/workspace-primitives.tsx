@@ -338,8 +338,14 @@ export function ReflectionSidebarCard({ title, excerpt, prompt, href }: Reflecti
   return (
     <article className="dashboard-sidebar-card dashboard-sidebar-card-journal">
       <div className="dashboard-sidebar-card-head">
-        <h3>Journal</h3>
-        <span>•••</span>
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 5.5A2.5 2.5 0 0 1 8.5 3H19v18H8.5A2.5 2.5 0 0 0 6 23V5.5Z" stroke="currentColor" strokeWidth="1.7" />
+            <path d="M9.5 8.5H16M9.5 12H16M9.5 15.5H14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+          </svg>
+          <span>Journal</span>
+        </h3>
+        <span>...</span>
       </div>
       <strong className="dashboard-sidebar-card-title">{title}</strong>
       <p className="dashboard-sidebar-card-script">{excerpt}</p>
@@ -347,7 +353,8 @@ export function ReflectionSidebarCard({ title, excerpt, prompt, href }: Reflecti
         <span>{prompt}</span>
         <Link href={href} className="dashboard-floating-action" aria-label="Open journal">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M7 17 17 7M10 7h7v7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M6 18h3.2l8.5-8.5a1.7 1.7 0 0 0 0-2.4l-.8-.8a1.7 1.7 0 0 0-2.4 0L6 14.8V18Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+            <path d="m13.2 7.8 3 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </svg>
         </Link>
       </div>
@@ -361,7 +368,6 @@ export function QuickAddCard({ items }: QuickAddCardProps) {
       <div className="dashboard-sidebar-card-head">
         <h3>Quick add</h3>
       </div>
-      <p className="dashboard-sidebar-card-note">Catch the next small intention before the day carries it away.</p>
       <div className="dashboard-quick-add-grid">
         {items.map((item) => (
           <Link key={item.label} href={item.href} className="dashboard-quick-add-tile">
@@ -391,7 +397,6 @@ export function BalanceMiniCard({ value, items, href }: BalanceMiniCardProps) {
         <h3>Life areas</h3>
         <Link href={href}>View all</Link>
       </div>
-      <p className="dashboard-sidebar-card-note">A quiet monthly signal of what feels nourished, steady, and ready for gentler care.</p>
 
       <div className="dashboard-balance-grid">
         <div className="dashboard-balance-donut" style={{ background: `conic-gradient(${gradient})` }}>
@@ -420,6 +425,15 @@ export function InsightStrip({ title, quote, href, cta }: InsightStripProps) {
   return (
     <section className="dashboard-insight-strip">
       <div className="dashboard-insight-strip-title">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.7" />
+          <path
+            d="M12 2.8v3M12 18.2v3M21.2 12h-3M5.8 12h-3M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1M18.6 18.6l-2.1-2.1M7.5 7.5 5.4 5.4"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+          />
+        </svg>
         <span>{title}</span>
       </div>
       <p>{quote}</p>

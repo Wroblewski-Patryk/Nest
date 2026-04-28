@@ -1,6 +1,6 @@
 ﻿# TASK_BOARD
 
-Last updated: 2026-04-26
+Last updated: 2026-04-28
 
 ## Agent Workflow Refresh (2026-04-16)
 
@@ -23,6 +23,37 @@ Last updated: 2026-04-26
   - Contracts: OpenAPI lint when docs or API contracts change
 
 ## Backlog
+
+- [x] NEST-236 Review dashboard parity after phase N capture
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-235
+  - Done on: 2026-04-28
+  - Notes:
+    - Compared refreshed phase N dashboard capture against the canonical
+      founder target.
+    - Recorded the now final-cosmetic remaining gap in:
+      `docs/ux/nest_236_dashboard_parity_review_phaseN_2026-04-28.md`.
+
+- [x] NEST-235 Apply dashboard editorial detail pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-234
+  - Done on: 2026-04-28
+  - Notes:
+    - Refined editorial topbar rhythm, right-rail component detail, and lower
+      insight-strip fidelity to move the dashboard closer to the founder image.
+    - Updated implementation in:
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/components/workspace-primitives.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifact:
+      `docs/ux_canonical_artifacts/2026-04-28/nest-dashboard-web-parity-preview-phaseN.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
 
 - [x] NEST-234 Review dashboard parity after phase M capture
   - Status: DONE
