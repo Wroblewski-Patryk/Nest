@@ -15,6 +15,7 @@ type FocusCardMeta = {
 
 type FocusCardProps = {
   kicker: string;
+  kickerIcon?: ReactNode;
   title: string;
   detail: string;
   supportingLabel?: string;
@@ -180,6 +181,7 @@ export function DashboardHeroBand({
 
 export function DashboardFocusCard({
   kicker,
+  kickerIcon,
   title,
   detail,
   supportingLabel,
@@ -194,7 +196,10 @@ export function DashboardFocusCard({
   return (
     <article className="dashboard-focus-card">
       <div className="dashboard-focus-copy">
-        <p className="dashboard-focus-kicker">{kicker}</p>
+        <p className="dashboard-focus-kicker">
+          {kickerIcon ? <span className="dashboard-focus-kicker-icon" aria-hidden="true">{kickerIcon}</span> : null}
+          <span>{kicker}</span>
+        </p>
         <h2>{title}</h2>
         <p>{detail}</p>
       </div>
@@ -382,7 +387,7 @@ export function QuickAddCard({ items }: QuickAddCardProps) {
   );
 }
 
-export function BalanceMiniCard({ value, items, href }: BalanceMiniCardProps) {
+export function BalanceMiniCard({ items, href }: BalanceMiniCardProps) {
   const gradient = items
     .map((item, index) => {
       const start = (index / Math.max(items.length, 1)) * 360;
@@ -400,9 +405,7 @@ export function BalanceMiniCard({ value, items, href }: BalanceMiniCardProps) {
 
       <div className="dashboard-balance-grid">
         <div className="dashboard-balance-donut" style={{ background: `conic-gradient(${gradient})` }}>
-          <div className="dashboard-balance-donut-inner">
-            <strong>{value.toFixed(1)}</strong>
-          </div>
+          <div className="dashboard-balance-donut-inner" aria-hidden="true" />
         </div>
 
         <ul className="dashboard-balance-legend">

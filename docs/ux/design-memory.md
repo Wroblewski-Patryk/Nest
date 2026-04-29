@@ -96,6 +96,10 @@
 - For dashboard showcase parity, utility copy and rail composition may enter a
   stricter canonical mode when the goal is screenshot-faithful implementation
   rather than purely live-dynamic realism.
+- In that stricter canonical mode, remove elegant-but-non-canonical chrome
+  before adding more polish: extra rail kickers, dashboard-only support copy,
+  and center readouts that do not exist in the founder screenshot should be
+  removed rather than endlessly restyled.
 
 ## Finish Propagation Rules (2026-04-26)
 

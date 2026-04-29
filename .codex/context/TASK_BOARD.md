@@ -4646,3 +4646,26 @@ Last updated: 2026-04-29
     - Delivered targets CRUD endpoints (`/api/v1/targets`).
     - Added measurable target update flow and tenant-scoped feature tests.
 
+- [x] NEST-245 Implement dashboard canonical micro parity pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-29
+  - Notes:
+    - Added stricter canonical shell tone for dashboard showcase mode.
+    - Simplified `Now focus` to remove non-canonical support copy and soften
+      its kicker treatment.
+    - Brought lower ledger and life-area donut closer to the founder
+      screenshot and refreshed evidence in
+      `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseU.png`.
+
+- [x] NEST-246 Review dashboard parity phase U
+  - Status: DONE
+  - Owner: Review Agent
+  - Done on: 2026-04-29
+  - Notes:
+    - Review recorded in
+      `docs/ux/nest_246_dashboard_parity_review_phaseU_2026-04-29.md`.
+    - Confirmed another meaningful step toward the canonical founder image.
+    - Remaining gaps are now concentrated in `Now focus`, rail spacing, and
+      microtypography only.
+

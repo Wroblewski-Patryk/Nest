@@ -409,12 +409,13 @@ export default function DashboardPage() {
       navKey="dashboard"
       module="tasks"
       contentLayout="single"
+      shellTone={useShowcaseFallback ? "dashboard-canonical" : "default"}
       utilityDateLabel={useShowcaseFallback ? "Friday, May 23, 2025" : undefined}
-      utilityWeatherLabel={useShowcaseFallback ? "18°C" : undefined}
+      utilityWeatherLabel={useShowcaseFallback ? "18\u00B0C" : undefined}
       hideAssistantNav={useShowcaseFallback}
       hideRailFooterActions={useShowcaseFallback}
     >
-      <section className={`dashboard-shell ${isLoading ? "is-loading" : ""}`}>
+      <section className={`dashboard-shell ${isLoading ? "is-loading" : ""} ${useShowcaseFallback ? "is-canonical-dashboard" : ""}`}>
         <DashboardHeroBand
           title="Today at a glance"
           summary={useShowcaseFallback ? "You're making steady progress." : "You're making steady progress."}
@@ -486,17 +487,18 @@ export default function DashboardPage() {
         <div className="dashboard-main-grid">
           <DashboardFocusCard
             kicker="Now focus"
+            kickerIcon={
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="7.6" stroke="currentColor" strokeWidth="1.65" />
+                <circle cx="12" cy="12" r="2.1" stroke="currentColor" strokeWidth="1.65" />
+                <path d="M12 4.9v2.2M19.1 12h-2.2M12 19.1v-2.2M4.9 12h2.2" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
+              </svg>
+            }
             title={useShowcaseFallback ? "Prepare for product strategy workshop" : nextAction.title}
             detail={
               useShowcaseFallback
                 ? "This moves your project forward and aligns the team. A focused block now creates momentum for the week."
                 : "This move is already alive in the day. Giving it clean attention now will create momentum for everything after it."
-            }
-            supportingLabel="Why this?"
-            supportingValue={
-              useShowcaseFallback
-                ? "A focused block now creates momentum for the week."
-                : "It sits in the active lane of your day."
             }
             href={nextAction.href}
             cta="Start focus session"
@@ -522,7 +524,16 @@ export default function DashboardPage() {
             />
           </Panel>
 
-          <Panel title="Tasks" className="dashboard-panel dashboard-list-panel">
+          <Panel
+            title="Tasks"
+            className="dashboard-panel dashboard-list-panel"
+            actions={
+              <div className="dashboard-ledger-tabs" aria-label="Ledger sections">
+                <span className="is-active">Tasks</span>
+                <span>Habits</span>
+              </div>
+            }
+          >
             <ul className="dashboard-focus-list dashboard-focus-list-ornate">
               {displayTaskItems.map((task) => (
                 <li key={task.id} className="dashboard-focus-item">

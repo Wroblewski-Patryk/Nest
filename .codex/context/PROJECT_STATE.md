@@ -1479,3 +1479,16 @@ Last updated: 2026-04-29
   entirely art-directional nuance rather than layout or hierarchy mismatch,
   recorded in:
   `docs/ux/nest_234_dashboard_parity_review_phaseM_2026-04-28.md`
+- Dashboard canonical micro parity pass landed on 2026-04-29 to remove
+  non-canonical shell chrome, simplify `Now focus`, and bring the lower
+  ledger and life-area donut closer to the founder screenshot in:
+  `apps/web/src/app/dashboard/page.tsx`
+  `apps/web/src/components/workspace-shell.tsx`
+  `apps/web/src/components/workspace-primitives.tsx`
+  `apps/web/src/app/globals.css`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseU.png`
+- Phase U review on 2026-04-29 confirmed another meaningful convergence step
+  toward the canonical dashboard image, with remaining drift now concentrated
+  in `Now focus`, left-rail micro-spacing, and typography tuning, recorded in:
+  `docs/ux/nest_246_dashboard_parity_review_phaseU_2026-04-29.md`

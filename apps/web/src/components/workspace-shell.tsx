@@ -12,6 +12,7 @@ type WorkspaceShellProps = {
   module?: ModuleKey;
   navKey?: WorkspaceNavKey | "none";
   contentLayout?: "single" | "grid";
+  shellTone?: "default" | "dashboard-canonical";
   utilityDateLabel?: string;
   utilityWeatherLabel?: string;
   hideAssistantNav?: boolean;
@@ -214,6 +215,7 @@ export function WorkspaceShell({
   module,
   navKey,
   contentLayout,
+  shellTone = "default",
   utilityDateLabel,
   utilityWeatherLabel,
   hideAssistantNav,
@@ -235,7 +237,7 @@ export function WorkspaceShell({
   const visibleNavItems = hideAssistantNav ? NAV_ITEMS.filter((item) => item.key !== "assistant") : NAV_ITEMS;
 
   return (
-    <div className={`workspace-bg aura-${auraVariant}`}>
+    <div className={`workspace-bg aura-${auraVariant} ${shellTone === "dashboard-canonical" ? "shell-dashboard-canonical" : ""}`}>
       <div className="workspace-stage">
         <aside className="workspace-rail">
           <div className="workspace-rail-brand">
@@ -250,7 +252,7 @@ export function WorkspaceShell({
                 </svg>
               </span>
             </div>
-            <p className="workspace-kicker">{translate("app.kicker", language)}</p>
+            {shellTone === "dashboard-canonical" ? null : <p className="workspace-kicker">{translate("app.kicker", language)}</p>}
           </div>
 
           <nav className="workspace-rail-nav" aria-label="Core modules">
