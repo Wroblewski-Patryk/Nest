@@ -4690,3 +4690,23 @@ Last updated: 2026-04-29
     - Remaining gaps are now tightly constrained to `Now focus`, rail spacing,
       and microtypography.
 
+- [x] NEST-249 Implement dashboard rail and focus micro finish
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-29
+  - Notes:
+    - Softened lower rail atmosphere and account zone.
+    - Improved `Now focus` wrapping and CTA detail.
+    - Refreshed evidence in
+      `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseX.png`.
+
+- [x] NEST-250 Review dashboard parity phase X
+  - Status: DONE
+  - Owner: Review Agent
+  - Done on: 2026-04-29
+  - Notes:
+    - Review recorded in
+      `docs/ux/nest_250_dashboard_parity_review_phaseX_2026-04-29.md`.
+    - Confirmed further reduction of implementation feel.
+    - Remaining drift is now almost entirely painterly and microspacing-based.
+

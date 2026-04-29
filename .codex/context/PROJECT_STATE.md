@@ -1503,3 +1503,12 @@ Last updated: 2026-04-29
   tightly in `Now focus` finish, rail spacing, and microtypography, recorded
   in:
   `docs/ux/nest_248_dashboard_parity_review_phaseV_2026-04-29.md`
+- Dashboard rail and focus micro finish landed on 2026-04-29 to soften the
+  lower rail atmosphere and improve `Now focus` wrapping/CTA detail in:
+  `apps/web/src/app/globals.css`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseX.png`
+- Phase X review on 2026-04-29 confirmed another reduction of implementation
+  feel, with the remaining gap now almost entirely painterly and
+  microspacing-based, recorded in:
+  `docs/ux/nest_250_dashboard_parity_review_phaseX_2026-04-29.md`

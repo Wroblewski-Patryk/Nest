@@ -104,6 +104,10 @@
   parity moves are usually masthead typography, active-rail emphasis, and the
   dominant emotional card. Those three areas disproportionately affect whether
   the screen reads like the founder screenshot at first glance.
+- After those are corrected, remaining meaningful gains usually come from
+  atmosphere compression: lower-rail quietness, account-zone restraint, and
+  line-break quality in the dominant card often matter more than adding new
+  ornament.
 
 ## Finish Propagation Rules (2026-04-26)
 
