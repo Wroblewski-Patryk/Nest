@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-28
+Last updated: 2026-04-29
 
 ## Agent Workflow Snapshot
 
@@ -24,6 +24,15 @@ Last updated: 2026-04-28
 
 ## Recent Execution Updates
 
+- 2026-04-29: Completed `NEST-239` dashboard asset-driven fidelity pass.
+  Added workspace-bound painterly assets in
+  `apps/web/public/assets/dashboard/` and integrated them into
+  `apps/web/src/app/globals.css`. Fresh evidence:
+  `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseP.png`.
+- 2026-04-29: Completed `NEST-240` dashboard parity review after the asset
+  pass. Main conclusion: the dashboard improved in medium fidelity and the next
+  best closure move is shell serenity plus `Now focus` softness, not more
+  generic hero-only experimentation.
 - 2026-04-28: Completed `NEST-238` canonical dashboard closure planning.
   Added a full element-by-element audit in
   `docs/ux/nest_237_dashboard_canonical_element_audit_2026-04-28.md` and a

@@ -1,6 +1,6 @@
 ﻿# TASK_BOARD
 
-Last updated: 2026-04-28
+Last updated: 2026-04-29
 
 ## Agent Workflow Refresh (2026-04-16)
 
@@ -23,6 +23,39 @@ Last updated: 2026-04-28
   - Contracts: OpenAPI lint when docs or API contracts change
 
 ## Backlog
+
+- [x] NEST-240 Review dashboard parity after phase P capture
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-239
+  - Done on: 2026-04-29
+  - Notes:
+    - Compared refreshed phase P dashboard capture against the canonical
+      founder target.
+    - Confirmed that the painterly medium fidelity improved and recorded the
+      remaining closure gap in:
+      `docs/ux/nest_240_dashboard_parity_review_phaseP_2026-04-29.md`.
+
+- [x] NEST-239 Implement dashboard asset-driven fidelity pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-238
+  - Done on: 2026-04-29
+  - Notes:
+    - Added workspace-bound canonical decorative assets for dashboard hero and
+      journal rail:
+      `apps/web/public/assets/dashboard/dashboard-hero-watercolor-canonical.png`
+      and
+      `apps/web/public/assets/dashboard/dashboard-journal-wash-canonical.png`.
+    - Integrated those assets into dashboard decorative styling in:
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifact:
+      `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseP.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
 
 - [x] NEST-238 Record full canonical dashboard closure plan
   - Status: DONE
