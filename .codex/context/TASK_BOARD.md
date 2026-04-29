@@ -24,6 +24,40 @@ Last updated: 2026-04-29
 
 ## Backlog
 
+- [x] NEST-242 Review dashboard parity after phase R capture
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-241
+  - Done on: 2026-04-29
+  - Notes:
+    - Compared refreshed phase R dashboard capture against the canonical
+      founder target.
+    - Confirmed that shell serenity improved and recorded the next closure gap
+      in:
+      `docs/ux/nest_242_dashboard_parity_review_phaseR_2026-04-29.md`.
+
+- [x] NEST-241 Implement dashboard shell serenity pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-240
+  - Done on: 2026-04-29
+  - Notes:
+    - Replaced symbolic shell motifs with canonical-derived assets for brand,
+      left-rail plant, and `Now focus` ornament.
+    - Added workspace assets:
+      `apps/web/public/assets/dashboard/workspace-brand-mark-canonical.png`,
+      `apps/web/public/assets/dashboard/workspace-rail-plant-canonical.png`,
+      `apps/web/public/assets/dashboard/dashboard-focus-foliage-canonical.png`.
+    - Updated implementation in:
+      `apps/web/src/app/globals.css`.
+    - Refreshed local evidence artifact:
+      `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseR.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-240 Review dashboard parity after phase P capture
   - Status: DONE
   - Owner: Review Agent

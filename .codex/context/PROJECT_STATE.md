@@ -24,6 +24,14 @@ Last updated: 2026-04-29
 
 ## Recent Execution Updates
 
+- 2026-04-29: Completed `NEST-241` dashboard shell serenity pass. Replaced
+  symbolic brand/plant/focus ornaments with canonical-derived assets in
+  `apps/web/public/assets/dashboard/` and integrated them through
+  `apps/web/src/app/globals.css`. Fresh evidence:
+  `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseR.png`.
+- 2026-04-29: Completed `NEST-242` parity review after the shell serenity
+  pass. Main conclusion: shell fidelity improved and the next best closure move
+  is final calm spacing plus focus-card material softening.
 - 2026-04-29: Completed `NEST-239` dashboard asset-driven fidelity pass.
   Added workspace-bound painterly assets in
   `apps/web/public/assets/dashboard/` and integrated them into

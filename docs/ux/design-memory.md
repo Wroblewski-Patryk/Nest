@@ -89,6 +89,10 @@
 - For founder-style Nest dashboard parity, painterly hero and reflection
   regions may use workspace-bound raster assets when code-native gradients no
   longer reproduce the required watercolor softness faithfully.
+- For founder-style Nest dashboard shell parity, symbolic ornamental CSS motifs
+  such as brand emblems, potted-plant vignettes, or decorative foliage should
+  be replaced with target-derived assets once the symbolic version becomes the
+  clearest remaining source of drift.
 
 ## Finish Propagation Rules (2026-04-26)
 
