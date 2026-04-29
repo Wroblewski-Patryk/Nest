@@ -4669,3 +4669,24 @@ Last updated: 2026-04-29
     - Remaining gaps are now concentrated in `Now focus`, rail spacing, and
       microtypography only.
 
+- [x] NEST-247 Implement dashboard typography and focus finish pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-29
+  - Notes:
+    - Strengthened masthead serif treatment and active dashboard rail state.
+    - Softened and slightly reduced the dominance of `Now focus`.
+    - Refreshed evidence in
+      `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseV.png`.
+
+- [x] NEST-248 Review dashboard parity phase V
+  - Status: DONE
+  - Owner: Review Agent
+  - Done on: 2026-04-29
+  - Notes:
+    - Review recorded in
+      `docs/ux/nest_248_dashboard_parity_review_phaseV_2026-04-29.md`.
+    - Confirmed a stronger first-glance match than phase U.
+    - Remaining gaps are now tightly constrained to `Now focus`, rail spacing,
+      and microtypography.
+

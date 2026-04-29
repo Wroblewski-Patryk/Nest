@@ -100,6 +100,10 @@
   before adding more polish: extra rail kickers, dashboard-only support copy,
   and center readouts that do not exist in the founder screenshot should be
   removed rather than endlessly restyled.
+- Once those non-canonical extras are removed, the next highest-leverage
+  parity moves are usually masthead typography, active-rail emphasis, and the
+  dominant emotional card. Those three areas disproportionately affect whether
+  the screen reads like the founder screenshot at first glance.
 
 ## Finish Propagation Rules (2026-04-26)
 

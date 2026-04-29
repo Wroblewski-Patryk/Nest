@@ -1492,3 +1492,14 @@ Last updated: 2026-04-29
   toward the canonical dashboard image, with remaining drift now concentrated
   in `Now focus`, left-rail micro-spacing, and typography tuning, recorded in:
   `docs/ux/nest_246_dashboard_parity_review_phaseU_2026-04-29.md`
+- Dashboard typography and focus finish pass landed on 2026-04-29 to improve
+  the founder-like serif masthead, strengthen the active dashboard rail state,
+  and calm the `Now focus` card in:
+  `apps/web/src/app/globals.css`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseV.png`
+- Phase V review on 2026-04-29 confirmed another visible first-glance
+  improvement over phase U, with the remaining gap now concentrated even more
+  tightly in `Now focus` finish, rail spacing, and microtypography, recorded
+  in:
+  `docs/ux/nest_248_dashboard_parity_review_phaseV_2026-04-29.md`
