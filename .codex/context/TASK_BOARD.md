@@ -4710,3 +4710,21 @@ Last updated: 2026-04-29
     - Confirmed further reduction of implementation feel.
     - Remaining drift is now almost entirely painterly and microspacing-based.
 
+- [x] NEST-251 Implement dashboard hero and ledger micro rhythm pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-29
+  - Notes:
+    - Tightened hero metric rhythm and softened lower-ledger row typography.
+    - Refreshed evidence in
+      `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseY.png`.
+
+- [x] NEST-252 Review dashboard parity phase Y
+  - Status: DONE
+  - Owner: Review Agent
+  - Done on: 2026-04-29
+  - Notes:
+    - Review recorded in
+      `docs/ux/nest_252_dashboard_parity_review_phaseY_2026-04-29.md`.
+    - Confirmed another small but real convergence step.
+

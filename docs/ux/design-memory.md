@@ -108,6 +108,10 @@
   atmosphere compression: lower-rail quietness, account-zone restraint, and
   line-break quality in the dominant card often matter more than adding new
   ornament.
+- Very late-stage dashboard parity work should prefer rhythm tuning over
+  invention: micro-adjustments to metric spacing, label scale, and ledger row
+  density can produce visible gains once structure and art direction are
+  already close.
 
 ## Finish Propagation Rules (2026-04-26)
 

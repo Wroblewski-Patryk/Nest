@@ -1512,3 +1512,12 @@ Last updated: 2026-04-29
   feel, with the remaining gap now almost entirely painterly and
   microspacing-based, recorded in:
   `docs/ux/nest_250_dashboard_parity_review_phaseX_2026-04-29.md`
+- Dashboard hero and ledger micro rhythm pass landed on 2026-04-29 to tighten
+  the hero metric row and soften lower-ledger typography in:
+  `apps/web/src/app/globals.css`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseY.png`
+- Phase Y review on 2026-04-29 confirmed another small convergence step, with
+  the remaining gap now concentrated in painterly nuance and ultra-fine
+  spacing details, recorded in:
+  `docs/ux/nest_252_dashboard_parity_review_phaseY_2026-04-29.md`
