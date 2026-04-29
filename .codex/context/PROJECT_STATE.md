@@ -24,6 +24,19 @@ Last updated: 2026-04-29
 
 ## Recent Execution Updates
 
+- 2026-04-29: Completed `NEST-243` canonical dashboard mode pass. Added
+  dashboard-specific canonical utility/rail overrides and a canonical portrait
+  asset through
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/app/globals.css`, and
+  `apps/web/public/assets/dashboard/workspace-account-avatar-canonical.png`.
+  Fresh evidence:
+  `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseT.png`.
+- 2026-04-29: Completed `NEST-244` parity review after phase T. Current
+  conclusion: dashboard now clears practical 90%+ similarity to the canonical
+  founder image, with only ultra-narrow microtypography, spacing, and material
+  differences remaining.
 - 2026-04-29: Completed `NEST-241` dashboard shell serenity pass. Replaced
   symbolic brand/plant/focus ornaments with canonical-derived assets in
   `apps/web/public/assets/dashboard/` and integrated them through

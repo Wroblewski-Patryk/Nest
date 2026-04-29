@@ -12,6 +12,10 @@ type WorkspaceShellProps = {
   module?: ModuleKey;
   navKey?: WorkspaceNavKey | "none";
   contentLayout?: "single" | "grid";
+  utilityDateLabel?: string;
+  utilityWeatherLabel?: string;
+  hideAssistantNav?: boolean;
+  hideRailFooterActions?: boolean;
   planningSubnav?: {
     active: PlanningSubnavKey;
   };
@@ -204,17 +208,31 @@ function UtilityIcon({ name }: { name: "search" | "bell" }) {
   );
 }
 
-export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout, planningSubnav, children }: WorkspaceShellProps) {
+export function WorkspaceShell({
+  title,
+  subtitle,
+  module,
+  navKey,
+  contentLayout,
+  utilityDateLabel,
+  utilityWeatherLabel,
+  hideAssistantNav,
+  hideRailFooterActions,
+  planningSubnav,
+  children,
+}: WorkspaceShellProps) {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
   const auraVariant = resolveAuraVariant(module ?? "tasks");
   const activeNavKey = navKey === "none" ? null : (navKey ?? module ?? null);
   const layoutClass = contentLayout === "grid" ? "is-grid" : "is-single";
-  const utilityDateLabel = new Date().toLocaleDateString("en-US", {
+  const resolvedUtilityDateLabel = utilityDateLabel ?? new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
     year: "numeric",
   });
+  const resolvedUtilityWeatherLabel = utilityWeatherLabel ?? "18 C";
+  const visibleNavItems = hideAssistantNav ? NAV_ITEMS.filter((item) => item.key !== "assistant") : NAV_ITEMS;
 
   return (
     <div className={`workspace-bg aura-${auraVariant}`}>
@@ -236,7 +254,7 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
           </div>
 
           <nav className="workspace-rail-nav" aria-label="Core modules">
-            {NAV_ITEMS.map((item) => {
+            {visibleNavItems.map((item) => {
               const isActive = activeNavKey === item.key;
               const isPlanning = item.key === "tasks";
 
@@ -305,9 +323,11 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
                 </svg>
               </span>
             </div>
-            <div className="workspace-rail-footer-actions">
-              <WorkspaceLogoutButton />
-            </div>
+            {hideRailFooterActions ? null : (
+              <div className="workspace-rail-footer-actions">
+                <WorkspaceLogoutButton />
+              </div>
+            )}
           </div>
         </aside>
 
@@ -320,7 +340,7 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
               </div>
               <div className="workspace-hero-tools">
                 <div className="workspace-utility-meta">
-                  <span>{utilityDateLabel}</span>
+                  <span>{resolvedUtilityDateLabel}</span>
                   <small>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.7" />
@@ -331,7 +351,7 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
                         strokeLinecap="round"
                       />
                     </svg>
-                    <span>18 C</span>
+                    <span>{resolvedUtilityWeatherLabel}</span>
                   </small>
                 </div>
                 <Link href="/assistant" className="workspace-utility-button" aria-label="Search or ask Assistant">
@@ -350,7 +370,7 @@ export function WorkspaceShell({ title, subtitle, module, navKey, contentLayout,
           </div>
 
           <nav className="workspace-mobile-nav" aria-label="Mobile modules">
-            {NAV_ITEMS.filter((item) =>
+            {visibleNavItems.filter((item) =>
               ["dashboard", "tasks", "assistant", "calendar", "settings"].includes(item.key)
             ).map((item) => (
               <Link

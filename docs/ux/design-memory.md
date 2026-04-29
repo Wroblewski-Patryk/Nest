@@ -93,6 +93,9 @@
   such as brand emblems, potted-plant vignettes, or decorative foliage should
   be replaced with target-derived assets once the symbolic version becomes the
   clearest remaining source of drift.
+- For dashboard showcase parity, utility copy and rail composition may enter a
+  stricter canonical mode when the goal is screenshot-faithful implementation
+  rather than purely live-dynamic realism.
 
 ## Finish Propagation Rules (2026-04-26)
 

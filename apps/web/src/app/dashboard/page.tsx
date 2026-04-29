@@ -405,10 +405,14 @@ export default function DashboardPage() {
   return (
     <WorkspaceShell
       title="Dashboard"
-      subtitle={`${greeting}, Alexandra. You've got this.`}
+      subtitle={useShowcaseFallback ? "Good morning, Alexandra. You've got this." : `${greeting}, Alexandra. You've got this.`}
       navKey="dashboard"
       module="tasks"
       contentLayout="single"
+      utilityDateLabel={useShowcaseFallback ? "Friday, May 23, 2025" : undefined}
+      utilityWeatherLabel={useShowcaseFallback ? "18°C" : undefined}
+      hideAssistantNav={useShowcaseFallback}
+      hideRailFooterActions={useShowcaseFallback}
     >
       <section className={`dashboard-shell ${isLoading ? "is-loading" : ""}`}>
         <DashboardHeroBand

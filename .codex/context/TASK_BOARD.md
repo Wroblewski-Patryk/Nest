@@ -24,6 +24,38 @@ Last updated: 2026-04-29
 
 ## Backlog
 
+- [x] NEST-244 Review dashboard parity after phase T capture
+  - Status: DONE
+  - Owner: Review Agent
+  - Depends on: NEST-243
+  - Done on: 2026-04-29
+  - Notes:
+    - Compared refreshed phase T dashboard capture against the canonical
+      founder target.
+    - Recorded that the dashboard now clears practical 90%+ convergence in:
+      `docs/ux/nest_244_dashboard_parity_review_phaseT_2026-04-29.md`.
+
+- [x] NEST-243 Implement canonical dashboard mode pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-242
+  - Done on: 2026-04-29
+  - Notes:
+    - Added dashboard-specific canonical mode overrides for utility copy and
+      shell presentation in:
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/app/dashboard/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added canonical portrait asset:
+      `apps/web/public/assets/dashboard/workspace-account-avatar-canonical.png`.
+    - Refreshed local evidence artifact:
+      `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseT.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-242 Review dashboard parity after phase R capture
   - Status: DONE
   - Owner: Review Agent
