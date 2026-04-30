@@ -1695,6 +1695,83 @@ input[type="color"].list-row {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 76%);
 }
 
+.planning-composer-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.72rem;
+}
+
+.planning-composer-eyebrow,
+.planning-composer-head h4,
+.planning-composer-detail,
+.planning-composer-foot {
+  margin: 0;
+}
+
+.planning-composer-eyebrow {
+  color: color-mix(in srgb, var(--accent), #000 10%);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.planning-composer-head h4 {
+  margin-top: 0.14rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  color: color-mix(in srgb, var(--ink), #fff 8%);
+}
+
+.planning-composer-detail {
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.46;
+  max-width: 34rem;
+}
+
+.planning-composer-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.42rem;
+  min-width: 11rem;
+}
+
+.planning-composer-stats span {
+  border: 1px solid rgb(220 214 202 / 66%);
+  border-radius: 0.5rem;
+  background: rgb(255 253 248 / 78%);
+  padding: 0.42rem 0.52rem;
+  display: grid;
+  gap: 0.04rem;
+}
+
+.planning-composer-stats strong {
+  display: block;
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--accent), #000 12%);
+}
+
+.planning-composer-stats small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.62rem;
+}
+
+.planning-composer-foot {
+  border-top: 1px solid rgb(223 217 206 / 76%);
+  padding-top: 0.56rem;
+  color: color-mix(in srgb, var(--ink), #fff 14%);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
 .planning-canonical-edit-row {
   margin: 0 0.58rem 0.66rem;
   padding: 0.72rem;
@@ -2012,6 +2089,52 @@ input[type="color"].list-row {
 
 .planning-library-panel.is-preview-hidden {
   display: none;
+}
+
+.planning-status-strip {
+  order: -16;
+  width: calc(100% - 300px - 0.92rem);
+  border: 1px solid rgb(214 204 186 / 62%);
+  border-radius: 0.72rem;
+  background: rgb(255 253 248 / 72%);
+  padding: 0.58rem 0.74rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.planning-status-strip.is-error {
+  border-color: rgb(213 193 167 / 72%);
+}
+
+.planning-status-strip.is-success {
+  border-color: rgb(188 205 171 / 72%);
+}
+
+.planning-status-copy {
+  display: grid;
+  gap: 0.08rem;
+}
+
+.planning-status-copy small,
+.planning-status-copy strong {
+  margin: 0;
+  display: block;
+}
+
+.planning-status-copy small {
+  color: var(--muted);
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.planning-status-copy strong {
+  color: color-mix(in srgb, var(--ink), #fff 12%);
+  font-size: 0.76rem;
+  font-weight: 500;
 }
 
 .collapsible-panel {
@@ -4184,6 +4307,7 @@ input[type="color"].list-row {
   .planning-flow-cards,
   .planning-canonical-summary,
   .planning-canonical-filter-grid,
+  .planning-composer-stats,
   .planning-deep-grid,
   .planning-deep-notes,
   .planning-ladder,
@@ -4192,7 +4316,7 @@ input[type="color"].list-row {
   }
 
   .planning-relational-panel,
-  .planning-live-notice,
+  .planning-status-strip,
   .planning-deep-panel,
   .planning-ladder {
     width: 100%;

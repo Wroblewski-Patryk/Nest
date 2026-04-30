@@ -24,6 +24,70 @@ Last updated: 2026-04-30
 
 ## Backlog
 
+- [x] NEST-270 Polish canonical Planning composers and status strip
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-267
+  - Done on: 2026-04-30
+  - Notes:
+    - Completed a 25 micro-slice batch that gave canonical Planning composers
+      their own narrative framing, mini-stats, and quieter footer guidance
+      across `Tasks`, `Lists`, `Goals`, and `Targets`.
+    - Replaced the raw preview/live-data notice paragraph with one calmer
+      Planning status strip that keeps refresh available without breaking the
+      visual composition.
+    - Updated implementation in:
+      `apps/web/src/app/tasks/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_270_planning_canonical_composer_polish_2026-04-30.md`.
+    - Refreshed evidence:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseM.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseM.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseM.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseM.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
+- [x] NEST-269 Capture Journal canonical direction
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Done on: 2026-04-30
+  - Notes:
+    - Added founder-approved Journal canonical artifacts:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-journal-canonical-reference-desktop.png`
+      and
+      `docs/ux_canonical_artifacts/2026-04-30/nest-journal-canonical-reference-mobile.png`.
+    - Added canonical Journal direction and adoption contract:
+      `docs/ux/nest_269_journal_canonical_direction_2026-04-30.md`.
+    - Updated design memory with Journal-specific canonical patterns:
+      `Journal` naming, `Today's reflection room`, `Reflection focus`, warm
+      composer, living memory list, support rail, and `Day event -> Feeling ->
+      Life area -> Next intention` ladder.
+    - Validation:
+      documentation and artifact-only change; no runtime validation required.
+
+- [x] NEST-268 Capture Calendar canonical direction
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Done on: 2026-04-30
+  - Notes:
+    - Promoted Calendar desktop and mobile draft views to canonical artifacts:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-calendar-canonical-reference-desktop.png`
+      and
+      `docs/ux_canonical_artifacts/2026-04-30/nest-calendar-canonical-reference-mobile.png`.
+    - Added canonical Calendar direction and adoption contract:
+      `docs/ux/nest_268_calendar_canonical_direction_2026-04-30.md`.
+    - Updated design memory with Calendar-specific canonical patterns:
+      `Today's time map`, `Now on deck`, day-flow timeline, event intelligence,
+      support rail, and `Goal -> Task/List -> Calendar event -> Reflection`
+      ladder.
+    - Validation:
+      documentation and artifact-only change; no runtime validation required.
+
 - [x] NEST-267 Deepen canonical Planning tabs and hide preview libraries
   - Status: DONE
   - Owner: Execution Agent

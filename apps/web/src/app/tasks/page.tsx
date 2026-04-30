@@ -2096,10 +2096,82 @@ export default function TasksPage() {
   }
 
   function renderCanonicalComposer() {
+    const composerConfig =
+      planningTab === "tasks"
+        ? {
+            eyebrow: "Weekly capture",
+            title: "Add the next concrete move",
+            detail: showPlanningShowcase ? "Capture one meaningful task first. Structure can follow after clarity appears." : "Keep the weekly plan small enough that it still feels believable.",
+            stats: [
+              { label: "Open", value: showPlanningShowcase ? "6" : String(openTasksCount) },
+              { label: "Today", value: showPlanningShowcase ? "4" : String(dueTodayCount) },
+            ],
+          }
+        : planningTab === "lists"
+          ? {
+              eyebrow: "Structure with restraint",
+              title: "Create a list only when it earns its place",
+              detail: showPlanningShowcase ? "A strong list collects related work without becoming another bucket of guilt." : "Use parent links only when they genuinely sharpen the week.",
+              stats: [
+                { label: "Lists", value: showPlanningShowcase ? "4" : String(lists.length) },
+                { label: "Context linked", value: showPlanningShowcase ? "4" : String(contextualListsCount) },
+              ],
+            }
+          : planningTab === "goals"
+            ? {
+                eyebrow: "Direction first",
+                title: "Name a goal that can guide the week",
+                detail: showPlanningShowcase ? "Goals should define the arc, then let targets and lists do the operational work." : "Keep the goal big enough to matter and clear enough to connect to targets.",
+                stats: [
+                  { label: "Active goals", value: showPlanningShowcase ? "3" : String(activeGoalsCount) },
+                  { label: "With targets", value: showPlanningShowcase ? "2" : String(goalsWithTargetsCount) },
+                ],
+              }
+            : {
+                eyebrow: "Measurable evidence",
+                title: "Turn intent into a visible checkpoint",
+                detail: showPlanningShowcase ? "A target should make progress easy to notice at a glance." : "Keep metrics simple, dated, and attached to a real goal.",
+                stats: [
+                  { label: "Active targets", value: showPlanningShowcase ? "7" : String(activeTargetsCount) },
+                  { label: "Avg progress", value: showPlanningShowcase ? "68%" : `${averageTargetProgress}%` },
+                ],
+              };
+
+    const composerIntro = (
+      <div className="planning-composer-head">
+        <div>
+          <p className="planning-composer-eyebrow">{composerConfig.eyebrow}</p>
+          <h4>{composerConfig.title}</h4>
+          <p className="planning-composer-detail">{composerConfig.detail}</p>
+        </div>
+        <div className="planning-composer-stats" aria-label="Composer context">
+          {composerConfig.stats.map((item) => (
+            <span key={item.label}>
+              <strong>{item.value}</strong>
+              <small>{item.label}</small>
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+
+    const composerFoot =
+      planningTab === "tasks" ? (
+        <p className="planning-composer-foot">Start with the next task, then connect it to a list only if the structure helps.</p>
+      ) : planningTab === "lists" ? (
+        <p className="planning-composer-foot">A good list reduces friction for the week instead of adding another maintenance surface.</p>
+      ) : planningTab === "goals" ? (
+        <p className="planning-composer-foot">If a goal feels vague, let the target clarify it before you create more structure around it.</p>
+      ) : (
+        <p className="planning-composer-foot">The best target is simple enough that you can explain progress in one sentence.</p>
+      );
+
     if (planningTab === "tasks") {
       return taskComposerListId === UNASSIGNED_COLUMN_ID ? (
         <div className="planning-canonical-composer">
+          {composerIntro}
           {renderTaskComposer(UNASSIGNED_COLUMN_ID, "Add task to weekly plan")}
+          {composerFoot}
         </div>
       ) : null;
     }
@@ -2107,6 +2179,7 @@ export default function TasksPage() {
     if (planningTab === "lists") {
       return (
         <form className="planning-canonical-composer form-grid" onSubmit={createList}>
+          {composerIntro}
           <label className="field">
             <span>Name</span>
             <input
@@ -2186,6 +2259,7 @@ export default function TasksPage() {
           <button type="submit" className="btn-primary" disabled={isCreatingList}>
             {isCreatingList ? "Creating..." : "Create list"}
           </button>
+          {composerFoot}
         </form>
       );
     }
@@ -2193,6 +2267,7 @@ export default function TasksPage() {
     if (planningTab === "goals") {
       return (
         <form className="planning-canonical-composer form-grid" onSubmit={createGoal}>
+          {composerIntro}
           <label className="field">
             <span>Title</span>
             <input
@@ -2217,12 +2292,14 @@ export default function TasksPage() {
           <button type="submit" className="btn-primary" disabled={isCreatingGoal}>
             {isCreatingGoal ? "Adding..." : "Add goal"}
           </button>
+          {composerFoot}
         </form>
       );
     }
 
     return (
       <form className="planning-canonical-composer form-grid" onSubmit={createTarget}>
+        {composerIntro}
         {goals.length === 0 ? (
           <p className="callout state-empty">Create at least one goal before saving a target.</p>
         ) : null}
@@ -2290,6 +2367,7 @@ export default function TasksPage() {
         <button type="submit" className="btn-primary" disabled={isCreatingTarget || goals.length === 0}>
           {isCreatingTarget ? "Adding..." : "Add target"}
         </button>
+        {composerFoot}
       </form>
     );
   }
@@ -2491,6 +2569,30 @@ export default function TasksPage() {
           <span>{section.noteSecondary}</span>
         </div>
       </Panel>
+    );
+  }
+
+  function renderPlanningStatusStrip() {
+    const isPreviewState = showPlanningShowcase && Boolean(errorMessage);
+    const message = isPreviewState
+      ? "Live planning data is unavailable. Canonical preview is shown."
+      : errorMessage ?? feedback;
+    if (!message) {
+      return null;
+    }
+
+    return (
+      <section className={`planning-status-strip ${errorMessage ? "is-error" : "is-success"}`} aria-live="polite">
+        <div className="planning-status-copy">
+          <small>{errorMessage ? (isPreviewState ? "Preview mode" : "Planning status") : "Saved state"}</small>
+          <strong>{message}</strong>
+        </div>
+        <div className="planning-status-actions">
+          <button type="button" className="pill-link" onClick={() => void loadWorkspace()} disabled={isLoading}>
+            {isLoading ? "Refreshing..." : "Refresh"}
+          </button>
+        </div>
+      </section>
     );
   }
 
@@ -2915,13 +3017,6 @@ export default function TasksPage() {
         </aside>
       </section>
 
-      {errorMessage ? (
-        <p className="callout state-error planning-live-notice">
-          {showPlanningShowcase ? "Live planning data is unavailable. Canonical preview is shown." : errorMessage}
-        </p>
-      ) : null}
-      {!errorMessage && feedback ? <p className="callout state-success">{feedback}</p> : null}
-
       <Panel title="Planning workspace" className="planning-view-panel planning-relational-panel">
         <div className="planning-workspace-head">
           <div className="tasks-filter-group" role="tablist" aria-label="Planning module views">
@@ -3025,6 +3120,8 @@ export default function TasksPage() {
       </section>
 
       {renderCanonicalDeepPanel()}
+
+      {renderPlanningStatusStrip()}
 
       {planningTab === "tasks" ? (
         <Panel id="planning-today-focus" title="Today Focus" className="planning-focus-primary">

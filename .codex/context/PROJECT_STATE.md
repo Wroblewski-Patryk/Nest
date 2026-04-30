@@ -24,6 +24,39 @@ Last updated: 2026-04-30
 
 ## Recent Execution Updates
 
+- 2026-04-30: Completed `NEST-270` Planning canonical composer polish. Added
+  narrative composer framing, mini-stats, and quieter footer guidance across
+  canonical Planning creation flows, and replaced the raw preview/live-data
+  notice with one calmer status strip. Updated:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report and evidence in:
+  `docs/ux/nest_270_planning_canonical_composer_polish_2026-04-30.md`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseM.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseM.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseM.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseM.png`.
+- 2026-04-30: Completed `NEST-269` Journal canonical direction capture. Added
+  founder-approved desktop and mobile Journal references in:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-journal-canonical-reference-desktop.png`
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-journal-canonical-reference-mobile.png`.
+  Added the canonical UX direction in:
+  `docs/ux/nest_269_journal_canonical_direction_2026-04-30.md`.
+  Updated `docs/ux/design-memory.md` so future Journal implementation treats
+  `Journal` naming, `Today's reflection room`, `Reflection focus`, warm
+  composer, living memory list, support rail, and `Day event -> Feeling ->
+  Life area -> Next intention` ladder as specifications.
+- 2026-04-30: Completed `NEST-268` Calendar canonical direction capture.
+  Promoted the desktop and mobile Calendar views to canonical references in:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-calendar-canonical-reference-desktop.png`
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-calendar-canonical-reference-mobile.png`.
+  Added the canonical UX direction in:
+  `docs/ux/nest_268_calendar_canonical_direction_2026-04-30.md`.
+  Updated `docs/ux/design-memory.md` so future Calendar implementation treats
+  `Today's time map`, `Now on deck`, day-flow timeline, event intelligence,
+  support rail, and `Goal -> Task/List -> Calendar event -> Reflection` ladder
+  as specifications.
 - 2026-04-30: Completed `NEST-267` Planning canonical tab depth. Added a
   tab-aware canonical lower context layer for `Tasks`, `Lists`, `Goals`, and
   `Targets`, and hid lower list/goal/target libraries in preview mode once the

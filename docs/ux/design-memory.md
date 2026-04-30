@@ -111,10 +111,62 @@
   story with their own contextual depth layer before the screen drops into
   legacy library surfaces. In preview mode, lower list/goal/target libraries
   should disappear once the canonical tab already carries enough meaning.
+- Composer narrative matters:
+  Canonical Planning composers should not feel like raw utility forms dropped
+  into a polished screen. Give them a short narrative frame, one or two small
+  context stats, and a quiet closing line so creation feels like part of the
+  product story.
 - Living planning polish:
   Gentle hover lift and subtle active-state sheen are allowed on canonical
   Planning surfaces when they respect reduced-motion preferences and do not
   distract from the calm weekly composition.
+
+## Calendar Canonical Patterns (2026-04-30)
+
+- Time map before grid:
+  Calendar should open with `Today's time map` and day-load awareness before
+  exposing detailed event navigation.
+- Dominant `Now on deck` card:
+  The clearest action is the next meaningful event, with time range, duration,
+  focus/energy signal, and linked context.
+- Day-flow timeline:
+  Preserve `Morning / Now / Afternoon / Evening` as the primary browsing model;
+  use week and date controls as orientation rather than the whole experience.
+- Event intelligence:
+  Selected events should expose source, sync state, privacy or ownership, linked
+  goal/task/list context, and assignment timeline when available.
+- Time ladder:
+  Calendar should make the loop visible as `Goal -> Task/List -> Calendar event
+  -> Reflection`, so scheduled time reads as part of LifeOS rather than an
+  isolated block.
+- Mobile calendar parity:
+  Mobile should stack the same model: time map, now card, week strip, timeline,
+  event intelligence, quick add, and sync/pressure support.
+
+## Journal Canonical Patterns (2026-04-30)
+
+- Journal naming:
+  The module should be named `Journal` everywhere. Reflection is the behavior,
+  not the module label.
+- Reflection room before form:
+  Journal should open with `Today's reflection room` and emotional orientation
+  before exposing the composer.
+- Dominant `Reflection focus` card:
+  One guided prompt should visually outrank recent entries, metrics, and
+  support cards.
+- Warm composer:
+  Title, body, mood, date, and life-area chips should feel like a humane writing
+  surface rather than a transactional form.
+- Living memory list:
+  Recent entries should show title, date, mood, life-area context, excerpt, and
+  subtle management actions without turning into a generic feed.
+- Reflection ladder:
+  Preserve `Day event -> Feeling -> Life area -> Next intention` as the
+  canonical explanation of how reflection loops back into planning and daily
+  action.
+- Mobile journal parity:
+  Mobile should stack hero, focus card, composer, recent entries, support
+  signals, and reflection ladder while keeping capture as the primary job.
 
 ## Workspace Shell Patterns (2026-04-26)
 
@@ -278,6 +330,37 @@
   `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseL.png`,
   and
   `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseL.png`.
+- Planning canonical composer polish landed on 2026-04-30 in:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`
+  with report:
+  `docs/ux/nest_270_planning_canonical_composer_polish_2026-04-30.md`
+  and evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseM.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseM.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseM.png`,
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseM.png`.
+- Calendar canonical direction was approved on 2026-04-30 and recorded in:
+  `docs/ux/nest_268_calendar_canonical_direction_2026-04-30.md`
+  with artifacts:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-calendar-canonical-reference-desktop.png`
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-calendar-canonical-reference-mobile.png`.
+  Future Calendar implementation should treat these images as specifications,
+  especially for `Today's time map`, `Now on deck`, day-flow timeline, event
+  intelligence, support rail, and the `Goal -> Task/List -> Calendar event ->
+  Reflection` ladder.
+- Journal canonical direction was approved on 2026-04-30 and recorded in:
+  `docs/ux/nest_269_journal_canonical_direction_2026-04-30.md`
+  with artifacts:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-journal-canonical-reference-desktop.png`
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-journal-canonical-reference-mobile.png`.
+  Future Journal implementation should treat these images as specifications,
+  especially for `Journal` naming, `Today's reflection room`, `Reflection
+  focus`, the warm composer, recent entries, support rail, and the `Day event
+  -> Feeling -> Life area -> Next intention` ladder.
 
 ## Finish Propagation Rules (2026-04-26)
 
