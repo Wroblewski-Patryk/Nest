@@ -1,6 +1,6 @@
 ﻿# TASK_BOARD
 
-Last updated: 2026-04-29
+Last updated: 2026-04-30
 
 ## Agent Workflow Refresh (2026-04-16)
 
@@ -23,6 +23,189 @@ Last updated: 2026-04-29
   - Contracts: OpenAPI lint when docs or API contracts change
 
 ## Backlog
+
+- [x] NEST-267 Deepen canonical Planning tabs and hide preview libraries
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-266
+  - Done on: 2026-04-30
+  - Notes:
+    - Completed a 25 micro-slice batch that added a tab-aware canonical depth
+      panel for `Tasks`, `Lists`, `Goals`, and `Targets` beneath the Planning
+      ladder.
+    - Added live-data-backed and showcase-fallback signals for execution,
+      list structure, goal momentum, and target health.
+    - Hid lower `List Library`, `Goal Roadmaps`, and `Target Checkpoints`
+      panels in preview mode once the canonical tabs carried enough context.
+    - Updated implementation in:
+      `apps/web/src/app/tasks/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_267_planning_canonical_tab_depth_2026-04-30.md`.
+    - Refreshed evidence:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseL.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseL.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseL.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseL.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
+- [x] NEST-266 Reduce Planning legacy containers into canonical workspace
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-265
+  - Done on: 2026-04-30
+  - Notes:
+    - Completed a 25 micro-slice batch that moved task board summary metrics,
+      search, status/context/life-area filters, hide-empty-list controls,
+      reset, refresh, and quick-add routing into the canonical Planning
+      workspace.
+    - Hid duplicate lower utility panels and the legacy Kanban board in
+      canonical preview fallback mode while preserving advanced Kanban/live-data
+      paths for non-preview operation.
+    - Replaced raw preview-mode API failure copy with a calmer live-data
+      notice placed after the canonical ladder.
+    - Updated implementation in:
+      `apps/web/src/app/tasks/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_266_planning_canonical_legacy_reduction_2026-04-30.md`.
+    - Refreshed evidence:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseK.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
+- [x] NEST-265 Move Planning management into canonical rows
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-264
+  - Done on: 2026-04-30
+  - Notes:
+    - Added canonical row edit/delete entry points for real Tasks, Lists,
+      Goals, and Targets while keeping fallback preview rows non-actionable.
+    - Added inline canonical edit forms that reuse the existing update/delete
+      handlers and API paths.
+    - Preserved the five-column canonical table rhythm by placing actions
+      under the status cell instead of adding a competing sixth column.
+    - Updated implementation in:
+      `apps/web/src/app/tasks/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_265_planning_canonical_row_management_2026-04-30.md`.
+    - Refreshed evidence:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseJ.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-task-edit-preview-phaseJ.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
+- [x] NEST-264 Move Planning creation into canonical workspace
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-263
+  - Done on: 2026-04-30
+  - Notes:
+    - Moved primary List, Goal, and Target creation into the canonical
+      Planning workspace panel using the existing handlers and state.
+    - Kept task creation reachable from the canonical `+ Add task` action.
+    - Visually retired duplicate lower add containers for Lists, Goals, and
+      Targets while preserving lower library/edit/delete surfaces.
+    - Added subtle reduced-motion-safe living UI polish for canonical cards,
+      active flow state, completed checks, and progress chips.
+    - Updated implementation in:
+      `apps/web/src/app/tasks/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_264_planning_canonical_inline_creation_2026-04-30.md`.
+    - Refreshed evidence:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseI.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseI.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseI.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseI.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-mobile-lists-preview-phaseI.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
+- [x] NEST-263 Implement Planning canonical workspace tabs
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-262
+  - Done on: 2026-04-30
+  - Notes:
+    - Extended the canonical Planning workspace panel so `Tasks`, `Lists`,
+      `Goals`, and `Targets` all show relational preview rows instead of only
+      the Tasks tab carrying real structure.
+    - Made the primary panel action follow the active tab:
+      `+ Add task`, `+ Add list`, `+ Add goal`, `+ Add target`, with
+      non-task actions scrolling to the matching composer.
+    - Updated implementation in:
+      `apps/web/src/app/tasks/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_263_planning_canonical_workspace_tabs_2026-04-30.md`.
+    - Refreshed evidence:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseH.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseH.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseH.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseH.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
+- [x] NEST-262 Implement Planning canonical phase A
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-261
+  - Done on: 2026-04-30
+  - Notes:
+    - Implemented the first canonical Planning viewport on the web `/tasks`
+      route while preserving existing Tasks, Lists, Goals, and Targets CRUD
+      workflows.
+    - Added weekly direction hero, `Now planning` focus card, planning flow,
+      clarity/quick-add/pressure support rail, relational task rows, and
+      `Goal -> Target -> List -> Next task` ladder.
+    - Updated implementation in:
+      `apps/web/src/app/tasks/page.tsx`,
+      `apps/web/src/components/workspace-primitives.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_262_planning_canonical_phaseA_2026-04-30.md`.
+    - Refreshed evidence:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseF.png`,
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-mobile-preview-phaseA.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
+- [x] NEST-261 Capture Planning canonical direction
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Done on: 2026-04-30
+  - Notes:
+    - Added founder-approved Planning canonical artifact:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference.png`.
+    - Added canonical Planning direction and adoption contract:
+      `docs/ux/nest_261_planning_canonical_direction_2026-04-30.md`.
+    - Updated design memory with Planning-specific canonical patterns:
+      weekly direction hero, `Now planning`, relational task rows, calm
+      support rail, and `Goal -> Target -> List -> Next task` ladder.
+    - Validation:
+      documentation and artifact-only change; no runtime validation required.
 
 - [x] NEST-244 Review dashboard parity after phase T capture
   - Status: DONE

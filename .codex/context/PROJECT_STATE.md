@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-29
+Last updated: 2026-04-30
 
 ## Agent Workflow Snapshot
 
@@ -24,6 +24,80 @@ Last updated: 2026-04-29
 
 ## Recent Execution Updates
 
+- 2026-04-30: Completed `NEST-267` Planning canonical tab depth. Added a
+  tab-aware canonical lower context layer for `Tasks`, `Lists`, `Goals`, and
+  `Targets`, and hid lower list/goal/target libraries in preview mode once the
+  canonical tabs carried enough meaning. Updated:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report and evidence in:
+  `docs/ux/nest_267_planning_canonical_tab_depth_2026-04-30.md`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseL.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseL.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseL.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseL.png`.
+- 2026-04-30: Completed `NEST-266` Planning canonical legacy reduction. A
+  25-slice batch moved task summary metrics, filters, hide-empty-list controls,
+  reset, refresh, and quick-add routing into the canonical Planning workspace;
+  hid duplicate lower utility panels and preview-mode Kanban noise; and kept
+  advanced Kanban/live-data paths preserved for non-preview operation. Updated:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report and evidence in:
+  `docs/ux/nest_266_planning_canonical_legacy_reduction_2026-04-30.md`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseK.png`.
+- 2026-04-30: Completed `NEST-265` Planning canonical row management. Real
+  canonical rows now expose edit/delete entry points and inline editors for
+  Tasks, Lists, Goals, and Targets while presentation fallback rows remain
+  non-actionable. Updated:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report and evidence in:
+  `docs/ux/nest_265_planning_canonical_row_management_2026-04-30.md`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseJ.png`,
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-task-edit-preview-phaseJ.png`.
+- 2026-04-30: Completed `NEST-264` Planning canonical inline creation. Primary
+  creation for Lists, Goals, and Targets now lives in the canonical workspace
+  panel using existing handlers, duplicate lower add containers are visually
+  retired, and subtle living UI polish was added. Updated:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report and evidence in:
+  `docs/ux/nest_264_planning_canonical_inline_creation_2026-04-30.md`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseI.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseI.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseI.png`,
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseI.png`,
+  plus mobile evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-mobile-lists-preview-phaseI.png`.
+- 2026-04-30: Completed `NEST-263` Planning canonical workspace tabs. The
+  upper canonical Planning panel now provides relational preview rows for
+  `Tasks`, `Lists`, `Goals`, and `Targets`, and the primary action follows the
+  active mode. Updated:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report and evidence in:
+  `docs/ux/nest_263_planning_canonical_workspace_tabs_2026-04-30.md`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseH.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseH.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseH.png`,
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseH.png`.
+- 2026-04-30: Completed `NEST-262` Planning canonical phase A. The web
+  `/tasks` route now opens with a canonical Planning room while preserving
+  existing API-backed Tasks, Lists, Goals, and Targets workflows. Updated:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/app/globals.css`. Added report and evidence in:
+  `docs/ux/nest_262_planning_canonical_phaseA_2026-04-30.md`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseF.png`,
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-mobile-preview-phaseA.png`.
+- 2026-04-30: Completed `NEST-261` Planning canonical direction capture. Added
+  founder-approved Planning reference artifact and canonical UX direction in:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference.png`
+  and
+  `docs/ux/nest_261_planning_canonical_direction_2026-04-30.md`.
+  Updated `docs/ux/design-memory.md` so future Planning implementation treats
+  the image as a specification for the weekly hero, `Now planning`, relational
+  task rows, support rail, and `Goal -> Target -> List -> Next task` ladder.
 - 2026-04-29: Completed `NEST-243` canonical dashboard mode pass. Added
   dashboard-specific canonical utility/rail overrides and a canonical portrait
   asset through
@@ -1568,3 +1642,8 @@ Last updated: 2026-04-29
   cohesive painterly medium, with remaining differences concentrated in blend
   calibration, support-surface proportion, and microtypography, recorded in:
   `docs/ux/nest_260_dashboard_parity_review_phaseAD_2026-04-30.md`
+- Planning canonical direction was captured on 2026-04-30 with the
+  founder-approved reference image in:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference.png`
+  and the implementation contract in:
+  `docs/ux/nest_261_planning_canonical_direction_2026-04-30.md`

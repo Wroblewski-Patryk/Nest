@@ -1,10 +1,9 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
-import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
+import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import {
-  DashboardContextRibbon,
   DashboardFocusCard,
   DashboardHeroBand,
 } from "@/components/workspace-primitives";
@@ -237,6 +236,66 @@ function buildListParentPayload(type: ListParentType, id: string): {
   }
 
   return { goal_id: null, target_id: null, life_area_id: null };
+}
+
+function hasRealRowId(row: object): row is { id: string } {
+  return "id" in row && typeof (row as { id?: unknown }).id === "string";
+}
+
+function PlanningGlyph({ name }: { name: "task" | "list" | "goal" | "target" | "note" | "pressure" }) {
+  if (name === "task") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.7" />
+        <path d="m8.8 12.2 2.1 2.1 4.5-5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (name === "list") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M9 7h10M9 12h10M9 17h10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <circle cx="5.5" cy="7" r="1.1" fill="currentColor" />
+        <circle cx="5.5" cy="12" r="1.1" fill="currentColor" />
+        <circle cx="5.5" cy="17" r="1.1" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  if (name === "goal") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.7" />
+        <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.7" />
+        <circle cx="12" cy="12" r="1.2" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  if (name === "target") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 19V5l9 2.2-1.2 3.4L18 12l-12 2.4" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (name === "pressure") {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 4v3M12 17v3M4 12h3M17 12h3M6.3 6.3l2.1 2.1M15.6 15.6l2.1 2.1M17.7 6.3l-2.1 2.1M8.4 15.6l-2.1 2.1" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        <circle cx="12" cy="12" r="3.3" stroke="currentColor" strokeWidth="1.7" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 18h3.2l8.5-8.5a1.7 1.7 0 0 0 0-2.4l-.8-.8a1.7 1.7 0 0 0-2.4 0L6 14.8V18Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="m13.2 7.8 3 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
 }
 
 export default function TasksPage() {
@@ -476,14 +535,129 @@ export default function TasksPage() {
     () => targets.filter((target) => target.status === "active").length,
     [targets]
   );
+  const pausedGoalsCount = useMemo(
+    () => goals.filter((goal) => goal.status === "paused").length,
+    [goals]
+  );
+  const completedGoalsCount = useMemo(
+    () => goals.filter((goal) => goal.status === "completed").length,
+    [goals]
+  );
   const contextualListsCount = useMemo(
     () => lists.filter((list) => list.goal_id || list.target_id || list.life_area_id).length,
+    [lists]
+  );
+  const goalLinkedListsCount = useMemo(
+    () => lists.filter((list) => Boolean(list.goal_id)).length,
+    [lists]
+  );
+  const targetLinkedListsCount = useMemo(
+    () => lists.filter((list) => Boolean(list.target_id)).length,
+    [lists]
+  );
+  const lifeAreaLinkedListsCount = useMemo(
+    () => lists.filter((list) => Boolean(list.life_area_id)).length,
     [lists]
   );
   const unassignedTasksCount = useMemo(
     () => tasks.filter((task) => !task.list_id).length,
     [tasks]
   );
+  const plannedTasksCount = useMemo(
+    () => tasks.filter((task) => task.status !== "canceled").length,
+    [tasks]
+  );
+  const completedTasksCount = useMemo(
+    () => tasks.filter((task) => task.status === "done").length,
+    [tasks]
+  );
+  const inProgressTasksCount = useMemo(
+    () => tasks.filter((task) => task.status === "in_progress").length,
+    [tasks]
+  );
+  const listsWithTasksCount = useMemo(
+    () => lists.filter((list) => (tasksByListId.get(list.id)?.length ?? 0) > 0).length,
+    [lists, tasksByListId]
+  );
+  const nextWeekKey = useMemo(() => {
+    const value = new Date();
+    value.setDate(value.getDate() + 7);
+    return toLocalDateKey(value);
+  }, []);
+  const goalsWithTargetsCount = useMemo(
+    () => goals.filter((goal) => (targetsByGoalId.get(goal.id)?.length ?? 0) > 0).length,
+    [goals, targetsByGoalId]
+  );
+  const goalIdsWithLists = useMemo(() => {
+    const ids = new Set<string>();
+    for (const list of lists) {
+      if (list.goal_id) {
+        ids.add(list.goal_id);
+      }
+    }
+    return ids;
+  }, [lists]);
+  const goalsWithListsCount = useMemo(
+    () => goals.filter((goal) => goalIdsWithLists.has(goal.id)).length,
+    [goalIdsWithLists, goals]
+  );
+  const targetIdsWithLists = useMemo(() => {
+    const ids = new Set<string>();
+    for (const list of lists) {
+      if (list.target_id) {
+        ids.add(list.target_id);
+      }
+    }
+    return ids;
+  }, [lists]);
+  const targetsWithListsCount = useMemo(
+    () => targets.filter((target) => targetIdsWithLists.has(target.id)).length,
+    [targetIdsWithLists, targets]
+  );
+  const dueSoonTargetsCount = useMemo(
+    () =>
+      targets.filter(
+        (target) =>
+          target.status === "active" &&
+          Boolean(target.due_date) &&
+          target.due_date!.slice(0, 10) >= todayKey &&
+          target.due_date!.slice(0, 10) <= nextWeekKey
+      ).length,
+    [nextWeekKey, targets, todayKey]
+  );
+  const overdueTargetsCount = useMemo(
+    () =>
+      targets.filter(
+        (target) =>
+          target.status === "active" &&
+          Boolean(target.due_date) &&
+          target.due_date!.slice(0, 10) < todayKey
+      ).length,
+    [targets, todayKey]
+  );
+  const averageTargetProgress = useMemo(() => {
+    if (targets.length === 0) {
+      return 0;
+    }
+
+    const total = targets.reduce((sum, target) => {
+      if (target.value_target <= 0) {
+        return sum;
+      }
+
+      return sum + Math.min(100, Math.max(0, Math.round((target.value_current / target.value_target) * 100)));
+    }, 0);
+
+    return Math.round(total / targets.length);
+  }, [targets]);
+  const weeklyDirectionPercent = useMemo(() => {
+    if (plannedTasksCount === 0 && lists.length === 0 && activeGoalsCount === 0 && activeTargetsCount === 0) {
+      return 0;
+    }
+
+    const base = plannedTasksCount > 0 ? Math.round((completedTasksCount / Math.max(plannedTasksCount, 1)) * 52) : 18;
+    return Math.min(94, Math.max(32, base + Math.min(contextualListsCount * 5, 18) + Math.min(activeGoalsCount * 4, 16)));
+  }, [activeGoalsCount, activeTargetsCount, completedTasksCount, contextualListsCount, lists.length, plannedTasksCount]);
   const nextTask = useMemo(
     () =>
       tasks.find((task) => task.status === "in_progress") ??
@@ -499,23 +673,211 @@ export default function TasksPage() {
       null,
     [goals]
   );
-  const largestLifeArea = useMemo(
-    () => lifeAreas[0] ?? null,
-    [lifeAreas]
-  );
+  const canonicalPlanningRows = useMemo(() => {
+    const priorityRank: Record<TaskPriority, number> = {
+      urgent: 0,
+      high: 1,
+      medium: 2,
+      low: 3,
+    };
+
+    return [...tasks]
+      .filter((task) => task.status !== "canceled")
+      .sort((a, b) => {
+        if (a.status === "done" && b.status !== "done") {
+          return 1;
+        }
+
+        if (a.status !== "done" && b.status === "done") {
+          return -1;
+        }
+
+        const dueA = a.due_date?.slice(0, 10) ?? "9999-12-31";
+        const dueB = b.due_date?.slice(0, 10) ?? "9999-12-31";
+        if (dueA !== dueB) {
+          return dueA.localeCompare(dueB);
+        }
+
+        return priorityRank[a.priority] - priorityRank[b.priority];
+      })
+      .slice(0, 4);
+  }, [tasks]);
+  const showPlanningShowcase =
+    !isLoading &&
+    plannedTasksCount === 0 &&
+    lists.length === 0 &&
+    activeGoalsCount === 0 &&
+    activeTargetsCount === 0;
+  const planningHeroProgress = showPlanningShowcase ? 64 : weeklyDirectionPercent;
+  const planningHeroMetrics = showPlanningShowcase
+    ? [
+        { label: "Tasks planned", value: "12 / 18", emphasis: "accent" as const, icon: <PlanningGlyph name="task" /> },
+        { label: "Lists active", value: "4", icon: <PlanningGlyph name="list" /> },
+        { label: "Goals moving", value: "3", icon: <PlanningGlyph name="goal" /> },
+        { label: "Targets tracked", value: "7", icon: <PlanningGlyph name="target" /> },
+      ]
+    : [
+        { label: "Tasks planned", value: `${plannedTasksCount} / ${Math.max(plannedTasksCount + overdueCount, 1)}`, emphasis: "accent" as const, icon: <PlanningGlyph name="task" /> },
+        { label: "Lists active", value: String(lists.length), icon: <PlanningGlyph name="list" /> },
+        { label: "Goals moving", value: String(activeGoalsCount), icon: <PlanningGlyph name="goal" /> },
+        { label: "Targets tracked", value: String(activeTargetsCount), icon: <PlanningGlyph name="target" /> },
+      ];
+  const planningFlowCards = [
+    { title: "Capture ideas and tasks", count: showPlanningShowcase ? "6 tasks" : `${Math.max(unassignedTasksCount, 1)} tasks`, icon: "task" as const },
+    { title: "Shape priorities and lists", count: showPlanningShowcase ? "8 tasks" : `${Math.max(lists.length, 1)} lists`, icon: "list" as const },
+    { title: "Commit to the right plan", count: showPlanningShowcase ? "4 tasks" : `${Math.max(dueTodayCount, 1)} tasks`, icon: "goal" as const, now: true },
+    { title: "Focus on deep execution", count: showPlanningShowcase ? "6 tasks" : `${openTasksCount} open`, icon: "target" as const },
+    { title: "Weekly review and learn", count: showPlanningShowcase ? "3 tasks" : `${activeTargetsCount} targets`, icon: "note" as const },
+  ];
+  const planningShowcaseRows = [
+    {
+      title: "Prepare strategy workshop",
+      linked: ["Goal  Launch product", "Target  Comms plan", "List  Launch plan"],
+      priority: "High",
+      priorityClass: "high",
+      due: "Today",
+      status: "Done",
+      done: true,
+    },
+    {
+      title: "Review quarterly budget",
+      linked: ["Goal  Financial clarity", "List  Finance"],
+      priority: "High",
+      priorityClass: "high",
+      due: "Today",
+      status: "Done",
+      done: true,
+    },
+    {
+      title: "Draft home reset checklist",
+      linked: ["Goal  Calm home", "List  Home projects"],
+      priority: "Medium",
+      priorityClass: "medium",
+      due: "Tomorrow",
+      status: "Open",
+      done: false,
+    },
+    {
+      title: "Book weekend getaway",
+      linked: ["Goal  Recharge", "List  Travel ideas"],
+      priority: "Low",
+      priorityClass: "low",
+      due: "May 25",
+      status: "Open",
+      done: false,
+    },
+  ];
+  const planningWorkspaceColumns =
+    planningTab === "tasks"
+      ? ["Task", "Linked to", "Priority", "Due", "Status"]
+      : planningTab === "lists"
+        ? ["List", "Connected to", "Tasks", "Focus", "Status"]
+        : planningTab === "goals"
+          ? ["Goal", "Connected to", "Targets", "Date", "Status"]
+          : ["Target", "Goal", "Progress", "Due", "Status"];
+  const planningShowcaseListRows = [
+    {
+      name: "Launch plan",
+      linked: ["Goal  Launch product", "Target  Comms plan"],
+      tasks: "8 tasks",
+      focus: "High",
+      status: "Active",
+    },
+    {
+      name: "Finance",
+      linked: ["Goal  Financial clarity"],
+      tasks: "4 tasks",
+      focus: "High",
+      status: "Active",
+    },
+    {
+      name: "Home projects",
+      linked: ["Goal  Calm home"],
+      tasks: "5 tasks",
+      focus: "Medium",
+      status: "Active",
+    },
+    {
+      name: "Travel ideas",
+      linked: ["Goal  Recharge"],
+      tasks: "3 tasks",
+      focus: "Low",
+      status: "Later",
+    },
+  ];
+  const planningShowcaseGoalRows = [
+    {
+      name: "Launch product",
+      linked: ["Target  Comms plan", "List  Launch plan"],
+      targets: "3 targets",
+      date: "Jun 12",
+      status: "Active",
+    },
+    {
+      name: "Build a healthier me",
+      linked: ["Target  Workout 3x per week", "List  Training program"],
+      targets: "2 targets",
+      date: "Jul 01",
+      status: "Active",
+    },
+    {
+      name: "Financial clarity",
+      linked: ["List  Finance"],
+      targets: "1 target",
+      date: "May 30",
+      status: "Active",
+    },
+    {
+      name: "Calm home",
+      linked: ["List  Home projects"],
+      targets: "1 target",
+      date: "Later",
+      status: "Paused",
+    },
+  ];
+  const planningShowcaseTargetRows = [
+    {
+      name: "Comms plan",
+      goal: "Launch product",
+      progress: "80%",
+      due: "Jun 12",
+      status: "Active",
+    },
+    {
+      name: "Workout 3x per week",
+      goal: "Build a healthier me",
+      progress: "72%",
+      due: "Jul 01",
+      status: "Active",
+    },
+    {
+      name: "Budget review",
+      goal: "Financial clarity",
+      progress: "64%",
+      due: "May 30",
+      status: "Active",
+    },
+    {
+      name: "Home reset",
+      goal: "Calm home",
+      progress: "45%",
+      due: "Later",
+      status: "Paused",
+    },
+  ];
   const focusCard =
     planningTab === "tasks"
       ? {
-          kicker: "Planning focus",
-          title: nextTask?.title ?? "Capture one concrete task to start the board",
+          kicker: "Now planning",
+          title: nextTask?.title ?? "Map product launch week",
           detail: nextTask
-            ? `${nextTask.status === "in_progress" ? "Already in motion" : "Best next step"}${nextTask.due_date ? ` | due ${nextTask.due_date.slice(0, 10)}` : ""}`
-            : "Use No List for speed, then structure only what truly needs context.",
+            ? `${nextTask.status === "in_progress" ? "Already in motion" : "Define the next concrete planning move"}${nextTask.due_date ? ` | due ${nextTask.due_date.slice(0, 10)}` : ""}.`
+            : "Define the key milestones, owners and communications plan for launch week.",
           href: "#planning-today-focus",
-          cta: nextTask ? "Work the board" : "Start fast capture",
+          cta: nextTask ? "Start planning block" : "Start planning block",
           supportingValue: nextTask
             ? `Priority ${formatPriority(nextTask.priority)}`
-            : `${unassignedTasksCount} standalone tasks can stay light`,
+            : "High impact",
         }
       : planningTab === "lists"
         ? {
@@ -549,41 +911,6 @@ export default function TasksPage() {
               cta: "Open targets",
               supportingValue: hottestGoal?.title ?? "Attach the first target to an active goal",
             };
-
-  const planningSummary =
-    planningTab === "tasks"
-      ? `${openTasksCount} open tasks are active across ${lists.length} lists. ${dueTodayCount} are due today and ${overdueCount} are already asking for triage.`
-      : planningTab === "lists"
-        ? `${lists.length} lists exist today, with ${contextualListsCount} already linked to broader context and ${unassignedTasksCount} standalone tasks still moving outside list structure.`
-        : planningTab === "goals"
-          ? `${activeGoalsCount} goals are active right now, supported by ${activeTargetsCount} active targets and ${contextualListsCount} contextualized lists.`
-          : `${activeTargetsCount} active targets are currently translating goals into measurable movement.`;
-
-  const planningContextItems = [
-    {
-      label: "Board pressure",
-      value: overdueCount > 0 ? `${overdueCount} overdue` : "Calm",
-      detail: overdueCount > 0
-        ? "Clear overdue work first so the board starts breathing again."
-        : "No overdue pressure right now.",
-    },
-    {
-      label: "Structure level",
-      value: `${contextualListsCount}/${lists.length || 0}`,
-      detail:
-        contextualListsCount > 0
-          ? "Lists are gradually gaining context without forcing every task into hierarchy."
-          : "Most planning is still intentionally lightweight.",
-    },
-    {
-      label: "Life anchor",
-      value: largestLifeArea?.name ?? "None yet",
-      detail: largestLifeArea
-        ? `${largestLifeArea.name} is available as a life-area context for planning.`
-        : "Life areas can be added later when planning needs more meaning, not more complexity.",
-      href: "/life-areas",
-    },
-  ];
 
   const filteredTasksByListId = useMemo(() => {
     const grouped = new Map<string, TaskItem[]>();
@@ -1151,6 +1478,1022 @@ export default function TasksPage() {
     return null;
   }
 
+  function resolveTaskPlanningContext(task: TaskItem): {
+    listLabel: string;
+    goalLabel: string | null;
+    targetLabel: string | null;
+  } {
+    const list = lists.find((item) => item.id === task.list_id);
+    if (!list) {
+      return {
+        listLabel: "No List",
+        goalLabel: null,
+        targetLabel: null,
+      };
+    }
+
+    const target = list.target_id ? targets.find((item) => item.id === list.target_id) : null;
+
+    return {
+      listLabel: list.name,
+      goalLabel:
+        (target?.goal_id ? goalLabelById.get(target.goal_id) : null) ??
+        (list.goal_id ? goalLabelById.get(list.goal_id) : null) ??
+        null,
+      targetLabel: target?.title ?? (list.target_id ? targetLabelById.get(list.target_id) ?? "Unknown target" : null),
+    };
+  }
+
+  function renderCanonicalTaskEditForm(taskId: string) {
+    return (
+      <form className="planning-canonical-edit-row form-grid" onSubmit={(event) => {
+        event.preventDefault();
+        void saveTaskEdit(taskId);
+      }}>
+        <label className="field">
+          <span>Title</span>
+          <input
+            className="list-row"
+            type="text"
+            value={editTaskTitle}
+            onChange={(event) => setEditTaskTitle(event.target.value)}
+            disabled={busyTaskId === taskId}
+          />
+        </label>
+        <div className="form-grid form-grid-three">
+          <label className="field">
+            <span>Status</span>
+            <select
+              className="list-row"
+              value={editTaskStatus}
+              onChange={(event) => setEditTaskStatus(event.target.value as TaskStatus)}
+              disabled={busyTaskId === taskId}
+            >
+              <option value="todo">To do</option>
+              <option value="in_progress">In progress</option>
+              <option value="done">Done</option>
+              <option value="canceled">Canceled</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Priority</span>
+            <select
+              className="list-row"
+              value={editTaskPriority}
+              onChange={(event) => setEditTaskPriority(event.target.value as TaskPriority)}
+              disabled={busyTaskId === taskId}
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Due date</span>
+            <input
+              className="list-row"
+              type="date"
+              value={editTaskDueDate}
+              onChange={(event) => setEditTaskDueDate(event.target.value)}
+              disabled={busyTaskId === taskId}
+            />
+          </label>
+        </div>
+        <label className="field">
+          <span>List</span>
+          <select
+            className="list-row"
+            value={editTaskListId}
+            onChange={(event) => setEditTaskListId(event.target.value)}
+            disabled={busyTaskId === taskId}
+          >
+            <option value="">No list</option>
+            {lists.map((listOption) => (
+              <option key={listOption.id} value={listOption.id}>
+                {listOption.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="row-inline">
+          <button type="submit" className="btn-primary" disabled={busyTaskId === taskId}>
+            Save task
+          </button>
+          <button type="button" className="btn-secondary" onClick={() => setEditingTaskId(null)} disabled={busyTaskId === taskId}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  function renderCanonicalListEditForm(listId: string) {
+    return (
+      <form className="planning-canonical-edit-row form-grid" onSubmit={(event) => {
+        event.preventDefault();
+        void saveListEdit(listId);
+      }}>
+        <label className="field">
+          <span>Name</span>
+          <input
+            className="list-row"
+            type="text"
+            value={editListName}
+            onChange={(event) => setEditListName(event.target.value)}
+            disabled={busyListId === listId}
+          />
+        </label>
+        <div className="row-inline">
+          <label className="field">
+            <span>Color</span>
+            <input
+              className="list-row"
+              type="color"
+              value={editListColor}
+              onChange={(event) => setEditListColor(event.target.value)}
+              disabled={busyListId === listId}
+            />
+          </label>
+          <label className="field">
+            <span>Parent type</span>
+            <select
+              className="list-row"
+              value={editListParentType}
+              onChange={(event) => {
+                setEditListParentType(event.target.value as ListParentType);
+                setEditListParentId("");
+              }}
+              disabled={busyListId === listId}
+            >
+              <option value="none">No parent</option>
+              <option value="goal">Goal</option>
+              <option value="target">Target</option>
+              <option value="life_area">Life area</option>
+            </select>
+          </label>
+          {editListParentType !== "none" ? (
+            <label className="field">
+              <span>Parent</span>
+              <select
+                className="list-row"
+                value={editListParentId}
+                onChange={(event) => setEditListParentId(event.target.value)}
+                disabled={busyListId === listId}
+              >
+                <option value="">Select parent</option>
+                {editListParentType === "goal"
+                  ? goals.map((goal) => (
+                      <option key={goal.id} value={goal.id}>
+                        {goal.title}
+                      </option>
+                    ))
+                  : null}
+                {editListParentType === "target"
+                  ? targets.map((target) => (
+                      <option key={target.id} value={target.id}>
+                        {target.title}
+                      </option>
+                    ))
+                  : null}
+                {editListParentType === "life_area"
+                  ? lifeAreas.map((lifeArea) => (
+                      <option key={lifeArea.id} value={lifeArea.id}>
+                        {lifeArea.name}
+                      </option>
+                    ))
+                  : null}
+              </select>
+            </label>
+          ) : null}
+        </div>
+        <div className="row-inline">
+          <button type="submit" className="btn-primary" disabled={busyListId === listId}>
+            Save list
+          </button>
+          <button type="button" className="btn-secondary" onClick={() => setEditingListId(null)} disabled={busyListId === listId}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  function renderCanonicalGoalEditForm(goalId: string) {
+    return (
+      <form className="planning-canonical-edit-row form-grid" onSubmit={(event) => {
+        event.preventDefault();
+        void saveGoalEdit(goalId);
+      }}>
+        <label className="field">
+          <span>Title</span>
+          <input
+            className="list-row"
+            type="text"
+            value={editGoalTitle}
+            onChange={(event) => setEditGoalTitle(event.target.value)}
+            disabled={busyGoalId === goalId}
+          />
+        </label>
+        <div className="row-inline">
+          <label className="field">
+            <span>Status</span>
+            <select
+              className="list-row"
+              value={editGoalStatus}
+              onChange={(event) => setEditGoalStatus(event.target.value as GoalStatus)}
+              disabled={busyGoalId === goalId}
+            >
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="completed">Completed</option>
+              <option value="archived">Archived</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Target date</span>
+            <input
+              className="list-row"
+              type="date"
+              value={editGoalTargetDate}
+              onChange={(event) => setEditGoalTargetDate(event.target.value)}
+              disabled={busyGoalId === goalId}
+            />
+          </label>
+        </div>
+        <div className="row-inline">
+          <button type="submit" className="btn-primary" disabled={busyGoalId === goalId}>
+            Save goal
+          </button>
+          <button type="button" className="btn-secondary" onClick={() => setEditingGoalId(null)} disabled={busyGoalId === goalId}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  function renderCanonicalTargetEditForm(targetId: string) {
+    return (
+      <form className="planning-canonical-edit-row form-grid" onSubmit={(event) => {
+        event.preventDefault();
+        void saveTargetEdit(targetId);
+      }}>
+        <label className="field">
+          <span>Title</span>
+          <input
+            className="list-row"
+            type="text"
+            value={editTargetTitle}
+            onChange={(event) => setEditTargetTitle(event.target.value)}
+            disabled={busyTargetId === targetId}
+          />
+        </label>
+        <div className="form-grid form-grid-three">
+          <label className="field">
+            <span>Metric type</span>
+            <input
+              className="list-row"
+              type="text"
+              value={editTargetMetricType}
+              onChange={(event) => setEditTargetMetricType(event.target.value)}
+              disabled={busyTargetId === targetId}
+            />
+          </label>
+          <label className="field">
+            <span>Current</span>
+            <input
+              className="list-row"
+              type="number"
+              value={editTargetValueCurrent}
+              onChange={(event) => setEditTargetValueCurrent(event.target.value)}
+              disabled={busyTargetId === targetId}
+            />
+          </label>
+          <label className="field">
+            <span>Target</span>
+            <input
+              className="list-row"
+              type="number"
+              value={editTargetValueTarget}
+              onChange={(event) => setEditTargetValueTarget(event.target.value)}
+              disabled={busyTargetId === targetId}
+            />
+          </label>
+        </div>
+        <div className="row-inline">
+          <label className="field">
+            <span>Status</span>
+            <select
+              className="list-row"
+              value={editTargetStatus}
+              onChange={(event) => setEditTargetStatus(event.target.value as GoalStatus)}
+              disabled={busyTargetId === targetId}
+            >
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="completed">Completed</option>
+              <option value="archived">Archived</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Due date</span>
+            <input
+              className="list-row"
+              type="date"
+              value={editTargetDueDate}
+              onChange={(event) => setEditTargetDueDate(event.target.value)}
+              disabled={busyTargetId === targetId}
+            />
+          </label>
+          <label className="field">
+            <span>Unit</span>
+            <input
+              className="list-row"
+              type="text"
+              value={editTargetUnit}
+              onChange={(event) => setEditTargetUnit(event.target.value)}
+              disabled={busyTargetId === targetId}
+            />
+          </label>
+        </div>
+        <div className="row-inline">
+          <button type="submit" className="btn-primary" disabled={busyTargetId === targetId}>
+            Save target
+          </button>
+          <button type="button" className="btn-secondary" onClick={() => setEditingTargetId(null)} disabled={busyTargetId === targetId}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  function renderPlanningWorkspaceRows() {
+    if (planningTab === "tasks") {
+      return (
+        <>
+          {isLoading ? <p className="callout state-loading">Loading planning workspace...</p> : null}
+          {!isLoading && canonicalPlanningRows.length === 0 && !showPlanningShowcase ? (
+            <p className="callout state-empty">No tasks yet. Start with one concrete task, then connect structure when it helps.</p>
+          ) : null}
+          {showPlanningShowcase
+            ? planningShowcaseRows.map((row) => (
+                <article key={row.title} className="planning-relational-row">
+                  <div className="planning-task-title-cell">
+                    <span className={`planning-check ${row.done ? "is-done" : ""}`} aria-hidden="true" />
+                    <strong>{row.title}</strong>
+                  </div>
+                  <div className="planning-linked-chips">
+                    {row.linked.map((chip) => (
+                      <span key={chip}>{chip}</span>
+                    ))}
+                  </div>
+                  <span className={`kanban-meta-chip priority-${row.priorityClass}`}>{row.priority}</span>
+                  <span>{row.due}</span>
+                  <div className="planning-status-actions">
+                    <span className={`pill status-${row.done ? "done" : "todo"}`}>{row.status}</span>
+                    <span className="planning-row-actions is-muted">Preview</span>
+                  </div>
+                </article>
+              ))
+            : null}
+          {canonicalPlanningRows.map((task) => {
+            const context = resolveTaskPlanningContext(task);
+            return (
+              <div key={task.id} className="planning-relational-row-group">
+                <article className="planning-relational-row">
+                  <div className="planning-task-title-cell">
+                    <button
+                      type="button"
+                      className={`planning-check ${task.status === "done" ? "is-done" : ""}`}
+                      onClick={() => void toggleTaskDone(task)}
+                      disabled={busyTaskId === task.id}
+                      aria-label={task.status === "done" ? `Reopen ${task.title}` : `Complete ${task.title}`}
+                    />
+                    <strong>{task.title}</strong>
+                  </div>
+                  <div className="planning-linked-chips">
+                    {context.goalLabel ? <span>Goal&nbsp; {context.goalLabel}</span> : null}
+                    {context.targetLabel ? <span>Target&nbsp; {context.targetLabel}</span> : null}
+                    <span>List&nbsp; {context.listLabel}</span>
+                  </div>
+                  <span className={`kanban-meta-chip priority-${task.priority}`}>{formatPriority(task.priority)}</span>
+                  <span>{task.due_date ? toDateInputValue(task.due_date) : "No date"}</span>
+                  <div className="planning-status-actions">
+                    <span className={`pill status-${task.status}`}>{formatStatus(task.status)}</span>
+                    <span className="planning-row-actions">
+                      <button type="button" className="pill-link" onClick={() => startTaskEdit(task)} disabled={busyTaskId === task.id}>
+                        Edit
+                      </button>
+                      <button type="button" className="pill-link" onClick={() => void deleteTask(task.id)} disabled={busyTaskId === task.id}>
+                        Delete
+                      </button>
+                    </span>
+                  </div>
+                </article>
+                {editingTaskId === task.id ? renderCanonicalTaskEditForm(task.id) : null}
+              </div>
+            );
+          })}
+        </>
+      );
+    }
+
+    if (planningTab === "lists") {
+      const rows = showPlanningShowcase
+        ? planningShowcaseListRows
+        : lists.slice(0, 4).map((list) => {
+            const parentTarget = list.target_id ? targets.find((target) => target.id === list.target_id) : null;
+            const linked = [
+              parentTarget?.goal_id ? `Goal  ${goalLabelById.get(parentTarget.goal_id) ?? "Unknown goal"}` : null,
+              list.goal_id ? `Goal  ${goalLabelById.get(list.goal_id) ?? "Unknown goal"}` : null,
+              list.target_id ? `Target  ${targetLabelById.get(list.target_id) ?? "Unknown target"}` : null,
+              list.life_area_id ? `Life area  ${lifeAreaLabelById.get(list.life_area_id) ?? "Unknown area"}` : null,
+            ].filter((item): item is string => Boolean(item));
+
+            return {
+              id: list.id,
+              name: list.name,
+              linked: linked.length > 0 ? linked : ["Flexible list"],
+              tasks: `${tasksByListId.get(list.id)?.length ?? 0} tasks`,
+              focus: linked.length > 0 ? "Contextual" : "Light",
+              status: "Active",
+            };
+          });
+
+      return rows.length > 0 ? (
+        rows.map((row) => (
+          <div key={row.name} className="planning-relational-row-group">
+            <article className="planning-relational-row">
+              <strong>{row.name}</strong>
+              <div className="planning-linked-chips">
+                {row.linked.map((chip) => (
+                  <span key={chip}>{chip}</span>
+                ))}
+              </div>
+              <span>{row.tasks}</span>
+              <span className="kanban-meta-chip priority-medium">{row.focus}</span>
+              <div className="planning-status-actions">
+                <span className="pill status-in_progress">{row.status}</span>
+                {hasRealRowId(row) ? (
+                  <span className="planning-row-actions">
+                  <button
+                    type="button"
+                    className="pill-link"
+                    onClick={() => {
+                      const list = lists.find((item) => item.id === row.id);
+                      if (list) {
+                        startListEdit(list);
+                      }
+                    }}
+                    disabled={busyListId === row.id}
+                  >
+                    Edit
+                  </button>
+                  <button type="button" className="pill-link" onClick={() => void deleteList(row.id)} disabled={busyListId === row.id}>
+                    Delete
+                  </button>
+                  </span>
+                ) : (
+                  <span className="planning-row-actions is-muted">Preview</span>
+                )}
+              </div>
+            </article>
+            {hasRealRowId(row) && editingListId === row.id ? renderCanonicalListEditForm(row.id) : null}
+          </div>
+        ))
+      ) : (
+        <p className="callout state-empty">No lists yet. Create one list, then connect it only when context helps.</p>
+      );
+    }
+
+    if (planningTab === "goals") {
+      const rows = showPlanningShowcase
+        ? planningShowcaseGoalRows
+        : goals.slice(0, 4).map((goal) => {
+            const goalTargets = targetsByGoalId.get(goal.id) ?? [];
+            const goalLists = lists.filter((list) => list.goal_id === goal.id);
+            return {
+              id: goal.id,
+              name: goal.title,
+              linked: [
+                goalTargets[0] ? `Target  ${goalTargets[0].title}` : null,
+                goalLists[0] ? `List  ${goalLists[0].name}` : null,
+              ].filter((item): item is string => Boolean(item)),
+              targets: `${goalTargets.length} ${goalTargets.length === 1 ? "target" : "targets"}`,
+              date: goal.target_date ? toDateInputValue(goal.target_date) : "No date",
+              status: formatGoalStatus(goal.status),
+            };
+          });
+
+      return rows.length > 0 ? (
+        rows.map((row) => (
+          <div key={row.name} className="planning-relational-row-group">
+            <article className="planning-relational-row">
+              <strong>{row.name}</strong>
+              <div className="planning-linked-chips">
+                {(row.linked.length > 0 ? row.linked : ["Needs target"]).map((chip) => (
+                  <span key={chip}>{chip}</span>
+                ))}
+              </div>
+              <span>{row.targets}</span>
+              <span>{row.date}</span>
+              <div className="planning-status-actions">
+                <span className="pill status-in_progress">{row.status}</span>
+                {hasRealRowId(row) ? (
+                  <span className="planning-row-actions">
+                  <button
+                    type="button"
+                    className="pill-link"
+                    onClick={() => {
+                      const goal = goals.find((item) => item.id === row.id);
+                      if (goal) {
+                        startGoalEdit(goal);
+                      }
+                    }}
+                    disabled={busyGoalId === row.id}
+                  >
+                    Edit
+                  </button>
+                  <button type="button" className="pill-link" onClick={() => void deleteGoal(row.id)} disabled={busyGoalId === row.id}>
+                    Delete
+                  </button>
+                  </span>
+                ) : (
+                  <span className="planning-row-actions is-muted">Preview</span>
+                )}
+              </div>
+            </article>
+            {hasRealRowId(row) && editingGoalId === row.id ? renderCanonicalGoalEditForm(row.id) : null}
+          </div>
+        ))
+      ) : (
+        <p className="callout state-empty">No goals yet. Add one clear direction before creating too much structure.</p>
+      );
+    }
+
+    const rows = showPlanningShowcase
+      ? planningShowcaseTargetRows
+      : targets.slice(0, 4).map((target) => {
+          const progress = target.value_target > 0
+            ? Math.round((target.value_current / target.value_target) * 100)
+            : 0;
+          return {
+            id: target.id,
+            name: target.title,
+            goal: goalLabelById.get(target.goal_id) ?? "Unknown goal",
+            progress: `${Math.max(0, Math.min(progress, 100))}%`,
+            due: target.due_date ? toDateInputValue(target.due_date) : "No date",
+            status: formatGoalStatus(target.status),
+          };
+        });
+
+    return rows.length > 0 ? (
+      rows.map((row) => (
+        <div key={row.name} className="planning-relational-row-group">
+          <article className="planning-relational-row">
+            <strong>{row.name}</strong>
+            <div className="planning-linked-chips">
+              <span>Goal&nbsp; {row.goal}</span>
+            </div>
+            <span className="planning-progress-chip" style={{ "--target-progress": row.progress } as CSSProperties}>
+              {row.progress}
+            </span>
+            <span>{row.due}</span>
+            <div className="planning-status-actions">
+              <span className="pill status-in_progress">{row.status}</span>
+              {hasRealRowId(row) ? (
+                <span className="planning-row-actions">
+                <button
+                  type="button"
+                  className="pill-link"
+                  onClick={() => {
+                    const target = targets.find((item) => item.id === row.id);
+                    if (target) {
+                      startTargetEdit(target);
+                    }
+                  }}
+                  disabled={busyTargetId === row.id}
+                >
+                  Edit
+                </button>
+                <button type="button" className="pill-link" onClick={() => void deleteTarget(row.id)} disabled={busyTargetId === row.id}>
+                  Delete
+                </button>
+                </span>
+              ) : (
+                <span className="planning-row-actions is-muted">Preview</span>
+              )}
+            </div>
+          </article>
+          {hasRealRowId(row) && editingTargetId === row.id ? renderCanonicalTargetEditForm(row.id) : null}
+        </div>
+      ))
+    ) : (
+      <p className="callout state-empty">No targets yet. Add a measurable target to make one goal visible.</p>
+    );
+  }
+
+  function renderCanonicalComposer() {
+    if (planningTab === "tasks") {
+      return taskComposerListId === UNASSIGNED_COLUMN_ID ? (
+        <div className="planning-canonical-composer">
+          {renderTaskComposer(UNASSIGNED_COLUMN_ID, "Add task to weekly plan")}
+        </div>
+      ) : null;
+    }
+
+    if (planningTab === "lists") {
+      return (
+        <form className="planning-canonical-composer form-grid" onSubmit={createList}>
+          <label className="field">
+            <span>Name</span>
+            <input
+              className="list-row"
+              type="text"
+              value={newListName}
+              onChange={(event) => setNewListName(event.target.value)}
+              placeholder="Example: Launch plan"
+              disabled={isCreatingList}
+            />
+          </label>
+
+          <div className="row-inline">
+            <label className="field">
+              <span>Color</span>
+              <input
+                className="list-row"
+                type="color"
+                value={newListColor}
+                onChange={(event) => setNewListColor(event.target.value)}
+                disabled={isCreatingList}
+              />
+            </label>
+            <label className="field">
+              <span>Parent type</span>
+              <select
+                className="list-row"
+                value={newListParentType}
+                onChange={(event) => {
+                  setNewListParentType(event.target.value as ListParentType);
+                  setNewListParentId("");
+                }}
+                disabled={isCreatingList}
+              >
+                <option value="none">No parent</option>
+                <option value="goal">Goal</option>
+                <option value="target">Target</option>
+                <option value="life_area">Life area</option>
+              </select>
+            </label>
+            {newListParentType !== "none" ? (
+              <label className="field">
+                <span>Parent</span>
+                <select
+                  className="list-row"
+                  value={newListParentId}
+                  onChange={(event) => setNewListParentId(event.target.value)}
+                  disabled={isCreatingList}
+                >
+                  <option value="">Select parent</option>
+                  {newListParentType === "goal"
+                    ? goals.map((goal) => (
+                        <option key={goal.id} value={goal.id}>
+                          {goal.title}
+                        </option>
+                      ))
+                    : null}
+                  {newListParentType === "target"
+                    ? targets.map((target) => (
+                        <option key={target.id} value={target.id}>
+                          {target.title}
+                        </option>
+                      ))
+                    : null}
+                  {newListParentType === "life_area"
+                    ? lifeAreas.map((lifeArea) => (
+                        <option key={lifeArea.id} value={lifeArea.id}>
+                          {lifeArea.name}
+                        </option>
+                      ))
+                    : null}
+                </select>
+              </label>
+            ) : null}
+          </div>
+
+          <button type="submit" className="btn-primary" disabled={isCreatingList}>
+            {isCreatingList ? "Creating..." : "Create list"}
+          </button>
+        </form>
+      );
+    }
+
+    if (planningTab === "goals") {
+      return (
+        <form className="planning-canonical-composer form-grid" onSubmit={createGoal}>
+          <label className="field">
+            <span>Title</span>
+            <input
+              className="list-row"
+              type="text"
+              value={newGoalTitle}
+              onChange={(event) => setNewGoalTitle(event.target.value)}
+              placeholder="Example: Build calmer weekly planning routine"
+              disabled={isCreatingGoal}
+            />
+          </label>
+          <label className="field">
+            <span>Target date (optional)</span>
+            <input
+              className="list-row"
+              type="date"
+              value={newGoalTargetDate}
+              onChange={(event) => setNewGoalTargetDate(event.target.value)}
+              disabled={isCreatingGoal}
+            />
+          </label>
+          <button type="submit" className="btn-primary" disabled={isCreatingGoal}>
+            {isCreatingGoal ? "Adding..." : "Add goal"}
+          </button>
+        </form>
+      );
+    }
+
+    return (
+      <form className="planning-canonical-composer form-grid" onSubmit={createTarget}>
+        {goals.length === 0 ? (
+          <p className="callout state-empty">Create at least one goal before saving a target.</p>
+        ) : null}
+        <label className="field">
+          <span>Goal</span>
+          <select
+            className="list-row"
+            value={newTargetGoalId}
+            onChange={(event) => setNewTargetGoalId(event.target.value)}
+            disabled={isCreatingTarget || goals.length === 0}
+          >
+            <option value="">Select goal</option>
+            {goals.map((goal) => (
+              <option key={goal.id} value={goal.id}>
+                {goal.title}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="field">
+          <span>Title</span>
+          <input
+            className="list-row"
+            type="text"
+            value={newTargetTitle}
+            onChange={(event) => setNewTargetTitle(event.target.value)}
+            placeholder="Example: 3 planning reviews per week"
+            disabled={isCreatingTarget || goals.length === 0}
+          />
+        </label>
+        <div className="form-grid form-grid-three">
+          <label className="field">
+            <span>Metric type</span>
+            <input
+              className="list-row"
+              type="text"
+              value={newTargetMetricType}
+              onChange={(event) => setNewTargetMetricType(event.target.value)}
+              disabled={isCreatingTarget || goals.length === 0}
+            />
+          </label>
+          <label className="field">
+            <span>Target value</span>
+            <input
+              className="list-row"
+              type="number"
+              value={newTargetValueTarget}
+              onChange={(event) => setNewTargetValueTarget(event.target.value)}
+              min="0"
+              step="1"
+              disabled={isCreatingTarget || goals.length === 0}
+            />
+          </label>
+          <label className="field">
+            <span>Unit</span>
+            <input
+              className="list-row"
+              type="text"
+              value={newTargetUnit}
+              onChange={(event) => setNewTargetUnit(event.target.value)}
+              disabled={isCreatingTarget || goals.length === 0}
+            />
+          </label>
+        </div>
+        <button type="submit" className="btn-primary" disabled={isCreatingTarget || goals.length === 0}>
+          {isCreatingTarget ? "Adding..." : "Add target"}
+        </button>
+      </form>
+    );
+  }
+
+  function renderCanonicalTaskTools() {
+    if (planningTab !== "tasks") {
+      return null;
+    }
+
+    return (
+      <div className="planning-canonical-tools">
+        <div className="planning-canonical-summary" aria-label="Planning board summary">
+          {[
+            { label: "Open", value: showPlanningShowcase ? 6 : openTasksCount },
+            { label: "Today", value: showPlanningShowcase ? 4 : dueTodayCount },
+            { label: "Overdue", value: showPlanningShowcase ? 0 : overdueCount },
+            { label: "Standalone", value: showPlanningShowcase ? 2 : unassignedTasksCount },
+            { label: "Context lists", value: showPlanningShowcase ? 4 : contextualListsCount },
+          ].map((item) => (
+            <span key={item.label}>
+              <strong>{item.value}</strong>
+              <small>{item.label}</small>
+            </span>
+          ))}
+        </div>
+
+        <details className="planning-canonical-filters">
+          <summary>Board tools</summary>
+          <div className="planning-canonical-filter-grid">
+            <label className="field tasks-search">
+              <span>Search</span>
+              <input
+                className="list-row"
+                type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search list or task title"
+              />
+            </label>
+
+            <div className="tasks-filter-group" role="group" aria-label="Status filter">
+              {[
+                { key: "all", label: "All" },
+                { key: "open", label: "Open" },
+                { key: "done", label: "Done" },
+              ].map((item) => (
+                <button
+                  key={item.key}
+                  type="button"
+                  className={`filter-chip ${statusFilter === item.key ? "is-active" : ""}`}
+                  onClick={() => setStatusFilter(item.key as "all" | "open" | "done")}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
+            <label className="field">
+              <span>Context</span>
+              <select
+                className="list-row"
+                value={listContextFilter}
+                onChange={(event) =>
+                  setListContextFilter(event.target.value as "all" | "with_context" | "without_context")
+                }
+              >
+                <option value="all">All lists</option>
+                <option value="with_context">Only contextualized</option>
+                <option value="without_context">Only without context</option>
+              </select>
+            </label>
+
+            <label className="field">
+              <span>Life area</span>
+              <select
+                className="list-row"
+                value={boardLifeAreaFilter}
+                onChange={(event) => setBoardLifeAreaFilter(event.target.value)}
+              >
+                <option value="">All areas</option>
+                {lifeAreas.map((lifeArea) => (
+                  <option key={lifeArea.id} value={lifeArea.id}>
+                    {lifeArea.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="tasks-toggle">
+              <input
+                type="checkbox"
+                checked={hideEmptyColumns}
+                onChange={(event) => setHideEmptyColumns(event.target.checked)}
+              />
+              Hide empty columns
+            </label>
+
+            <div className="row-inline">
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => {
+                  setSearchQuery("");
+                  setStatusFilter("all");
+                  setListContextFilter("all");
+                  setBoardLifeAreaFilter("");
+                  setHideEmptyColumns(true);
+                }}
+              >
+                Reset
+              </button>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => void loadWorkspace()}
+                disabled={isLoading}
+              >
+                Refresh
+              </button>
+            </div>
+          </div>
+        </details>
+      </div>
+    );
+  }
+
+  function renderCanonicalDeepPanel() {
+    const section =
+      planningTab === "tasks"
+        ? {
+            title: "Execution signals",
+            summary: "Make sure the week is moving, not just getting fuller.",
+            notePrimary: showPlanningShowcase ? "Current anchor: commit to the right plan." : `Current anchor: ${nextTask?.title ?? "Choose the next meaningful task."}`,
+            noteSecondary: showPlanningShowcase ? "Review remains visible because closure matters as much as capture." : `${inProgressTasksCount} tasks are already in motion.`,
+            items: [
+              { label: "Completed", value: showPlanningShowcase ? "2" : String(completedTasksCount), tone: "done" },
+              { label: "In progress", value: showPlanningShowcase ? "1" : String(inProgressTasksCount), tone: "accent" },
+              { label: "Due today", value: showPlanningShowcase ? "4" : String(dueTodayCount), tone: "neutral" },
+              { label: "Unassigned", value: showPlanningShowcase ? "2" : String(unassignedTasksCount), tone: "soft" },
+            ],
+          }
+        : planningTab === "lists"
+          ? {
+              title: "List structure",
+              summary: "Use parent links only where they sharpen the week.",
+              notePrimary: showPlanningShowcase ? "Strong lists usually point toward a goal, a target, or a life area." : `${listsWithTasksCount} of ${Math.max(lists.length, 1)} lists already hold active work.`,
+              noteSecondary: showPlanningShowcase ? "The rest can stay light and flexible." : `${Math.max(lists.length - contextualListsCount, 0)} lists stay intentionally unscoped.`,
+              items: [
+                { label: "Context linked", value: showPlanningShowcase ? "4" : String(contextualListsCount), tone: "accent" },
+                { label: "Goal linked", value: showPlanningShowcase ? "2" : String(goalLinkedListsCount), tone: "neutral" },
+                { label: "Target linked", value: showPlanningShowcase ? "1" : String(targetLinkedListsCount), tone: "neutral" },
+                { label: "Life area linked", value: showPlanningShowcase ? "2" : String(lifeAreaLinkedListsCount), tone: "soft" },
+              ],
+            }
+          : planningTab === "goals"
+            ? {
+                title: "Goal momentum",
+                summary: "A goal becomes believable when it has a path under it.",
+                notePrimary: showPlanningShowcase ? "The healthiest goals already break into targets and lists." : `${goalsWithTargetsCount} goals already have target paths.`,
+                noteSecondary: showPlanningShowcase ? "Paused goals should stay visible, but quiet." : `${Math.max(goals.length - goalsWithTargetsCount, 0)} goals still need measurable checkpoints.`,
+                items: [
+                  { label: "Active", value: showPlanningShowcase ? "3" : String(activeGoalsCount), tone: "accent" },
+                  { label: "With targets", value: showPlanningShowcase ? "2" : String(goalsWithTargetsCount), tone: "neutral" },
+                  { label: "With lists", value: showPlanningShowcase ? "3" : String(goalsWithListsCount), tone: "soft" },
+                  { label: "Paused or done", value: showPlanningShowcase ? "1" : String(pausedGoalsCount + completedGoalsCount), tone: "done" },
+                ],
+              }
+            : {
+                title: "Target health",
+                summary: "Targets should be measurable, dated, and attached to real work.",
+                notePrimary: showPlanningShowcase ? "The next checkpoint should always be easy to explain in one line." : `${targetsWithListsCount} targets already connect to a working list.`,
+                noteSecondary: showPlanningShowcase ? "Progress works best when the metric stays legible at a glance." : `${overdueTargetsCount} active targets are overdue and need review.`,
+                items: [
+                  { label: "Active", value: showPlanningShowcase ? "7" : String(activeTargetsCount), tone: "accent" },
+                  { label: "Avg progress", value: showPlanningShowcase ? "68%" : `${averageTargetProgress}%`, tone: "neutral" },
+                  { label: "Due soon", value: showPlanningShowcase ? "2" : String(dueSoonTargetsCount), tone: "soft" },
+                  { label: "With lists", value: showPlanningShowcase ? "5" : String(targetsWithListsCount), tone: "done" },
+                ],
+              };
+
+    return (
+      <Panel title={section.title} className="planning-deep-panel">
+        <div className="planning-deep-head">
+          <p>{section.summary}</p>
+          <button type="button" className="pill-link" onClick={() => focusPlanningComposer(planningTab)}>
+            {planningActionLabel}
+          </button>
+        </div>
+        <div className="planning-deep-grid">
+          {section.items.map((item) => (
+            <article key={item.label} className={`planning-deep-card is-${item.tone}`}>
+              <small>{item.label}</small>
+              <strong>{item.value}</strong>
+            </article>
+          ))}
+        </div>
+        <div className="planning-deep-notes">
+          <span>{section.notePrimary}</span>
+          <span>{section.noteSecondary}</span>
+        </div>
+      </Panel>
+    );
+  }
+
   function renderTaskCard(task: TaskItem) {
     const dueDateLabel = toDateInputValue(task.due_date);
     const isOverdue =
@@ -1388,77 +2731,200 @@ export default function TasksPage() {
     router.replace(tab === "tasks" ? "/tasks" : `/tasks?tab=${tab}`);
   }
 
+  function focusPlanningComposer(tab: PlanningTab) {
+    if (tab === "tasks") {
+      openPlanningTab("tasks");
+      setTaskComposerListId(UNASSIGNED_COLUMN_ID);
+      return;
+    }
+
+    openPlanningTab(tab);
+    window.setTimeout(() => {
+      document.querySelector(".planning-canonical-composer")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 0);
+  }
+
+  const planningActionLabel =
+    planningTab === "tasks"
+      ? "+ Add task"
+      : planningTab === "lists"
+        ? "+ Add list"
+        : planningTab === "goals"
+          ? "+ Add goal"
+          : "+ Add target";
+
   return (
     <WorkspaceShell
       title="Planning"
-      subtitle="One place for goals, targets, lists and tasks. Parent links stay optional."
+      subtitle="Shape the week around what matters."
       module="tasks"
       contentLayout="single"
-      planningSubnav={{ active: planningTab }}
+      shellTone="dashboard-canonical"
+      utilityDateLabel="Friday, May 23, 2025"
+      utilityWeatherLabel="18°C"
+      hideAssistantNav
+      hideRailFooterActions
     >
-      <div className="planning-shell">
-        <div className="planning-primary-grid">
+      <section className={`planning-canonical-shell is-canonical-dashboard ${isLoading ? "is-loading" : ""}`}>
+        <div className="planning-canonical-main">
           <DashboardHeroBand
-            brand="Nest"
-            dateLabel={new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-            })}
-            title="Planning should create direction, not drag."
-            summary={planningSummary}
-            progressLabel={
-              planningTab === "tasks"
-                ? `${dueTodayCount} due today, ${overdueCount} overdue, and ${unassignedTasksCount} fast-capture tasks still outside list structure.`
-                : `${activeGoalsCount} goals and ${activeTargetsCount} targets are giving the board longer-range shape.`
-            }
-            progressPercent={Math.min(100, Math.max(14, 100 - overdueCount * 12 + dueTodayCount * 4))}
-            metrics={[
-              { label: "Open tasks", value: String(openTasksCount), emphasis: "accent" },
-              { label: "Due today", value: String(dueTodayCount) },
-              { label: "Overdue", value: String(overdueCount) },
-              { label: "Active goals", value: String(activeGoalsCount) },
-            ]}
+            title="This week's direction"
+            summary="Focus on a few meaningful moves."
+            progressLabel="Weekly direction"
+            progressPercent={planningHeroProgress}
+            metrics={planningHeroMetrics}
           />
 
-          <DashboardFocusCard
-            kicker={focusCard.kicker}
-            title={focusCard.title}
-            detail={focusCard.detail}
-            supportingLabel="Current planning context"
-            supportingValue={focusCard.supportingValue}
-            href={focusCard.href}
-            cta={focusCard.cta}
-            secondaryAction={
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => void loadWorkspace()}
-                disabled={isLoading}
-              >
-                {isLoading ? "Refreshing..." : "Refresh"}
-              </button>
-            }
-          />
+          <div className="planning-canonical-middle">
+            <DashboardFocusCard
+              kicker={focusCard.kicker}
+              kickerIcon={<PlanningGlyph name="goal" />}
+              title={focusCard.title}
+              detail={focusCard.detail}
+              supportingLabel="High impact"
+              supportingValue="45 min"
+              href={focusCard.href}
+              cta={focusCard.cta}
+              rationaleHref="#planning-ladder"
+              rationaleLabel="Why this?"
+            />
+
+            <section className="planning-flow-panel" aria-label="Weekly planning flow">
+              <div className="planning-flow-stages">
+                {[
+                  { icon: "task" as const, title: "Capture", detail: "Collect ideas and tasks" },
+                  { icon: "note" as const, title: "Shape", detail: "Organize and prioritize" },
+                  { icon: "goal" as const, title: "Commit", detail: "Plan and time what matters" },
+                  { icon: "list" as const, title: "Review", detail: "Reflect and adjust" },
+                ].map((stage) => (
+                  <article key={stage.title} className="planning-flow-stage">
+                    <span className="planning-flow-icon">
+                      <PlanningGlyph name={stage.icon} />
+                    </span>
+                    <strong>{stage.title}</strong>
+                    <small>{stage.detail}</small>
+                  </article>
+                ))}
+              </div>
+
+              <div className="planning-week-rail" aria-hidden="true">
+                {["Mon", "Tue", "Now", "Wed", "Thu", "Fri"].map((day) => (
+                  <span key={day} className={day === "Now" ? "is-now" : ""}>
+                    {day}
+                  </span>
+                ))}
+              </div>
+
+              <div className="planning-flow-cards">
+                {planningFlowCards.map((item) => (
+                  <article key={item.title} className={`planning-flow-card ${item.now ? "is-now" : ""}`}>
+                    <span>
+                      <PlanningGlyph name={item.icon} />
+                    </span>
+                    <strong>{item.title}</strong>
+                    <small>{item.count}</small>
+                  </article>
+                ))}
+              </div>
+
+              <div className="planning-flow-footer">
+                <button type="button" className="pill-link" onClick={() => openPlanningTab("tasks")}>
+                  View full week
+                </button>
+                <button type="button" className="pill-link" onClick={() => void loadWorkspace()} disabled={isLoading}>
+                  {isLoading ? "Refreshing..." : "Refresh"}
+                </button>
+              </div>
+            </section>
+          </div>
         </div>
 
-        <DashboardContextRibbon title="Planning context" items={planningContextItems} />
-      </div>
+        <aside className="planning-support-rail" aria-label="Planning support">
+          <article className="dashboard-sidebar-card planning-clarity-card">
+            <div className="dashboard-sidebar-card-head">
+              <h3>
+                <PlanningGlyph name="note" />
+                <span>Plan with clarity</span>
+              </h3>
+              <span>...</span>
+            </div>
+            <p className="planning-clarity-script">Choose the few moves that make the rest easier.</p>
+            <div className="planning-clarity-lines">
+              <p><strong>Today:</strong> protect deep work</p>
+              <p><strong>Later:</strong> review budget</p>
+            </div>
+            <button type="button" className="dashboard-floating-action" aria-label="Open planning note">
+              <PlanningGlyph name="note" />
+            </button>
+          </article>
 
-      <div className="stack">
-        <MetricCard label="Lists" value={String(lists.length)} />
-        <MetricCard label="Open tasks" value={String(openTasksCount)} />
-        <MetricCard label="Goals active" value={String(activeGoalsCount)} />
-        <MetricCard label="Targets active" value={String(activeTargetsCount)} />
-        <MetricCard label="Due today" value={String(dueTodayCount)} />
-        <MetricCard label="Overdue" value={String(overdueCount)} />
-      </div>
+          <article className="dashboard-sidebar-card planning-quick-add-card">
+            <div className="dashboard-sidebar-card-head">
+              <h3>Quick add</h3>
+            </div>
+            <div className="dashboard-quick-add-grid">
+              {[
+                { label: "Task", icon: "task" as const, action: () => setTaskComposerListId(UNASSIGNED_COLUMN_ID) },
+                { label: "List", icon: "list" as const, action: () => focusPlanningComposer("lists") },
+                { label: "Goal", icon: "goal" as const, action: () => focusPlanningComposer("goals") },
+                { label: "Target", icon: "target" as const, action: () => focusPlanningComposer("targets") },
+              ].map((item) => (
+                <button key={item.label} type="button" className="dashboard-quick-add-tile" onClick={item.action}>
+                  <span className="dashboard-quick-add-icon" aria-hidden="true">
+                    <PlanningGlyph name={item.icon} />
+                  </span>
+                  <small>{item.label}</small>
+                </button>
+              ))}
+            </div>
+          </article>
 
-      {errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
+          <article className="dashboard-sidebar-card planning-pressure-card">
+            <div className="dashboard-sidebar-card-head">
+              <h3>
+                <PlanningGlyph name="pressure" />
+                <span>Planning pressure</span>
+              </h3>
+              <button type="button" className="pill-link" onClick={() => openPlanningTab("targets")}>View all</button>
+            </div>
+            <div className="dashboard-balance-grid">
+              <div className="dashboard-balance-donut planning-pressure-donut">
+                <div className="dashboard-balance-donut-inner" aria-hidden="true" />
+              </div>
+              <ul className="dashboard-balance-legend">
+                {[
+                  { label: "Health", value: 8.2, color: "#89946c" },
+                  { label: "Work", value: 7.6, color: "#d9b75e" },
+                  { label: "Relationships", value: 7.0, color: "#c87b49" },
+                  { label: "Finance", value: 6.6, color: "#b8b8ca" },
+                  { label: "Growth", value: 6.9, color: "#91a0a0" },
+                ].map((item) => (
+                  <li key={item.label}>
+                    <span className="dashboard-balance-dot" style={{ backgroundColor: item.color }} aria-hidden="true" />
+                    <small>{item.label}</small>
+                    <strong>{item.value.toFixed(1)}</strong>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <p className="dashboard-balance-caption">Balance across your life areas.</p>
+          </article>
+        </aside>
+      </section>
+
+      {errorMessage ? (
+        <p className="callout state-error planning-live-notice">
+          {showPlanningShowcase ? "Live planning data is unavailable. Canonical preview is shown." : errorMessage}
+        </p>
+      ) : null}
       {!errorMessage && feedback ? <p className="callout state-success">{feedback}</p> : null}
 
-      <Panel title="View" className="planning-view-panel">
-        <div className="tasks-filter-group" role="tablist" aria-label="Planning module views">
+      <Panel title="Planning workspace" className="planning-view-panel planning-relational-panel">
+        <div className="planning-workspace-head">
+          <div className="tasks-filter-group" role="tablist" aria-label="Planning module views">
           <button
             type="button"
             role="tab"
@@ -1495,9 +2961,70 @@ export default function TasksPage() {
           >
             Targets
           </button>
+          </div>
+          <button type="button" className="pill-link" onClick={() => focusPlanningComposer(planningTab)}>
+            {planningActionLabel}
+          </button>
         </div>
-        <p className="form-hint">One module, lightweight switching between board, lists, targets and goals.</p>
+
+        <div className="planning-relational-table">
+          <div className="planning-relational-header">
+            {planningWorkspaceColumns.map((column) => (
+              <span key={column}>{column}</span>
+            ))}
+          </div>
+          {renderPlanningWorkspaceRows()}
+          {renderCanonicalComposer()}
+          {renderCanonicalTaskTools()}
+          <div className="planning-relational-footer">
+            <button type="button" className="pill-link" onClick={() => openPlanningTab(planningTab)}>
+              View all {planningTab}
+            </button>
+            <button
+              type="button"
+              className="pill-link"
+              onClick={() => focusPlanningComposer(planningTab)}
+            >
+              {planningActionLabel}
+            </button>
+          </div>
+        </div>
       </Panel>
+
+      <section id="planning-ladder" className="planning-ladder" aria-label="Planning ladder">
+        <div className="planning-ladder-copy">
+          <h3>Planning ladder</h3>
+          <p>See how direction moves into daily action.</p>
+        </div>
+        <div className="planning-ladder-chain">
+          <article className="planning-ladder-node">
+            <small>Goal</small>
+            <strong>{hottestGoal?.title ?? "Build a healthier me"}</strong>
+            <div className="planning-ladder-progress" style={{ "--progress-value": `${activeGoalsCount > 0 ? 72 : 34}%` } as CSSProperties}>
+              <span />
+            </div>
+          </article>
+          <article className="planning-ladder-node">
+            <small>Target</small>
+            <strong>{targets[0]?.title ?? "Workout 3x per week"}</strong>
+            <div className="planning-ladder-progress" style={{ "--progress-value": `${activeTargetsCount > 0 ? 80 : 28}%` } as CSSProperties}>
+              <span />
+            </div>
+          </article>
+          <article className="planning-ladder-node">
+            <small>List</small>
+            <strong>{lists[0]?.name ?? "Training program"}</strong>
+            <span>{lists[0] ? `${tasksByListId.get(lists[0].id)?.length ?? 0} tasks` : "8 tasks"}</span>
+          </article>
+          <article className="planning-ladder-node">
+            <small>Next task</small>
+            <strong>{nextTask?.title ?? "Leg day workout"}</strong>
+            <span>{nextTask?.due_date ? `Due ${toDateInputValue(nextTask.due_date)}` : "Due tomorrow"}</span>
+          </article>
+        </div>
+      </section>
+
+      {renderCanonicalDeepPanel()}
 
       {planningTab === "tasks" ? (
         <Panel id="planning-today-focus" title="Today Focus" className="planning-focus-primary">
@@ -1723,7 +3250,7 @@ export default function TasksPage() {
         </details>
       </Panel>
 
-      <section className="panel planning-board-primary">
+      <section className={`panel planning-board-primary ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
         <div className="panel-header">
           <h2>Kanban Board</h2>
           <div className="panel-actions">
@@ -1743,8 +3270,8 @@ export default function TasksPage() {
           {isLoading ? <p className="callout state-loading">Loading board...</p> : null}
           {!isLoading && lists.length === 0 ? (
             <p className="callout state-empty">
-              No lists yet. Open <strong>Setup (Optional)</strong> below, or start immediately with standalone tasks in
-              <strong> No List</strong>.
+              No lists yet. Use <strong>+ Add list</strong> in the canonical workspace, or start immediately with
+              standalone tasks in <strong>No List</strong>.
             </p>
           ) : null}
           {!isLoading && lists.length > 0 && visibleLists.length === 0 && !showUnassignedColumn ? (
@@ -1963,7 +3490,7 @@ export default function TasksPage() {
 
       {planningTab === "lists" ? (
         <>
-          <Panel title="Create List">
+          <Panel id="planning-lists-composer" title="Create List">
             <form className="form-grid" onSubmit={createList}>
               <label className="field">
                 <span>Name</span>
@@ -2047,7 +3574,7 @@ export default function TasksPage() {
             </form>
           </Panel>
 
-          <Panel title="List Library">
+          <Panel title="List Library" className={`planning-library-panel ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
             <ul className="list">
               {lists.length === 0 ? (
                 <li className="list-row">
@@ -2194,7 +3721,7 @@ export default function TasksPage() {
 
       {planningTab === "goals" ? (
         <>
-          <Panel title="Add Goal">
+          <Panel id="planning-goals-composer" title="Add Goal">
             <form className="form-grid" onSubmit={createGoal}>
               <label className="field">
                 <span>Title</span>
@@ -2223,7 +3750,7 @@ export default function TasksPage() {
             </form>
           </Panel>
 
-          <Panel title="Goal Roadmaps">
+          <Panel title="Goal Roadmaps" className={`planning-library-panel ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
             <ul className="list">
               {goals.length === 0 ? (
                 <li className="list-row">
@@ -2372,7 +3899,7 @@ export default function TasksPage() {
 
       {planningTab === "targets" ? (
         <>
-          <Panel title="Add Target">
+          <Panel id="planning-targets-composer" title="Add Target">
             {goals.length === 0 ? (
               <p className="callout state-empty">Create at least one goal in the Goals tab first.</p>
             ) : null}
@@ -2442,7 +3969,7 @@ export default function TasksPage() {
             </form>
           </Panel>
 
-          <Panel title="Target Checkpoints">
+          <Panel title="Target Checkpoints" className={`planning-library-panel ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
             <ul className="list">
               {targets.length === 0 ? (
                 <li className="list-row">

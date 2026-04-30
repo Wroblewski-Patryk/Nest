@@ -57,6 +57,65 @@
   may be presentation-oriented as long as it does not alter real stored data or
   fake write outcomes.
 
+## Planning Canonical Patterns (2026-04-30)
+
+- Planning room, not task app:
+  The canonical Planning surface unifies `Tasks`, `Lists`, `Goals`, and
+  `Targets` into one weekly orchestration room rather than splitting them into
+  unrelated CRUD panels.
+- Weekly direction hero:
+  Planning should open with a strategic weekly direction band that mirrors the
+  dashboard hero language while focusing on plan readiness instead of daily
+  progress.
+- Dominant `Now planning` card:
+  The primary action is one recommended planning block. It should visually
+  outrank the weekly flow, task board, and right-rail context.
+- Relational task rows:
+  Task rows should expose linked goal, target, and list context through compact
+  chips so the user sees why a task matters.
+- Planning ladder:
+  Preserve the `Goal -> Target -> List -> Next task` strip as the canonical
+  explanation of how long-term intent turns into daily action.
+- Calm pressure rail:
+  Right-rail cards should support clarity, quick add, and pressure awareness
+  without becoming a generic analytics stack.
+- Phase A implementation:
+  The web Planning route now uses the canonical first viewport as the primary
+  experience while keeping API-backed CRUD boards available below it. Preserve
+  this structure in future refinements: weekly direction first, then planning
+  flow and support rail, then relational rows and ladder before lower-level
+  board controls.
+- Workspace tab parity:
+  The canonical Planning workspace panel should treat `Tasks`, `Lists`,
+  `Goals`, and `Targets` as peers. Each tab needs relationship-aware rows and
+  an entity-specific add action; do not let non-task tabs collapse back to
+  generic helper text.
+- Canonical creation ownership:
+  Primary creation for Planning entities should happen inside the canonical
+  workspace panel. Lower legacy/library panels may remain temporarily for edit,
+  delete, and dense management, but duplicate add containers should not compete
+  visually once inline canonical creation exists.
+- Canonical row management:
+  Real Planning rows should expose management actions in the canonical
+  workspace itself. Keep the five-column reference rhythm; place subtle row
+  tools under status instead of adding a sixth visible column. Presentation
+  fallback rows must remain non-actionable.
+- Canonical tool ownership:
+  Task search, status/context/life-area filters, hide-empty-list controls,
+  reset, and refresh should live inside the canonical Planning workspace before
+  falling back to lower board utilities. Lower Kanban and dense library
+  containers may remain for live advanced management, but preview mode should
+  not let them compete with the founder-approved composition.
+- Tab depth before legacy fallback:
+  `Lists`, `Goals`, and `Targets` should each extend the canonical Planning
+  story with their own contextual depth layer before the screen drops into
+  legacy library surfaces. In preview mode, lower list/goal/target libraries
+  should disappear once the canonical tab already carries enough meaning.
+- Living planning polish:
+  Gentle hover lift and subtle active-state sheen are allowed on canonical
+  Planning surfaces when they respect reduced-motion preferences and do not
+  distract from the calm weekly composition.
+
 ## Workspace Shell Patterns (2026-04-26)
 
 - Sanctuary application frame:
@@ -156,6 +215,69 @@
   like a gradient-assembled system and more like a cohesive editorial object,
   recorded in:
   `docs/ux/nest_260_dashboard_parity_review_phaseAD_2026-04-30.md`
+- Planning canonical reference was approved on 2026-04-30 and recorded in:
+  `docs/ux/nest_261_planning_canonical_direction_2026-04-30.md`
+  with artifact:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference.png`
+  Future Planning implementation should treat this image as a specification,
+  especially for hero composition, `Now planning`, relational task rows,
+  support rail, and the `Goal -> Target -> List -> Next task` ladder.
+- Planning canonical phase A landed on 2026-04-30 in:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/app/globals.css`
+  with evidence in:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseF.png`
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-mobile-preview-phaseA.png`.
+  Remaining differences are accepted for this slice: presentation-only fallback
+  content when the API is unavailable, painterly illustration nuance, and final
+  microspacing.
+- Planning workspace tab parity landed on 2026-04-30 in:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`
+  with evidence in:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseH.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseH.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseH.png`,
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseH.png`.
+- Planning canonical inline creation landed on 2026-04-30 in:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`
+  with evidence in:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseI.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseI.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseI.png`,
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseI.png`,
+  with mobile evidence in:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-mobile-lists-preview-phaseI.png`.
+- Planning canonical row management landed on 2026-04-30 in:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`
+  with evidence in:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseJ.png`
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-task-edit-preview-phaseJ.png`.
+- Planning canonical legacy reduction landed on 2026-04-30 in:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`
+  with report:
+  `docs/ux/nest_266_planning_canonical_legacy_reduction_2026-04-30.md`
+  and evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseK.png`.
+- Planning canonical tab depth landed on 2026-04-30 in:
+  `apps/web/src/app/tasks/page.tsx`,
+  `apps/web/src/app/globals.css`
+  with report:
+  `docs/ux/nest_267_planning_canonical_tab_depth_2026-04-30.md`
+  and evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-parity-preview-phaseL.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-lists-preview-phaseL.png`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-goals-preview-phaseL.png`,
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-web-targets-preview-phaseL.png`.
 
 ## Finish Propagation Rules (2026-04-26)
 

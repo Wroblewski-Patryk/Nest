@@ -100,7 +100,7 @@ type InsightStripProps = {
   cta: string;
 };
 
-function CircularProgress({ value }: { value: number }) {
+function CircularProgress({ value, label }: { value: number; label: string }) {
   const degrees = Math.max(0, Math.min(100, value)) * 3.6;
 
   return (
@@ -114,7 +114,7 @@ function CircularProgress({ value }: { value: number }) {
     >
       <div className="dashboard-progress-ring-inner">
         <strong>{value}%</strong>
-        <span>Daily progress</span>
+        <span>{label}</span>
       </div>
       <div className="dashboard-progress-ring-leaf" aria-hidden="true" />
     </div>
@@ -147,7 +147,7 @@ export function DashboardHeroBand({
       ) : null}
 
       <div className="dashboard-hero-scene">
-        <CircularProgress value={progressPercent} />
+        <CircularProgress value={progressPercent} label={progressLabel} />
 
         <div className="dashboard-hero-story">
           <strong>{title}</strong>

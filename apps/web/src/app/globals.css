@@ -1245,17 +1245,773 @@ input[type="color"].list-row {
 }
 
 .planning-focus-primary {
-  order: -3;
+  order: 10;
+  display: none;
   border-color: color-mix(in srgb, var(--accent), #fff 40%);
   background: color-mix(in srgb, #fff, var(--accent-soft) 18%);
 }
 
 .planning-board-primary {
-  order: -2;
+  order: 11;
+}
+
+.planning-board-primary.is-preview-hidden {
+  display: none;
 }
 
 .planning-secondary-tools {
   order: 1;
+  display: none;
+}
+
+.planning-live-notice {
+  order: -16;
+  width: calc(100% - 300px - 0.92rem);
+  margin: 0;
+  border-color: rgb(214 204 186 / 62%);
+  background: rgb(255 253 248 / 70%);
+  color: color-mix(in srgb, var(--accent), #000 12%);
+  box-shadow: none;
+}
+
+#planning-lists-composer,
+#planning-goals-composer,
+#planning-targets-composer {
+  display: none;
+}
+
+.planning-canonical-shell {
+  order: -20;
+  position: relative;
+  display: block;
+  padding-right: calc(300px + 0.92rem);
+}
+
+.planning-canonical-main {
+  display: grid;
+  gap: 0.82rem;
+  min-width: 0;
+}
+
+.planning-canonical-shell .dashboard-hero-band {
+  border-radius: 0.72rem;
+}
+
+.planning-canonical-shell .dashboard-hero-scene {
+  min-height: 9.8rem;
+}
+
+.planning-canonical-shell .dashboard-progress-ring-inner span {
+  font-size: 0.68rem;
+}
+
+.planning-canonical-middle {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.9fr) minmax(0, 2fr);
+  gap: 0.82rem;
+}
+
+.planning-canonical-middle .dashboard-focus-card {
+  min-height: 15rem;
+  border-radius: 0.72rem;
+}
+
+.planning-flow-panel {
+  border: 1px solid rgb(210 202 188 / 58%);
+  border-radius: 0.72rem;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 76%), rgb(250 246 238 / 74%)),
+    url("/assets/dashboard/dashboard-support-card-wash-canonical-v1.png");
+  background-repeat: no-repeat;
+  background-size: auto, cover;
+  background-position: center, center;
+  box-shadow: 0 16px 30px -30px rgb(75 63 52 / 16%);
+  padding: 0.78rem 0.82rem 0.66rem;
+  display: grid;
+  gap: 0.74rem;
+  overflow: hidden;
+}
+
+.planning-flow-stages {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: 1px solid rgb(220 213 201 / 72%);
+}
+
+.planning-flow-stage {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.16rem 0.38rem;
+  align-items: start;
+  padding: 0 0.62rem 0.62rem;
+  border-right: 1px solid rgb(220 213 201 / 58%);
+}
+
+.planning-flow-stage:last-child {
+  border-right: 0;
+}
+
+.planning-flow-icon,
+.planning-flow-card span,
+.planning-quick-add-card .dashboard-quick-add-icon {
+  color: color-mix(in srgb, var(--accent), #000 10%);
+  display: inline-grid;
+  place-items: center;
+}
+
+.planning-flow-icon svg,
+.planning-flow-card svg,
+.planning-support-rail svg,
+.planning-check svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.planning-flow-stage strong {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.planning-flow-stage small {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+.planning-week-rail {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: center;
+  position: relative;
+  text-align: center;
+  color: color-mix(in srgb, var(--ink), #fff 8%);
+  font-family: var(--font-display);
+  font-size: 0.96rem;
+}
+
+.planning-week-rail::before {
+  content: "";
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 52%;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent), #fff 34%);
+}
+
+.planning-week-rail span {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 0.18rem;
+}
+
+.planning-week-rail span::after {
+  content: "";
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent), #fff 10%);
+  box-shadow: 0 0 0 3px rgb(248 244 235 / 82%);
+}
+
+.planning-week-rail span.is-now {
+  font-size: 1.28rem;
+  color: var(--ink);
+}
+
+.planning-week-rail span.is-now::after {
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgb(221 229 214 / 84%);
+}
+
+.planning-flow-cards {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.46rem;
+}
+
+.planning-flow-card {
+  border: 1px solid rgb(222 216 205 / 68%);
+  border-radius: 0.5rem;
+  background: rgb(255 253 248 / 74%);
+  padding: 0.52rem 0.48rem;
+  min-height: 4.7rem;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 0.18rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.planning-flow-card.is-now {
+  border-color: rgb(210 198 176 / 86%);
+  background: linear-gradient(180deg, rgb(252 248 238 / 92%), rgb(246 240 225 / 82%));
+  box-shadow: 0 14px 22px -24px rgb(75 63 52 / 22%);
+  color: var(--ink);
+}
+
+.planning-flow-card strong {
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.planning-flow-card small {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.planning-flow-footer,
+.planning-workspace-head,
+.planning-relational-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.planning-support-rail {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  display: grid;
+  gap: 0.82rem;
+  min-width: 0;
+}
+
+.planning-support-rail .dashboard-sidebar-card {
+  border-radius: 0.72rem;
+}
+
+.planning-support-rail .dashboard-sidebar-card-head h3 {
+  align-items: center;
+}
+
+.planning-clarity-card {
+  min-height: 19.2rem;
+  align-content: start;
+}
+
+.planning-clarity-script {
+  margin: 0;
+  max-width: 12.4rem;
+  color: color-mix(in srgb, var(--accent), #000 18%);
+  font-family: "Segoe Print", "Bradley Hand ITC", "Comic Sans MS", cursive;
+  font-size: 1.46rem;
+  line-height: 1.55;
+}
+
+.planning-clarity-lines {
+  display: grid;
+  gap: 0.32rem;
+  margin-top: 0.3rem;
+}
+
+.planning-clarity-lines p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.planning-clarity-lines strong {
+  color: color-mix(in srgb, var(--accent), #000 12%);
+}
+
+.planning-clarity-card .dashboard-floating-action {
+  border: 0;
+  cursor: pointer;
+  justify-self: end;
+  margin-top: 0.28rem;
+}
+
+.planning-quick-add-card .dashboard-quick-add-tile {
+  border: 1px solid rgb(221 214 202 / 74%);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.planning-pressure-card .dashboard-sidebar-card-head {
+  align-items: center;
+}
+
+.planning-pressure-donut {
+  background: conic-gradient(#89946c 0deg 72deg, #d9b75e 72deg 144deg, #c87b49 144deg 216deg, #b8b8ca 216deg 288deg, #91a0a0 288deg 360deg);
+}
+
+.planning-relational-panel {
+  order: -19;
+  border-radius: 0.72rem;
+  width: calc(100% - 300px - 0.92rem);
+}
+
+.planning-relational-panel .panel-header {
+  display: none;
+}
+
+.planning-relational-table {
+  display: grid;
+  gap: 0;
+}
+
+.planning-relational-header,
+.planning-relational-row {
+  display: grid;
+  grid-template-columns: minmax(170px, 1.2fr) minmax(260px, 1.5fr) minmax(82px, 0.5fr) minmax(82px, 0.48fr) minmax(112px, 0.68fr);
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.planning-relational-header {
+  padding: 0.52rem 0.58rem;
+  border-bottom: 1px solid rgb(222 216 205 / 76%);
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.planning-relational-row {
+  min-height: 2.35rem;
+  padding: 0.45rem 0.58rem;
+  border-bottom: 1px solid rgb(224 218 207 / 68%);
+  font-size: 0.76rem;
+}
+
+.planning-relational-row:last-of-type {
+  border-bottom: 0;
+}
+
+.planning-relational-row-group {
+  display: grid;
+  border-bottom: 1px solid rgb(224 218 207 / 68%);
+}
+
+.planning-relational-row-group .planning-relational-row {
+  border-bottom: 0;
+}
+
+.planning-row-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.32rem;
+  min-width: 0;
+}
+
+.planning-row-actions.is-muted {
+  display: none;
+  justify-content: flex-start;
+  color: var(--muted);
+  font-size: 0.66rem;
+}
+
+.planning-row-actions .pill-link {
+  padding: 0.18rem 0.42rem;
+  font-size: 0.64rem;
+}
+
+.planning-status-actions {
+  display: grid;
+  justify-items: start;
+  gap: 0.24rem;
+}
+
+.planning-task-title-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.54rem;
+  min-width: 0;
+}
+
+.planning-task-title-cell strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.planning-check {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  border: 1px solid rgb(174 165 149 / 78%);
+  background: rgb(255 255 255 / 70%);
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+.planning-check.is-done {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 3px rgb(248 244 235 / 90%);
+}
+
+.planning-linked-chips {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  flex-wrap: wrap;
+}
+
+.planning-linked-chips span {
+  border-radius: 0.28rem;
+  border: 1px solid rgb(220 214 204 / 68%);
+  background: rgb(246 241 231 / 76%);
+  color: color-mix(in srgb, var(--ink), #fff 12%);
+  padding: 0.16rem 0.38rem;
+  font-size: 0.66rem;
+  white-space: nowrap;
+}
+
+.planning-progress-chip {
+  border-radius: 999px;
+  border: 1px solid rgb(219 224 213 / 82%);
+  background:
+    linear-gradient(90deg, rgb(120 146 98 / 24%) var(--target-progress, 64%), rgb(255 255 255 / 72%) 0);
+  color: color-mix(in srgb, var(--accent), #000 16%);
+  padding: 0.18rem 0.42rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.planning-relational-footer {
+  padding: 0.52rem 0.58rem 0;
+}
+
+.planning-canonical-composer {
+  margin: 0.7rem 0.58rem 0;
+  padding: 0.74rem;
+  border: 1px solid rgb(215 207 194 / 72%);
+  border-radius: 0.62rem;
+  background:
+    radial-gradient(circle at 92% 10%, rgb(120 146 98 / 12%) 0%, transparent 30%),
+    linear-gradient(180deg, rgb(255 253 248 / 86%), rgb(248 244 235 / 80%));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 76%);
+}
+
+.planning-canonical-edit-row {
+  margin: 0 0.58rem 0.66rem;
+  padding: 0.72rem;
+  border: 1px solid rgb(215 207 194 / 72%);
+  border-radius: 0.58rem;
+  background:
+    radial-gradient(circle at 92% 0%, rgb(217 183 94 / 10%) 0%, transparent 28%),
+    linear-gradient(180deg, rgb(255 253 248 / 90%), rgb(248 244 235 / 80%));
+}
+
+.planning-canonical-composer .btn-primary {
+  justify-self: start;
+}
+
+.planning-canonical-tools {
+  display: grid;
+  gap: 0.56rem;
+  margin: 0.64rem 0.58rem 0;
+}
+
+.planning-canonical-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.42rem;
+}
+
+.planning-canonical-summary span {
+  min-height: 2.42rem;
+  border: 1px solid rgb(218 211 198 / 64%);
+  border-radius: 0.46rem;
+  background: rgb(255 253 248 / 72%);
+  display: grid;
+  place-items: center;
+  gap: 0.02rem;
+  text-align: center;
+}
+
+.planning-canonical-summary strong {
+  color: color-mix(in srgb, var(--accent), #000 14%);
+  font-size: 0.82rem;
+}
+
+.planning-canonical-summary small {
+  color: var(--muted);
+  font-size: 0.62rem;
+}
+
+.planning-canonical-filters {
+  border: 1px solid rgb(218 211 198 / 62%);
+  border-radius: 0.52rem;
+  background: rgb(255 253 248 / 62%);
+  padding: 0.45rem 0.52rem;
+}
+
+.planning-canonical-filters > summary {
+  cursor: pointer;
+  color: color-mix(in srgb, var(--accent), #000 14%);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.planning-canonical-filter-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.2fr) auto minmax(140px, 0.8fr) minmax(140px, 0.8fr) auto auto;
+  gap: 0.52rem;
+  align-items: end;
+  padding-top: 0.56rem;
+}
+
+.planning-canonical-shell .dashboard-hero-band,
+.planning-flow-panel,
+.planning-support-rail .dashboard-sidebar-card,
+.planning-relational-panel,
+.planning-ladder {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    translate 180ms ease;
+}
+
+.planning-canonical-shell .dashboard-hero-band:hover,
+.planning-flow-panel:hover,
+.planning-support-rail .dashboard-sidebar-card:hover,
+.planning-relational-panel:hover,
+.planning-ladder:hover {
+  border-color: rgb(190 202 176 / 74%);
+  box-shadow: 0 18px 34px -30px rgb(70 83 54 / 22%);
+  translate: 0 -1px;
+}
+
+.planning-flow-card.is-now,
+.planning-check.is-done,
+.planning-progress-chip {
+  position: relative;
+  overflow: hidden;
+}
+
+.planning-flow-card.is-now::after,
+.planning-check.is-done::after,
+.planning-progress-chip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 0%, rgb(255 255 255 / 28%) 42%, transparent 68%);
+  translate: -120% 0;
+  animation: planning-soft-sheen 4.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes planning-soft-sheen {
+  0%,
+  54% {
+    translate: -120% 0;
+  }
+
+  78%,
+  100% {
+    translate: 120% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planning-flow-card.is-now::after,
+  .planning-check.is-done::after,
+  .planning-progress-chip::after {
+    animation: none;
+  }
+
+  .planning-canonical-shell .dashboard-hero-band,
+  .planning-flow-panel,
+  .planning-support-rail .dashboard-sidebar-card,
+  .planning-relational-panel,
+  .planning-ladder {
+    transition: none;
+  }
+}
+
+.planning-ladder {
+  order: -18;
+  width: calc(100% - 300px - 0.92rem);
+  border: 1px solid rgb(212 204 190 / 58%);
+  border-radius: 0.72rem;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 74%), rgb(250 246 238 / 78%)),
+    url("/assets/dashboard/dashboard-support-card-wash-canonical-v1.png");
+  background-repeat: no-repeat;
+  background-size: auto, cover;
+  background-position: center, center;
+  padding: 0.78rem 0.82rem;
+  display: grid;
+  grid-template-columns: minmax(150px, 0.75fr) minmax(0, 2fr);
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.planning-ladder-copy {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.planning-ladder-copy h3,
+.planning-ladder-copy p {
+  margin: 0;
+}
+
+.planning-ladder-copy h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.planning-ladder-copy p {
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.planning-ladder-chain {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.56rem;
+  align-items: stretch;
+}
+
+.planning-ladder-node {
+  border: 1px solid rgb(218 211 198 / 70%);
+  border-radius: 0.5rem;
+  background: rgb(255 253 248 / 76%);
+  padding: 0.54rem 0.58rem;
+  display: grid;
+  gap: 0.22rem;
+  position: relative;
+}
+
+.planning-ladder-node:not(:last-child)::after {
+  content: "\2192";
+  position: absolute;
+  right: -0.46rem;
+  top: 50%;
+  translate: 50% -50%;
+  color: color-mix(in srgb, var(--accent), #000 12%);
+  font-size: 0.95rem;
+}
+
+.planning-ladder-node small {
+  color: var(--muted);
+  font-size: 0.64rem;
+}
+
+.planning-ladder-node strong {
+  font-size: 0.76rem;
+  font-weight: 500;
+}
+
+.planning-ladder-progress {
+  width: 100%;
+  height: 0.22rem;
+  border-radius: 999px;
+  background: rgb(225 221 211 / 80%);
+  overflow: hidden;
+}
+
+.planning-ladder-progress span {
+  display: block;
+  height: 100%;
+  width: var(--progress-value, 60%);
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--accent), #000 5%);
+}
+
+.planning-deep-panel {
+  order: -17;
+  width: calc(100% - 300px - 0.92rem);
+  border-radius: 0.72rem;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 78%), rgb(250 246 238 / 78%)),
+    url("/assets/dashboard/dashboard-support-card-wash-canonical-v1.png");
+  background-repeat: no-repeat;
+  background-size: auto, cover;
+  background-position: center, center;
+}
+
+.planning-deep-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.planning-deep-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  max-width: 36rem;
+}
+
+.planning-deep-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.72rem;
+}
+
+.planning-deep-card {
+  border: 1px solid rgb(218 211 198 / 68%);
+  border-radius: 0.56rem;
+  background: rgb(255 253 248 / 78%);
+  padding: 0.62rem 0.66rem;
+  display: grid;
+  gap: 0.14rem;
+  min-height: 4.3rem;
+}
+
+.planning-deep-card small {
+  color: var(--muted);
+  font-size: 0.66rem;
+}
+
+.planning-deep-card strong {
+  font-family: var(--font-display);
+  font-size: 1.22rem;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.planning-deep-card.is-accent strong {
+  color: color-mix(in srgb, var(--accent), #000 10%);
+}
+
+.planning-deep-card.is-done strong {
+  color: color-mix(in srgb, #6d8355, #000 16%);
+}
+
+.planning-deep-card.is-soft strong {
+  color: color-mix(in srgb, #b58543, #000 12%);
+}
+
+.planning-deep-notes {
+  margin-top: 0.72rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.48rem;
+}
+
+.planning-deep-notes span {
+  border-top: 1px solid rgb(222 216 205 / 74%);
+  padding-top: 0.48rem;
+  color: color-mix(in srgb, var(--ink), #fff 16%);
+  font-size: 0.72rem;
+  line-height: 1.42;
+}
+
+.planning-library-panel.is-preview-hidden {
+  display: none;
 }
 
 .collapsible-panel {
@@ -3410,6 +4166,60 @@ input[type="color"].list-row {
 
 .planning-view-panel {
   background: rgb(255 255 255 / 76%);
+}
+
+@media (max-width: 919px) {
+  .planning-canonical-shell {
+    padding-right: 0;
+  }
+
+  .planning-support-rail {
+    position: static;
+    width: auto;
+    margin-top: 0.82rem;
+  }
+
+  .planning-canonical-middle,
+  .planning-flow-stages,
+  .planning-flow-cards,
+  .planning-canonical-summary,
+  .planning-canonical-filter-grid,
+  .planning-deep-grid,
+  .planning-deep-notes,
+  .planning-ladder,
+  .planning-ladder-chain {
+    grid-template-columns: 1fr;
+  }
+
+  .planning-relational-panel,
+  .planning-live-notice,
+  .planning-deep-panel,
+  .planning-ladder {
+    width: 100%;
+  }
+
+  .planning-relational-header {
+    display: none;
+  }
+
+  .planning-relational-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .planning-flow-stage {
+    border-right: 0;
+    border-bottom: 1px solid rgb(220 213 201 / 58%);
+    padding: 0.54rem 0;
+  }
+
+  .planning-flow-stage:last-child {
+    border-bottom: 0;
+  }
+
+  .planning-ladder-node:not(:last-child)::after {
+    display: none;
+  }
 }
 
 @media (min-width: 920px) {
