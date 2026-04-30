@@ -1,4 +1,4 @@
-﻿# Docs Index
+# Docs Index
 
 This is the canonical index for repository documentation.
 
@@ -100,3 +100,13 @@ This is the canonical index for repository documentation.
 
 - `README.md`
 - numbered ADR files
+## Template Sync: Shared Agent Standards
+
+Additional cross-project standards synced from `!template`:
+
+- `.agents/workflows/user-collaboration.md`
+- `.agents/workflows/world-class-delivery.md`
+- `docs/governance/world-class-product-engineering-standard.md`
+- `docs/operations/service-reliability-and-observability.md`
+- `docs/security/secure-development-lifecycle.md`
+- `docs/ux/evidence-driven-ux-review.md`

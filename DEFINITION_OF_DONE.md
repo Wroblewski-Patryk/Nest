@@ -20,6 +20,10 @@ evidence. If any required item is missing, the task is not done and must remain
 - [ ] The feature still works after restart, reload, navigation away and back,
   or process restart when persistence or runtime state is involved.
 - [ ] Changes are documented in the relevant source of truth.
+- [ ] User impact, operator impact, or product success signal is recorded for
+  substantial changes.
+- [ ] Reliability, security, privacy, and rollback evidence is recorded when
+  the task touches those risks.
 - [ ] Behavior is reproducible by another agent or developer using the recorded
   validation steps.
 
@@ -32,6 +36,7 @@ Every completed task must include:
 - files changed
 - documentation updated or a clear reason no documentation changed
 - known residual risks
+- next recommended learning or follow-up when post-launch evidence is needed
 
 ## Blocking Rule
 

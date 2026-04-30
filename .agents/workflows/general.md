@@ -1,4 +1,4 @@
-﻿---
+---
 description: Workspace rules for Nest (LifeOS)
 ---
 
@@ -88,3 +88,18 @@ description: Workspace rules for Nest (LifeOS)
 - Implement features as vertical slices across UI, logic, API, DB, validation, error handling, and tests.
 - Do not mark partial runtime work as done.
 - Stop and report when the proper solution is blocked.
+
+## Template Sync: World-Class Delivery
+
+- Use `.agents/workflows/user-collaboration.md` when user intent, blockers,
+  active visual notes, or handoff expectations need to stay explicit.
+- Use `.agents/workflows/world-class-delivery.md` for substantial product,
+  runtime, release, UX, security, or AI work.
+- For broad UX review, use `docs/ux/evidence-driven-ux-review.md` and turn
+  screenshot or clickthrough evidence into prioritized implementation slices.
+- For deployable services or critical journeys, define the relevant SLI/SLO,
+  health check, alert route, and rollback or disable path when appropriate.
+- Check `docs/security/secure-development-lifecycle.md` for security,
+  permissions, secrets, AI, money, integrations, or user-data risk.
+- Report changed files, validations actually run, remaining risks, and the next
+  tiny task after implementation.

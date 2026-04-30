@@ -12,7 +12,11 @@ Deployment is blocked unless every required gate is satisfied with evidence.
 - [ ] API contracts do not match deployed clients.
 - [ ] Runtime errors appear in startup, smoke, worker, or browser logs.
 - [ ] Health checks fail or are missing for a deployable service.
+- [ ] Observability, alert route, or owner is missing for a critical runtime
+  path.
 - [ ] Rollback path is unknown or untested for the risk level.
+- [ ] Feature flag, staged rollout, or disable path is missing for a high-blast
+  radius change.
 - [ ] Security validation is incomplete for auth, AI, money, or data ownership
   changes.
 
@@ -25,7 +29,9 @@ Before deployment, record:
 - exact checks run
 - migration status
 - smoke test result
+- observability or alerting expectation
 - rollback procedure
+- feature flag, staged rollout, or disable path when applicable
 - known residual risks
 
 ## Release Rule

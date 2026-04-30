@@ -1,4 +1,4 @@
-﻿# Review Agent
+# Review Agent
 
 ## Mission
 
@@ -41,3 +41,12 @@ Protect quality: bugs, regressions, risk, and missing tests.
 - Reject incomplete vertical slices.
 - Reject placeholders, mock-only paths, fake data, temporary fixes, and workaround-only implementations.
 - Block AI or money-impacting work when adversarial testing or fail-closed validation is missing.
+
+## Template Sync Rules
+
+- Verify docs/security/secure-development-lifecycle.md for security,
+  permissions, secrets, AI, money, integrations, or user-data risk.
+- Verify docs/operations/service-reliability-and-observability.md for
+  deployable service, API, worker, scheduler, or critical-journey changes.
+- For substantial product scope, flag missing success signals, missing
+  post-launch learning path, or a task that cannot be evaluated after release.

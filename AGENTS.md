@@ -1,4 +1,4 @@
-﻿# AGENTS.md - Nest (LifeOS)
+# AGENTS.md - Nest (LifeOS)
 
 ## Purpose
 
@@ -223,3 +223,22 @@ Every task must include Goal, Scope, Implementation Plan, Acceptance Criteria, D
 Runtime features must be vertical slices across UI, logic, API, DB, validation, error handling, and tests. Partial implementations, placeholders, mock-only behavior, fake data, temporary fixes, and hidden bypasses are forbidden.
 
 AI systems must be tested against prompt injection, data leakage, and unauthorized access before deployment. AI features require reproducible multi-turn scenarios from `AI_TESTING_PROTOCOL.md` and red-team review when risk is meaningful.
+
+## Template Sync: World-Class Delivery Addendum
+
+Use these additional standards for substantial product, runtime, release, UX,
+security, or AI work:
+
+- `.agents/workflows/user-collaboration.md`
+- `.agents/workflows/world-class-delivery.md`
+- `docs/governance/world-class-product-engineering-standard.md`
+- `docs/operations/service-reliability-and-observability.md`
+- `docs/security/secure-development-lifecycle.md`
+- `docs/ux/evidence-driven-ux-review.md`
+
+For substantial changes, define why the work matters, the smallest safe slice,
+the success signal, the main failure mode, and the rollback or recovery path.
+For deployable services or important journeys, define SLIs/SLOs, health checks,
+alert routes, and error-budget posture when appropriate. For auth, AI, money,
+secrets, permissions, integrations, or user-data work, use the secure
+development lifecycle and include threat-model or abuse-case evidence.

@@ -1,4 +1,4 @@
-﻿# Task
+# Task
 
 ## Header
 
@@ -16,6 +16,12 @@ Where this work sits in the current Nest architecture and execution wave.
 
 ## Goal
 What must be achieved by this task.
+
+## Success Signal
+- User or operator problem:
+- Expected product or reliability outcome:
+- How success will be observed:
+- Post-launch learning needed: yes | no
 
 ## Deliverable For This Stage
 Describe exactly what should be produced in the current stage only.
@@ -81,6 +87,8 @@ Describe exactly what should be produced in the current stage only.
 - Screenshot comparison pass completed: yes | no
 - Remaining mismatches:
 - State checks: loading | empty | error | success
+- Feedback locality checked: yes | no
+- Raw technical errors hidden from end users: yes | no | not applicable
 - Responsive checks: desktop | tablet | mobile
 - Input-mode checks: touch | pointer | keyboard
 - Accessibility checks:
@@ -119,6 +127,26 @@ Runtime tasks must be delivered as a vertical slice: UI -> logic -> API -> DB ->
 
 ## Integration Evidence
 
+## Product / Discovery Evidence
+- Problem validated: yes | no | not applicable
+- User or operator affected:
+- Existing workaround or pain:
+- Smallest useful slice:
+- Success metric or signal:
+- Feature flag, staged rollout, or disable path: yes | no | not applicable
+- Post-launch feedback or metric check:
+
+## Reliability / Observability Evidence
+- `docs/operations/service-reliability-and-observability.md` reviewed: yes | no | not applicable
+- Critical user journey:
+- SLI:
+- SLO:
+- Error budget posture: healthy | burning | exhausted | not applicable
+- Health/readiness check:
+- Logs, dashboard, or alert route:
+- Smoke command or manual smoke:
+- Rollback or disable path:
+
 - `INTEGRATION_CHECKLIST.md` reviewed: yes | no | not applicable
 - Real API/service path used: yes | no | not applicable
 - Endpoint and client contract match: yes | no | not applicable
@@ -129,6 +157,17 @@ Runtime tasks must be delivered as a vertical slice: UI -> logic -> API -> DB ->
 - Regression check performed:
 
 ## AI Testing Evidence (required for AI features)
+
+## Security / Privacy Evidence
+- `docs/security/secure-development-lifecycle.md` reviewed: yes | no | not applicable
+- Data classification:
+- Trust boundaries:
+- Permission or ownership checks:
+- Abuse cases:
+- Secret handling:
+- Security tests or scans:
+- Fail-closed behavior:
+- Residual risk:
 
 - `AI_TESTING_PROTOCOL.md` reviewed: yes | no | not applicable
 - Memory consistency scenarios:

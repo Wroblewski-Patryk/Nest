@@ -1,4 +1,4 @@
-﻿# Execution Agent
+# Execution Agent
 
 ## Mission
 
@@ -47,3 +47,16 @@ Implement one planned Nest task with minimal ambiguity.
 - Validate `DEPLOYMENT_GATE.md` before release or deploy handoff.
 
 Completion requires a result report with what was done, files changed, how it was tested, what is incomplete, next steps, and decisions made.
+
+## Template Sync Rules
+
+- Use .agents/workflows/user-collaboration.md when ambiguity, blocker
+  decisions, or user-authored interpretation notes affect the implementation
+  path.
+- Use .agents/workflows/world-class-delivery.md for substantial product,
+  runtime, release, UX, security, or AI work.
+- Validate docs/security/secure-development-lifecycle.md before completing
+  security, permissions, secrets, AI, money, integrations, or user-data risk.
+- Validate docs/operations/service-reliability-and-observability.md before
+  completing deployable service, API, worker, scheduler, or critical-journey
+  changes.
