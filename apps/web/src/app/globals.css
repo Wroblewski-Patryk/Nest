@@ -5090,7 +5090,9 @@ input[type="color"].list-row {
   }
 
   .planning-canonical-main {
-    display: contents;
+    display: flex;
+    flex-direction: column;
+    gap: 0.82rem;
   }
 
   .planning-support-rail {
@@ -5260,12 +5262,16 @@ input[type="color"].list-row {
     order: 2;
   }
 
-  .calendar-event-timeline-panel {
+  .calendar-canonical-main > .dashboard-context-ribbon {
     order: 3;
   }
 
-  .calendar-time-ladder {
+  .calendar-canonical-main > .calendar-event-timeline-panel {
     order: 4;
+  }
+
+  .calendar-canonical-main > .calendar-time-ladder {
+    order: 8;
   }
 
   #calendar-add-event,
@@ -5350,6 +5356,23 @@ input[type="color"].list-row {
 
   .dashboard-insight-strip {
     order: 9;
+  }
+
+  .dashboard-hero-band,
+  .dashboard-focus-card,
+  .dashboard-sidebar-card,
+  .dashboard-insight-strip,
+  .planning-flow-panel,
+  .planning-relational-panel,
+  .planning-ladder,
+  .calendar-flow-panel,
+  .calendar-event-timeline-panel,
+  .calendar-canonical-flow-row,
+  .journal-canonical-composer,
+  .journal-canonical-entries,
+  .journal-reflection-ladder {
+    width: 100%;
+    align-self: stretch;
   }
 
 }

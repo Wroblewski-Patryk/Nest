@@ -417,6 +417,15 @@
     viewport;
   - Calendar mobile still needs one more parity closure pass before it can be
     treated as visually locked.
+- Mobile canonical order closure landed on 2026-05-01 in:
+  `apps/web/src/app/globals.css`
+  with report:
+  `docs/ux/nest_275_mobile_canonical_order_closure_2026-05-01.md`.
+  Reinforced rule:
+  - when a mobile canonical screen needs support cards to appear before a final
+    ladder or summary block, flatten only the mobile ordering layer needed to
+    preserve that reading sequence; do not let desktop column structure dictate
+    narrow-screen hierarchy.
 
 ## Finish Propagation Rules (2026-04-26)
 

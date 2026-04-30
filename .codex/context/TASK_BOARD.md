@@ -24,6 +24,27 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-275 Close mobile canonical ordering for Calendar and Journal
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-274
+  - Done on: 2026-05-01
+  - Notes:
+    - Refined narrow-screen ordering so Calendar can interleave hero, day-flow,
+      event intelligence, support cards, and the final ladder in a more
+      canonical sequence.
+    - Preserved the calmer Journal mobile rhythm where support cards land before
+      the final reflection ladder.
+    - Updated implementation in:
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_275_mobile_canonical_order_closure_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-274 Implement workspace mobile canonical parity pass A
   - Status: DONE
   - Owner: Execution Agent

@@ -24,6 +24,11 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-275` mobile canonical order closure. Tightened
+  mobile ordering in `apps/web/src/app/globals.css` so Calendar now reads much
+  closer to the intended hero -> day-flow -> support -> ladder sequence, while
+  Journal keeps the ladder after its softer support surfaces. Added report:
+  `docs/ux/nest_275_mobile_canonical_order_closure_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-274` workspace mobile canonical parity pass A.
   Upgraded the shared mobile workspace shell into a labeled topbar-adjacent nav
   strip, reordered canonical narrow-screen hierarchy for Dashboard, Planning,
