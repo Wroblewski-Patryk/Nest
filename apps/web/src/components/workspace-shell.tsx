@@ -70,10 +70,8 @@ function MenuIcon({ name }: { name: NavIconName }) {
   if (name === "dashboard") {
     return (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="3" y="3" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.7" />
-        <rect x="13" y="3" width="8" height="5" rx="2" stroke="currentColor" strokeWidth="1.7" />
-        <rect x="13" y="10" width="8" height="11" rx="2" stroke="currentColor" strokeWidth="1.7" />
-        <rect x="3" y="13" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="1.7" />
+        <path d="M5 10.2 12 4l7 6.2V19a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19v-8.8Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+        <path d="M9.5 20.5v-5h5v5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   }

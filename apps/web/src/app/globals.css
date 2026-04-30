@@ -420,6 +420,10 @@ body {
   gap: 0.54rem;
 }
 
+.shell-dashboard-canonical .workspace-rail-nav {
+  gap: 0.28rem;
+}
+
 .shell-dashboard-canonical .workspace-rail-atmosphere {
   min-height: 6.9rem;
   margin: 0.08rem 0 0.42rem;
@@ -543,6 +547,10 @@ body {
 
 .shell-dashboard-canonical .workspace-account-card strong {
   font-size: 1.08rem;
+}
+
+.is-canonical-dashboard .dashboard-dayflow-panel .panel-header {
+  display: none;
 }
 
 .workspace-account-avatar {
@@ -1691,20 +1699,31 @@ input[type="color"].list-row {
 }
 
 .is-canonical-dashboard .dashboard-hero-story {
-  max-width: 13.5rem;
+  max-width: 18.6rem;
+  gap: 0.06rem;
+  align-self: center;
 }
 
 .is-canonical-dashboard .dashboard-hero-story strong {
-  font-size: clamp(1.58rem, 1.82vw, 1.82rem);
+  font-size: clamp(1.38rem, 1.58vw, 1.7rem);
   letter-spacing: -0.04em;
+  line-height: 0.94;
 }
 
 .is-canonical-dashboard .dashboard-hero-story p {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
+  line-height: 1.14;
+}
+
+.is-canonical-dashboard .dashboard-hero-story small {
+  font-size: 0.64rem;
+  line-height: 1.22;
+  max-width: 12rem;
 }
 
 .is-canonical-dashboard .dashboard-hero-stat-row {
   gap: 0.24rem;
+  align-self: center;
 }
 
 .is-canonical-dashboard .dashboard-hero-stat {
@@ -1961,10 +1980,11 @@ input[type="color"].list-row {
 
 .is-canonical-dashboard .dashboard-focus-card {
   background:
-    radial-gradient(circle at 84% 12%, rgb(255 255 255 / 48%) 0%, transparent 20%),
-    radial-gradient(circle at 84% 74%, rgb(160 176 124 / 8%) 0%, transparent 22%),
-    linear-gradient(145deg, color-mix(in srgb, var(--accent), #64774a 10%), color-mix(in srgb, #82966a, #45583a 7%));
-  box-shadow: 0 10px 18px -28px rgb(41 47 29 / 12%);
+    radial-gradient(circle at 82% 14%, rgb(255 255 255 / 42%) 0%, transparent 18%),
+    radial-gradient(circle at 18% 100%, rgb(105 126 80 / 14%) 0%, transparent 34%),
+    radial-gradient(circle at 84% 72%, rgb(160 176 124 / 7%) 0%, transparent 22%),
+    linear-gradient(145deg, color-mix(in srgb, var(--accent), #5f7347 12%), color-mix(in srgb, #7d9063, #43573a 8%));
+  box-shadow: 0 10px 18px -28px rgb(41 47 29 / 10%);
   padding: 0.76rem 0.78rem 0.76rem;
 }
 
@@ -1972,8 +1992,16 @@ input[type="color"].list-row {
   gap: 0.18rem;
 }
 
+.is-canonical-dashboard .dashboard-focus-card::before {
+  background:
+    radial-gradient(circle at 82% 16%, rgb(255 255 255 / 12%) 0%, transparent 22%),
+    radial-gradient(circle at 70% 28%, rgb(244 240 222 / 9%) 0%, transparent 18%),
+    linear-gradient(135deg, transparent 0%, rgb(255 255 255 / 3%) 100%);
+}
+
 .is-canonical-dashboard .dashboard-focus-card::after {
-  opacity: 0.15;
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
 }
 
 .is-canonical-dashboard .dashboard-focus-kicker {
@@ -2018,7 +2046,7 @@ input[type="color"].list-row {
 }
 
 .is-canonical-dashboard .dashboard-focus-card .btn-primary::after {
-  content: "›";
+  content: "\203A";
   font-size: 0.96rem;
   line-height: 1;
 }
@@ -2573,6 +2601,11 @@ input[type="color"].list-row {
   font-style: italic;
 }
 
+.is-canonical-dashboard .dashboard-sidebar-card-script {
+  font-size: 1rem;
+  line-height: 1.58;
+}
+
 .dashboard-sidebar-card-note {
   margin: -0.12rem 0 0;
   color: var(--muted);
@@ -2661,6 +2694,18 @@ input[type="color"].list-row {
   color: var(--muted);
   font-size: 0.76rem;
   font-weight: 600;
+}
+
+.is-canonical-dashboard .dashboard-sidebar-card {
+  box-shadow: 0 16px 34px -34px rgb(75 63 52 / 12%);
+}
+
+.is-canonical-dashboard .dashboard-sidebar-card-journal::after {
+  opacity: 0.44;
+}
+
+.is-canonical-dashboard .dashboard-quick-add-grid {
+  gap: 0.46rem;
 }
 
 .is-canonical-dashboard .dashboard-quick-add-tile {
@@ -3383,9 +3428,35 @@ input[type="color"].list-row {
     min-height: 132px;
   }
 
+  .is-canonical-dashboard .dashboard-hero-scene {
+    grid-template-columns: 122px minmax(220px, 0.72fr) minmax(0, 1.18fr);
+    gap: 0.3rem;
+    padding: 0.6rem 0.68rem 0.58rem;
+    min-height: 126px;
+  }
+
   .dashboard-hero-stat-row {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     align-self: end;
+  }
+
+  .is-canonical-dashboard .dashboard-progress-ring {
+    width: 122px;
+    height: 122px;
+    padding: 10px;
+    box-shadow: inset 0 0 0 8px rgb(255 255 255 / 44%);
+  }
+
+  .is-canonical-dashboard .dashboard-progress-ring-inner strong {
+    font-size: 1.78rem;
+  }
+
+  .is-canonical-dashboard .dashboard-progress-ring-inner span {
+    font-size: 0.74rem;
+  }
+
+  .is-canonical-dashboard .dashboard-hero-stat {
+    padding-right: 0.42rem;
   }
 
   .dashboard-context-grid {
@@ -3457,6 +3528,13 @@ input[type="color"].list-row {
     padding: 1.5rem 1.9rem 2.8rem;
   }
 
+  .shell-dashboard-canonical .workspace-rail {
+    width: 244px;
+    background:
+      radial-gradient(circle at 50% 88%, rgb(223 229 218 / 20%) 0%, transparent 32%),
+      linear-gradient(180deg, rgb(252 249 241 / 96%), rgb(248 244 234 / 90%));
+  }
+
   .workspace-mobile-nav {
     display: none;
   }
@@ -3476,6 +3554,16 @@ input[type="color"].list-row {
     font-size: 0.78rem;
     font-weight: 500;
     opacity: 0.84;
+  }
+
+  .shell-dashboard-canonical .workspace-rail-link {
+    min-height: 2.56rem;
+    padding: 0.22rem 0.26rem;
+  }
+
+  .shell-dashboard-canonical .workspace-rail-link span:last-child {
+    font-size: 0.8rem;
+    opacity: 0.88;
   }
 
   .workspace-rail-subnav {

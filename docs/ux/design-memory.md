@@ -119,6 +119,26 @@
   rounded outer workspace wrapper just because it feels premium. Move
   atmosphere and color into the real content plane instead of preserving a
   decorative shell that the reference does not have.
+- If a canonical hero is still drifting, remove repeated or extra guidance
+  copy before touching illustration again. Duplicate copy makes the screen
+  feel coded even when the art direction is otherwise close.
+- In screenshot-faithful dashboard mode, extra panel chrome around already
+  self-describing inner content should be removed instead of endlessly styled.
+  The day-flow card reads closer to the founder reference when the component
+  carries the hierarchy and the wrapper stops competing with it.
+- Dashboard hero and shell cleanup pass landed on 2026-04-30 to remove
+  duplicated canonical hero copy, simplify day-flow chrome, and bring the
+  left rail closer to the founder reference in:
+  `apps/web/src/app/dashboard/page.tsx`
+  `apps/web/src/app/globals.css`
+  `apps/web/src/components/workspace-primitives.tsx`
+  `apps/web/src/components/workspace-shell.tsx`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-web-parity-preview-phaseAC.png`
+- Phase AC review on 2026-04-30 confirmed another visible convergence step,
+  with remaining drift now concentrated in `Now focus` material softness,
+  support-rail proportion, and hero microspacing, recorded in:
+  `docs/ux/nest_258_dashboard_parity_review_phaseAC_2026-04-30.md`
 
 ## Finish Propagation Rules (2026-04-26)
 

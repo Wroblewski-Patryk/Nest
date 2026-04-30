@@ -1540,3 +1540,17 @@ Last updated: 2026-04-29
   improved canonical fidelity and raised the baseline for all workspace
   screens, recorded in:
   `docs/ux/nest_256_dashboard_parity_review_phaseAA_2026-04-30.md`
+- Dashboard hero and shell cleanup pass landed on 2026-04-30 to remove
+  duplicate canonical hero copy, strip extra timeline chrome, and refine
+  dashboard rail fidelity in:
+  `apps/web/src/app/dashboard/page.tsx`
+  `apps/web/src/app/globals.css`
+  `apps/web/src/components/workspace-primitives.tsx`
+  `apps/web/src/components/workspace-shell.tsx`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-web-parity-preview-phaseAC.png`
+- Phase AC review on 2026-04-30 confirmed that the dashboard is again closer
+  to the canonical founder image, with remaining differences now concentrated
+  in `Now focus` material softness, support-rail proportion, and hero
+  microspacing, recorded in:
+  `docs/ux/nest_258_dashboard_parity_review_phaseAC_2026-04-30.md`

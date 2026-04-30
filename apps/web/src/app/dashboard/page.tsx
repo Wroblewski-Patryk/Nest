@@ -513,7 +513,7 @@ export default function DashboardPage() {
           <Panel
             title="Now"
             className="dashboard-panel dashboard-dayflow-panel"
-            actions={<span className="dashboard-panel-kicker">Morning / Now / Evening</span>}
+            actions={useShowcaseFallback ? undefined : <span className="dashboard-panel-kicker">Morning / Now / Evening</span>}
           >
             <DashboardDayFlow
               morningItems={displayMorningItems}

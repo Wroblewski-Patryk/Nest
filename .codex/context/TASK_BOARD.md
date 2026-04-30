@@ -4766,3 +4766,22 @@ Last updated: 2026-04-29
       `docs/ux/nest_256_dashboard_parity_review_phaseAA_2026-04-30.md`.
     - Confirmed that shell flattening materially improved canonical fidelity.
 
+- [x] NEST-257 Tighten dashboard hero and shell cleanup parity
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-30
+  - Notes:
+    - Removed duplicated canonical hero copy.
+    - Simplified canonical timeline chrome and refined left-rail rhythm.
+    - Refreshed evidence in
+      `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-web-parity-preview-phaseAC.png`.
+
+- [x] NEST-258 Review dashboard parity phase AC
+  - Status: DONE
+  - Owner: Review Agent
+  - Done on: 2026-04-30
+  - Notes:
+    - Review recorded in
+      `docs/ux/nest_258_dashboard_parity_review_phaseAC_2026-04-30.md`.
+    - Confirmed another meaningful reduction of implementation feel.
+

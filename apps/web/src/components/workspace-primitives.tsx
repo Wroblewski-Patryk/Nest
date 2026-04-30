@@ -132,6 +132,7 @@ export function DashboardHeroBand({
   metrics,
 }: HeroBandProps) {
   const showHeroHeader = Boolean(brand || dateLabel || weatherLabel);
+  const showProgressLabel = Boolean(progressLabel) && progressLabel !== summary;
 
   return (
     <article className="dashboard-hero-band">
@@ -151,7 +152,7 @@ export function DashboardHeroBand({
         <div className="dashboard-hero-story">
           <strong>{title}</strong>
           <p>{summary}</p>
-          <small>{progressLabel}</small>
+          {showProgressLabel ? <small>{progressLabel}</small> : null}
         </div>
 
         <ul className="dashboard-hero-stat-row" aria-label="Daily dashboard metrics">
