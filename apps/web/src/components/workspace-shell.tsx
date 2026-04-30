@@ -5,6 +5,7 @@ import { WorkspaceLogoutButton } from "@/components/workspace-logout-button";
 
 type WorkspaceNavKey = ModuleKey | "dashboard" | "settings" | "assistant";
 type PlanningSubnavKey = "tasks" | "lists" | "targets" | "goals";
+type MobileNavKey = "dashboard" | "tasks" | "calendar" | "journal" | "settings";
 
 type WorkspaceShellProps = {
   title: string;
@@ -64,6 +65,19 @@ const PLANNING_SUBNAV_ITEMS: Array<{
   { key: "lists", label: "Lists", href: "/tasks?tab=lists" },
   { key: "targets", label: "Targets", href: "/tasks?tab=targets" },
   { key: "goals", label: "Goals", href: "/tasks?tab=goals" },
+];
+
+const MOBILE_NAV_ITEMS: Array<{
+  href: string;
+  label: string;
+  key: MobileNavKey;
+  icon: NavIconName;
+}> = [
+  { href: "/dashboard", label: "Dashboard", key: "dashboard", icon: "dashboard" },
+  { href: "/tasks", label: "Planning", key: "tasks", icon: "tasks" },
+  { href: "/calendar", label: "Calendar", key: "calendar", icon: "calendar" },
+  { href: "/journal", label: "Journal", key: "journal", icon: "journal" },
+  { href: "/settings", label: "Settings", key: "settings", icon: "settings" },
 ];
 
 function MenuIcon({ name }: { name: NavIconName }) {
@@ -364,24 +378,23 @@ export function WorkspaceShell({
               </div>
             </header>
 
+            <nav className="workspace-mobile-nav" aria-label="Mobile modules">
+              {MOBILE_NAV_ITEMS.map((item) => (
+                <Link
+                  key={`mobile-${item.href}`}
+                  href={item.href}
+                  className={`workspace-mobile-link ${activeNavKey === item.key ? "is-active" : ""}`}
+                >
+                  <MenuIcon name={item.icon} />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </nav>
+
             <main className="workspace-content-shell">
               <div className={`workspace-grid ${layoutClass}`}>{children}</div>
             </main>
           </div>
-
-          <nav className="workspace-mobile-nav" aria-label="Mobile modules">
-            {visibleNavItems.filter((item) =>
-              ["dashboard", "tasks", "assistant", "calendar", "settings"].includes(item.key)
-            ).map((item) => (
-              <Link
-                key={`mobile-${item.href}`}
-                href={item.href}
-                className={`workspace-mobile-link ${activeNavKey === item.key ? "is-active" : ""}`}
-              >
-                <MenuIcon name={item.icon} />
-              </Link>
-            ))}
-          </nav>
         </div>
       </div>
     </div>

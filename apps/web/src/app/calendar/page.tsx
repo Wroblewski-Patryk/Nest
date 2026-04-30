@@ -7,7 +7,6 @@ import {
   DashboardContextRibbon,
   DashboardFocusCard,
   DashboardHeroBand,
-  QuickAddCard,
 } from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
 import { nestApiClient } from "@/lib/api-client";
@@ -1253,16 +1252,28 @@ export default function CalendarPage() {
               </div>
             </article>
 
-            <QuickAddCard
-              items={[
-                { label: "Event", href: "#calendar-add-event", icon: <TimelineGlyph name="event" /> },
-                { label: "Focus", href: "#calendar-add-event", icon: <TimelineGlyph name="focus" /> },
-                { label: "Routine", href: "/routines", icon: <TimelineGlyph name="routine" /> },
-                { label: "Note", href: "/journal", icon: <TimelineGlyph name="note" /> },
-              ]}
-            />
+            <article className="dashboard-sidebar-card calendar-quick-add-card">
+              <div className="dashboard-sidebar-card-head">
+                <h3>Quick add</h3>
+              </div>
+              <div className="dashboard-quick-add-grid">
+                {[
+                  { label: "Event", href: "#calendar-add-event", icon: <TimelineGlyph name="event" /> },
+                  { label: "Focus", href: "#calendar-add-event", icon: <TimelineGlyph name="focus" /> },
+                  { label: "Routine", href: "/routines", icon: <TimelineGlyph name="routine" /> },
+                  { label: "Note", href: "/journal", icon: <TimelineGlyph name="note" /> },
+                ].map((item) => (
+                  <a key={item.label} href={item.href} className="dashboard-quick-add-tile">
+                    <span className="dashboard-quick-add-icon" aria-hidden="true">
+                      {item.icon}
+                    </span>
+                    <small>{item.label}</small>
+                  </a>
+                ))}
+              </div>
+            </article>
 
-            <article className="dashboard-sidebar-card">
+            <article className="dashboard-sidebar-card calendar-pressure-card">
               <div className="dashboard-sidebar-card-head">
                 <h3>Calendar pressure</h3>
                 <span>View all</span>
@@ -1284,7 +1295,7 @@ export default function CalendarPage() {
               <p className="dashboard-balance-caption">Balance across the visible time window.</p>
             </article>
 
-            <article className="dashboard-sidebar-card">
+            <article className="dashboard-sidebar-card calendar-sync-card">
               <div className="dashboard-sidebar-card-head">
                 <h3>Sync health</h3>
               </div>

@@ -396,6 +396,27 @@
   `docs/ux/nest_273_journal_canonical_phaseA_2026-04-30.md`
   and evidence:
   `docs/ux_canonical_artifacts/2026-04-30/nest-journal-web-parity-preview-phaseA.png`.
+- Workspace mobile canonical parity pass A landed on 2026-05-01 in:
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`,
+  and
+  `apps/web/src/app/globals.css`
+  with report:
+  `docs/ux/nest_274_workspace_mobile_canonical_parity_passA_2026-05-01.md`.
+  Mobile implementation rules reinforced by this pass:
+  - the workspace mobile nav should sit directly below the topbar and keep text
+    labels visible;
+  - Dashboard mobile should lead with hero, focus, dayflow, and operational
+    ledgers before softer support cards;
+  - Planning mobile should suppress legacy workspace noise and keep support
+    cards secondary to weekly direction and action flow;
+  - Journal mobile should hide management/status chrome from the canonical first
+    viewport;
+  - Calendar mobile still needs one more parity closure pass before it can be
+    treated as visually locked.
 
 ## Finish Propagation Rules (2026-04-26)
 

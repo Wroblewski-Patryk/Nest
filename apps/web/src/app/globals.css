@@ -1163,36 +1163,42 @@ input[type="color"].list-row {
 }
 
 .workspace-mobile-nav {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 0.85rem;
-  z-index: 40;
-  display: inline-flex;
-  gap: 0.38rem;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.26rem;
   border: 1px solid var(--line-ghost);
-  border-radius: 999px;
+  border-radius: 1.55rem;
   background: rgb(255 255 255 / 86%);
   backdrop-filter: blur(9px);
-  padding: 0.33rem;
+  padding: 0.42rem;
+  margin: 0.35rem auto 0.25rem;
+  width: min(100%, 23rem);
+  box-shadow: 0 18px 34px -28px rgb(75 63 52 / 22%);
 }
 
 .workspace-mobile-link {
-  width: 2.1rem;
-  height: 2.1rem;
-  border-radius: 999px;
+  min-height: 3.4rem;
+  border-radius: 1.1rem;
   text-decoration: none;
   display: grid;
-  place-items: center;
-  font-size: 0.64rem;
+  justify-items: center;
+  align-content: center;
+  gap: 0.18rem;
+  font-size: 0.68rem;
   color: var(--muted);
   border: 1px solid transparent;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .workspace-mobile-link svg {
-  width: 1rem;
-  height: 1rem;
+  width: 1.08rem;
+  height: 1.08rem;
+}
+
+.workspace-mobile-link span {
+  line-height: 1;
 }
 
 .workspace-mobile-link.is-active {
@@ -5077,13 +5083,37 @@ input[type="color"].list-row {
 
 @media (max-width: 919px) {
   .planning-canonical-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.82rem;
     padding-right: 0;
+  }
+
+  .planning-canonical-main {
+    display: contents;
   }
 
   .planning-support-rail {
     position: static;
     width: auto;
     margin-top: 0.82rem;
+    order: 3;
+  }
+
+  .planning-relational-panel {
+    order: 4;
+  }
+
+  .planning-ladder {
+    order: 5;
+  }
+
+  .planning-deep-panel,
+  .planning-status-strip,
+  .planning-canonical-tools,
+  .planning-focus-primary,
+  .planning-secondary-tools {
+    display: none;
   }
 
   .planning-canonical-middle,
@@ -5125,8 +5155,53 @@ input[type="color"].list-row {
     border-bottom: 0;
   }
 
+  .planning-canonical-middle {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .planning-canonical-middle > .dashboard-focus-card {
+    order: 1;
+  }
+
+  .planning-canonical-middle > .planning-flow-panel {
+    order: 2;
+  }
+
   .planning-ladder-node:not(:last-child)::after {
     display: none;
+  }
+
+  .planning-clarity-card {
+    min-height: auto;
+  }
+
+  .planning-clarity-script {
+    max-width: none;
+    font-size: 1.18rem;
+    line-height: 1.48;
+  }
+
+  .calendar-canonical-grid,
+  .journal-canonical-grid {
+    display: contents;
+  }
+
+  .calendar-canonical-shell,
+  .journal-canonical-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.92rem;
+  }
+
+  .calendar-canonical-main,
+  .journal-canonical-main {
+    display: contents;
+  }
+
+  .calendar-canonical-rail,
+  .journal-canonical-rail {
+    display: contents;
   }
 
   .calendar-canonical-grid,
@@ -5152,6 +5227,131 @@ input[type="color"].list-row {
   .journal-entry-row {
     grid-template-columns: 1fr;
   }
+
+  .calendar-guidance-card,
+  .calendar-status-strip,
+  .calendar-add-event,
+  .calendar-management-panel details,
+  .journal-writing-card,
+  #journal-life-areas,
+  .journal-life-area-management,
+  .journal-canonical-shell > .calendar-status-strip,
+  .journal-canonical-shell > .dashboard-context-ribbon {
+    display: none;
+  }
+
+  .calendar-quick-add-card {
+    order: 5;
+  }
+
+  .calendar-pressure-card {
+    order: 6;
+  }
+
+  .calendar-sync-card {
+    order: 7;
+  }
+
+  .calendar-canonical-main > .dashboard-hero-band {
+    order: 1;
+  }
+
+  .calendar-canonical-flow-row {
+    order: 2;
+  }
+
+  .calendar-event-timeline-panel {
+    order: 3;
+  }
+
+  .calendar-time-ladder {
+    order: 4;
+  }
+
+  #calendar-add-event,
+  .calendar-canonical-main > details {
+    display: none;
+  }
+
+  .journal-prompts-card {
+    order: 5;
+  }
+
+  .journal-mood-trend-card {
+    order: 6;
+  }
+
+  .journal-life-reflection-card {
+    order: 7;
+  }
+
+  .journal-reflection-ladder {
+    order: 8;
+  }
+
+  .journal-canonical-main > .dashboard-hero-band {
+    order: 1;
+  }
+
+  .journal-canonical-main > .dashboard-focus-card {
+    order: 2;
+  }
+
+  .journal-canonical-composer {
+    order: 3;
+  }
+
+  .journal-canonical-entries {
+    order: 4;
+  }
+
+  .dashboard-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .dashboard-main-grid,
+  .dashboard-support-rail {
+    display: contents;
+  }
+
+  .dashboard-shell > .dashboard-hero-band {
+    order: 1;
+  }
+
+  .dashboard-focus-card {
+    order: 2;
+  }
+
+  .dashboard-dayflow-panel {
+    order: 3;
+  }
+
+  .dashboard-list-panel {
+    order: 4;
+  }
+
+  .dashboard-habits-panel {
+    order: 5;
+  }
+
+  .dashboard-mobile-journal-card {
+    order: 6;
+  }
+
+  .dashboard-mobile-quick-add-card {
+    order: 7;
+  }
+
+  .dashboard-mobile-balance-card {
+    order: 8;
+  }
+
+  .dashboard-insight-strip {
+    order: 9;
+  }
+
 }
 
 @media (min-width: 920px) {

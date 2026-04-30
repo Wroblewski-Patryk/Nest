@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-04-30
+Last updated: 2026-05-01
 
 ## Agent Workflow Snapshot
 
@@ -24,6 +24,21 @@ Last updated: 2026-04-30
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-274` workspace mobile canonical parity pass A.
+  Upgraded the shared mobile workspace shell into a labeled topbar-adjacent nav
+  strip, reordered canonical narrow-screen hierarchy for Dashboard, Planning,
+  and Journal, and hid first-viewport clutter for Planning, Calendar, and
+  Journal without removing the underlying live flows. Updated:
+  `apps/web/src/components/workspace-shell.tsx`,
+  `apps/web/src/components/workspace-primitives.tsx`,
+  `apps/web/src/app/dashboard/page.tsx`,
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_274_workspace_mobile_canonical_parity_passA_2026-05-01.md`.
+  Current follow-up note: Calendar mobile still needs one more parity pass to
+  fully lock the order of `Today's time map`, event intelligence, and the lower
+  ladder stack.
 - 2026-04-30: Completed `NEST-273` Journal canonical phase A. Rebuilt the web
   `/journal` route into a canonical Journal room with `Today's reflection
   room`, `Reflection focus`, a warm composer, softer recent-entry review,

@@ -71,6 +71,7 @@ type ReflectionSidebarCardProps = {
   excerpt: string;
   prompt: string;
   href: string;
+  className?: string;
 };
 
 type QuickAddItem = {
@@ -81,6 +82,7 @@ type QuickAddItem = {
 
 type QuickAddCardProps = {
   items: QuickAddItem[];
+  className?: string;
 };
 
 type BalanceMiniCardProps = {
@@ -91,6 +93,7 @@ type BalanceMiniCardProps = {
     color: string;
   }>;
   href: string;
+  className?: string;
 };
 
 type InsightStripProps = {
@@ -340,9 +343,9 @@ export function DashboardContextRibbon({ title, items }: ContextRibbonProps) {
   );
 }
 
-export function ReflectionSidebarCard({ title, excerpt, prompt, href }: ReflectionSidebarCardProps) {
+export function ReflectionSidebarCard({ title, excerpt, prompt, href, className }: ReflectionSidebarCardProps) {
   return (
-    <article className="dashboard-sidebar-card dashboard-sidebar-card-journal">
+    <article className={`dashboard-sidebar-card dashboard-sidebar-card-journal${className ? ` ${className}` : ""}`}>
       <div className="dashboard-sidebar-card-head">
         <h3>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -368,9 +371,9 @@ export function ReflectionSidebarCard({ title, excerpt, prompt, href }: Reflecti
   );
 }
 
-export function QuickAddCard({ items }: QuickAddCardProps) {
+export function QuickAddCard({ items, className }: QuickAddCardProps) {
   return (
-    <article className="dashboard-sidebar-card">
+    <article className={`dashboard-sidebar-card${className ? ` ${className}` : ""}`}>
       <div className="dashboard-sidebar-card-head">
         <h3>Quick add</h3>
       </div>
@@ -388,7 +391,7 @@ export function QuickAddCard({ items }: QuickAddCardProps) {
   );
 }
 
-export function BalanceMiniCard({ items, href }: BalanceMiniCardProps) {
+export function BalanceMiniCard({ items, href, className }: BalanceMiniCardProps) {
   const gradient = items
     .map((item, index) => {
       const start = (index / Math.max(items.length, 1)) * 360;
@@ -398,7 +401,7 @@ export function BalanceMiniCard({ items, href }: BalanceMiniCardProps) {
     .join(", ");
 
   return (
-    <article className="dashboard-sidebar-card">
+    <article className={`dashboard-sidebar-card${className ? ` ${className}` : ""}`}>
       <div className="dashboard-sidebar-card-head">
         <h3>Life areas</h3>
         <Link href={href}>View all</Link>

@@ -1,6 +1,6 @@
 ﻿# TASK_BOARD
 
-Last updated: 2026-04-30
+Last updated: 2026-05-01
 
 ## Agent Workflow Refresh (2026-04-16)
 
@@ -23,6 +23,33 @@ Last updated: 2026-04-30
   - Contracts: OpenAPI lint when docs or API contracts change
 
 ## Backlog
+
+- [x] NEST-274 Implement workspace mobile canonical parity pass A
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-271, NEST-272, NEST-273
+  - Done on: 2026-05-01
+  - Notes:
+    - Promoted the shared mobile workspace shell from icon-only chrome into a
+      labeled five-item strip placed directly under the topbar.
+    - Reordered the narrow-screen canonical hierarchy for Dashboard, Planning,
+      and Journal so primary work surfaces land before support rail cards.
+    - Hid mobile clutter that broke canonical first-view rhythm, including
+      Planning legacy utility blocks, Journal status/life-area management
+      surfaces, and Calendar add-event management from the first viewport.
+    - Updated implementation in:
+      `apps/web/src/components/workspace-shell.tsx`,
+      `apps/web/src/components/workspace-primitives.tsx`,
+      `apps/web/src/app/dashboard/page.tsx`,
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_274_workspace_mobile_canonical_parity_passA_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`.
 
 - [x] NEST-273 Implement Journal canonical phase A
   - Status: DONE

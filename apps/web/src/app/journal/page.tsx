@@ -1181,7 +1181,7 @@ export default function JournalPage() {
               </p>
             </article>
 
-            <article className="dashboard-sidebar-card">
+            <article className="dashboard-sidebar-card journal-prompts-card">
               <div className="dashboard-sidebar-card-head">
                 <h3>
                   <JournalGlyph name="prompt" />
@@ -1211,7 +1211,7 @@ export default function JournalPage() {
               </div>
             </article>
 
-            <article className="dashboard-sidebar-card">
+            <article className="dashboard-sidebar-card journal-mood-trend-card">
               <div className="dashboard-sidebar-card-head">
                 <h3>Mood over time</h3>
               </div>
@@ -1240,7 +1240,7 @@ export default function JournalPage() {
               </div>
             </article>
 
-            <article className="dashboard-sidebar-card">
+            <article className="dashboard-sidebar-card journal-life-reflection-card">
               <div className="dashboard-sidebar-card-head">
                 <h3>Life-area reflection</h3>
               </div>
