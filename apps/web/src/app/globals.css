@@ -174,11 +174,12 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: stretch;
-  background:
+  --workspace-main-atmosphere:
     radial-gradient(circle at 5% 14%, rgb(120 146 98 / 14%) 0%, transparent 34%),
     radial-gradient(circle at 82% 8%, rgb(191 166 138 / 11%) 0%, transparent 32%),
     radial-gradient(circle at 76% 86%, rgb(223 229 218 / 13%) 0%, transparent 42%),
     linear-gradient(160deg, var(--surface), #f8f6f0 72%);
+  background: var(--surface);
 }
 
 .workspace-stage {
@@ -188,7 +189,7 @@ body {
 }
 
 .workspace-bg.aura-tasks {
-  background:
+  --workspace-main-atmosphere:
     radial-gradient(circle at 5% 14%, rgb(120 146 98 / 18%) 0%, transparent 35%),
     radial-gradient(circle at 84% 10%, rgb(223 229 218 / 15%) 0%, transparent 35%),
     radial-gradient(circle at 76% 86%, rgb(191 166 138 / 10%) 0%, transparent 45%),
@@ -196,7 +197,7 @@ body {
 }
 
 .workspace-bg.aura-journal {
-  background:
+  --workspace-main-atmosphere:
     radial-gradient(circle at 9% 16%, rgb(191 166 138 / 16%) 0%, transparent 34%),
     radial-gradient(circle at 88% 10%, rgb(223 229 218 / 15%) 0%, transparent 35%),
     radial-gradient(circle at 72% 82%, rgb(120 146 98 / 10%) 0%, transparent 44%),
@@ -208,7 +209,7 @@ body {
 .workspace-bg.aura-targets,
 .workspace-bg.aura-routines,
 .workspace-bg.aura-habits {
-  background:
+  --workspace-main-atmosphere:
     radial-gradient(circle at 5% 12%, rgb(120 146 98 / 16%) 0%, transparent 33%),
     radial-gradient(circle at 80% 6%, rgb(191 166 138 / 12%) 0%, transparent 32%),
     radial-gradient(circle at 78% 84%, rgb(223 229 218 / 14%) 0%, transparent 44%),
@@ -216,7 +217,7 @@ body {
 }
 
 .workspace-bg.aura-insights {
-  background:
+  --workspace-main-atmosphere:
     radial-gradient(circle at 8% 14%, rgb(120 146 98 / 18%) 0%, transparent 34%),
     radial-gradient(circle at 84% 7%, rgb(223 229 218 / 17%) 0%, transparent 32%),
     radial-gradient(circle at 73% 80%, rgb(191 166 138 / 11%) 0%, transparent 45%),
@@ -597,6 +598,7 @@ body {
   display: grid;
   gap: 0.8rem;
   align-content: start;
+  background: var(--workspace-main-atmosphere);
 }
 
 .workspace-main-shell {
@@ -1678,6 +1680,16 @@ input[type="color"].list-row {
   opacity: 0.86;
 }
 
+.dashboard-hero-stat > div {
+  display: grid;
+  gap: 0.06rem;
+}
+
+.dashboard-hero-stat strong,
+.dashboard-hero-stat small {
+  display: block;
+}
+
 .is-canonical-dashboard .dashboard-hero-story {
   max-width: 13.5rem;
 }
@@ -1711,6 +1723,8 @@ input[type="color"].list-row {
 
 .is-canonical-dashboard .dashboard-hero-stat small {
   font-size: 0.61rem;
+  max-width: 4.6rem;
+  line-height: 1.16;
 }
 
 .dashboard-hero-landscape {
@@ -1968,9 +1982,9 @@ input[type="color"].list-row {
 }
 
 .is-canonical-dashboard .dashboard-focus-card h2 {
-  font-size: clamp(1.32rem, 1.6vw, 1.56rem);
+  font-size: clamp(1.24rem, 1.46vw, 1.44rem);
   line-height: 0.94;
-  max-width: 11.8rem;
+  max-width: 13.8rem;
 }
 
 .is-canonical-dashboard .dashboard-focus-card p {
@@ -1994,10 +2008,12 @@ input[type="color"].list-row {
 
 .is-canonical-dashboard .dashboard-focus-card .btn-primary {
   min-width: 7.8rem;
+  width: 100%;
+  max-width: 13.4rem;
   padding-inline: 0.88rem;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 0.42rem;
 }
 
@@ -3407,16 +3423,16 @@ input[type="color"].list-row {
 
 @media (min-width: 1120px) {
   .workspace-bg {
-    padding: 1rem;
+    padding: 0;
   }
 
   .workspace-stage {
-    min-height: calc(100vh - 2rem);
-    border: 1px solid rgb(214 206 194 / 68%);
-    border-radius: 2rem;
-    overflow: hidden;
-    background: linear-gradient(180deg, rgb(255 251 243 / 84%), rgb(249 245 236 / 76%));
-    box-shadow: 0 22px 50px -34px rgb(75 63 52 / 24%);
+    min-height: 100vh;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+    background: none;
+    box-shadow: none;
   }
 
   .workspace-rail {

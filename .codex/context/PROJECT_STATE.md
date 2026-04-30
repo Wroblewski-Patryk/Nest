@@ -1521,3 +1521,22 @@ Last updated: 2026-04-29
   the remaining gap now concentrated in painterly nuance and ultra-fine
   spacing details, recorded in:
   `docs/ux/nest_252_dashboard_parity_review_phaseY_2026-04-29.md`
+- Dashboard metric stack and focus CTA pass landed on 2026-04-29 to improve
+  hero metric label stacking and calm the `Now focus` CTA/title rhythm in:
+  `apps/web/src/app/globals.css`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseZ.png`
+- Phase Z review on 2026-04-29 confirmed another narrow fidelity gain, with
+  remaining drift now primarily painterly and ultra-fine spacing based,
+  recorded in:
+  `docs/ux/nest_254_dashboard_parity_review_phaseZ_2026-04-29.md`
+- Shell container flattening and dashboard finish pass landed on 2026-04-30
+  to remove the rounded desktop workspace wrapper and move atmosphere into the
+  real content plane in:
+  `apps/web/src/app/globals.css`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-web-parity-preview-phaseAA.png`
+- Phase AA review on 2026-04-30 confirmed that shell flattening materially
+  improved canonical fidelity and raised the baseline for all workspace
+  screens, recorded in:
+  `docs/ux/nest_256_dashboard_parity_review_phaseAA_2026-04-30.md`

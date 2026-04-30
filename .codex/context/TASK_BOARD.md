@@ -4728,3 +4728,41 @@ Last updated: 2026-04-29
       `docs/ux/nest_252_dashboard_parity_review_phaseY_2026-04-29.md`.
     - Confirmed another small but real convergence step.
 
+- [x] NEST-253 Implement dashboard metric stack and focus CTA pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-29
+  - Notes:
+    - Stacked hero metric labels more faithfully.
+    - Refined `Now focus` title and CTA rhythm.
+    - Refreshed evidence in
+      `docs/ux_canonical_artifacts/2026-04-29/nest-dashboard-web-parity-preview-phaseZ.png`.
+
+- [x] NEST-254 Review dashboard parity phase Z
+  - Status: DONE
+  - Owner: Review Agent
+  - Done on: 2026-04-29
+  - Notes:
+    - Review recorded in
+      `docs/ux/nest_254_dashboard_parity_review_phaseZ_2026-04-29.md`.
+    - Confirmed another narrow but visible fidelity gain.
+
+- [x] NEST-255 Flatten shell container and continue dashboard finish
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-30
+  - Notes:
+    - Removed desktop rounded workspace wrapper framing.
+    - Moved aura atmosphere from `workspace-bg` into `workspace-main`.
+    - Refreshed evidence in
+      `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-web-parity-preview-phaseAA.png`.
+
+- [x] NEST-256 Review dashboard parity phase AA
+  - Status: DONE
+  - Owner: Review Agent
+  - Done on: 2026-04-30
+  - Notes:
+    - Review recorded in
+      `docs/ux/nest_256_dashboard_parity_review_phaseAA_2026-04-30.md`.
+    - Confirmed that shell flattening materially improved canonical fidelity.
+

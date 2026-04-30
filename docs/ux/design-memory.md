@@ -112,6 +112,13 @@
   invention: micro-adjustments to metric spacing, label scale, and ledger row
   density can produce visible gains once structure and art direction are
   already close.
+- When hero metrics still feel "coded", first force value/label stacking and
+  tighten the text block before changing broader layout proportions. This tends
+  to produce a cleaner parity gain with less collateral drift.
+- If a canonical screen does not show a desktop "object frame", do not keep a
+  rounded outer workspace wrapper just because it feels premium. Move
+  atmosphere and color into the real content plane instead of preserving a
+  decorative shell that the reference does not have.
 
 ## Finish Propagation Rules (2026-04-26)
 
