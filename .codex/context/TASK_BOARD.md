@@ -4785,3 +4785,24 @@ Last updated: 2026-04-29
       `docs/ux/nest_258_dashboard_parity_review_phaseAC_2026-04-30.md`.
     - Confirmed another meaningful reduction of implementation feel.
 
+- [x] NEST-259 Replace dashboard container gradients with painterly asset pack
+  - Status: DONE
+  - Owner: Execution Agent
+  - Done on: 2026-04-30
+  - Notes:
+    - Generated and wired a painterly dashboard background asset pack.
+    - Moved hero, focus, journal, support-card, and workspace surfaces onto
+      PNG-backed materials.
+    - Refreshed evidence in
+      `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-web-parity-preview-phaseAD.png`.
+
+- [x] NEST-260 Review dashboard parity phase AD
+  - Status: DONE
+  - Owner: Review Agent
+  - Done on: 2026-04-30
+  - Notes:
+    - Review recorded in
+      `docs/ux/nest_260_dashboard_parity_review_phaseAD_2026-04-30.md`.
+    - Confirmed a strong medium-level fidelity gain over gradient-based
+      surfaces.
+

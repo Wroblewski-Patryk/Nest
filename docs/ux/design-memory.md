@@ -89,6 +89,9 @@
 - For founder-style Nest dashboard parity, painterly hero and reflection
   regions may use workspace-bound raster assets when code-native gradients no
   longer reproduce the required watercolor softness faithfully.
+- Once that threshold is crossed, extend the same logic to the rest of the
+  dashboard material family. If the hero becomes painterly but the container
+  surfaces remain gradient-driven, the screen still reads inconsistent.
 - For founder-style Nest dashboard shell parity, symbolic ornamental CSS motifs
   such as brand emblems, potted-plant vignettes, or decorative foliage should
   be replaced with target-derived assets once the symbolic version becomes the
@@ -139,6 +142,20 @@
   with remaining drift now concentrated in `Now focus` material softness,
   support-rail proportion, and hero microspacing, recorded in:
   `docs/ux/nest_258_dashboard_parity_review_phaseAC_2026-04-30.md`
+- Dashboard container background asset pack landed on 2026-04-30 to replace
+  key gradient-heavy dashboard surfaces with painterly PNG assets in:
+  `apps/web/src/app/globals.css`
+  `apps/web/public/assets/dashboard/dashboard-hero-scene-canonical-v2.png`
+  `apps/web/public/assets/dashboard/dashboard-focus-panel-canonical-v2.png`
+  `apps/web/public/assets/dashboard/dashboard-journal-card-canonical-v2.png`
+  `apps/web/public/assets/dashboard/dashboard-support-card-wash-canonical-v1.png`
+  `apps/web/public/assets/dashboard/workspace-main-atmosphere-canonical-v1.png`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-web-parity-preview-phaseAD.png`
+- Phase AD review on 2026-04-30 confirmed that the dashboard now reads less
+  like a gradient-assembled system and more like a cohesive editorial object,
+  recorded in:
+  `docs/ux/nest_260_dashboard_parity_review_phaseAD_2026-04-30.md`
 
 ## Finish Propagation Rules (2026-04-26)
 

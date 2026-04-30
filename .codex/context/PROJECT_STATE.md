@@ -1554,3 +1554,17 @@ Last updated: 2026-04-29
   in `Now focus` material softness, support-rail proportion, and hero
   microspacing, recorded in:
   `docs/ux/nest_258_dashboard_parity_review_phaseAC_2026-04-30.md`
+- Dashboard container background asset pack landed on 2026-04-30 to replace
+  key gradient-heavy surfaces with painterly PNG assets in:
+  `apps/web/src/app/globals.css`
+  `apps/web/public/assets/dashboard/dashboard-hero-scene-canonical-v2.png`
+  `apps/web/public/assets/dashboard/dashboard-focus-panel-canonical-v2.png`
+  `apps/web/public/assets/dashboard/dashboard-journal-card-canonical-v2.png`
+  `apps/web/public/assets/dashboard/dashboard-support-card-wash-canonical-v1.png`
+  `apps/web/public/assets/dashboard/workspace-main-atmosphere-canonical-v1.png`
+  with refreshed parity evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-web-parity-preview-phaseAD.png`
+- Phase AD review on 2026-04-30 confirmed that the dashboard now has a more
+  cohesive painterly medium, with remaining differences concentrated in blend
+  calibration, support-surface proportion, and microtypography, recorded in:
+  `docs/ux/nest_260_dashboard_parity_review_phaseAD_2026-04-30.md`
