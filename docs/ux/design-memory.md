@@ -51,6 +51,11 @@
 - Insight footer strip:
   Dashboard-like module surfaces benefit from one closing low-noise insight or
   guidance strip that ends the page with calm clarity.
+- Mobile dashboard canonical order:
+  Mobile Dashboard should stack header, `Today at a glance`, dominant
+  `Now focus`, module nav, day-flow timeline, execution panels, reflection,
+  quick add, life areas, and insight while preserving the same mental model as
+  desktop.
 - Showcase fallback:
   Canonical entry screens should preserve a premium visual composition even
   when the account is sparse or preview data is unavailable; fallback content
@@ -120,6 +125,11 @@
   Gentle hover lift and subtle active-state sheen are allowed on canonical
   Planning surfaces when they respect reduced-motion preferences and do not
   distract from the calm weekly composition.
+- Mobile planning canonical order:
+  Mobile Planning should stack weekly direction, dominant `Now planning`, module
+  nav, weekly planning flow, relational workspace tabs, clarity/quick-add/
+  pressure support, and planning ladder. Do not carry lower legacy Kanban or
+  preview error clutter into the canonical mobile target.
 
 ## Calendar Canonical Patterns (2026-04-30)
 
@@ -267,13 +277,24 @@
   like a gradient-assembled system and more like a cohesive editorial object,
   recorded in:
   `docs/ux/nest_260_dashboard_parity_review_phaseAD_2026-04-30.md`
+- Dashboard mobile canonical reference was approved on 2026-04-30 and recorded
+  in:
+  `docs/ux/nest_197_dashboard_canonical_direction_2026-04-26.md`
+  with artifact:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-canonical-reference-mobile.png`.
+  Future Dashboard mobile implementation should treat this image as a
+  specification for hero progress, `Now focus`, module nav, day-flow timeline,
+  execution panels, warm reflection, quick add, life areas, and insight order.
 - Planning canonical reference was approved on 2026-04-30 and recorded in:
   `docs/ux/nest_261_planning_canonical_direction_2026-04-30.md`
-  with artifact:
+  with artifacts:
   `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference.png`
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference-mobile.png`.
   Future Planning implementation should treat this image as a specification,
   especially for hero composition, `Now planning`, relational task rows,
-  support rail, and the `Goal -> Target -> List -> Next task` ladder.
+  support rail, mobile hierarchy, and the `Goal -> Target -> List -> Next task`
+  ladder.
 - Planning canonical phase A landed on 2026-04-30 in:
   `apps/web/src/app/tasks/page.tsx`,
   `apps/web/src/components/workspace-primitives.tsx`,
@@ -349,8 +370,15 @@
   `docs/ux_canonical_artifacts/2026-04-30/nest-calendar-canonical-reference-mobile.png`.
   Future Calendar implementation should treat these images as specifications,
   especially for `Today's time map`, `Now on deck`, day-flow timeline, event
-  intelligence, support rail, and the `Goal -> Task/List -> Calendar event ->
+  intelligence, support rail, and `Goal -> Task/List -> Calendar event ->
   Reflection` ladder.
+- Calendar canonical phase A landed on 2026-04-30 in:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/globals.css`
+  with report:
+  `docs/ux/nest_272_calendar_canonical_phaseA_2026-04-30.md`
+  and evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-calendar-web-parity-preview-phaseA.png`.
 - Journal canonical direction was approved on 2026-04-30 and recorded in:
   `docs/ux/nest_269_journal_canonical_direction_2026-04-30.md`
   with artifacts:

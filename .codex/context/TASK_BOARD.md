@@ -24,6 +24,51 @@ Last updated: 2026-04-30
 
 ## Backlog
 
+- [x] NEST-272 Implement Calendar canonical phase A
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-268
+  - Done on: 2026-04-30
+  - Notes:
+    - Rebuilt the web `/calendar` route into a canonical Calendar room with
+      `Today's time map`, `Now on deck`, a day timeline, event intelligence,
+      support rail, and `Goal -> Task or list -> Calendar event -> Reflection`
+      ladder.
+    - Preserved live event creation, editing, deletion, and refresh paths
+      below the canonical viewport.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_272_calendar_canonical_phaseA_2026-04-30.md`.
+    - Captured evidence:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-calendar-web-parity-preview-phaseA.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
+- [x] NEST-271 Capture Dashboard and Planning mobile canonical references
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Done on: 2026-04-30
+  - Notes:
+    - Added Dashboard mobile canonical reference:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-canonical-reference-mobile.png`.
+    - Added Planning mobile canonical reference:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference-mobile.png`.
+    - Updated canonical direction docs:
+      `docs/ux/nest_197_dashboard_canonical_direction_2026-04-26.md`
+      and
+      `docs/ux/nest_261_planning_canonical_direction_2026-04-30.md`.
+    - Updated design memory with mobile canonical order for Dashboard and
+      Planning, including the rule that Planning mobile must not carry legacy
+      Kanban, setup, preview-error, or board-filter clutter into the canonical
+      target.
+    - Validation:
+      documentation and artifact-only change; no runtime validation required.
+
 - [x] NEST-270 Polish canonical Planning composers and status strip
   - Status: DONE
   - Owner: Execution Agent

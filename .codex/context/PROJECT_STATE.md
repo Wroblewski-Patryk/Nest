@@ -24,6 +24,27 @@ Last updated: 2026-04-30
 
 ## Recent Execution Updates
 
+- 2026-04-30: Completed `NEST-272` Calendar canonical phase A. Rebuilt the
+  web `/calendar` route into a canonical Calendar room with `Today's time
+  map`, `Now on deck`, day timeline, event intelligence, support rail, and a
+  time ladder while preserving live event add/edit/delete flows below the
+  canonical viewport. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report and evidence in:
+  `docs/ux/nest_272_calendar_canonical_phaseA_2026-04-30.md`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-calendar-web-parity-preview-phaseA.png`.
+- 2026-04-30: Completed `NEST-271` Dashboard and Planning mobile canonical
+  reference capture. Added mobile canonical artifacts in:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-canonical-reference-mobile.png`
+  and
+  `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference-mobile.png`.
+  Updated the canonical direction docs:
+  `docs/ux/nest_197_dashboard_canonical_direction_2026-04-26.md`
+  and
+  `docs/ux/nest_261_planning_canonical_direction_2026-04-30.md`.
+  Updated `docs/ux/design-memory.md` so future mobile work treats Dashboard
+  and Planning mobile hierarchy as a specification rather than relying on
+  desktop-only references or implementation preview screenshots.
 - 2026-04-30: Completed `NEST-270` Planning canonical composer polish. Added
   narrative composer framing, mini-stats, and quieter footer guidance across
   canonical Planning creation flows, and replaced the raw preview/live-data
