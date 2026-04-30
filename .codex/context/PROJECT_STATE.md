@@ -24,6 +24,15 @@ Last updated: 2026-04-30
 
 ## Recent Execution Updates
 
+- 2026-04-30: Completed `NEST-273` Journal canonical phase A. Rebuilt the web
+  `/journal` route into a canonical Journal room with `Today's reflection
+  room`, `Reflection focus`, a warm composer, softer recent-entry review,
+  support rail cards, and a reflection ladder while preserving journal-entry
+  and life-area CRUD paths. Updated:
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report and evidence in:
+  `docs/ux/nest_273_journal_canonical_phaseA_2026-04-30.md`,
+  `docs/ux_canonical_artifacts/2026-04-30/nest-journal-web-parity-preview-phaseA.png`.
 - 2026-04-30: Completed `NEST-272` Calendar canonical phase A. Rebuilt the
   web `/calendar` route into a canonical Calendar room with `Today's time
   map`, `Now on deck`, day timeline, event intelligence, support rail, and a

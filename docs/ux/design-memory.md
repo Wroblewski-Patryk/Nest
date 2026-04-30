@@ -386,9 +386,16 @@
   and
   `docs/ux_canonical_artifacts/2026-04-30/nest-journal-canonical-reference-mobile.png`.
   Future Journal implementation should treat these images as specifications,
-  especially for `Journal` naming, `Today's reflection room`, `Reflection
-  focus`, the warm composer, recent entries, support rail, and the `Day event
-  -> Feeling -> Life area -> Next intention` ladder.
+  especially for `Today's reflection room`, `Reflection focus`, warm composer,
+  living memory list, support rail, and the `Day event -> Feeling -> Life
+  area -> Next intention` ladder.
+- Journal canonical phase A landed on 2026-04-30 in:
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`
+  with report:
+  `docs/ux/nest_273_journal_canonical_phaseA_2026-04-30.md`
+  and evidence:
+  `docs/ux_canonical_artifacts/2026-04-30/nest-journal-web-parity-preview-phaseA.png`.
 
 ## Finish Propagation Rules (2026-04-26)
 

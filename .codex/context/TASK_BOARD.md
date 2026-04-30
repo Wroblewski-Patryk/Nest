@@ -24,6 +24,32 @@ Last updated: 2026-04-30
 
 ## Backlog
 
+- [x] NEST-273 Implement Journal canonical phase A
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-269
+  - Done on: 2026-04-30
+  - Notes:
+    - Rebuilt the web `/journal` route into a canonical Journal room with
+      `Today's reflection room`, `Reflection focus`, a warm composer, softer
+      recent-entry review, support rail cards, and a `Day event -> Feeling ->
+      Life area -> Next intention` ladder.
+    - Preserved journal-entry creation, editing, deletion, and life-area
+      management flows while lowering their administrative weight in the first
+      viewport.
+    - Updated implementation in:
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_273_journal_canonical_phaseA_2026-04-30.md`.
+    - Captured evidence:
+      `docs/ux_canonical_artifacts/2026-04-30/nest-journal-web-parity-preview-phaseA.png`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-272 Implement Calendar canonical phase A
   - Status: DONE
   - Owner: Execution Agent
