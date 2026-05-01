@@ -260,6 +260,10 @@
 - Journal showcase feed should feel edited, not placeholder-heavy:
   denser composer rows, shorter excerpts, and calmer row affordances usually
   match the approved desktop room better than verbose preview copy.
+- Journal showcase micro-details matter:
+  small cues like a quiet textarea count or passive row-action icons can move a
+  polished reflection room closer to canonical fidelity without changing the
+  underlying workflow.
 
 ## Workspace Shell Patterns (2026-04-26)
 

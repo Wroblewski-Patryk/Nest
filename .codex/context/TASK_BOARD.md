@@ -24,6 +24,27 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-287 Tighten Journal editorial fidelity
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-286
+  - Done on: 2026-05-01
+  - Notes:
+    - Added a subtle showcase textarea count so the Journal composer reads
+      closer to the approved writing surface.
+    - Replaced the generic showcase row affordance with calmer passive
+      edit/delete preview icons for recent entries.
+    - Updated implementation in:
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_287_journal_editorial_fidelity_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-286 Tighten Calendar and Journal lower-half parity
   - Status: DONE
   - Owner: Execution Agent

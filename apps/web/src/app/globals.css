@@ -3159,6 +3159,16 @@ input[type="color"].list-row {
   min-height: 7.8rem;
 }
 
+.journal-textarea-count {
+  display: block;
+  margin-top: -1.08rem;
+  padding-right: 0.18rem;
+  text-align: right;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
 .journal-canonical-composer.is-showcase .journal-composer-context {
   gap: 0.72rem;
 }
@@ -3360,6 +3370,22 @@ input[type="color"].list-row {
   grid-template-columns: auto minmax(0, 1.2fr) minmax(0, 0.86fr) auto;
   gap: 0.8rem;
   padding: 0.74rem 0;
+}
+
+.journal-entry-preview-icon {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 999px;
+  border: 1px solid rgb(214 206 193 / 70%);
+  background: rgb(255 255 255 / 72%);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.journal-entry-preview-icon svg {
+  width: 0.94rem;
+  height: 0.94rem;
 }
 
 .journal-entry-row-empty {

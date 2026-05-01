@@ -767,6 +767,7 @@ export default function JournalPage() {
   const journalStatusMessage = errorMessage || feedback;
   const showJournalStatusStrip = !useJournalShowcase;
   const composerDateValue = useJournalShowcase && !entryDate ? "2025-05-23" : entryDate;
+  const showcaseReflectionCount = useJournalShowcase ? entryBody.length : null;
 
   return (
     <WorkspaceShell
@@ -918,6 +919,7 @@ export default function JournalPage() {
                     rows={5}
                     disabled={isCreatingEntry}
                   />
+                  {useJournalShowcase ? <small className="journal-textarea-count">{showcaseReflectionCount}</small> : null}
                 </label>
 
                 <div className="journal-composer-context">
@@ -1132,8 +1134,13 @@ export default function JournalPage() {
                               </div>
                             </div>
                             <p className="journal-entry-excerpt">{entry.body.slice(0, 112)}...</p>
-                            <div className="journal-entry-actions">
-                              <span className="planning-row-actions is-muted">Read</span>
+                            <div className="journal-entry-actions" aria-hidden="true">
+                              <span className="journal-entry-preview-icon">
+                                <JournalGlyph name="edit" />
+                              </span>
+                              <span className="journal-entry-preview-icon">
+                                <JournalGlyph name="trash" />
+                              </span>
                             </div>
                           </>
                         ) : (

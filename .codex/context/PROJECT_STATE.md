@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-287` Journal editorial fidelity pass. Added a
+  subtle showcase textarea count in the Journal composer and replaced the
+  generic showcase row affordance with calmer passive action icons so the
+  recent-entry preview reads closer to the approved desktop memory list.
+  Updated:
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_287_journal_editorial_fidelity_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-286` Calendar and Journal lower-half parity
   pass. Calendar showcase now uses more reference-aligned ladder copy and node
   content so the lower story reads closer to the canonical `Event timeline ->
