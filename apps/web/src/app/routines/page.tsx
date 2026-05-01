@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { clearAuthSession } from "@/lib/auth-session";
 import { nestApiClient } from "@/lib/api-client";
+import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type RoutineStep = {
   id: string;
@@ -46,16 +47,7 @@ function getErrorStatus(error: unknown): number | null {
 }
 
 function getErrorMessage(error: unknown): string {
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "payload" in error &&
-    typeof (error as { payload?: unknown }).payload === "object" &&
-    typeof (error as { payload: { message?: unknown } }).payload?.message === "string"
-  ) {
-    return (error as { payload: { message: string } }).payload.message;
-  }
-  return "Routine request failed.";
+  return getUserSafeErrorMessage(error, "We couldn't update routines right now");
 }
 
 export default function RoutinesPage() {

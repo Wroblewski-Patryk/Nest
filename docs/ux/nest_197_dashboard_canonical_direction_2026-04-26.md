@@ -13,8 +13,9 @@ becomes:
 
 - Source of truth type: `approved_snapshot`
 - Approval context: founder-approved generated concept on 2026-04-26
-- Canonical artifact:
+- Canonical artifacts:
   - `docs/ux_canonical_artifacts/2026-04-26/nest-dashboard-canonical-preview.png`
+  - `docs/ux_canonical_artifacts/2026-04-30/nest-dashboard-canonical-reference-mobile.png`
 - Supporting repository truth reviewed:
   - `docs/ux/visual-direction-brief.md`
   - `docs/ux/brand-personality-tokens.md`
@@ -27,7 +28,9 @@ becomes:
 
 ## Canonical Preview
 
-![Nest dashboard canonical preview](../ux_canonical_artifacts/2026-04-26/nest-dashboard-canonical-preview.png)
+![Nest dashboard canonical desktop preview](../ux_canonical_artifacts/2026-04-26/nest-dashboard-canonical-preview.png)
+
+![Nest dashboard canonical mobile reference](../ux_canonical_artifacts/2026-04-30/nest-dashboard-canonical-reference-mobile.png)
 
 ## Dashboard Job To Be Done
 
@@ -185,6 +188,9 @@ This artifact is desktop-first, but it defines cross-surface identity.
 - Collapse hero metrics into one concise summary band.
 - Timeline becomes vertically stacked with `Now` first when space is tight.
 - Reflection stays warm and quick, never form-heavy.
+- Use the mobile canonical reference as the target for hierarchy and order:
+  header, hero progress, `Now focus`, mobile module nav, day flow, execution,
+  reflection, quick add, life areas, and insight.
 
 ### Tablet
 

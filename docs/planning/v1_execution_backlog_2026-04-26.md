@@ -70,11 +70,25 @@ Largest remaining `v1` gaps:
     - no duplicated `describeApiIssue` / `getErrorMessage` variants remain on
       the touched surfaces.
 
-- [ ] `NEST-209` Unify web and mobile error taxonomy wording baseline
+- [x] `NEST-209` Unify web and mobile error taxonomy wording baseline
   - Scope:
     - compare current web/mobile issue descriptions,
     - reconcile wording for the same status classes,
     - keep machine-readable behavior intact.
+  - Done on: 2026-05-01
+  - Notes:
+    - Moved API error taxonomy parsing into `@nest/shared-types` so web and
+      mobile reuse the same field-message, payload-message, and status-based
+      fallback contract.
+    - Replaced web core-route `...request failed` fallbacks with calmer
+      action-oriented copy across Planning, Calendar, Journal, Dashboard,
+      Habits, Routines, and Life Areas.
+    - Added task report:
+      `docs/planning/nest_209_web_mobile_error_taxonomy_wording_baseline_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm exec tsc --noEmit` in `apps/mobile`.
 
 ### Wave B - Localization Closure For The Core V1 Path
 

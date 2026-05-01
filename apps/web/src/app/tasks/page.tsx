@@ -9,6 +9,7 @@ import {
 } from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
 import { nestApiClient } from "@/lib/api-client";
+import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type TaskStatus = "todo" | "in_progress" | "done" | "canceled";
 type TaskPriority = "low" | "medium" | "high" | "urgent";
@@ -107,38 +108,7 @@ function getErrorStatus(error: unknown): number | null {
 }
 
 function getErrorMessage(error: unknown): string {
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "payload" in error &&
-    typeof (error as { payload?: unknown }).payload === "object" &&
-    (error as { payload: { errors?: unknown } }).payload?.errors &&
-    typeof (error as { payload: { errors: unknown } }).payload.errors === "object"
-  ) {
-    const details = (error as { payload: { errors: Record<string, unknown> } }).payload.errors;
-    const firstFieldError = Object.values(details).find(
-      (value) => Array.isArray(value) && typeof value[0] === "string"
-    ) as string[] | undefined;
-    if (firstFieldError?.[0]) {
-      return firstFieldError[0];
-    }
-  }
-
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "payload" in error &&
-    typeof (error as { payload?: unknown }).payload === "object" &&
-    typeof (error as { payload: { message?: unknown } }).payload?.message === "string"
-  ) {
-    const message = (error as { payload: { message: string } }).payload.message;
-    if (message.toLowerCase().includes("per page field must not be greater than 100")) {
-      return "Too many items were requested at once. Refresh and try again.";
-    }
-
-    return message;
-  }
-  return "Planning request failed. Try refreshing this view.";
+  return getUserSafeErrorMessage(error, "We couldn't update planning right now");
 }
 
 function toDateInputValue(value: string | null): string {

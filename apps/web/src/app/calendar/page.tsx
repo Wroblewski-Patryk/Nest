@@ -10,6 +10,7 @@ import {
 } from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
 import { nestApiClient } from "@/lib/api-client";
+import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type CalendarEventItem = {
   id: string;
@@ -67,16 +68,7 @@ function getErrorStatus(error: unknown): number | null {
 }
 
 function getErrorMessage(error: unknown): string {
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "payload" in error &&
-    typeof (error as { payload?: unknown }).payload === "object" &&
-    typeof (error as { payload: { message?: unknown } }).payload?.message === "string"
-  ) {
-    return (error as { payload: { message: string } }).payload.message;
-  }
-  return "Calendar request failed.";
+  return getUserSafeErrorMessage(error, "We couldn't update calendar right now");
 }
 
 function toIso(input: string): string | null {
@@ -611,16 +603,17 @@ export default function CalendarPage() {
 
   const weekStripDays = useMemo(() => {
     const weekStart = startOfWeekMonday(anchorDay);
-    return Array.from({ length: 5 }, (_, index) => addDays(weekStart, index));
+    return Array.from({ length: 7 }, (_, index) => addDays(weekStart, index));
   }, [anchorDay]);
   const showcaseWindowLabel = useMemo(() => {
-    const showcaseEnd = addDays(windowEnd, -1);
-    return `${windowStart.toLocaleDateString(undefined, { month: "short", day: "numeric" })} - ${showcaseEnd.toLocaleDateString(undefined, {
+    const showcaseWeekStart = startOfWeekMonday(anchorDay);
+    const showcaseWeekEnd = addDays(showcaseWeekStart, 6);
+    return `${showcaseWeekStart.toLocaleDateString(undefined, { month: "short", day: "numeric" })} - ${showcaseWeekEnd.toLocaleDateString(undefined, {
       month: "short",
       day: "numeric",
       year: "numeric",
     })}`;
-  }, [windowEnd, windowStart]);
+  }, [anchorDay]);
 
   const dayDensity = useMemo(
     () =>

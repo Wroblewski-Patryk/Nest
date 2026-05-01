@@ -11,12 +11,11 @@ Primary planning source:
 
 ## NOW (execute in order)
 
-- [ ] `NEST-209` reconcile web and mobile error taxonomy wording baseline
 - [ ] `NEST-210` audit live localization coverage on the founder-critical path
+- [ ] `NEST-211` move web shell and dashboard copy to shared localization keys
 
 ## NEXT
 
-- [ ] `NEST-211` move web shell and dashboard copy to shared localization keys
 - [ ] `NEST-212` move mobile founder-critical shell copy to shared localization
   keys
 - [ ] `NEST-213` close localization behavior for settings-driven language

@@ -7,6 +7,126 @@ export {
   translate,
 } from "./localization.js";
 
+/**
+ * @param {unknown} error
+ * @returns {number | null}
+ */
+export function getApiErrorStatus(error) {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "status" in error &&
+    typeof error.status === "number"
+  ) {
+    return error.status;
+  }
+
+  return null;
+}
+
+/**
+ * @param {unknown} error
+ * @returns {string | null}
+ */
+export function getApiPayloadMessage(error) {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "payload" in error &&
+    typeof error.payload === "object" &&
+    error.payload !== null &&
+    typeof error.payload.message === "string"
+  ) {
+    return error.payload.message;
+  }
+
+  return null;
+}
+
+/**
+ * @param {unknown} error
+ * @returns {string | null}
+ */
+export function getApiFieldErrorMessage(error) {
+  if (
+    typeof error !== "object" ||
+    error === null ||
+    !("payload" in error) ||
+    typeof error.payload !== "object" ||
+    error.payload === null ||
+    !("errors" in error.payload) ||
+    typeof error.payload.errors !== "object" ||
+    error.payload.errors === null
+  ) {
+    return null;
+  }
+
+  const firstFieldError = Object.values(error.payload.errors).find(
+    (value) => Array.isArray(value) && typeof value[0] === "string"
+  );
+
+  return Array.isArray(firstFieldError) && typeof firstFieldError[0] === "string"
+    ? firstFieldError[0]
+    : null;
+}
+
+/**
+ * @param {unknown} error
+ * @returns {string}
+ */
+export function describeApiIssue(error) {
+  const status = getApiErrorStatus(error);
+
+  if (status === 401) {
+    return "Please sign in again and retry.";
+  }
+
+  if (status === 403) {
+    return "Your account does not currently have access to this action.";
+  }
+
+  if (status === 404) {
+    return "The requested data is no longer available.";
+  }
+
+  if (status === 422) {
+    return "Some details need attention before this can be saved.";
+  }
+
+  if (status === 429) {
+    return "Too many requests were sent at once. Please retry in a moment.";
+  }
+
+  if (status !== null && status >= 500) {
+    return "Nest is having trouble completing this request right now. Please try again shortly.";
+  }
+
+  return "Please try again in a moment.";
+}
+
+/**
+ * @param {unknown} error
+ * @param {string=} fallbackAction
+ * @returns {string}
+ */
+export function getUserSafeErrorMessage(error, fallbackAction = "We couldn't complete that request right now") {
+  const fieldMessage = getApiFieldErrorMessage(error);
+  if (fieldMessage) {
+    return fieldMessage;
+  }
+
+  const payloadMessage = getApiPayloadMessage(error);
+  if (payloadMessage) {
+    if (payloadMessage.toLowerCase().includes("per page field must not be greater than 100")) {
+      return "Too many items were requested at once. Please refresh and try again.";
+    }
+
+    return payloadMessage;
+  }
+
+  return `${fallbackAction}. ${describeApiIssue(error)}`;
+}
+
 export const uiTokens = Object.freeze({
   palette: {
     surface: "#FDFCF8",

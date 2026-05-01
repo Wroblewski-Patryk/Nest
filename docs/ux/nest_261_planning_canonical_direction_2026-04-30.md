@@ -13,8 +13,9 @@ module's first serious canonical rebuild.
 
 - Source of truth type: `approved_snapshot`
 - Approval context: founder-approved Planning concept on 2026-04-30
-- Canonical artifact:
+- Canonical artifacts:
   - `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference.png`
+  - `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference-mobile.png`
 - Fidelity target: structurally faithful first, then progressively
   screenshot-close as shared dashboard materials become reusable.
 - Supporting repository truth:
@@ -29,7 +30,9 @@ module's first serious canonical rebuild.
 
 ## Canonical Preview
 
-![Nest planning canonical reference](../ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference.png)
+![Nest planning canonical desktop reference](../ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference.png)
+
+![Nest planning canonical mobile reference](../ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference-mobile.png)
 
 ## Planning Job To Be Done
 
@@ -132,6 +135,10 @@ The canonical desktop Planning screen is composed from six layers.
   them into generic gradients if visual parity starts to drift.
 - Preserve web/mobile parity for the core module model even if mobile uses a
   different layout.
+- Treat the mobile canonical reference as the target for mobile hierarchy and
+  remove legacy preview clutter from future mobile parity work: no setup
+  leftovers, preview error blocks, board filters, or legacy Kanban surface in
+  the canonical first-pass mobile experience.
 
 ## Required States
 

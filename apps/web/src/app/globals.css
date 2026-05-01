@@ -2471,8 +2471,8 @@ input[type="color"].list-row {
 
 .calendar-week-strip {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.56rem;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.48rem;
 }
 
 .calendar-week-pill {
@@ -5958,10 +5958,37 @@ input[type="color"].list-row {
   .calendar-canonical-grid,
   .calendar-canonical-flow-row,
   .calendar-day-grid,
-  .calendar-week-strip,
   .journal-canonical-grid,
   .journal-composer-topline {
     grid-template-columns: 1fr;
+  }
+
+  .calendar-week-strip {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.34rem;
+  }
+
+  .calendar-week-pill {
+    min-height: auto;
+    padding: 0.58rem 0.3rem 0.46rem;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .calendar-week-pill-head {
+    justify-items: center;
+  }
+
+  .calendar-week-pill small {
+    font-size: 0.66rem;
+  }
+
+  .calendar-week-pill strong {
+    font-size: 1rem;
+  }
+
+  .calendar-week-pill-density {
+    display: none;
   }
 
   .calendar-flow-toolbar,

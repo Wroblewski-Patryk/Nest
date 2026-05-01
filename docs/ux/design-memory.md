@@ -164,6 +164,10 @@
   In canonical preview, `Now on deck`, the centered `Now` lane, and the ladder
   should point to the same flagship event rather than drifting to whichever
   time block happens to sort first.
+- Calendar week orientation must stay whole on mobile:
+  when the approved mobile screen uses a Monday-to-Sunday strip, keep all seven
+  days visible in one horizontal row and reduce density copy before collapsing
+  the strip into a stacked layout.
 - Calendar showcase context fidelity:
   When the canonical reference implies origin, sync, and ownership context, the
   preview state should surface those cues directly instead of falling back to
@@ -531,3 +535,4 @@
 - Living cues stay subtle:
   Motion, time-awareness, and hover response should be shared language across
   modules, but always secondary to clarity and calm.
+

@@ -817,6 +817,12 @@ export type ApiErrorEnvelope = {
   };
 };
 
+export function getApiErrorStatus(error: unknown): number | null;
+export function getApiPayloadMessage(error: unknown): string | null;
+export function getApiFieldErrorMessage(error: unknown): string | null;
+export function describeApiIssue(error: unknown): string;
+export function getUserSafeErrorMessage(error: unknown, fallbackAction?: string): string;
+
 export type AuraVariant = "default" | "tasks" | "journal" | "calendar" | "insights";
 
 export type UiTokenContract = {
