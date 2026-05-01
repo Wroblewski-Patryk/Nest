@@ -779,6 +779,35 @@ export default function CalendarPage() {
   const showcaseOwnershipChips = useCalendarShowcase
     ? ["Personal", "Google synced", "Private"]
     : [];
+  const showcaseHourLabels = useMemo(
+    () => ["6 AM", "8 AM", "10 AM", "12 PM", "2 PM", "4 PM", "6 PM", "8 PM", "10 PM"],
+    []
+  );
+  const showcaseTimeboardLanes = useMemo(
+    () => [
+      {
+        key: "morning",
+        label: "Morning",
+        items: morningEvents.filter((entry) => entry.id !== nowTimelineEvent?.id),
+      },
+      {
+        key: "now",
+        label: "Now",
+        items: nowTimelineEvent ? [nowTimelineEvent] : [],
+      },
+      {
+        key: "afternoon",
+        label: "Afternoon",
+        items: afternoonEvents,
+      },
+      {
+        key: "evening",
+        label: "Evening",
+        items: eveningEvents,
+      },
+    ],
+    [afternoonEvents, eveningEvents, morningEvents, nowTimelineEvent]
+  );
 
   function moveWindow(direction: -1 | 1) {
     const anchor = fromDateInput(anchorDate);
@@ -1112,94 +1141,134 @@ export default function CalendarPage() {
                   })}
                 </div>
 
-                <div className="calendar-day-grid">
-                  <section className="calendar-time-column">
-                    <header>
-                      <span>Morning</span>
-                    </header>
-                    <div className="calendar-time-stack">
-                      {morningEvents.length === 0 ? (
-                        <p className="calendar-time-empty">Nothing anchored yet.</p>
-                      ) : (
-                        morningEvents.map((entry) => (
-                          <button
-                            key={entry.id}
-                            type="button"
-                            className={`calendar-time-card ${selectedEventId === entry.id ? "is-selected" : ""}`}
-                            onClick={() => setSelectedEventId(entry.id)}
-                          >
-                            <small>{eventTimingLabel(entry)}</small>
-                            <strong>{entry.title}</strong>
-                            <span>{toneLabel(resolveEventTone(entry))}</span>
-                          </button>
-                        ))
-                      )}
+                {useCalendarShowcase ? (
+                  <section className="calendar-showcase-timeboard" aria-label="Showcase day timeline">
+                    <div className="calendar-showcase-timeboard-head">
+                      <span />
+                      {showcaseTimeboardLanes.map((lane) => (
+                        <div key={lane.key} className={`calendar-showcase-lane-head ${lane.key === "now" ? "is-now" : ""}`}>
+                          <span>{lane.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="calendar-showcase-timeboard-body">
+                      <div className="calendar-showcase-hour-rail">
+                        {showcaseHourLabels.map((label) => (
+                          <span key={label}>{label}</span>
+                        ))}
+                      </div>
+                      {showcaseTimeboardLanes.map((lane) => (
+                        <div key={lane.key} className={`calendar-showcase-lane ${lane.key === "now" ? "is-now" : ""}`}>
+                          {lane.items.length === 0 ? (
+                            <p className="calendar-showcase-empty">Open space</p>
+                          ) : (
+                            lane.items.map((entry) => (
+                              <button
+                                key={entry.id}
+                                type="button"
+                                className={`calendar-showcase-block tone-${resolveEventTone(entry)} ${selectedEventId === entry.id ? "is-selected" : ""}`}
+                                onClick={() => setSelectedEventId(entry.id)}
+                              >
+                                <small>{eventTimingLabel(entry)}</small>
+                                <strong>{entry.title}</strong>
+                                <span>{toneLabel(resolveEventTone(entry))}</span>
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </section>
+                ) : (
+                  <div className="calendar-day-grid">
+                    <section className="calendar-time-column">
+                      <header>
+                        <span>Morning</span>
+                      </header>
+                      <div className="calendar-time-stack">
+                        {morningEvents.length === 0 ? (
+                          <p className="calendar-time-empty">Nothing anchored yet.</p>
+                        ) : (
+                          morningEvents.map((entry) => (
+                            <button
+                              key={entry.id}
+                              type="button"
+                              className={`calendar-time-card ${selectedEventId === entry.id ? "is-selected" : ""}`}
+                              onClick={() => setSelectedEventId(entry.id)}
+                            >
+                              <small>{eventTimingLabel(entry)}</small>
+                              <strong>{entry.title}</strong>
+                              <span>{toneLabel(resolveEventTone(entry))}</span>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </section>
 
-                  <section className="calendar-now-column">
-                    <header>
-                      <span>Now</span>
-                    </header>
-                    <article className="calendar-now-card">
-                      <small>{nowTimelineEvent ? eventTimingLabel(nowTimelineEvent) : "Open time"}</small>
-                      <strong>{nowTimelineEvent?.title ?? "The day still has room."}</strong>
-                      <p>
-                        {nowTimelineEvent
-                          ? `${toneLabel(resolveEventTone(nowTimelineEvent))} block with ${formatDurationLabel(durationMinutes(nowTimelineEvent))} of protected time.`
-                          : "Keep this pocket clear for the next meaningful action or a deliberate pause."}
-                      </p>
-                    </article>
-                  </section>
+                    <section className="calendar-now-column">
+                      <header>
+                        <span>Now</span>
+                      </header>
+                      <article className="calendar-now-card">
+                        <small>{nowTimelineEvent ? eventTimingLabel(nowTimelineEvent) : "Open time"}</small>
+                        <strong>{nowTimelineEvent?.title ?? "The day still has room."}</strong>
+                        <p>
+                          {nowTimelineEvent
+                            ? `${toneLabel(resolveEventTone(nowTimelineEvent))} block with ${formatDurationLabel(durationMinutes(nowTimelineEvent))} of protected time.`
+                            : "Keep this pocket clear for the next meaningful action or a deliberate pause."}
+                        </p>
+                      </article>
+                    </section>
 
-                  <section className="calendar-time-column">
-                    <header>
-                      <span>Afternoon</span>
-                    </header>
-                    <div className="calendar-time-stack">
-                      {afternoonEvents.length === 0 ? (
-                        <p className="calendar-time-empty">Afternoon is still light.</p>
-                      ) : (
-                        afternoonEvents.map((entry) => (
-                          <button
-                            key={entry.id}
-                            type="button"
-                            className={`calendar-time-card ${selectedEventId === entry.id ? "is-selected" : ""}`}
-                            onClick={() => setSelectedEventId(entry.id)}
-                          >
-                            <small>{eventTimingLabel(entry)}</small>
-                            <strong>{entry.title}</strong>
-                            <span>{toneLabel(resolveEventTone(entry))}</span>
-                          </button>
-                        ))
-                      )}
-                    </div>
-                  </section>
+                    <section className="calendar-time-column">
+                      <header>
+                        <span>Afternoon</span>
+                      </header>
+                      <div className="calendar-time-stack">
+                        {afternoonEvents.length === 0 ? (
+                          <p className="calendar-time-empty">Afternoon is still light.</p>
+                        ) : (
+                          afternoonEvents.map((entry) => (
+                            <button
+                              key={entry.id}
+                              type="button"
+                              className={`calendar-time-card ${selectedEventId === entry.id ? "is-selected" : ""}`}
+                              onClick={() => setSelectedEventId(entry.id)}
+                            >
+                              <small>{eventTimingLabel(entry)}</small>
+                              <strong>{entry.title}</strong>
+                              <span>{toneLabel(resolveEventTone(entry))}</span>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </section>
 
-                  <section className="calendar-time-column">
-                    <header>
-                      <span>Evening</span>
-                    </header>
-                    <div className="calendar-time-stack">
-                      {eveningEvents.length === 0 ? (
-                        <p className="calendar-time-empty">Evening is still open.</p>
-                      ) : (
-                        eveningEvents.map((entry) => (
-                          <button
-                            key={entry.id}
-                            type="button"
-                            className={`calendar-time-card ${selectedEventId === entry.id ? "is-selected" : ""}`}
-                            onClick={() => setSelectedEventId(entry.id)}
-                          >
-                            <small>{eventTimingLabel(entry)}</small>
-                            <strong>{entry.title}</strong>
-                            <span>{toneLabel(resolveEventTone(entry))}</span>
-                          </button>
-                        ))
-                      )}
-                    </div>
-                  </section>
-                </div>
+                    <section className="calendar-time-column">
+                      <header>
+                        <span>Evening</span>
+                      </header>
+                      <div className="calendar-time-stack">
+                        {eveningEvents.length === 0 ? (
+                          <p className="calendar-time-empty">Evening is still open.</p>
+                        ) : (
+                          eveningEvents.map((entry) => (
+                            <button
+                              key={entry.id}
+                              type="button"
+                              className={`calendar-time-card ${selectedEventId === entry.id ? "is-selected" : ""}`}
+                              onClick={() => setSelectedEventId(entry.id)}
+                            >
+                              <small>{eventTimingLabel(entry)}</small>
+                              <strong>{entry.title}</strong>
+                              <span>{toneLabel(resolveEventTone(entry))}</span>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </section>
+                  </div>
+                )}
 
                 <div className="calendar-flow-footer">
                   <span>Shift from overview to action without leaving the time map.</span>

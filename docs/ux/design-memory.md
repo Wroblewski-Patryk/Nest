@@ -180,6 +180,10 @@
   if the founder-approved screen relies on time-first copy, dense chips, and a
   more textured focus panel, use a route-specific focus section instead of
   forcing parity through the shared `DashboardFocusCard`.
+- Calendar showcase center may outgrow the shared day-grid:
+  if the canonical reference depends on an hour rail, explicit lane headings,
+  and block-like scheduled surfaces, use a route-specific showcase timeboard
+  rather than forcing fidelity through the generic card grid.
 
 ## Journal Canonical Patterns (2026-04-30)
 

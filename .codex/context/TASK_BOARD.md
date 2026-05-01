@@ -24,6 +24,27 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-283 Convert Calendar showcase center into a timeboard
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-282
+  - Done on: 2026-05-01
+  - Notes:
+    - Replaced the Calendar showcase card grid with a more timeline-like
+      schedule board that uses hour labels, lane headings, stronger `Now`
+      emphasis, and tone-based event blocks.
+    - Preserved the existing grid/card layout for non-showcase live states.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_283_calendar_showcase_timeline_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-282 Add route-specific showcase focus sections
   - Status: DONE
   - Owner: Execution Agent

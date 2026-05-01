@@ -24,6 +24,13 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-283` Calendar showcase timeline pass. Calendar
+  showcase now uses a more explicit timeboard with hour labels, lane headings,
+  centered `Now` emphasis, and tone-based event blocks instead of the previous
+  stacked-card day grid. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_283_calendar_showcase_timeline_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-282` showcase focus pass for Calendar and
   Journal. Calendar now uses a route-specific `Now on deck` focus surface in
   showcase mode, and Journal now uses a route-specific `Reflection focus` band
