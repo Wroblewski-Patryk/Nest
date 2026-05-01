@@ -24,6 +24,24 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-242 Web-first V1 and mobile V2 scope decision
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-241
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Recorded the user decision from 2026-05-02:
+      pause mobile application work for V1; implement current V1 views in the
+      web layer; mobile app is V2 scope.
+    - Updated the architecture split, founder-ready checklist, readiness
+      matrix, and `NEST-231` decision brief so mobile parity and mobile
+      authenticated API smoke no longer block V1.
+    - Added report:
+      `docs/planning/nest_242_web_first_v1_mobile_v2_scope_decision_2026-05-02.md`.
+    - Validation:
+      documentation consistency review and `git diff --check`.
+
 - [x] NEST-241 Mobile Habits localization closure
   - Status: DONE
   - Owner: Execution Agent
@@ -237,19 +255,23 @@ Last updated: 2026-05-01
       manual local preflight returned `204` with
       `Access-Control-Allow-Origin`.
 
-- [ ] NEST-231 Decide and implement mobile authenticated API session path
-  - Status: BLOCKED
+- [x] NEST-231 Decide and implement mobile authenticated API session path
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-232
+  - Done on: 2026-05-02
   - Priority: P0
   - Notes:
     - `NEST-229` found mobile web export cannot prove real authenticated API
       behavior because the mobile `nestApiClient` has no token source.
+    - Superseded for V1 by the 2026-05-02 user decision:
+      current V1 views are web-layer work, and the mobile application is V2
+      scope.
     - Decision brief:
       `docs/planning/nest_231_mobile_authenticated_api_session_path_2026-05-01.md`.
-    - Valid options:
-      implement real mobile auth/onboarding now, add a local smoke-session
-      bridge only, or narrow the V1 claim to web-first founder readiness.
+    - Result:
+      mobile auth/session work is deferred to V2 and no longer blocks V1
+      founder-ready evidence.
 
 - [x] NEST-229 Run founder smoke evidence for scoped V1 candidate
   - Status: DONE

@@ -1,23 +1,25 @@
 # V1 and V2 Delivery Split
 
-Last updated: 2026-04-26
+Last updated: 2026-05-02
 
 ## Purpose
 
 This document is the canonical architecture-level split between:
 
-- `v1`: practical day-to-day Nest product for the founder user,
-- `v2`: AI-assisted expansion built on top of the same core architecture.
+- `v1`: practical day-to-day Nest product for the founder user, delivered
+  through the web app as the primary operating surface,
+- `v2`: mobile application and AI-assisted expansion built on top of the same
+  core architecture.
 
 Use this file when deciding whether a capability belongs to the current
 delivery scope or to later target expansion.
 
 ## Core Rule
 
-- `v1` optimizes for practical usefulness, stability, parity, and release
-  readiness across backend, web, and mobile.
-- `v2` expands the same product with AI copilot capabilities and broader
-  platform sophistication.
+- `v1` optimizes for practical usefulness, stability, and release readiness
+  across backend and web.
+- `v2` expands the same product with the mobile app, AI copilot capabilities,
+  and broader platform sophistication.
 - `v2` must extend `v1`; it must not replace the core domain model or create a
   separate source of truth.
 
@@ -27,7 +29,8 @@ delivery scope or to later target expansion.
 - One PostgreSQL source of truth.
 - One shared authorization and policy layer.
 - One shared multi-tenant model with strict `tenant_id` isolation.
-- Web and mobile consume the same API contracts and domain vocabulary.
+- Web consumes the API contracts for V1; mobile must consume the same API
+  contracts and domain vocabulary when it is resumed in V2.
 - Integrations and AI actions are adapters over the same core product data.
 
 ## V1 Delivery Scope
@@ -36,7 +39,6 @@ delivery scope or to later target expansion.
 
 - backend API as the single source of truth,
 - web app as the primary operating surface,
-- mobile app as a parity client for core modules,
 - authenticated private workspace and onboarding flow,
 - tasks/lists,
 - goals/targets,
@@ -47,6 +49,12 @@ delivery scope or to later target expansion.
 - manual offline queue and manual sync baseline,
 - deployment, observability, backup, and release readiness required to run the
   product reliably.
+
+Mobile implementation, mobile authenticated session handling, mobile smoke
+evidence, and mobile parity closure are not part of the V1 release gate after
+the 2026-05-02 user decision. Existing mobile code can remain as V2 foundation,
+but new V1 delivery work should focus on web views, API reliability, and
+release evidence.
 
 ## Ownership Model
 
@@ -61,7 +69,7 @@ delivery scope or to later target expansion.
 
 - Founder-first usefulness over breadth.
 - Stable CRUD and practical day-to-day workflows before advanced systems.
-- Web/mobile parity for core modules.
+- Web-first founder readiness for core modules.
 - Clear contracts, tests, security validation, and operational reliability.
 - Domain choices must remain compatible with future AI collaboration.
 
@@ -78,6 +86,7 @@ The following are not required to declare `v1` successful:
 - advanced billing and dunning flows,
 - growth-loop analytics as a release requirement,
 - automatic background sync and offline-first merge sophistication.
+- mobile application delivery and mobile parity evidence.
 
 These capabilities may exist in documentation or implementation experiments,
 but they do not define the `v1` delivery gate.
@@ -87,6 +96,8 @@ but they do not define the `v1` delivery gate.
 `v2` is the AI-assisted and platform-expanded version of Nest. It can include:
 
 - conversational AI assistance across planning, execution, and reflection,
+- mobile application delivery using the same backend API, domain model,
+  localization baseline, and tenant boundaries,
 - explainable recommendations with source references,
 - approval-gated AI write actions,
 - proactive AI briefings,
@@ -146,7 +157,7 @@ Both modes must share one backend policy and audit model.
 | --- | --- | --- |
 | Backend API | required | extended |
 | Web app | required | extended |
-| Mobile app | required | extended |
+| Mobile app | deferred | required |
 | Core modules | required | refined |
 | Integrations baseline | optional but useful where it supports daily operation | expanded |
 | AI surface | foundation only, no release dependency | required |
@@ -158,8 +169,8 @@ Both modes must share one backend policy and audit model.
 
 When planning work:
 
-1. decide whether the task is required for `v1` usability, parity, reliability,
-   or release readiness,
+1. decide whether the task is required for `v1` web usability, backend/API
+   reliability, or release readiness,
 2. if not, default to `v2` unless there is an explicit approved reason to pull
    it earlier,
 3. do not let `v2` systems delay closure of `v1` core product quality.

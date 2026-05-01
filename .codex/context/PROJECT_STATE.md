@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-01
+Last updated: 2026-05-02
 
 ## Agent Workflow Snapshot
 
@@ -19,11 +19,20 @@ Last updated: 2026-05-01
 - Guardrails that must remain explicit in implementation:
   - multi-tenant isolation
   - human and AI actor boundaries
-  - web and mobile parity for core modules
+  - web-first V1 delivery; mobile application work is V2 scope after the
+    2026-05-02 user decision
   - localization baseline (`en`, `pl`)
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-242` web-first V1 and mobile V2 scope decision.
+  The user explicitly paused mobile application work for V1 and clarified that
+  current V1 views should be implemented in the web layer; the mobile
+  application is V2 scope. Updated the V1/V2 architecture split,
+  founder-ready checklist, readiness matrix, task board, and `NEST-231`
+  decision brief so mobile parity and mobile authenticated API smoke no longer
+  block V1. No runtime code changed. Report:
+  `docs/planning/nest_242_web_first_v1_mobile_v2_scope_decision_2026-05-02.md`.
 - 2026-05-01: Completed `NEST-241` Mobile Habits localization closure. Mobile
   Habits/Routines now uses shared EN/PL `mobile.habits.*` localization keys
   for loading, feedback, validation, delete alerts, metrics,
@@ -62,9 +71,8 @@ Last updated: 2026-05-01
   founder-ready checklist and readiness matrix now reflect current evidence
   from `NEST-233` through `NEST-236`: web route-local request cleanup,
   lower-route localization, V1 navigation scope alignment, and Mobile Calendar
-  localization closure. The docs still do not declare V1 founder-ready because
-  `NEST-231` remains blocked by a required mobile authenticated API session
-  decision. Report:
+  localization closure. Superseded by `NEST-242` for current scope: mobile
+  authenticated API session evidence is now V2, not a V1 blocker. Report:
   `docs/planning/nest_237_v1_readiness_truth_refresh_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-236` Mobile Calendar localization closure. Mobile
   Calendar event CRUD feedback, validation, alerts, placeholders, panel labels,
@@ -104,14 +112,14 @@ Last updated: 2026-05-01
   `getToken` source while the API requires Sanctum auth for core routes.
   Published decision brief:
   `docs/planning/nest_231_mobile_authenticated_api_session_path_2026-05-01.md`.
-  Implementation is blocked until the user chooses real mobile auth/onboarding,
-  a local smoke-session bridge, or a narrowed web-first V1 readiness claim.
+  Superseded by `NEST-242`: mobile auth/session work is deferred to V2 and no
+  longer blocks web-first V1.
 - 2026-05-01: Completed `NEST-232` web Calendar page-size contract fix. Web
   Calendar now requests events and tasks with `per_page: 100`, matching the API
   validation contract. Web typecheck and build passed, static inspection found
   no remaining `per_page: 200` in the route, and browser Calendar CRUD smoke
   passed real create/edit/delete through the web UI. Mobile authenticated API
-  smoke remains blocked by `NEST-231`. Report:
+  smoke is now deferred to V2 by `NEST-242`. Report:
   `docs/planning/nest_232_web_calendar_page_size_contract_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-230` local founder-smoke CORS defaults. API CORS
   now allows the documented local web/mobile smoke origins in local/testing

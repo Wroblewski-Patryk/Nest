@@ -5,8 +5,8 @@
 - ID: NEST-231
 - Title: Decide and implement mobile authenticated API session path
 - Task Type: planning
-- Current Stage: planning
-- Status: BLOCKED
+- Current Stage: post-release
+- Status: DONE
 - Owner: Execution Agent
 - Depends on: NEST-232
 - Priority: P0
@@ -35,7 +35,16 @@ path.
 
 ## Goal
 
-Choose the approved V1 mobile auth/session path before implementation.
+Record the mobile auth/session decision for the current V1 scope.
+
+## 2026-05-02 Decision
+
+The user explicitly paused mobile application work for V1 and clarified that
+current V1 views should be implemented in the web layer. The mobile application
+is V2 scope.
+
+As a result, this task no longer blocks V1 founder readiness. The mobile
+authenticated API session path should be revisited when V2 mobile work resumes.
 
 ## Architecture Mismatch
 
@@ -78,22 +87,21 @@ contract.
 
 ## Recommendation
 
-Choose Option A if full `v1 founder-ready` still requires mobile real-API
-parity. Choose Option C if the release claim is narrowed to web-first founder
-readiness. Avoid Option B unless the user explicitly wants a local smoke harness
-with no production/native claim.
+The 2026-05-02 user decision selects the web-first V1 path and moves mobile app
+delivery to V2. Avoid Option B unless a future V2 testing plan explicitly asks
+for a local smoke harness with no production/native claim.
 
 ## Acceptance Criteria
 
 - [x] mismatch is described
 - [x] valid options are documented
 - [x] no workaround token path is introduced
-- [x] implementation waits for explicit product/architecture decision
+- [x] implementation waits for V2 mobile planning
 
 ## Definition of Done
 
 - [x] decision brief exists
-- [x] task is blocked on explicit user decision
+- [x] task is deferred to V2 by explicit user decision
 - [x] docs/context reflect the blocker
 
 ## Validation Evidence
@@ -115,4 +123,4 @@ with no production/native claim.
   `docs/planning/nest_231_mobile_authenticated_api_session_path_2026-05-01.md`,
   plus planning/context docs.
 - What is incomplete:
-  implementation is blocked until Option A, B, or C is selected.
+  mobile auth/session implementation is deferred until V2 mobile planning.
