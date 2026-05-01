@@ -42,7 +42,7 @@ type NavIconName =
   | "assistant"
   | "settings";
 
-const NAV_ITEMS: Array<{
+const CORE_NAV_ITEMS: Array<{
   href: string;
   label: string;
   key: WorkspaceNavKey;
@@ -55,9 +55,17 @@ const NAV_ITEMS: Array<{
   { href: "/calendar", label: "Calendar", key: "calendar", icon: "calendar" },
   { href: "/journal", label: "Journal", key: "journal", icon: "journal" },
   { href: "/life-areas", label: "Life Areas", key: "life_areas", icon: "life_areas" },
+  { href: "/settings", label: "Settings", key: "settings", icon: "settings" },
+];
+
+const OPTIONAL_NAV_ITEMS: Array<{
+  href: string;
+  label: string;
+  key: WorkspaceNavKey;
+  icon: NavIconName;
+}> = [
   { href: "/insights", label: "Insights", key: "insights", icon: "insights" },
   { href: "/assistant", label: "Assistant", key: "assistant", icon: "assistant" },
-  { href: "/settings", label: "Settings", key: "settings", icon: "settings" },
 ];
 
 const PLANNING_SUBNAV_ITEMS: Array<{
@@ -252,7 +260,9 @@ export function WorkspaceShell({
     year: "numeric",
   });
   const resolvedUtilityWeatherLabel = utilityWeatherLabel ?? "18 C";
-  const visibleNavItems = hideAssistantNav ? NAV_ITEMS.filter((item) => item.key !== "assistant") : NAV_ITEMS;
+  const optionalNavItems = hideAssistantNav
+    ? OPTIONAL_NAV_ITEMS.filter((item) => item.key !== "assistant")
+    : OPTIONAL_NAV_ITEMS;
 
   return (
     <div className={`workspace-bg aura-${auraVariant} ${shellTone === "dashboard-canonical" ? "shell-dashboard-canonical" : ""}`}>
@@ -274,7 +284,7 @@ export function WorkspaceShell({
           </div>
 
           <nav className="workspace-rail-nav" aria-label={translate("app.nav.core_modules", uiLanguage)}>
-            {visibleNavItems.map((item) => {
+            {CORE_NAV_ITEMS.map((item) => {
               const isActive = activeNavKey === item.key;
               const isPlanning = item.key === "tasks";
               const itemLabel = translate(`app.nav.${item.key}`, uiLanguage, item.label);
@@ -317,6 +327,29 @@ export function WorkspaceShell({
               );
             })}
           </nav>
+
+          {optionalNavItems.length > 0 ? (
+            <nav className="workspace-rail-nav workspace-rail-secondary-nav" aria-label={translate("app.nav.optional_surfaces", uiLanguage)}>
+              <span className="workspace-rail-section-label">{translate("app.nav.optional_surfaces", uiLanguage)}</span>
+              {optionalNavItems.map((item) => {
+                const isActive = activeNavKey === item.key;
+                const itemLabel = translate(`app.nav.${item.key}`, uiLanguage, item.label);
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`workspace-rail-link workspace-rail-link-secondary ${isActive ? "is-active" : ""}`}
+                  >
+                    <span className="workspace-rail-icon">
+                      <MenuIcon name={item.icon} />
+                    </span>
+                    <span>{itemLabel}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          ) : null}
 
           <div className="workspace-rail-footer">
             <div className="workspace-rail-atmosphere" aria-hidden="true">

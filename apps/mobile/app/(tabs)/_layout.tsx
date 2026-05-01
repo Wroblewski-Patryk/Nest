@@ -99,6 +99,7 @@ export default function TabLayout() {
         name="insights"
         options={{
           title: t('mobile.tab.insights', 'Insights'),
+          href: null,
           tabBarIcon: ({ color }) => <TabIcon name="insights" color={color} />,
         }}
       />

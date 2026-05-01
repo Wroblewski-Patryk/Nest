@@ -327,6 +327,21 @@ body {
   align-content: start;
 }
 
+.workspace-rail-secondary-nav {
+  margin-top: 0.5rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid rgb(210 203 192 / 34%);
+}
+
+.workspace-rail-section-label {
+  display: none;
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
 .workspace-rail-link {
   display: grid;
   place-items: center;
@@ -348,6 +363,10 @@ body {
   border-color: rgb(218 211 199 / 44%);
   background: rgb(255 255 255 / 34%);
   transform: translateX(1px);
+}
+
+.workspace-rail-link-secondary {
+  color: color-mix(in srgb, var(--muted), #000 4%);
 }
 
 .workspace-rail-link span:last-child {
@@ -6409,6 +6428,15 @@ input[type="color"].list-row {
     padding-left: 2.64rem;
     padding-right: 0.2rem;
     margin-top: -0.14rem;
+  }
+
+  .workspace-rail-section-label {
+    display: block;
+    padding: 0 0.34rem 0.1rem;
+  }
+
+  .workspace-rail-link-secondary {
+    min-height: 2.08rem;
   }
 
   .workspace-rail-sublink {

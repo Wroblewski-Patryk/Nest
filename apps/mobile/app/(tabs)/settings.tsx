@@ -149,7 +149,7 @@ export default function SettingsScreen() {
               accessibilityRole="button"
               accessibilityLabel="Open Billing"
             >
-              <Text style={styles.ghostText}>Billing</Text>
+              <Text style={styles.ghostText}>{t('billing.title', 'Billing')}</Text>
             </Pressable>
           </View>
         </View>

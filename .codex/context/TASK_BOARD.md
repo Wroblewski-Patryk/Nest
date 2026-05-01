@@ -24,6 +24,29 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-235 V1 navigation scope alignment
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-234
+  - Done on: 2026-05-01
+  - Priority: P1
+  - Notes:
+    - Split web shell navigation into V1 core modules and optional surfaces so
+      Insights and Assistant remain reachable without presenting as core V1
+      readiness dependencies.
+    - Hid mobile Insights from the primary tab loop with Expo Router
+      `href: null`; mobile Settings still exposes Insights and Billing as
+      additional surfaces.
+    - Localized the optional surfaces nav label and mobile Billing settings
+      label.
+    - Updated `ExternalLink` to use Expo Router's typed `Link` href prop so
+      mobile typecheck passes with typed routes.
+    - Added report:
+      `docs/planning/nest_235_v1_navigation_scope_alignment_2026-05-01.md`.
+    - Validation:
+      web typecheck, mobile typecheck, mobile Expo web export, static
+      navigation inspection, and `git diff --check`.
+
 - [x] NEST-234 Web lower-route localization copy pass
   - Status: DONE
   - Owner: Execution Agent

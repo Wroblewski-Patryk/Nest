@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-235` V1 navigation scope alignment. Web shell
+  navigation now separates V1 core modules from optional surfaces; Insights and
+  Assistant remain reachable but no longer present as core V1 modules. Mobile
+  Insights is hidden from the main tab loop while remaining reachable from
+  Settings additional surfaces. Web typecheck, mobile typecheck, mobile Expo
+  web export, static navigation inspection, and `git diff --check` passed.
+  Report:
+  `docs/planning/nest_235_v1_navigation_scope_alignment_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-234` web lower-route localization copy pass.
   Automations, Billing, and Insights now use shared EN/PL localization keys
   for route chrome, status messages, empty states, panel labels, and primary
