@@ -821,30 +821,56 @@ export default function JournalPage() {
               ]}
             />
 
-            <DashboardFocusCard
-              kicker="Reflection focus"
-              kickerIcon={<JournalGlyph name="spark" />}
-              title={focusPrompt}
-              detail={
-                latestEntry
-                  ? `Return to ${latestEntry.title.toLowerCase()} and notice what still matters after the first feeling passed.`
-                  : "Use one gentle prompt, name the mood honestly, and let the entry stay human instead of polished."
-              }
-              supportingLabel="Current context"
-              supportingValue={
-                latestEntryAreas.length > 0
-                  ? latestEntryAreas.map((area) => area.name).join(" + ")
-                  : "Today + Good mood + Health + Work"
-              }
-              meta={[
-                { label: "Date", value: latestEntry ? latestEntryDate : "Today" },
-                { label: "Mood", value: formatMood(latestEntry?.mood ?? "good") },
-              ]}
-              href="#journal-composer"
-              cta="Start reflection"
-              rationaleHref="#journal-reflection-ladder"
-              rationaleLabel="Why this?"
-            />
+            {useJournalShowcase ? (
+              <section className="journal-showcase-focus" aria-label="Reflection focus">
+                <div className="journal-showcase-focus-copy">
+                  <p className="journal-showcase-focus-kicker">
+                    <span className="journal-showcase-focus-kicker-icon" aria-hidden="true">
+                      <JournalGlyph name="spark" />
+                    </span>
+                    <span>Reflection focus</span>
+                  </p>
+                  <h2>{focusPrompt}</h2>
+                  <div className="journal-showcase-focus-chips">
+                    <span className="journal-showcase-focus-chip">Today</span>
+                    <span className="journal-showcase-focus-chip">{formatMood(latestEntry?.mood ?? "good")} mood</span>
+                    <span className="journal-showcase-focus-chip">
+                      {latestEntryAreas.length > 0 ? latestEntryAreas.map((area) => area.name).join(" + ") : "Health + Work"}
+                    </span>
+                  </div>
+                </div>
+                <div className="journal-showcase-focus-actions">
+                  <a href="#journal-composer" className="btn-primary">
+                    Start reflection
+                  </a>
+                </div>
+              </section>
+            ) : (
+              <DashboardFocusCard
+                kicker="Reflection focus"
+                kickerIcon={<JournalGlyph name="spark" />}
+                title={focusPrompt}
+                detail={
+                  latestEntry
+                    ? `Return to ${latestEntry.title.toLowerCase()} and notice what still matters after the first feeling passed.`
+                    : "Use one gentle prompt, name the mood honestly, and let the entry stay human instead of polished."
+                }
+                supportingLabel="Current context"
+                supportingValue={
+                  latestEntryAreas.length > 0
+                    ? latestEntryAreas.map((area) => area.name).join(" + ")
+                    : "Today + Good mood + Health + Work"
+                }
+                meta={[
+                  { label: "Date", value: latestEntry ? latestEntryDate : "Today" },
+                  { label: "Mood", value: formatMood(latestEntry?.mood ?? "good") },
+                ]}
+                href="#journal-composer"
+                cta="Start reflection"
+                rationaleHref="#journal-reflection-ladder"
+                rationaleLabel="Why this?"
+              />
+            )}
 
             <Panel id="journal-composer" title="Write your reflection" className="journal-canonical-composer">
               <form className="form-grid" onSubmit={createJournalEntry}>

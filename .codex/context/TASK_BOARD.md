@@ -24,6 +24,30 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-282 Add route-specific showcase focus sections
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-281
+  - Done on: 2026-05-01
+  - Notes:
+    - Replaced the Calendar showcase shared focus card with a route-specific
+      `Now on deck` surface that uses chips, denser time treatment, and a more
+      editorial background composition.
+    - Replaced the Journal showcase shared focus card with a route-specific
+      `Reflection focus` band that carries chip context and a right-aligned
+      primary action closer to the approved canonical screenshot.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_282_calendar_journal_showcase_focus_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-281 Align Calendar and Journal showcase structure to references
   - Status: DONE
   - Owner: Execution Agent

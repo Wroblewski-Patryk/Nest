@@ -176,6 +176,10 @@
   if the canonical reference treats origin, sync, linked goal, reminder, and
   ownership as one horizontal narrative, prefer one compact showcase surface
   over a ribbon plus a second ledger panel.
+- Calendar showcase focus may outgrow the shared focus primitive:
+  if the founder-approved screen relies on time-first copy, dense chips, and a
+  more textured focus panel, use a route-specific focus section instead of
+  forcing parity through the shared `DashboardFocusCard`.
 
 ## Journal Canonical Patterns (2026-04-30)
 
@@ -226,6 +230,10 @@
   if the approved desktop reference frames the reflection ladder as companion
   context rather than a lower-page band, showcase mode should keep it in the
   rail and avoid duplicating it below the feed.
+- Journal showcase focus should feel like a band, not a card:
+  when the canonical reference presents `Reflection focus` as a horizontal
+  editorial band with chip context and a right-aligned primary action, prefer a
+  route-specific section over the shared focus card treatment.
 
 ## Workspace Shell Patterns (2026-04-26)
 

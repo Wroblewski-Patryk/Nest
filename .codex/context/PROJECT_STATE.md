@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-282` showcase focus pass for Calendar and
+  Journal. Calendar now uses a route-specific `Now on deck` focus surface in
+  showcase mode, and Journal now uses a route-specific `Reflection focus` band
+  with chip context and a right-aligned CTA. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_282_calendar_journal_showcase_focus_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-281` Calendar and Journal reference-structure
   pass. Calendar showcase now uses a tighter event-story strip plus
   ownership/source chips instead of the previous ribbon-plus-ledger stack, and

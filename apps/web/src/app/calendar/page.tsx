@@ -992,29 +992,63 @@ export default function CalendarPage() {
             />
 
             <div className="calendar-canonical-flow-row">
-              <DashboardFocusCard
-                kicker="Now on deck"
-                kickerIcon={<TimelineGlyph name="focus" />}
-                title={nextDeckEvent?.title ?? "Protect a meaningful block"}
-                detail={
-                  nextDeckEvent
-                    ? `${eventTimingLabel(nextDeckEvent)} | ${formatDurationLabel(durationMinutes(nextDeckEvent))}`
-                    : "Your next event will become the dominant action card as soon as the day has one."
-                }
-                supportingLabel="Linked context"
-                supportingValue={useCalendarShowcase ? "Goal: Launch product" : linkedTask?.title ?? "Calendar event"}
-                meta={[
-                  { label: "Energy", value: nextDeckEvent ? toneLabel(resolveEventTone(nextDeckEvent)) : "Calm" },
-                  { label: "Window", value: nextDeckEvent ? formatMonthDayLabel(new Date(nextDeckEvent.start_at)) : "Today" },
-                ]}
-                href="#calendar-event-intelligence"
-                cta="Open event brief"
-                rationaleHref="#calendar-time-ladder"
-                rationaleLabel="Why this?"
-              />
+              {useCalendarShowcase ? (
+                <section className="calendar-showcase-focus" aria-label="Now on deck">
+                  <div className="calendar-showcase-focus-copy">
+                    <p className="calendar-showcase-focus-kicker">
+                      <span className="calendar-showcase-focus-kicker-icon" aria-hidden="true">
+                        <TimelineGlyph name="focus" />
+                      </span>
+                      <span>Now on deck</span>
+                    </p>
+                    <h2>{nextDeckEvent?.title ?? "Protect a meaningful block"}</h2>
+                    <p className="calendar-showcase-focus-time">
+                      {nextDeckEvent
+                        ? `${eventTimingLabel(nextDeckEvent)} | ${formatDurationLabel(durationMinutes(nextDeckEvent))}`
+                        : "The next meaningful block appears here."}
+                    </p>
+                    <div className="calendar-showcase-focus-chips">
+                      <span className="calendar-showcase-focus-chip">{nextDeckEvent ? toneLabel(resolveEventTone(nextDeckEvent)) : "Calm"}</span>
+                      <span className="calendar-showcase-focus-chip">Goal: Launch product</span>
+                    </div>
+                    <p className="calendar-showcase-focus-detail">
+                      Define positioning, milestones and launch plan.
+                    </p>
+                  </div>
+                  <div className="calendar-showcase-focus-actions">
+                    <a href="#calendar-event-intelligence" className="btn-primary">
+                      Open event brief
+                    </a>
+                    <a href="#calendar-time-ladder" className="calendar-showcase-focus-link">
+                      View event details
+                    </a>
+                  </div>
+                </section>
+              ) : (
+                <DashboardFocusCard
+                  kicker="Now on deck"
+                  kickerIcon={<TimelineGlyph name="focus" />}
+                  title={nextDeckEvent?.title ?? "Protect a meaningful block"}
+                  detail={
+                    nextDeckEvent
+                      ? `${eventTimingLabel(nextDeckEvent)} | ${formatDurationLabel(durationMinutes(nextDeckEvent))}`
+                      : "Your next event will become the dominant action card as soon as the day has one."
+                  }
+                  supportingLabel="Linked context"
+                  supportingValue={linkedTask?.title ?? "Calendar event"}
+                  meta={[
+                    { label: "Energy", value: nextDeckEvent ? toneLabel(resolveEventTone(nextDeckEvent)) : "Calm" },
+                    { label: "Window", value: nextDeckEvent ? formatMonthDayLabel(new Date(nextDeckEvent.start_at)) : "Today" },
+                  ]}
+                  href="#calendar-event-intelligence"
+                  cta="Open event brief"
+                  rationaleHref="#calendar-time-ladder"
+                  rationaleLabel="Why this?"
+                />
+              )}
 
               <section className="calendar-flow-panel" aria-label="Daily time flow">
-                <div className="calendar-flow-toolbar">
+                <div className={`calendar-flow-toolbar ${useCalendarShowcase ? "is-showcase" : ""}`}>
                   <div className="calendar-view-switch">
                     {(["day", "week", "month"] as CalendarViewMode[]).map((mode) => (
                       <button
@@ -1028,7 +1062,7 @@ export default function CalendarPage() {
                     ))}
                   </div>
 
-                  <div className="calendar-flow-nav">
+                  <div className={`calendar-flow-nav ${useCalendarShowcase ? "is-showcase" : ""}`}>
                     <button type="button" className="btn-secondary" onClick={() => moveWindow(-1)}>
                       Prev
                     </button>
