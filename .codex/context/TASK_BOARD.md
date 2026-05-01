@@ -24,6 +24,24 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-238 Mobile route request cast cleanup
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-237
+  - Done on: 2026-05-01
+  - Priority: P1
+  - Notes:
+    - Exported shared typed `ApiRequestInit` and `apiRequest` from the existing
+      mobile API client module.
+    - Removed duplicated route-local `nestApiClient.request as unknown as`
+      wrappers from mobile Tasks, Goals, Habits, and Journal routes.
+    - Preserved endpoint paths, payloads, auth shape, and runtime behavior.
+    - Added report:
+      `docs/planning/nest_238_mobile_route_request_cast_cleanup_2026-05-01.md`.
+    - Validation:
+      mobile typecheck, mobile Expo web export, static inspection, and
+      `git diff --check`.
+
 - [x] NEST-237 V1 readiness truth refresh
   - Status: DONE
   - Owner: Execution Agent

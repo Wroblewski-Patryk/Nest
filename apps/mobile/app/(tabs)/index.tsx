@@ -1,6 +1,6 @@
 ﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { nestApiClient } from '@/constants/apiClient';
+import { apiRequest, nestApiClient } from '@/constants/apiClient';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
 import { getUserSafeErrorMessage } from '@/lib/ux-contract';
 
@@ -29,11 +29,6 @@ type GoalItem = { id: string; title: string };
 type TargetItem = { id: string; title: string };
 type LifeAreaItem = { id: string; name: string };
 
-type ApiRequestInit = Omit<RequestInit, 'body'> & {
-  body?: Record<string, unknown>;
-  query?: Record<string, unknown>;
-};
-
 const TASKS_PAGE_SIZE = 100;
 const TASKS_PAGE_GUARD_LIMIT = 20;
 
@@ -42,14 +37,6 @@ function buildListParentPayload(type: ListParentType, id: string) {
   if (type === 'target') return { goal_id: null, target_id: id || null, life_area_id: null };
   if (type === 'life_area') return { goal_id: null, target_id: null, life_area_id: id || null };
   return { goal_id: null, target_id: null, life_area_id: null };
-}
-
-async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
-  const requestFn = nestApiClient.request as unknown as (
-    requestPath: string,
-    requestInit?: ApiRequestInit
-  ) => Promise<unknown>;
-  return (await requestFn(path, init)) as TResponse;
 }
 
 function formatPriority(priority: TaskPriority): string {

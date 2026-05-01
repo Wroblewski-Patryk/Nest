@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { nestApiClient } from '@/constants/apiClient';
+import { apiRequest, nestApiClient } from '@/constants/apiClient';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
 import { getUserSafeErrorMessage } from '@/lib/ux-contract';
 
@@ -26,20 +26,6 @@ type TargetItem = {
   due_date: string | null;
   status: TargetStatus;
 };
-
-type ApiRequestInit = Omit<RequestInit, 'body'> & {
-  body?: Record<string, unknown>;
-  query?: Record<string, unknown>;
-};
-
-async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
-  const requestFn = nestApiClient.request as unknown as (
-    requestPath: string,
-    requestInit?: ApiRequestInit
-  ) => Promise<unknown>;
-
-  return (await requestFn(path, init)) as TResponse;
-}
 
 function formatStatus(status: GoalStatus): string {
   if (status === 'completed') return 'Completed';

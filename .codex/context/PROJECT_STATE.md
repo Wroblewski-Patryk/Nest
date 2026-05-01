@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-238` mobile route request cast cleanup. Mobile
+  Tasks, Goals, Habits, and Journal now use the shared typed `apiRequest`
+  helper exported from the existing mobile API client module instead of
+  duplicating route-local `nestApiClient.request` casts. Endpoint paths,
+  payloads, auth shape, and runtime behavior are unchanged. Mobile typecheck,
+  mobile Expo web export, static inspection, and `git diff --check` passed.
+  Report:
+  `docs/planning/nest_238_mobile_route_request_cast_cleanup_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-237` V1 readiness truth refresh. The V1
   founder-ready checklist and readiness matrix now reflect current evidence
   from `NEST-233` through `NEST-236`: web route-local request cleanup,
