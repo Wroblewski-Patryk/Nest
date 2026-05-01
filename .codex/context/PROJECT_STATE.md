@@ -1838,3 +1838,10 @@ Last updated: 2026-05-01
   `docs/ux_canonical_artifacts/2026-04-30/nest-planning-canonical-reference.png`
   and the implementation contract in:
   `docs/ux/nest_261_planning_canonical_direction_2026-04-30.md`
+
+## Autonomous Iteration State
+- Current iteration:
+- Current operation mode: BUILDER | ARCHITECT | TESTER
+- Last completed iteration:
+- Last completed task:
+- Next required mode:

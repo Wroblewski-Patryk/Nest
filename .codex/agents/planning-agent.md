@@ -20,6 +20,7 @@ Translate Nest decisions and documentation into an actionable execution queue.
   `docs/operations/*function-implementation-readiness-audit*.md` when present
 
 ## Rules
+- Before creating or refreshing the queue, run the process self-audit from `docs/governance/autonomous-engineering-loop.md` and record iteration number, operation mode, and one-task scope.
 
 - keep tasks small enough for one focused implementation session
 - use IDs like `NEST-001`

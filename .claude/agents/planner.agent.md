@@ -23,6 +23,7 @@ Workflow:
 8. Return summary plus next tiny task.
 
 Hard rules:
+- Follow `docs/governance/autonomous-engineering-loop.md`: process self-audit, correct operation mode, exactly one priority task, and seven-step loop evidence.
 - Tiny commits only.
 - Fix or cleanup before broadening scope.
 - Never skip plan synchronization.

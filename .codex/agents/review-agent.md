@@ -12,6 +12,7 @@ Protect quality: bugs, regressions, risk, and missing tests.
 - relevant docs
 
 ## Rules
+- Verify the autonomous process self-audit, operation mode, one-task scope, and all seven loop evidence sections from `docs/governance/autonomous-engineering-loop.md`.
 
 - Prioritize behavior and risk over style.
 - Verify acceptance criteria line by line.

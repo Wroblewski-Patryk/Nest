@@ -11,7 +11,15 @@
 - Depends on:
 - Priority: P0 | P1 | P2
 - Coverage Ledger Rows:
+- Iteration:
+- Operation Mode: BUILDER | ARCHITECT | TESTER
 
+## Process Self-Audit
+- [ ] All seven autonomous loop steps are planned.
+- [ ] No loop step is being skipped.
+- [ ] Exactly one priority task is selected.
+- [ ] Operation mode matches the iteration number.
+- [ ] The task is aligned with repository source-of-truth documents.
 ## Context
 Where this work sits in the current Nest architecture and execution wave.
 
@@ -99,6 +107,10 @@ Describe exactly what should be produced in the current stage only.
 - MCP evidence links:
 
 ## Review Checklist (mandatory)
+- [ ] Process self-audit completed before implementation.
+- [ ] Autonomous loop evidence covers all seven steps.
+- [ ] Exactly one priority task was completed in this iteration.
+- [ ] Operation mode was selected according to iteration rotation.
 
 - [ ] Current stage is declared and respected.
 - [ ] Deliverable for the current stage is complete.
@@ -188,3 +200,39 @@ Runtime tasks must be delivered as a vertical slice: UI -> logic -> API -> DB ->
 - What is incomplete:
 - Next steps:
 - Decisions made:
+
+## Autonomous Loop Evidence
+
+### 1. Analyze Current State
+- Issues:
+- Gaps:
+- Inconsistencies:
+- Architecture constraints:
+
+### 2. Select One Priority Task
+- Selected task:
+- Priority rationale:
+- Why other candidates were deferred:
+
+### 3. Plan Implementation
+- Files or surfaces to modify:
+- Logic:
+- Edge cases:
+
+### 4. Execute Implementation
+- Implementation notes:
+
+### 5. Verify and Test
+- Validation performed:
+- Result:
+
+### 6. Self-Review
+- Simpler option considered:
+- Technical debt introduced: yes | no
+- Scalability assessment:
+- Refinements made:
+
+### 7. Update Documentation and Knowledge
+- Docs updated:
+- Context updated:
+- Learning journal updated: yes | no | not applicable.

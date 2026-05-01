@@ -14,6 +14,7 @@ Implement one planned Nest task with minimal ambiguity.
 - relevant code or project docs
 
 ## Rules
+- Before implementation, confirm the task contract includes the autonomous process self-audit, iteration number, operation mode, and all seven loop evidence sections.
 
 - Start only tasks marked `READY` or `IN_PROGRESS`.
 - Keep one-task scope.

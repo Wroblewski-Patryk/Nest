@@ -109,7 +109,14 @@ Additional cross-project standards synced from `!template`:
 - `.agents/workflows/user-collaboration.md`
 - `.agents/workflows/world-class-delivery.md`
 - `docs/governance/world-class-product-engineering-standard.md`
+- `governance/autonomous-engineering-loop.md`
 - `docs/governance/function-coverage-ledger-standard.md`
 - `docs/operations/service-reliability-and-observability.md`
 - `docs/security/secure-development-lifecycle.md`
 - `docs/ux/evidence-driven-ux-review.md`
+
+## Governance Addendum
+
+## Governance Addendum
+
+## Governance Addendum
