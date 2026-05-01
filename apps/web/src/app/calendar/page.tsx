@@ -665,6 +665,16 @@ export default function CalendarPage() {
   }, [selectedEvent, useCalendarShowcase, visibleDayEvents]);
 
   const pressureSlices = useMemo(() => {
+    if (useCalendarShowcase) {
+      return [
+        { label: "Work", color: "#c9b87d", value: 6.2 },
+        { label: "Health", color: "#8da182", value: 3.1 },
+        { label: "Personal", color: "#d28d58", value: 2.8 },
+        { label: "Growth", color: "#a3a0c8", value: 2.0 },
+        { label: "Learning", color: "#c9c1df", value: 1.2 },
+      ];
+    }
+
     const base = [
       { label: "Focus", color: "#83915c", count: 0 },
       { label: "Meetings", color: "#d7bf74", count: 0 },
@@ -691,7 +701,7 @@ export default function CalendarPage() {
       color: item.color,
       value: Number(((item.count / total) * 10).toFixed(1)),
     }));
-  }, [visibleEvents]);
+  }, [useCalendarShowcase, visibleEvents]);
 
   const pressureGradient = pressureSlices
     .map((slice, index) => {
@@ -1568,29 +1578,31 @@ export default function CalendarPage() {
                 <span>...</span>
               </div>
               <p className="dashboard-sidebar-card-script">
-                Protect the few blocks that keep the day coherent. Everything else becomes easier to place.
+                {useCalendarShowcase
+                  ? "Protect your focus. Honor your energy. Design your day."
+                  : "Protect the few blocks that keep the day coherent. Everything else becomes easier to place."}
               </p>
               <div className="calendar-guidance-notes">
                 <p>
-                  <strong>Today:</strong> keep one block for depth.
+                  <strong>Today:</strong> {useCalendarShowcase ? "deep work workshop" : "keep one block for depth."}
                 </p>
                 <p>
-                  <strong>Later:</strong> batch shallow coordination.
+                  <strong>Later:</strong> {useCalendarShowcase ? "family time" : "batch shallow coordination."}
                 </p>
               </div>
               <div className="dashboard-sidebar-card-footer">
-                <span>{selectedEvent ? eventTimingLabel(selectedEvent) : "Choose the next event"}</span>
+                <span>{useCalendarShowcase ? "Open the focus block" : selectedEvent ? eventTimingLabel(selectedEvent) : "Choose the next event"}</span>
                 <button
                   type="button"
                   className="dashboard-floating-action"
-                  aria-label="Open selected event"
+                  aria-label={useCalendarShowcase ? "Open calendar note" : "Open selected event"}
                   onClick={() => {
                     if (selectedEvent) {
                       setSelectedEventId(selectedEvent.id);
                     }
                   }}
                 >
-                  <TimelineGlyph name="event" />
+                  <TimelineGlyph name={useCalendarShowcase ? "note" : "event"} />
                 </button>
               </div>
             </article>
@@ -1602,7 +1614,7 @@ export default function CalendarPage() {
               <div className="dashboard-quick-add-grid">
                 {[
                   { label: "Event", href: "#calendar-add-event", icon: <TimelineGlyph name="event" /> },
-                  { label: "Focus", href: "#calendar-add-event", icon: <TimelineGlyph name="focus" /> },
+                  { label: useCalendarShowcase ? "Focus block" : "Focus", href: "#calendar-add-event", icon: <TimelineGlyph name="focus" /> },
                   { label: "Routine", href: "/routines", icon: <TimelineGlyph name="routine" /> },
                   { label: "Note", href: "/journal", icon: <TimelineGlyph name="note" /> },
                 ].map((item) => (
@@ -1643,18 +1655,39 @@ export default function CalendarPage() {
                 <h3>Sync health</h3>
               </div>
               <div className="calendar-sync-health">
-                <div>
-                  <strong>{syncIssuesCount === 0 ? "Quiet and aligned" : `${syncIssuesCount} conflict cue${syncIssuesCount === 1 ? "" : "s"}`}</strong>
-                  <p>
-                    {syncIssuesCount === 0
-                      ? "The visible day is readable and no obvious overlap drift is showing."
-                      : "Review the selected day to resolve overlap before it compounds."}
-                  </p>
-                </div>
-                <div>
-                  <strong>{openTasksInView}</strong>
-                  <p>Open due tasks still need calendar placement.</p>
-                </div>
+                {useCalendarShowcase ? (
+                  <>
+                    <div className="calendar-sync-row">
+                      <span className="calendar-sync-dot is-good" aria-hidden="true" />
+                      <div>
+                        <strong>All good</strong>
+                        <p>Google Calendar</p>
+                      </div>
+                    </div>
+                    <div className="calendar-sync-row">
+                      <span className="calendar-sync-dot" aria-hidden="true" />
+                      <div>
+                        <strong>Last synced 2 min ago</strong>
+                        <p>Quiet handoff from calendar to planning.</p>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <strong>{syncIssuesCount === 0 ? "Quiet and aligned" : `${syncIssuesCount} conflict cue${syncIssuesCount === 1 ? "" : "s"}`}</strong>
+                      <p>
+                        {syncIssuesCount === 0
+                          ? "The visible day is readable and no obvious overlap drift is showing."
+                          : "Review the selected day to resolve overlap before it compounds."}
+                      </p>
+                    </div>
+                    <div>
+                      <strong>{openTasksInView}</strong>
+                      <p>Open due tasks still need calendar placement.</p>
+                    </div>
+                  </>
+                )}
               </div>
             </article>
           </aside>

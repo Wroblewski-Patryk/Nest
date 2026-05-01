@@ -188,6 +188,10 @@
   if the approved desktop screen frames stepping controls and week selection as
   one composed orientation layer, keep them visually grouped and understated
   rather than exposing raw utility buttons and input fields in preview mode.
+- Calendar showcase support rails should use reference truth, not generic ops:
+  when the approved right rail carries named pressure categories, calm sync
+  language, and more intentional support copy, preview mode should mirror that
+  editorial framing instead of falling back to generic runtime telemetry.
 
 ## Journal Canonical Patterns (2026-04-30)
 
@@ -246,6 +250,9 @@
   if the route has too little runtime content to carry the canonical room,
   prefer continuing to render the founder-approved showcase composition rather
   than dropping into a thin live state that breaks parity.
+- Journal support rails benefit from quiet decorative structure:
+  when the approved room uses subtle separators and warmer ladder framing, add
+  those cues before introducing more controls or denser helper copy.
 
 ## Workspace Shell Patterns (2026-04-26)
 

@@ -24,6 +24,16 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-285` Calendar and Journal rail parity pass.
+  Calendar showcase now uses more reference-aligned support-rail copy, quick
+  add wording, pressure values, and a calmer sync-health story. Journal gained
+  additional editorial polish in the support rail through a softer writing-card
+  divider, clearer prompt-arrow treatment, and a warmer ladder-card surface.
+  Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_285_calendar_journal_rail_parity_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-284` Calendar and Journal showcase closure
   pass. Journal now promotes the canonical showcase room for sparse or failed
   runtime states instead of only zero-data states, and its showcase focus/feed

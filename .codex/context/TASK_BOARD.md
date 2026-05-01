@@ -24,6 +24,30 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-285 Tighten Calendar and Journal rail parity
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-284
+  - Done on: 2026-05-01
+  - Notes:
+    - Refined Calendar showcase rail copy, quick-add labeling, pressure values,
+      and sync-health presentation so the right column reads closer to the
+      founder-approved desktop reference.
+    - Added quieter editorial polish to the Journal support rail through a
+      softer writing-card divider, stronger prompt arrow treatment, and a
+      warmer ladder-card surface.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_285_calendar_journal_rail_parity_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-284 Tighten Calendar and Journal showcase closure
   - Status: DONE
   - Owner: Execution Agent

@@ -1374,6 +1374,7 @@ export default function JournalPage() {
               <p className="dashboard-sidebar-card-script">
                 Your words are seeds. Give them honesty, not perfection.
               </p>
+              <div className="journal-writing-divider" aria-hidden="true" />
             </article>
 
             <article className="dashboard-sidebar-card journal-prompts-card">
@@ -1400,7 +1401,7 @@ export default function JournalPage() {
                     }}
                   >
                     <span>{prompt}</span>
-                    <small>{">"}</small>
+                    <small className="journal-prompt-arrow">{">"}</small>
                   </button>
                 ))}
               </div>
@@ -1473,7 +1474,7 @@ export default function JournalPage() {
                     { label: "Day event", value: latestEntry?.title ?? "A lighter morning" },
                     { label: "Feeling", value: formatMood(latestEntry?.mood ?? "good") },
                     { label: "Life area", value: latestEntryAreas[0]?.name ?? topLifeArea?.name ?? "Health" },
-                    { label: "Next intention", value: "Carry one calmer move" },
+                    { label: "Next intention", value: "Carry one calmer move into tomorrow" },
                   ].map((item) => (
                     <div key={item.label} className="journal-ladder-mini-item">
                       <small>{item.label}</small>
