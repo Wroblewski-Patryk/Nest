@@ -2169,6 +2169,7 @@ input[type="color"].list-row {
 }
 
 .calendar-management-panel.is-preview-hidden,
+.journal-canonical-main > .collapsible-panel.is-preview-hidden,
 .calendar-canonical-main > .collapsible-panel.is-preview-hidden {
   display: none;
 }

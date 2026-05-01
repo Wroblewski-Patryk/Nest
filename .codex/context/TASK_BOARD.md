@@ -24,6 +24,30 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-278 Spotlight canonical showcase focal moments
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-277
+  - Done on: 2026-05-01
+  - Notes:
+    - Made Calendar showcase mode explicitly center the product strategy
+      workshop and reference-matching hero metrics instead of falling back to
+      the earliest block in the day.
+    - Hid lower Journal management and context surfaces during showcase mode so
+      the desktop canonical room ends on recent entries and the reflection
+      ladder instead of dropping into legacy admin sections.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_278_showcase_focal_polish_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-277 Align showcase reference dates and collapse legacy calendar tools
   - Status: DONE
   - Owner: Execution Agent

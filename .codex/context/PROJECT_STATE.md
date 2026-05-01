@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-278` showcase focal polish. Calendar showcase now
+  centers the product strategy workshop and uses reference-matching hero
+  metrics, while Journal showcase hides lower management and context surfaces
+  so the desktop narrative ends more like the canonical room. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_278_showcase_focal_polish_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-277` showcase reference alignment pass. Calendar
   and Journal showcase content now uses the canonical May 23, 2025 reference
   date, Calendar promotes showcase mode for sparse desktop states, lower

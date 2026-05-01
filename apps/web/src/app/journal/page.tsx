@@ -729,9 +729,11 @@ export default function JournalPage() {
       ? "Return to what the day actually felt like, then write the smallest honest note that helps tomorrow."
       : "This room should feel like a warm checkpoint, not homework. One useful sentence is enough to begin.";
 
-  const focusPrompt = latestEntry
-    ? latestEntry.body.slice(0, 120)
-    : "What felt lighter after you slowed down?";
+  const focusPrompt = useJournalShowcase
+    ? "What felt lighter after you slowed down?"
+    : latestEntry
+      ? latestEntry.body.slice(0, 120)
+      : "What felt lighter after you slowed down?";
 
   const contextItems = [
     {
@@ -1155,7 +1157,7 @@ export default function JournalPage() {
               </div>
             </section>
 
-            <details id="journal-life-areas" className="collapsible-panel">
+            <details id="journal-life-areas" className={`collapsible-panel ${useJournalShowcase ? "is-preview-hidden" : ""}`}>
               <summary>Manage life areas</summary>
               <div className="collapsible-content journal-life-area-management">
                 <Panel title="Life areas" className="journal-management-panel">
@@ -1408,7 +1410,7 @@ export default function JournalPage() {
           </aside>
         </div>
 
-        <DashboardContextRibbon title="Journal context" items={contextItems} />
+        {useJournalShowcase ? null : <DashboardContextRibbon title="Journal context" items={contextItems} />}
       </div>
     </WorkspaceShell>
   );

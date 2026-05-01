@@ -160,6 +160,10 @@
   When a founder-approved Calendar screenshot is the active fidelity target,
   align showcase date-dependent content to that exact canonical date rather
   than mixing fixed chrome labels with today-derived synthetic events.
+- Calendar focal showcase ownership:
+  In canonical preview, `Now on deck`, the centered `Now` lane, and the ladder
+  should point to the same flagship event rather than drifting to whichever
+  time block happens to sort first.
 
 ## Journal Canonical Patterns (2026-04-30)
 
@@ -194,6 +198,10 @@
   Preview mode should still carry visible life-area chips and date-consistent
   recent-entry rows inside the composer and feed; otherwise the writing surface
   loses too much of the canonical rhythm.
+- Journal showcase stopping point:
+  If lower life-area management and context panels are not part of the desktop
+  canonical reference, showcase mode should stop after the reflection ladder
+  instead of extending into admin-heavy surfaces.
 
 ## Workspace Shell Patterns (2026-04-26)
 

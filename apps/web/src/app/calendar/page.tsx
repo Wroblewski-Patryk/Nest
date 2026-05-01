@@ -37,6 +37,7 @@ type ApiRequestInit = Omit<RequestInit, "body"> & {
 };
 
 const CALENDAR_SHOWCASE_REFERENCE = new Date("2025-05-23T12:00:00");
+const CALENDAR_SHOWCASE_PRIMARY_EVENT_ID = "showcase-event-4";
 
 async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
   const requestFn = nestApiClient.request as unknown as (
@@ -540,6 +541,15 @@ export default function CalendarPage() {
   }, [visibleDayEvents]);
 
   const nextDeckEvent = useMemo(() => {
+    if (useCalendarShowcase) {
+      return (
+        visibleDayEvents.find((item) => item.id === CALENDAR_SHOWCASE_PRIMARY_EVENT_ID) ??
+        visibleDayEvents[0] ??
+        eventSource[0] ??
+        null
+      );
+    }
+
     const nowTimestamp = Date.now();
     const sortedEvents = [...eventSource].sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime());
 
@@ -554,7 +564,7 @@ export default function CalendarPage() {
 
     const upcoming = sortedEvents.find((item) => new Date(item.start_at).getTime() >= nowTimestamp);
     return upcoming ?? visibleDayEvents[0] ?? null;
-  }, [eventSource, visibleDayEvents]);
+  }, [eventSource, useCalendarShowcase, visibleDayEvents]);
 
   useEffect(() => {
     if (selectedEventId && visibleEvents.some((item) => item.id === selectedEventId)) {
@@ -610,6 +620,14 @@ export default function CalendarPage() {
   const eveningEvents = visibleDayEvents.filter((item) => new Date(item.start_at).getHours() >= 17);
 
   const nowTimelineEvent = useMemo(() => {
+    if (useCalendarShowcase) {
+      return (
+        visibleDayEvents.find((item) => item.id === CALENDAR_SHOWCASE_PRIMARY_EVENT_ID) ??
+        visibleDayEvents[0] ??
+        selectedEvent
+      );
+    }
+
     const nowTimestamp = Date.now();
     const ongoing = visibleDayEvents.find((item) => {
       const startAt = new Date(item.start_at).getTime();
@@ -621,7 +639,7 @@ export default function CalendarPage() {
     }
 
     return visibleDayEvents.find((item) => new Date(item.start_at).getTime() > nowTimestamp) ?? selectedEvent;
-  }, [selectedEvent, visibleDayEvents]);
+  }, [selectedEvent, useCalendarShowcase, visibleDayEvents]);
 
   const pressureSlices = useMemo(() => {
     const base = [
@@ -830,10 +848,12 @@ export default function CalendarPage() {
     }
   }
 
-  const dayLoadPercent = Math.max(
-    18,
-    Math.min(96, Math.round(((todayEventsCount * 14 + protectedBlocksCount * 11 + focusBlocksCount * 10) / 56) * 100))
-  );
+  const dayLoadPercent = useCalendarShowcase
+    ? 72
+    : Math.max(
+        18,
+        Math.min(96, Math.round(((todayEventsCount * 14 + protectedBlocksCount * 11 + focusBlocksCount * 10) / 56) * 100))
+      );
   const showCalendarStatusStrip = !useCalendarShowcase;
   const statusMessage = errorMessage
     ? errorMessage
@@ -879,22 +899,22 @@ export default function CalendarPage() {
               metrics={[
                 {
                   label: "Events today",
-                  value: `${todayEventsCount}`,
+                  value: `${useCalendarShowcase ? 7 : todayEventsCount}`,
                   icon: <TimelineGlyph name="event" />,
                 },
                 {
                   label: "Deep work",
-                  value: `${focusBlocksCount}`,
+                  value: `${useCalendarShowcase ? "4h" : focusBlocksCount}`,
                   icon: <TimelineGlyph name="focus" />,
                 },
                 {
                   label: "Protected blocks",
-                  value: `${protectedBlocksCount}`,
+                  value: `${useCalendarShowcase ? 2 : protectedBlocksCount}`,
                   icon: <TimelineGlyph name="task" />,
                 },
                 {
                   label: "Sync issues",
-                  value: `${syncIssuesCount}`,
+                  value: `${useCalendarShowcase ? 1 : syncIssuesCount}`,
                   icon: <TimelineGlyph name="sync" />,
                 },
               ]}
