@@ -24,6 +24,31 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-289 Dashboard canonical proportion finish
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-288
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Web-only V1 task to tighten Dashboard desktop proportions and material
+      blending against the approved canonical reference.
+    - Promoted sparse current-day Dashboard states into the existing canonical
+      showcase path so empty authenticated days still render the approved
+      founder reference composition.
+    - Rebalanced the desktop main grid to restore the canonical shape:
+      narrow `Now focus`, wide day-flow, wide Tasks, and narrower Habits.
+    - Recalibrated hero and focus-card blending using existing approved
+      painterly assets. Mobile application work remains V2 scope.
+    - Report:
+      `docs/ux/nest_289_dashboard_canonical_proportion_finish_2026-05-02.md`.
+    - Evidence:
+      `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-web-parity-preview-phaseAE-before.png`,
+      `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-web-parity-preview-phaseAE.png`.
+    - Validation:
+      web typecheck, lint, build, unit tests, Playwright screenshot smoke, and
+      `git diff --check`.
+
 - [x] NEST-288 Calendar canonical showcase convergence
   - Status: DONE
   - Owner: Execution Agent

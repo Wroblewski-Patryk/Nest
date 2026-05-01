@@ -25,6 +25,20 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-289` Dashboard canonical proportion finish.
+  Web Dashboard now promotes sparse current-day states into the existing
+  canonical showcase path, so authenticated days without enough live tasks,
+  events, or habits still render the approved founder-reference composition.
+  The desktop main grid now matches the canonical proportion more closely:
+  narrow `Now focus`, wide day-flow, wide Tasks, and narrower Habits. Hero and
+  focus-card material blending were recalibrated using existing approved
+  painterly assets. Fresh evidence:
+  `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-web-parity-preview-phaseAE-before.png`
+  and
+  `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-web-parity-preview-phaseAE.png`.
+  Web typecheck, lint, build, unit tests, Playwright screenshot smoke, and
+  `git diff --check` passed. Report:
+  `docs/ux/nest_289_dashboard_canonical_proportion_finish_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-288` Calendar canonical showcase convergence.
   Web Calendar now promotes sparse current-day live states into the existing
   canonical showcase path, preventing authenticated fallback renders from

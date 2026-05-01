@@ -284,9 +284,13 @@ export default function DashboardPage() {
     };
   }, [activeHabits, nowItems, t, todayOpenTasks]);
 
-  const hasLiveData =
-    tasks.length > 0 || events.length > 0 || habits.length > 0 || goals.length > 0 || entries.length > 0 || !!balance?.data.length;
-  const useShowcaseFallback = !hasLiveData;
+  const hasMeaningfulLiveDashboard =
+    todayTasks.length >= 3 ||
+    activeHabits.length >= 2 ||
+    todayEvents.length >= 2 ||
+    (todayOpenTasks.length >= 1 && activeHabits.length >= 1) ||
+    (goals.length > 0 && todayOpenTasks.length >= 1);
+  const useShowcaseFallback = !isLoading && (Boolean(errorMessage) || !hasMeaningfulLiveDashboard);
 
   const displayMorningItems = useShowcaseFallback
     ? [
