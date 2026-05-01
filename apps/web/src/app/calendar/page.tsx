@@ -1391,30 +1391,31 @@ export default function CalendarPage() {
             >
               <div className="planning-ladder-copy">
                 <h3>Time ladder</h3>
-                <p>See how calendar time connects planning to reflection.</p>
+                <p>{useCalendarShowcase ? "From intention to impact." : "See how calendar time connects planning to reflection."}</p>
               </div>
               <div className="planning-ladder-chain">
                 <article className="planning-ladder-node">
                   <small>Goal</small>
-                  <strong>{linkedTask ? "Support planned work" : "Protect meaningful time"}</strong>
+                  <strong>{useCalendarShowcase ? "Launch product" : linkedTask ? "Support planned work" : "Protect meaningful time"}</strong>
                   <div className="planning-ladder-progress" style={{ "--progress-value": `${Math.max(28, focusBlocksCount * 18)}%` } as CSSProperties}>
                     <span />
                   </div>
+                  {useCalendarShowcase ? <span>Launch product</span> : null}
                 </article>
                 <article className="planning-ladder-node">
-                  <small>Task or list</small>
-                  <strong>{linkedTask?.title ?? "Weekly planning list"}</strong>
-                  <span>{linkedTask ? `${linkedTask.priority} priority` : "Route work into an event block"}</span>
+                  <small>{useCalendarShowcase ? "Task / List" : "Task or list"}</small>
+                  <strong>{useCalendarShowcase ? "Define positioning" : linkedTask?.title ?? "Weekly planning list"}</strong>
+                  <span>{useCalendarShowcase ? "(Product roadmap)" : linkedTask ? `${linkedTask.priority} priority` : "Route work into an event block"}</span>
                 </article>
                 <article className="planning-ladder-node">
                   <small>Calendar event</small>
-                  <strong>{selectedEvent?.title ?? "Protected focus block"}</strong>
-                  <span>{selectedEvent ? eventTimingLabel(selectedEvent) : "Give the work a real place in the day"}</span>
+                  <strong>{useCalendarShowcase ? "Product strategy workshop" : selectedEvent?.title ?? "Protected focus block"}</strong>
+                  <span>{useCalendarShowcase ? "Today, 10:15 - 11:00" : selectedEvent ? eventTimingLabel(selectedEvent) : "Give the work a real place in the day"}</span>
                 </article>
                 <article className="planning-ladder-node">
                   <small>Reflection</small>
-                  <strong>Capture what the day taught you</strong>
-                  <span>Close the loop in Journal while the signal is fresh.</span>
+                  <strong>{useCalendarShowcase ? "Capture insights and decisions" : "Capture what the day taught you"}</strong>
+                  <span>{useCalendarShowcase ? "Close the loop while the signal is still fresh." : "Close the loop in Journal while the signal is fresh."}</span>
                 </article>
               </div>
               {useCalendarShowcase ? (

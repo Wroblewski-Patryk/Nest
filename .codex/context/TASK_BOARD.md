@@ -24,6 +24,29 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-286 Tighten Calendar and Journal lower-half parity
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-285
+  - Done on: 2026-05-01
+  - Notes:
+    - Tightened Calendar showcase lower-story fidelity by aligning the ladder
+      copy and node content more directly to the canonical `Goal -> Task/List
+      -> Calendar event -> Reflection` narrative.
+    - Tightened Journal showcase lower-half rhythm with a denser composer
+      title/date row, shorter excerpt cadence, and calmer feed affordances.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_286_calendar_journal_lower_half_parity_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-285 Tighten Calendar and Journal rail parity
   - Status: DONE
   - Owner: Execution Agent

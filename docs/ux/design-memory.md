@@ -192,6 +192,10 @@
   when the approved right rail carries named pressure categories, calm sync
   language, and more intentional support copy, preview mode should mirror that
   editorial framing instead of falling back to generic runtime telemetry.
+- Calendar lower narrative needs literal canonical wording:
+  when the approved lower ladder names a specific goal, task/list, calendar
+  event, and reflection outcome, prefer those exact narrative anchors over more
+  abstract generic planning copy.
 
 ## Journal Canonical Patterns (2026-04-30)
 
@@ -253,6 +257,9 @@
 - Journal support rails benefit from quiet decorative structure:
   when the approved room uses subtle separators and warmer ladder framing, add
   those cues before introducing more controls or denser helper copy.
+- Journal showcase feed should feel edited, not placeholder-heavy:
+  denser composer rows, shorter excerpts, and calmer row affordances usually
+  match the approved desktop room better than verbose preview copy.
 
 ## Workspace Shell Patterns (2026-04-26)
 

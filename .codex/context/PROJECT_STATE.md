@@ -24,6 +24,16 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-286` Calendar and Journal lower-half parity
+  pass. Calendar showcase now uses more reference-aligned ladder copy and node
+  content so the lower story reads closer to the canonical `Event timeline ->
+  Time ladder` sequence. Journal showcase now uses a denser composer/feed
+  rhythm with a tighter title/date row, shorter excerpt cadence, and calmer
+  feed affordances. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_286_calendar_journal_lower_half_parity_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-285` Calendar and Journal rail parity pass.
   Calendar showcase now uses more reference-aligned support-rail copy, quick
   add wording, pressure values, and a calmer sync-health story. Journal gained

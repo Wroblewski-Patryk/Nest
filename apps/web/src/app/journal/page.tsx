@@ -992,7 +992,7 @@ export default function JournalPage() {
               className={`journal-canonical-entries ${useJournalShowcase ? "is-showcase" : ""}`}
               actions={useJournalShowcase ? <a href="/journal" className="dashboard-inline-action">View all entries</a> : undefined}
             >
-              <div className="journal-entry-toolbar">
+              <div className={`journal-entry-toolbar ${useJournalShowcase ? "is-showcase" : ""}`}>
                 <div className="journal-entry-filters" role="group" aria-label="Journal entry filters">
                   {([
                     { key: "all" as const, label: "All" },
@@ -1131,9 +1131,9 @@ export default function JournalPage() {
                                 ))}
                               </div>
                             </div>
-                            <p className="journal-entry-excerpt">{entry.body.slice(0, 160)}</p>
+                            <p className="journal-entry-excerpt">{entry.body.slice(0, 112)}...</p>
                             <div className="journal-entry-actions">
-                              <span className="planning-row-actions is-muted">Preview</span>
+                              <span className="planning-row-actions is-muted">Read</span>
                             </div>
                           </>
                         ) : (
