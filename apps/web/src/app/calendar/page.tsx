@@ -613,6 +613,14 @@ export default function CalendarPage() {
     const weekStart = startOfWeekMonday(anchorDay);
     return Array.from({ length: 5 }, (_, index) => addDays(weekStart, index));
   }, [anchorDay]);
+  const showcaseWindowLabel = useMemo(() => {
+    const showcaseEnd = addDays(windowEnd, -1);
+    return `${windowStart.toLocaleDateString(undefined, { month: "short", day: "numeric" })} - ${showcaseEnd.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    })}`;
+  }, [windowEnd, windowStart]);
 
   const dayDensity = useMemo(
     () =>
@@ -1092,30 +1100,49 @@ export default function CalendarPage() {
                   </div>
 
                   <div className={`calendar-flow-nav ${useCalendarShowcase ? "is-showcase" : ""}`}>
-                    <button type="button" className="btn-secondary" onClick={() => moveWindow(-1)}>
-                      Prev
-                    </button>
-                    <button type="button" className="btn-secondary" onClick={goToday}>
-                      Today
-                    </button>
-                    <button type="button" className="btn-secondary" onClick={() => moveWindow(1)}>
-                      Next
-                    </button>
-                    <label className="field calendar-anchor-field">
-                      <span>Anchor</span>
-                      <input
-                        className="list-row"
-                        type="date"
-                        value={anchorDate}
-                        onChange={(event) => setAnchorDate(event.target.value)}
-                      />
-                    </label>
+                    {useCalendarShowcase ? (
+                      <>
+                        <div className="calendar-flow-stepper" aria-label="Move visible week">
+                          <button type="button" className="calendar-step-button" onClick={() => moveWindow(-1)} aria-label="Previous week">
+                            {"<"}
+                          </button>
+                          <button type="button" className="calendar-step-today" onClick={goToday}>
+                            Today
+                          </button>
+                          <button type="button" className="calendar-step-button" onClick={() => moveWindow(1)} aria-label="Next week">
+                            {">"}
+                          </button>
+                        </div>
+                        <p className="calendar-flow-range">{showcaseWindowLabel}</p>
+                      </>
+                    ) : (
+                      <>
+                        <button type="button" className="btn-secondary" onClick={() => moveWindow(-1)}>
+                          Prev
+                        </button>
+                        <button type="button" className="btn-secondary" onClick={goToday}>
+                          Today
+                        </button>
+                        <button type="button" className="btn-secondary" onClick={() => moveWindow(1)}>
+                          Next
+                        </button>
+                        <label className="field calendar-anchor-field">
+                          <span>Anchor</span>
+                          <input
+                            className="list-row"
+                            type="date"
+                            value={anchorDate}
+                            onChange={(event) => setAnchorDate(event.target.value)}
+                          />
+                        </label>
+                      </>
+                    )}
                   </div>
                 </div>
 
                 <div className="calendar-window-caption">
-                  <strong>{windowLabel}</strong>
-                  <span>{openTasksInView} open due tasks in view</span>
+                  <strong>{useCalendarShowcase ? "Week at a glance" : windowLabel}</strong>
+                  <span>{useCalendarShowcase ? `${visibleDayEvents.length} events on the focus day` : `${openTasksInView} open due tasks in view`}</span>
                 </div>
 
                 <div className="calendar-week-strip" role="tablist" aria-label="Week strip">
@@ -1133,9 +1160,12 @@ export default function CalendarPage() {
                           setViewMode("day");
                         }}
                       >
-                        <small>{formatWeekdayLabel(day)}</small>
-                        <strong>{formatDayNumber(day)}</strong>
-                        <span>{density} block{density === 1 ? "" : "s"}</span>
+                        <div className="calendar-week-pill-head">
+                          <small>{formatWeekdayLabel(day)}</small>
+                          <strong>{formatDayNumber(day)}</strong>
+                        </div>
+                        <span className={`calendar-week-pill-marker ${density > 0 ? "has-density" : ""}`} aria-hidden="true" />
+                        <span className="calendar-week-pill-density">{density} block{density === 1 ? "" : "s"}</span>
                       </button>
                     );
                   })}

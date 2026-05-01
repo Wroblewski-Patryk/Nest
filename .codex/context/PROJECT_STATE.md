@@ -24,6 +24,16 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-284` Calendar and Journal showcase closure
+  pass. Journal now promotes the canonical showcase room for sparse or failed
+  runtime states instead of only zero-data states, and its showcase focus/feed
+  spacing is tighter. Calendar showcase now uses calmer framed stepper
+  controls and a denser week-strip marker rhythm so the time-map panel reads
+  closer to the approved desktop reference. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_284_calendar_journal_showcase_closure_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-283` Calendar showcase timeline pass. Calendar
   showcase now uses a more explicit timeboard with hour labels, lane headings,
   centered `Now` emphasis, and tone-based event blocks instead of the previous

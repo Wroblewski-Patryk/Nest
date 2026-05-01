@@ -2280,6 +2280,43 @@ input[type="color"].list-row {
   margin-left: auto;
 }
 
+.calendar-flow-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.44rem;
+}
+
+.calendar-step-button,
+.calendar-step-today {
+  border: 1px solid rgb(214 206 192 / 78%);
+  background: rgb(255 255 255 / 76%);
+  color: color-mix(in srgb, var(--ink), #fff 12%);
+}
+
+.calendar-step-button {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 0.88rem;
+  line-height: 1;
+}
+
+.calendar-step-today {
+  min-height: 2rem;
+  padding: 0.34rem 0.82rem;
+  border-radius: 0.84rem;
+  font-size: 0.78rem;
+}
+
+.calendar-flow-range {
+  margin: 0;
+  color: color-mix(in srgb, var(--ink), #fff 10%);
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
 .calendar-showcase-focus {
   border: 1px solid color-mix(in srgb, var(--accent), #fff 34%);
   border-radius: 1.5rem;
@@ -2464,6 +2501,26 @@ input[type="color"].list-row {
   border-color: color-mix(in srgb, var(--accent), #fff 34%);
   background: color-mix(in srgb, var(--accent-soft), #fff 38%);
   box-shadow: inset 0 0 0 1px rgb(131 145 92 / 10%);
+}
+
+.calendar-week-pill-head {
+  display: grid;
+  gap: 0.14rem;
+}
+
+.calendar-week-pill-marker {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: rgb(218 210 197 / 82%);
+}
+
+.calendar-week-pill-marker.has-density {
+  background: color-mix(in srgb, var(--accent), #fff 12%);
+}
+
+.calendar-week-pill-density {
+  font-size: 0.7rem;
 }
 
 .calendar-week-pill small,
@@ -3040,6 +3097,10 @@ input[type="color"].list-row {
   gap: 0.76rem;
 }
 
+.journal-canonical-composer.is-showcase.panel {
+  padding: 1rem 1rem 0.92rem;
+}
+
 .journal-date-field {
   min-width: 12rem;
 }
@@ -3079,6 +3140,14 @@ input[type="color"].list-row {
 .journal-showcase-focus-copy {
   display: grid;
   gap: 0.72rem;
+}
+
+.journal-showcase-focus-detail {
+  margin: 0;
+  max-width: 34rem;
+  color: rgb(244 239 225 / 82%);
+  font-size: 0.84rem;
+  line-height: 1.5;
 }
 
 .journal-showcase-focus-actions {
@@ -3195,6 +3264,10 @@ input[type="color"].list-row {
   gap: 0.58rem;
 }
 
+.journal-canonical-entries.is-showcase.panel {
+  padding-bottom: 0.9rem;
+}
+
 .journal-entry-row {
   border-top: 1px solid rgb(224 217 205 / 78%);
   padding: 0.84rem 0;
@@ -3207,6 +3280,12 @@ input[type="color"].list-row {
 .journal-entry-row:first-child {
   border-top: 0;
   padding-top: 0;
+}
+
+.journal-entry-row.is-showcase {
+  grid-template-columns: auto minmax(0, 1.2fr) minmax(0, 0.86fr) auto;
+  gap: 0.8rem;
+  padding: 0.74rem 0;
 }
 
 .journal-entry-row-empty {
@@ -3259,6 +3338,10 @@ input[type="color"].list-row {
   line-height: 1.4;
 }
 
+.journal-entry-row.is-showcase .journal-entry-main strong {
+  font-size: 0.88rem;
+}
+
 .journal-entry-meta {
   display: flex;
   align-items: center;
@@ -3286,6 +3369,12 @@ input[type="color"].list-row {
   font-size: 0.79rem;
   line-height: 1.62;
   max-width: 34ch;
+}
+
+.journal-entry-row.is-showcase .journal-entry-excerpt {
+  font-size: 0.77rem;
+  line-height: 1.56;
+  max-width: 30ch;
 }
 
 .journal-entry-actions {

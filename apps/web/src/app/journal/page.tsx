@@ -409,13 +409,15 @@ export default function JournalPage() {
     () => createShowcaseBalance(showcaseLifeAreas),
     [showcaseLifeAreas]
   );
+  const hasMeaningfulLiveJournal =
+    entries.length >= 3 &&
+    lifeAreas.length >= 2 &&
+    Boolean(balance?.data.length);
   const useJournalShowcase =
     !isLoading &&
     !isCreatingEntry &&
     !isCreatingArea &&
-    entries.length === 0 &&
-    lifeAreas.length === 0 &&
-    !balance?.data.length;
+    (Boolean(errorMessage) || !hasMeaningfulLiveJournal);
   const displayEntries = useJournalShowcase ? showcaseEntries : entries;
   const displayLifeAreas = useJournalShowcase ? showcaseLifeAreas : lifeAreas;
   const displayBalance = useJournalShowcase ? showcaseBalance : balance;
@@ -838,6 +840,9 @@ export default function JournalPage() {
                       {latestEntryAreas.length > 0 ? latestEntryAreas.map((area) => area.name).join(" + ") : "Health + Work"}
                     </span>
                   </div>
+                  <p className="journal-showcase-focus-detail">
+                    Use one gentle prompt, name the feeling honestly, and let the entry stay human instead of polished.
+                  </p>
                 </div>
                 <div className="journal-showcase-focus-actions">
                   <a href="#journal-composer" className="btn-primary">
@@ -872,7 +877,11 @@ export default function JournalPage() {
               />
             )}
 
-            <Panel id="journal-composer" title="Write your reflection" className="journal-canonical-composer">
+            <Panel
+              id="journal-composer"
+              title="Write your reflection"
+              className={`journal-canonical-composer ${useJournalShowcase ? "is-showcase" : ""}`}
+            >
               <form className="form-grid" onSubmit={createJournalEntry}>
                 <div className="journal-composer-topline">
                   <label className="field">
@@ -980,7 +989,7 @@ export default function JournalPage() {
 
             <Panel
               title="Recent entries"
-              className="journal-canonical-entries"
+              className={`journal-canonical-entries ${useJournalShowcase ? "is-showcase" : ""}`}
               actions={useJournalShowcase ? <a href="/journal" className="dashboard-inline-action">View all entries</a> : undefined}
             >
               <div className="journal-entry-toolbar">
@@ -1013,7 +1022,7 @@ export default function JournalPage() {
                   visibleEntries.map((entry) => {
                     const linkedAreas = entry.life_areas ?? entry.lifeAreas ?? [];
                     return (
-                      <article key={entry.id} className="journal-entry-row">
+                      <article key={entry.id} className={`journal-entry-row ${useJournalShowcase ? "is-showcase" : ""}`}>
                         {editingEntryId === entry.id ? (
                           <div className="form-grid">
                             <label className="field">

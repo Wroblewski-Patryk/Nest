@@ -24,6 +24,30 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-284 Tighten Calendar and Journal showcase closure
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-283
+  - Done on: 2026-05-01
+  - Notes:
+    - Promoted Journal showcase mode for sparse or failed runtime states so
+      the route keeps the canonical reflection-room composition even when live
+      data is too thin to carry the approved screen.
+    - Tightened Journal showcase focus/feed rhythm and reframed Calendar
+      showcase controls with a calmer stepper plus denser week-strip markers
+      so both desktop routes read closer to the founder-approved references.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_284_calendar_journal_showcase_closure_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-283 Convert Calendar showcase center into a timeboard
   - Status: DONE
   - Owner: Execution Agent

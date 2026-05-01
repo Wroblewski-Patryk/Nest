@@ -184,6 +184,10 @@
   if the canonical reference depends on an hour rail, explicit lane headings,
   and block-like scheduled surfaces, use a route-specific showcase timeboard
   rather than forcing fidelity through the generic card grid.
+- Calendar showcase controls need the same calm as the hero:
+  if the approved desktop screen frames stepping controls and week selection as
+  one composed orientation layer, keep them visually grouped and understated
+  rather than exposing raw utility buttons and input fields in preview mode.
 
 ## Journal Canonical Patterns (2026-04-30)
 
@@ -238,6 +242,10 @@
   when the canonical reference presents `Reflection focus` as a horizontal
   editorial band with chip context and a right-aligned primary action, prefer a
   route-specific section over the shared focus card treatment.
+- Journal showcase should survive sparse-live states:
+  if the route has too little runtime content to carry the canonical room,
+  prefer continuing to render the founder-approved showcase composition rather
+  than dropping into a thin live state that breaks parity.
 
 ## Workspace Shell Patterns (2026-04-26)
 
