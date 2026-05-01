@@ -168,6 +168,10 @@
   When the canonical reference implies origin, sync, and ownership context, the
   preview state should surface those cues directly instead of falling back to
   generic event metadata.
+- Calendar control surfaces should feel framed, not scattered:
+  keep date anchor, stepping controls, and week selection visually grouped so
+  the day-flow panel reads as composed orientation rather than raw scheduling
+  chrome.
 
 ## Journal Canonical Patterns (2026-04-30)
 
@@ -210,6 +214,10 @@
   If the founder-approved hero uses established cadence and entry-count numbers,
   the preview state may mirror those values even when the visible synthetic
   entry feed is intentionally shorter.
+- Journal desktop feed density matters:
+  keep recent-entry rows compact enough that the reflection room feels lived-in,
+  but preserve enough line-height and excerpt width for the writing to stay
+  humane rather than dashboard-like.
 
 ## Workspace Shell Patterns (2026-04-26)
 

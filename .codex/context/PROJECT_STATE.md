@@ -24,6 +24,15 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-280` Calendar and Journal composition polish.
+  Tightened Calendar desktop toolbar grouping, anchor control framing, week
+  strip density, card rhythm, and footer separation so the canonical time map
+  reads more intentionally. Tightened Journal desktop column cadence, composer
+  depth, and recent-entry row density so the reflection room feels calmer and
+  less technical. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_280_calendar_journal_composition_polish_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-279` canonical showcase story-details pass.
   Calendar showcase now carries stronger linked-goal, ownership, and sync
   storytelling around the workshop event, while Journal showcase uses the

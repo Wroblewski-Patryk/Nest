@@ -24,6 +24,31 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-280 Tighten Calendar and Journal canonical composition
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-279
+  - Done on: 2026-05-01
+  - Notes:
+    - Refined Calendar desktop control composition with calmer toolbar
+      grouping, stronger week-pill rhythm, steadier time-card sizing, and a
+      softer footer break so the time-map panel reads less like utility chrome.
+    - Refined Journal desktop spacing with a slightly stronger main/rail
+      cadence, deeper composer breathing room, and denser recent-entry rows so
+      the feed feels more like the approved canonical reflection room.
+    - Replaced the decorative bullet in Calendar `Now on deck` detail copy
+      with an ASCII-safe separator.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_280_calendar_journal_composition_polish_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-279 Strengthen canonical showcase story details
   - Status: DONE
   - Owner: Execution Agent

@@ -965,7 +965,7 @@ export default function CalendarPage() {
                 title={nextDeckEvent?.title ?? "Protect a meaningful block"}
                 detail={
                   nextDeckEvent
-                    ? `${eventTimingLabel(nextDeckEvent)} • ${formatDurationLabel(durationMinutes(nextDeckEvent))}`
+                    ? `${eventTimingLabel(nextDeckEvent)} | ${formatDurationLabel(durationMinutes(nextDeckEvent))}`
                     : "Your next event will become the dominant action card as soon as the day has one."
                 }
                 supportingLabel="Linked context"
