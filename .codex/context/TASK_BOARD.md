@@ -24,6 +24,24 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-237 V1 readiness truth refresh
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-236
+  - Done on: 2026-05-01
+  - Priority: P1
+  - Notes:
+    - Refreshed the V1 founder-ready checklist and readiness matrix so current
+      evidence from `NEST-233` through `NEST-236` is represented.
+    - Updated mobile typecheck/export lines to PASS with recent evidence, moved
+      route-local request cleanup to PASS, and recorded navigation/localization
+      improvements as PARTIAL/PASS evidence.
+    - Kept `NEST-231` explicitly blocked; V1 founder-ready is not declared.
+    - Added report:
+      `docs/planning/nest_237_v1_readiness_truth_refresh_2026-05-01.md`.
+    - Validation:
+      manual consistency review and `git diff --check`.
+
 - [x] NEST-236 Mobile Calendar localization closure
   - Status: DONE
   - Owner: Execution Agent

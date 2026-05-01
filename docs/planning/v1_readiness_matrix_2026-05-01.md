@@ -32,6 +32,17 @@ classified release risks:
 - API full-suite and security-control evidence was refreshed by `NEST-227`.
 - `NEST-228` reran the gate and found that remaining release risk is evidence,
   not a known P0 implementation blocker.
+- `NEST-233` centralized web route API request typing, closing the documented
+  route-local cast cleanup item.
+- `NEST-234` moved lower web Automations, Billing, and Insights route copy into
+  the shared EN/PL localization dictionary.
+- `NEST-235` aligned navigation hierarchy with the V1/V2 split: core modules
+  stay primary, while Insights and Assistant are optional surfaces.
+- `NEST-236` localized Mobile Calendar event CRUD copy and validated mobile
+  typecheck/export again.
+- `NEST-231` remains a blocker for mobile authenticated API smoke evidence
+  until the user chooses real mobile auth, a local smoke bridge, or a narrowed
+  web-first V1 claim.
 
 ## Repository Truth
 
@@ -40,7 +51,7 @@ classified release risks:
 | Startup docs match real workspace layout and local run sequence | PASS | Earlier v1 recovery reports and current queue alignment in `mvp-next-commits.md` | Reconfirm during `NEST-223` |
 | API, web, and mobile entry commands are documented without broken root commands | PASS | `v1_founder_ready_checklist_2026-04-26.md`; recent web/mobile commands ran directly in app folders | Reconfirm during final gate |
 | Current execution truth reflected in task board and project state | PASS | `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md` updated through `NEST-219` | Continue updating per task |
-| No known contract drift remains undocumented for critical paths | PARTIAL | `NEST-214`, `NEST-215`, `NEST-216` hardened shared contracts; route-local casts remain documented as P2 in `v1_remaining_gaps_plan_2026-05-01.md` | Track casts as cleanup unless parity audit finds behavior drift |
+| No known contract drift remains undocumented for critical paths | PASS | `NEST-214`, `NEST-215`, `NEST-216` hardened shared contracts; `NEST-233` removed repeated web route-local request casts | Keep monitoring during final gate |
 
 ## Backend Reliability
 
@@ -59,18 +70,18 @@ classified release risks:
 | Onboarding policy matches guard logic and user-visible flow | PASS | Prior onboarding/guard repair reports; no new drift found in this wave | Reconfirm during final gate |
 | Dashboard and Planning support practical daily-use loop | PASS | `NEST-217` fixed Dashboard live-data trust and audited Planning | Include in `NEST-221` parity audit |
 | Each core web module supports create/edit/review/delete where applicable | PARTIAL | Core routes are API-backed; broad route-local casts and legacy lower panels remain | Confirm outcome-by-outcome in `NEST-221` |
-| Key user-facing text avoids mojibake, accidental mixed language, raw technical wording | PARTIAL | `NEST-209` through `NEST-213` improved core paths; not all lower CRUD copy is localized | Audit remaining visible lower-route copy during parity/accessibility work |
-| `en` and `pl` localization visibly affect core v1 path | PARTIAL | Web shell/dashboard and mobile shell/settings now react to language changes | Verify all founder-critical route copy in `NEST-221` |
+| Key user-facing text avoids mojibake, accidental mixed language, raw technical wording | PARTIAL | `NEST-209` through `NEST-213` improved core paths; `NEST-234` localized lower web route chrome/status copy and `NEST-236` localized Mobile Calendar CRUD | Continue per-screen mobile CRUD localization |
+| `en` and `pl` localization visibly affect core v1 path | PARTIAL | Web shell/dashboard, lower web route chrome, mobile shell/settings, and Mobile Calendar CRUD now use shared localization | Continue mobile Tasks/Goals/Habits/Journal CRUD copy closure |
 
 ## Mobile Parity
 
 | Line | Status | Evidence | Next Action |
 | --- | --- | --- | --- |
-| Mobile typecheck passes | PASS | `NEST-218` and `NEST-219`: `tsc --noEmit` passed | Keep in final gate |
-| Mobile build/export passes | PASS | `NEST-218` and `NEST-219`: Expo web export passed | Keep in final gate |
+| Mobile typecheck passes | PASS | Refreshed by `NEST-235` and `NEST-236`: `pnpm exec tsc --noEmit` passed in `apps/mobile` | Keep in final gate |
+| Mobile build/export passes | PASS | Refreshed by `NEST-235` and `NEST-236`: `pnpm exec expo export --platform web` passed in `apps/mobile` | Keep in final gate |
 | Mobile core modules are API-backed rather than placeholder-only | PARTIAL | Tasks/Habits/Goals/Journal are API-backed; Billing/Insights still use fallback snapshots when live fails | Confirm founder-critical module outcomes in `NEST-221` |
 | Routines, life areas, settings essentials, and declared v1 behaviors reachable on mobile | PARTIAL | Settings shortcuts expose routines/life areas; modal exposes language/sync/notifications/Copilot | Verify reachability and friction in `NEST-221` |
-| Parity is defended by outcome evidence, not only screenshots | PARTIAL | `NEST-221` recorded outcome parity for core CRUD/settings/sync; `NEST-224` added mobile Calendar event CRUD | Provider production semantics and final validation still block founder-ready claim |
+| Parity is defended by outcome evidence, not only screenshots | PARTIAL | `NEST-221` recorded outcome parity for core CRUD/settings/sync; `NEST-224` added mobile Calendar event CRUD; `NEST-235` aligned navigation scope; `NEST-236` localized Mobile Calendar CRUD | `NEST-231` mobile authenticated API session evidence remains blocked |
 
 ## Cross-Surface Integrity
 
@@ -79,7 +90,7 @@ classified release risks:
 | Shared client contracts match backend reality for critical v1 flows | PASS | `NEST-214` shared CRUD contract audit and validations | Monitor route-local cast cleanup |
 | Web and mobile map backend errors into user-safe recovery guidance | PASS | `NEST-209`, `NEST-215`, `NEST-216` | Verify user-facing recovery in `NEST-221` |
 | Offline/manual sync feels intentional and understandable for founder-critical path | PASS | `NEST-216` retryability handling; `NEST-219` support map exposes sync recovery | Include manual sync path in parity audit |
-| Core localization and formatting behavior consistent across web and mobile | PARTIAL | `NEST-211` to `NEST-213` covered shell/dashboard/mobile shell/settings; deeper CRUD copy remains mixed | Verify founder-critical copy in `NEST-221` |
+| Core localization and formatting behavior consistent across web and mobile | PARTIAL | `NEST-211` to `NEST-213` covered shell/dashboard/mobile shell/settings; `NEST-234` and `NEST-236` added lower web route and Mobile Calendar CRUD coverage | Continue founder-critical mobile CRUD copy closure |
 
 ## Daily-Use Quality
 

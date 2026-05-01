@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-237` V1 readiness truth refresh. The V1
+  founder-ready checklist and readiness matrix now reflect current evidence
+  from `NEST-233` through `NEST-236`: web route-local request cleanup,
+  lower-route localization, V1 navigation scope alignment, and Mobile Calendar
+  localization closure. The docs still do not declare V1 founder-ready because
+  `NEST-231` remains blocked by a required mobile authenticated API session
+  decision. Report:
+  `docs/planning/nest_237_v1_readiness_truth_refresh_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-236` Mobile Calendar localization closure. Mobile
   Calendar event CRUD feedback, validation, alerts, placeholders, panel labels,
   action copy, accessibility labels, and the V1 provider-connect scope message

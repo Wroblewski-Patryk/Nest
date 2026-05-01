@@ -58,20 +58,20 @@ Use this checklist as the canonical readiness gate during the `v1` repair wave.
 
 ## 4. Mobile Parity
 
-- `OPEN` mobile typecheck passes.
-- `OPEN` mobile build/export passes.
-- `OPEN` mobile core modules are API-backed rather than placeholder-only.
-- `OPEN` routines, life areas, settings essentials, and other declared `v1`
+- `PASS` mobile typecheck passes.
+- `PASS` mobile build/export passes.
+- `PARTIAL` mobile core modules are API-backed rather than placeholder-only.
+- `PARTIAL` routines, life areas, settings essentials, and other declared `v1`
   behaviors are actually reachable on mobile.
-- `OPEN` parity is defended by outcome evidence, not only screenshots.
+- `PARTIAL` parity is defended by outcome evidence, not only screenshots.
 
 ## 5. Cross-Surface Integrity
 
-- `OPEN` shared client contracts match backend reality for critical `v1` flows.
-- `OPEN` web and mobile map backend errors into user-safe recovery guidance.
-- `OPEN` offline/manual sync feels intentional and understandable for the
+- `PASS` shared client contracts match backend reality for critical `v1` flows.
+- `PASS` web and mobile map backend errors into user-safe recovery guidance.
+- `PASS` offline/manual sync feels intentional and understandable for the
   founder-critical path.
-- `OPEN` core localization and formatting behavior are consistent across web and
+- `PARTIAL` core localization and formatting behavior are consistent across web and
   mobile.
 
 ## 6. Daily-Use Quality
@@ -89,15 +89,20 @@ Use this checklist as the canonical readiness gate during the `v1` repair wave.
   envelope handling, offline/manual sync retryability, and the web/mobile
   validation baselines covered by recent slices have current evidence.
 - `PASS` API validation freshness was refreshed by `NEST-227`.
-- `PARTIAL` route-local contract cleanup,
-  localization completeness, repeated-flow quality, and tenant-isolation
-  release evidence still need final confirmation before the gate can close.
+- `PASS` route-local request cast cleanup is now covered by `NEST-233`.
+- `PARTIAL` localization completeness, repeated-flow quality, and final release
+  evidence still need confirmation before the gate can close. `NEST-234` and
+  `NEST-236` improved lower web routes and Mobile Calendar specifically.
+- `PASS WITH SCOPE BOUNDARY` navigation now matches the V1/V2 split after
+  `NEST-235`: Insights and Assistant remain reachable as optional surfaces
+  without presenting as core V1 modules.
 - `PASS WITH SCOPE BOUNDARY` provider connect is outside the V1 founder-ready
   claim after `NEST-225`; Nest-first Calendar event CRUD, provider health,
   remediation, and revoke remain in scope.
 - `PARTIAL` parity has current evidence from `NEST-221`, and `NEST-224` closed
-  mobile Calendar event CRUD; provider connect is no longer a V1
-  founder-ready dependency.
+  mobile Calendar event CRUD. `NEST-235` aligned navigation scope and
+  `NEST-236` localized Mobile Calendar CRUD; provider connect is no longer a
+  V1 founder-ready dependency.
 - `PARTIAL` accessibility has a static baseline from `NEST-222` and baseline
   closure from `NEST-226`; contrast and manual screen-reader/device smoke
   remain final-gate evidence.
@@ -105,6 +110,9 @@ Use this checklist as the canonical readiness gate during the `v1` repair wave.
   implementation ready for final smoke, but not yet safe to declare fully
   `v1 founder-ready` without narrow web/mobile UI, accessibility, and contrast
   evidence.
+- `BLOCKED` mobile authenticated API session evidence remains unresolved under
+  `NEST-231`; the final V1 claim still needs an explicit product/architecture
+  decision before mobile real-API smoke can close.
 
 ## Previous Status Snapshot (2026-04-26)
 
