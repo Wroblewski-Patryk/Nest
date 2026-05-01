@@ -24,6 +24,25 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-236 Mobile Calendar localization closure
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-235
+  - Done on: 2026-05-01
+  - Priority: P1
+  - Notes:
+    - Added shared EN/PL localization keys for Mobile Calendar event CRUD
+      feedback, validation, alerts, placeholders, panel labels, action copy,
+      accessibility labels, and the V1 provider-connect scope message.
+    - Updated `apps/mobile/app/(tabs)/calendar.tsx` to use shared
+      localization while preserving API-backed event CRUD, provider sync,
+      conflict, connection, and health behavior.
+    - Added report:
+      `docs/planning/nest_236_mobile_calendar_localization_closure_2026-05-01.md`.
+    - Validation:
+      mobile typecheck, mobile Expo web export, static localization
+      inspection, and `git diff --check`.
+
 - [x] NEST-235 V1 navigation scope alignment
   - Status: DONE
   - Owner: Execution Agent

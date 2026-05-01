@@ -84,6 +84,11 @@ function getTimezone(): string {
 export default function CalendarScreen() {
   const language = useUiLanguage();
   const t = (key: string, fallback: string) => translate(key, language, fallback);
+  const tx = (key: string, fallback: string, replacements: Record<string, string>) =>
+    Object.entries(replacements).reduce(
+      (message, [token, value]) => message.replace(`{${token}}`, value),
+      t(key, fallback)
+    );
   const [conflicts, setConflicts] = useState<IntegrationConflictItem[]>([]);
   const [connections, setConnections] = useState<IntegrationConnectionItem[]>([]);
   const [resolvingId, setResolvingId] = useState<string | null>(null);
@@ -98,7 +103,7 @@ export default function CalendarScreen() {
   const [editDraft, setEditDraft] = useState<EventDraft>(() => createDefaultEventDraft());
   const [busyEventId, setBusyEventId] = useState<string | null>(null);
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
-  const [eventFeedback, setEventFeedback] = useState('Loading calendar events...');
+  const [eventFeedback, setEventFeedback] = useState(t('mobile.calendar.feedback.loading', 'Loading calendar events...'));
   const [eventError, setEventError] = useState('');
 
   const updateEventDraft = useCallback((key: keyof EventDraft, value: string) => {
@@ -153,7 +158,7 @@ export default function CalendarScreen() {
     });
     loadEvents()
       .then(() => {
-        if (mounted) setEventFeedback('Calendar events are ready.');
+        if (mounted) setEventFeedback(t('mobile.calendar.feedback.ready', 'Calendar events are ready.'));
       })
       .catch((error) => {
         if (!mounted) return;
@@ -173,7 +178,7 @@ export default function CalendarScreen() {
     setEventError('');
     try {
       await loadEvents();
-      setEventFeedback('Calendar events refreshed.');
+      setEventFeedback(t('mobile.calendar.feedback.refreshed', 'Calendar events refreshed.'));
     } catch (error) {
       setEventError(getUserSafeErrorMessage(error));
     } finally {
@@ -197,19 +202,19 @@ export default function CalendarScreen() {
   function buildEventPayload(draft: EventDraft): CalendarEventCreatePayload | CalendarEventUpdatePayload | null {
     const title = draft.title.trim();
     if (!title) {
-      setEventError('Event title is required.');
+      setEventError(t('mobile.calendar.validation.title_required', 'Event title is required.'));
       return null;
     }
 
     const startAt = parseDateTimeInput(draft.startAt);
     const endAt = parseDateTimeInput(draft.endAt);
     if (!startAt || !endAt) {
-      setEventError('Start and end date-time are required.');
+      setEventError(t('mobile.calendar.validation.datetime_required', 'Start and end date-time are required.'));
       return null;
     }
 
     if (Date.parse(endAt) <= Date.parse(startAt)) {
-      setEventError('End time must be after start time.');
+      setEventError(t('mobile.calendar.validation.end_after_start', 'End time must be after start time.'));
       return null;
     }
 
@@ -234,7 +239,7 @@ export default function CalendarScreen() {
       await nestApiClient.createCalendarEvent(payload);
       setEventDraft(createDefaultEventDraft());
       await loadEvents();
-      setEventFeedback('Calendar event created.');
+      setEventFeedback(t('mobile.calendar.feedback.created', 'Calendar event created.'));
     } catch (error) {
       setEventError(getUserSafeErrorMessage(error));
     } finally {
@@ -251,13 +256,13 @@ export default function CalendarScreen() {
       endAt: toLocalDateTimeInput(item.end_at),
     });
     setEventError('');
-    setEventFeedback(`Editing ${item.title}.`);
+    setEventFeedback(tx('mobile.calendar.feedback.editing', 'Editing {title}.', { title: item.title }));
   }, []);
 
   const cancelEventEdit = useCallback(() => {
     setEditingEventId(null);
     setEditDraft(createDefaultEventDraft());
-    setEventFeedback('Event edit canceled.');
+    setEventFeedback(t('mobile.calendar.feedback.edit_canceled', 'Event edit canceled.'));
   }, []);
 
   const saveEventEdit = useCallback(
@@ -272,7 +277,7 @@ export default function CalendarScreen() {
         await nestApiClient.updateCalendarEvent(eventId, payload);
         setEditingEventId(null);
         await loadEvents();
-        setEventFeedback('Calendar event updated.');
+        setEventFeedback(t('mobile.calendar.feedback.updated', 'Calendar event updated.'));
       } catch (error) {
         setEventError(getUserSafeErrorMessage(error));
       } finally {
@@ -284,10 +289,10 @@ export default function CalendarScreen() {
 
   const deleteEvent = useCallback(
     (eventId: string) => {
-      Alert.alert('Delete event?', 'This calendar event will be removed.', [
-        { text: 'Cancel', style: 'cancel' },
+      Alert.alert(t('mobile.calendar.alert.delete_title', 'Delete event?'), t('mobile.calendar.alert.delete_body', 'This calendar event will be removed.'), [
+        { text: t('mobile.calendar.action.cancel', 'Cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('mobile.calendar.action.delete', 'Delete'),
           style: 'destructive',
           onPress: () => {
             void (async () => {
@@ -300,7 +305,7 @@ export default function CalendarScreen() {
                   setEditingEventId(null);
                 }
                 await loadEvents();
-                setEventFeedback('Calendar event deleted.');
+                setEventFeedback(t('mobile.calendar.feedback.deleted', 'Calendar event deleted.'));
               } catch (error) {
                 setEventError(getUserSafeErrorMessage(error));
               } finally {
@@ -317,7 +322,7 @@ export default function CalendarScreen() {
   const prepareNewEvent = useCallback(() => {
     setEventDraft(createDefaultEventDraft());
     setEventError('');
-    setEventFeedback('Add event form is ready below.');
+    setEventFeedback(t('mobile.calendar.feedback.form_ready', 'Add event form is ready below.'));
   }, []);
 
   const resolveConflict = useCallback(
@@ -375,11 +380,11 @@ export default function CalendarScreen() {
 
   const forceCalendarSync = useCallback(async () => {
     setEventError('');
-    setEventFeedback('Syncing Google Calendar...');
+    setEventFeedback(t('mobile.calendar.feedback.syncing', 'Syncing Google Calendar...'));
     try {
       await nestApiClient.syncCalendar('google_calendar');
       await Promise.all([loadEvents(), loadConflicts(), loadHealth()]);
-      setEventFeedback('Calendar sync completed.');
+      setEventFeedback(t('mobile.calendar.feedback.sync_completed', 'Calendar sync completed.'));
     } catch (error) {
       setEventError(getUserSafeErrorMessage(error));
     }
@@ -416,7 +421,10 @@ export default function CalendarScreen() {
         items: connections,
         onRevoke: revokeProvider,
         busyProvider,
-        connectUnavailableMessage: 'Provider connect is outside the V1 founder-ready scope. Use Nest-first events for now.',
+        connectUnavailableMessage: t(
+          'mobile.calendar.connection.connect_outside_v1',
+          'Provider connect is outside the V1 founder-ready scope. Use Nest-first events for now.'
+        ),
       }}
       integrationHealth={{
         items: healthItems,
@@ -428,11 +436,14 @@ export default function CalendarScreen() {
       <View style={styles.panel}>
         <View style={styles.panelHeaderRow}>
           <View style={styles.panelHeaderText}>
-            <Text style={styles.panelTitle}>Calendar events</Text>
+            <Text style={styles.panelTitle}>{t('mobile.calendar.panel.events', 'Calendar events')}</Text>
             <Text style={styles.panelDetail}>
               {activeEvent
-                ? `Next: ${activeEvent.title} at ${formatEventTime(activeEvent.start_at)}`
-                : 'Create the first event for your day.'}
+                ? tx('mobile.calendar.panel.next_event', 'Next: {title} at {time}', {
+                    title: activeEvent.title,
+                    time: formatEventTime(activeEvent.start_at),
+                  })
+                : t('mobile.calendar.panel.first_event', 'Create the first event for your day.')}
             </Text>
           </View>
           <Pressable
@@ -440,46 +451,52 @@ export default function CalendarScreen() {
             onPress={() => void refreshEvents()}
             disabled={isLoadingEvents}
             accessibilityRole="button"
-            accessibilityLabel="Refresh calendar events"
+            accessibilityLabel={t('mobile.calendar.a11y.refresh', 'Refresh calendar events')}
           >
-            <Text style={styles.ghostText}>{isLoadingEvents ? 'Refreshing...' : 'Refresh'}</Text>
+            <Text style={styles.ghostText}>
+              {isLoadingEvents
+                ? t('mobile.calendar.action.refreshing', 'Refreshing...')
+                : t('mobile.calendar.action.refresh', 'Refresh')}
+            </Text>
           </Pressable>
         </View>
 
         {eventError ? <Text style={styles.errorText}>{eventError}</Text> : null}
         {eventFeedback ? <Text style={styles.feedbackText}>{eventFeedback}</Text> : null}
-        {isLoadingEvents ? <ActivityIndicator color={mobileUiTokens.accent} accessibilityLabel="Loading calendar events" /> : null}
+        {isLoadingEvents ? (
+          <ActivityIndicator color={mobileUiTokens.accent} accessibilityLabel={t('mobile.calendar.a11y.loading', 'Loading calendar events')} />
+        ) : null}
 
         <View style={styles.formStack}>
           <TextInput
             style={styles.input}
             value={eventDraft.title}
             onChangeText={(value) => updateEventDraft('title', value)}
-            placeholder="Event title"
-            accessibilityLabel="Event title"
+            placeholder={t('mobile.calendar.field.title', 'Event title')}
+            accessibilityLabel={t('mobile.calendar.field.title', 'Event title')}
           />
           <TextInput
             style={[styles.input, styles.multilineInput]}
             value={eventDraft.description}
             onChangeText={(value) => updateEventDraft('description', value)}
-            placeholder="Description"
+            placeholder={t('mobile.calendar.field.description', 'Description')}
             multiline
-            accessibilityLabel="Event description"
+            accessibilityLabel={t('mobile.calendar.field.description', 'Description')}
           />
           <View style={styles.splitRow}>
             <TextInput
               style={[styles.input, styles.splitInput]}
               value={eventDraft.startAt}
               onChangeText={(value) => updateEventDraft('startAt', value)}
-              placeholder="Start YYYY-MM-DDTHH:mm"
-              accessibilityLabel="Event start date and time"
+              placeholder={t('mobile.calendar.field.start', 'Start YYYY-MM-DDTHH:mm')}
+              accessibilityLabel={t('mobile.calendar.field.start', 'Start YYYY-MM-DDTHH:mm')}
             />
             <TextInput
               style={[styles.input, styles.splitInput]}
               value={eventDraft.endAt}
               onChangeText={(value) => updateEventDraft('endAt', value)}
-              placeholder="End YYYY-MM-DDTHH:mm"
-              accessibilityLabel="Event end date and time"
+              placeholder={t('mobile.calendar.field.end', 'End YYYY-MM-DDTHH:mm')}
+              accessibilityLabel={t('mobile.calendar.field.end', 'End YYYY-MM-DDTHH:mm')}
             />
           </View>
           <Pressable
@@ -487,17 +504,21 @@ export default function CalendarScreen() {
             onPress={() => void createEvent()}
             disabled={isCreatingEvent}
             accessibilityRole="button"
-            accessibilityLabel="Create calendar event"
+            accessibilityLabel={t('mobile.calendar.a11y.create', 'Create calendar event')}
           >
-            <Text style={styles.primaryButtonText}>{isCreatingEvent ? 'Creating...' : 'Create event'}</Text>
+            <Text style={styles.primaryButtonText}>
+              {isCreatingEvent
+                ? t('mobile.calendar.action.creating', 'Creating...')
+                : t('mobile.calendar.action.create', 'Create event')}
+            </Text>
           </Pressable>
         </View>
       </View>
 
       <View style={styles.panel}>
-        <Text style={styles.panelTitle}>Upcoming events</Text>
+        <Text style={styles.panelTitle}>{t('mobile.calendar.panel.upcoming', 'Upcoming events')}</Text>
         {upcomingEvents.length === 0 && !isLoadingEvents ? (
-          <Text style={styles.emptyText}>No calendar events yet.</Text>
+          <Text style={styles.emptyText}>{t('mobile.calendar.empty.events', 'No calendar events yet.')}</Text>
         ) : null}
 
         {upcomingEvents.map((item) => (
@@ -508,31 +529,31 @@ export default function CalendarScreen() {
                   style={styles.input}
                   value={editDraft.title}
                   onChangeText={(value) => updateEditDraft('title', value)}
-                  placeholder="Event title"
-                  accessibilityLabel={`Edit title for ${item.title}`}
+                  placeholder={t('mobile.calendar.field.title', 'Event title')}
+                  accessibilityLabel={tx('mobile.calendar.a11y.edit_title', 'Edit title for {title}', { title: item.title })}
                 />
                 <TextInput
                   style={[styles.input, styles.multilineInput]}
                   value={editDraft.description}
                   onChangeText={(value) => updateEditDraft('description', value)}
-                  placeholder="Description"
+                  placeholder={t('mobile.calendar.field.description', 'Description')}
                   multiline
-                  accessibilityLabel={`Edit description for ${item.title}`}
+                  accessibilityLabel={tx('mobile.calendar.a11y.edit_description', 'Edit description for {title}', { title: item.title })}
                 />
                 <View style={styles.splitRow}>
                   <TextInput
                     style={[styles.input, styles.splitInput]}
                     value={editDraft.startAt}
                     onChangeText={(value) => updateEditDraft('startAt', value)}
-                    placeholder="Start YYYY-MM-DDTHH:mm"
-                    accessibilityLabel={`Edit start date and time for ${item.title}`}
+                    placeholder={t('mobile.calendar.field.start', 'Start YYYY-MM-DDTHH:mm')}
+                    accessibilityLabel={tx('mobile.calendar.a11y.edit_start', 'Edit start date and time for {title}', { title: item.title })}
                   />
                   <TextInput
                     style={[styles.input, styles.splitInput]}
                     value={editDraft.endAt}
                     onChangeText={(value) => updateEditDraft('endAt', value)}
-                    placeholder="End YYYY-MM-DDTHH:mm"
-                    accessibilityLabel={`Edit end date and time for ${item.title}`}
+                    placeholder={t('mobile.calendar.field.end', 'End YYYY-MM-DDTHH:mm')}
+                    accessibilityLabel={tx('mobile.calendar.a11y.edit_end', 'Edit end date and time for {title}', { title: item.title })}
                   />
                 </View>
                 <View style={styles.actionRow}>
@@ -541,18 +562,22 @@ export default function CalendarScreen() {
                     onPress={() => void saveEventEdit(item.id)}
                     disabled={busyEventId === item.id}
                     accessibilityRole="button"
-                    accessibilityLabel={`Save ${item.title}`}
+                    accessibilityLabel={tx('mobile.calendar.a11y.save', 'Save {title}', { title: item.title })}
                   >
-                    <Text style={styles.primaryButtonText}>{busyEventId === item.id ? 'Saving...' : 'Save event'}</Text>
+                    <Text style={styles.primaryButtonText}>
+                      {busyEventId === item.id
+                        ? t('mobile.calendar.action.saving', 'Saving...')
+                        : t('mobile.calendar.action.save', 'Save event')}
+                    </Text>
                   </Pressable>
                   <Pressable
                     style={styles.ghostButton}
                     onPress={cancelEventEdit}
                     disabled={busyEventId === item.id}
                     accessibilityRole="button"
-                    accessibilityLabel={`Cancel editing ${item.title}`}
+                    accessibilityLabel={tx('mobile.calendar.a11y.cancel_edit', 'Cancel editing {title}', { title: item.title })}
                   >
-                    <Text style={styles.ghostText}>Cancel</Text>
+                    <Text style={styles.ghostText}>{t('mobile.calendar.action.cancel', 'Cancel')}</Text>
                   </Pressable>
                 </View>
               </View>
@@ -573,18 +598,22 @@ export default function CalendarScreen() {
                     style={styles.ghostButton}
                     onPress={() => startEventEdit(item)}
                     accessibilityRole="button"
-                    accessibilityLabel={`Edit ${item.title}`}
+                    accessibilityLabel={tx('mobile.calendar.a11y.edit', 'Edit {title}', { title: item.title })}
                   >
-                    <Text style={styles.ghostText}>Edit</Text>
+                    <Text style={styles.ghostText}>{t('mobile.calendar.action.edit', 'Edit')}</Text>
                   </Pressable>
                   <Pressable
                     style={styles.ghostButton}
                     onPress={() => deleteEvent(item.id)}
                     disabled={busyEventId === item.id}
                     accessibilityRole="button"
-                    accessibilityLabel={`Delete ${item.title}`}
+                    accessibilityLabel={tx('mobile.calendar.a11y.delete', 'Delete {title}', { title: item.title })}
                   >
-                    <Text style={styles.ghostText}>{busyEventId === item.id ? 'Deleting...' : 'Delete'}</Text>
+                    <Text style={styles.ghostText}>
+                      {busyEventId === item.id
+                        ? t('mobile.calendar.action.deleting', 'Deleting...')
+                        : t('mobile.calendar.action.delete', 'Delete')}
+                    </Text>
                   </Pressable>
                 </View>
               </>

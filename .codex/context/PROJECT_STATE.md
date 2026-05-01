@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-236` Mobile Calendar localization closure. Mobile
+  Calendar event CRUD feedback, validation, alerts, placeholders, panel labels,
+  action copy, accessibility labels, and the V1 provider-connect scope message
+  now use shared EN/PL localization keys. API-backed event CRUD, provider sync,
+  conflict, connection, and health behavior were unchanged. Mobile typecheck,
+  mobile Expo web export, static localization inspection, and `git diff --check`
+  passed. Report:
+  `docs/planning/nest_236_mobile_calendar_localization_closure_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-235` V1 navigation scope alignment. Web shell
   navigation now separates V1 core modules from optional surfaces; Insights and
   Assistant remain reachable but no longer present as core V1 modules. Mobile
