@@ -152,6 +152,10 @@
 - Mobile calendar parity:
   Mobile should stack the same model: time map, now card, week strip, timeline,
   event intelligence, quick add, and sync/pressure support.
+- Desktop calendar showcase fallback:
+  When live calendar data is absent, preserve a dense canonical desktop story
+  with believable week-strip, timeline, and support-rail content instead of
+  leading with an error strip or lower CRUD panels.
 
 ## Journal Canonical Patterns (2026-04-30)
 
@@ -177,6 +181,11 @@
 - Mobile journal parity:
   Mobile should stack hero, focus card, composer, recent entries, support
   signals, and reflection ladder while keeping capture as the primary job.
+- Desktop journal showcase fallback:
+  If Journal has no live entries, life areas, or balance data, use a warm
+  showcase layer to keep the hero, recent entries, and support rail feeling
+  like a real reflection room; do not let empty runtime data flatten the
+  screen into raw management or failure messaging.
 
 ## Workspace Shell Patterns (2026-04-26)
 

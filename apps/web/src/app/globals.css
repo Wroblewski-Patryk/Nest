@@ -2168,6 +2168,11 @@ input[type="color"].list-row {
   border-color: rgb(188 205 171 / 72%);
 }
 
+.calendar-management-panel.is-preview-hidden,
+.calendar-canonical-main > .collapsible-panel.is-preview-hidden {
+  display: none;
+}
+
 .calendar-status-copy {
   display: grid;
   gap: 0.08rem;

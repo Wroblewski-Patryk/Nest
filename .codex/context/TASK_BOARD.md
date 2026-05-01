@@ -24,6 +24,30 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-276 Add canonical desktop showcase fallback for Calendar and Journal
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-272, NEST-273, NEST-275
+  - Done on: 2026-05-01
+  - Notes:
+    - Added richer showcase fallback datasets for Calendar and Journal so the
+      canonical desktop surfaces keep editorial density when live data is empty
+      or unavailable.
+    - Hid top status strips and lower Calendar management panels during
+      showcase preview so the canonical first viewport does not collapse into
+      error-first or CRUD-first composition.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_276_calendar_journal_desktop_showcase_fallback_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-275 Close mobile canonical ordering for Calendar and Journal
   - Status: DONE
   - Owner: Execution Agent

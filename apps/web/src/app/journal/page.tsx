@@ -243,6 +243,78 @@ function MoodChip({
   );
 }
 
+function shiftDays(value: Date, days: number): Date {
+  const next = new Date(value);
+  next.setDate(next.getDate() + days);
+  next.setHours(12, 0, 0, 0);
+  return next;
+}
+
+function toDateOnly(value: Date): string {
+  return value.toISOString().slice(0, 10);
+}
+
+function createShowcaseLifeAreas(): LifeAreaItem[] {
+  return [
+    { id: "showcase-area-health", name: "Health", color: "#83915c", weight: 82 },
+    { id: "showcase-area-work", name: "Work", color: "#9bb2b5", weight: 75 },
+    { id: "showcase-area-relationships", name: "Relationships", color: "#d7b35a", weight: 68 },
+    { id: "showcase-area-finance", name: "Finance", color: "#c9a65f", weight: 70 },
+  ];
+}
+
+function createShowcaseJournalEntries(referenceDate: Date, lifeAreas: LifeAreaItem[]): JournalEntryItem[] {
+  return [
+    {
+      id: "showcase-entry-1",
+      title: "A lighter morning changed the whole day",
+      body: "Started slow with a walk and no rush. It gave me clarity before the work even began.",
+      mood: "good",
+      entry_date: toDateOnly(referenceDate),
+      life_areas: [lifeAreas[0], lifeAreas[1]],
+    },
+    {
+      id: "showcase-entry-2",
+      title: "Hard conversation, honest outcome",
+      body: "It was not easy to speak up, but we both left better understood and less guarded.",
+      mood: "neutral",
+      entry_date: toDateOnly(shiftDays(referenceDate, -1)),
+      life_areas: [lifeAreas[2]],
+    },
+    {
+      id: "showcase-entry-3",
+      title: "Deep focus and real progress",
+      body: "Protected focus blocks helped me finish what mattered without carrying the usual background noise.",
+      mood: "good",
+      entry_date: toDateOnly(shiftDays(referenceDate, -2)),
+      life_areas: [lifeAreas[1], lifeAreas[3]],
+    },
+    {
+      id: "showcase-entry-4",
+      title: "An evening reset restored perspective",
+      body: "I stopped pushing, cooked slowly, and could finally hear what had been tense all week.",
+      mood: "great",
+      entry_date: toDateOnly(shiftDays(referenceDate, -4)),
+      life_areas: [lifeAreas[0]],
+    },
+  ];
+}
+
+function createShowcaseBalance(lifeAreas: LifeAreaItem[]): LifeAreaBalanceResponse {
+  return {
+    data: lifeAreas.map((area) => ({
+      life_area_id: area.id,
+      name: area.name,
+      target_share: area.weight,
+      actual_share: Math.max(40, area.weight - 7),
+      balance_score: area.weight,
+    })),
+    meta: {
+      global_balance_score: 74,
+    },
+  };
+}
+
 export default function JournalPage() {
   const router = useRouter();
   const [entries, setEntries] = useState<JournalEntryItem[]>([]);
@@ -265,6 +337,7 @@ export default function JournalPage() {
   const [feedback, setFeedback] = useState("Capture one honest note and let the pattern emerge over time.");
   const [errorMessage, setErrorMessage] = useState("");
   const [entryFilter, setEntryFilter] = useState<JournalFilter>("all");
+  const [isLoading, setIsLoading] = useState(true);
 
   const [entryTitle, setEntryTitle] = useState("");
   const [entryBody, setEntryBody] = useState("");
@@ -311,11 +384,37 @@ export default function JournalPage() {
           return;
         }
         setErrorMessage(getErrorMessage(error));
+      })
+      .finally(() => {
+        if (mounted) {
+          setIsLoading(false);
+        }
       });
     return () => {
       mounted = false;
     };
   }, [handleUnauthorized, loadData]);
+
+  const showcaseReferenceDate = useMemo(() => shiftDays(new Date(), 0), []);
+  const showcaseLifeAreas = useMemo(() => createShowcaseLifeAreas(), []);
+  const showcaseEntries = useMemo(
+    () => createShowcaseJournalEntries(showcaseReferenceDate, showcaseLifeAreas),
+    [showcaseLifeAreas, showcaseReferenceDate]
+  );
+  const showcaseBalance = useMemo(
+    () => createShowcaseBalance(showcaseLifeAreas),
+    [showcaseLifeAreas]
+  );
+  const useJournalShowcase =
+    !isLoading &&
+    !isCreatingEntry &&
+    !isCreatingArea &&
+    entries.length === 0 &&
+    lifeAreas.length === 0 &&
+    !balance?.data.length;
+  const displayEntries = useJournalShowcase ? showcaseEntries : entries;
+  const displayLifeAreas = useJournalShowcase ? showcaseLifeAreas : lifeAreas;
+  const displayBalance = useJournalShowcase ? showcaseBalance : balance;
 
   async function createJournalEntry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -539,31 +638,31 @@ export default function JournalPage() {
     }
   }
 
-  const latestEntry = entries[0] ?? null;
+  const latestEntry = displayEntries[0] ?? null;
   const latestEntryAreas = latestEntry ? latestEntry.life_areas ?? latestEntry.lifeAreas ?? [] : [];
   const latestEntryDate = latestEntry?.entry_date ? formatEntryDate(latestEntry.entry_date) : "No entry yet";
   const topLifeArea = useMemo(() => {
-    if (lifeAreas.length === 0) {
+    if (displayLifeAreas.length === 0) {
       return null;
     }
 
-    return [...lifeAreas].sort((a, b) => b.weight - a.weight)[0] ?? null;
-  }, [lifeAreas]);
+    return [...displayLifeAreas].sort((a, b) => b.weight - a.weight)[0] ?? null;
+  }, [displayLifeAreas]);
   const strongestBalanceDrift = useMemo(() => {
-    if (!balance?.data.length) {
+    if (!displayBalance?.data.length) {
       return null;
     }
 
-    return [...balance.data].sort(
+    return [...displayBalance.data].sort(
       (left, right) =>
         Math.abs(right.actual_share - right.target_share) -
         Math.abs(left.actual_share - left.target_share)
     )[0];
-  }, [balance]);
+  }, [displayBalance]);
 
   const recentMoodTrend = useMemo(
     () =>
-      [...entries]
+      [...displayEntries]
         .slice(0, 7)
         .reverse()
         .map((entry) => ({
@@ -571,7 +670,7 @@ export default function JournalPage() {
           label: formatEntryDate(entry.entry_date),
           value: moodNumericValue(entry.mood),
         })),
-    [entries]
+    [displayEntries]
   );
 
   const moodPath = useMemo(() => {
@@ -589,16 +688,16 @@ export default function JournalPage() {
   }, [recentMoodTrend]);
 
   const balanceSlices = useMemo(() => {
-    if (!balance?.data.length) {
+    if (!displayBalance?.data.length) {
       return [];
     }
 
-    return balance.data.slice(0, 4).map((item, index) => ({
+    return displayBalance.data.slice(0, 4).map((item, index) => ({
       label: item.name,
       value: item.balance_score,
       color: ["#83915c", "#9bb2b5", "#d7b35a", "#c9a65f"][index % 4],
     }));
-  }, [balance]);
+  }, [displayBalance]);
 
   const balanceGradient = balanceSlices
     .map((slice, index) => {
@@ -609,7 +708,7 @@ export default function JournalPage() {
     .join(", ");
 
   const filteredEntries = useMemo(() => {
-    return entries.filter((entry) => {
+    return displayEntries.filter((entry) => {
       if (entryFilter === "good") {
         return entry.mood === "good" || entry.mood === "great";
       }
@@ -621,10 +720,10 @@ export default function JournalPage() {
       }
       return true;
     });
-  }, [entries, entryFilter]);
+  }, [displayEntries, entryFilter]);
 
   const heroSummary =
-    entries.length > 0
+    displayEntries.length > 0
       ? "Return to what the day actually felt like, then write the smallest honest note that helps tomorrow."
       : "This room should feel like a warm checkpoint, not homework. One useful sentence is enough to begin.";
 
@@ -648,7 +747,7 @@ export default function JournalPage() {
     },
     {
       label: "Balance signal",
-      value: balance ? `${balance.meta.global_balance_score.toFixed(0)}` : "Pending",
+      value: displayBalance ? `${displayBalance.meta.global_balance_score.toFixed(0)}` : "Pending",
       detail: strongestBalanceDrift
         ? `${strongestBalanceDrift.name} is drifting most from target share.`
         : "Balance insight wakes up as more lived data arrives.",
@@ -657,6 +756,7 @@ export default function JournalPage() {
   ];
 
   const journalStatusMessage = errorMessage || feedback;
+  const showJournalStatusStrip = !useJournalShowcase;
 
   return (
     <WorkspaceShell
@@ -670,34 +770,36 @@ export default function JournalPage() {
       hideRailFooterActions
     >
       <div className="journal-canonical-shell">
-        <section className={`calendar-status-strip ${errorMessage ? "is-error" : "is-success"}`} aria-live="polite">
-          <div className="calendar-status-copy">
-            <small>{errorMessage ? "Journal status" : "Live view"}</small>
-            <strong>{journalStatusMessage}</strong>
-          </div>
-          <div className="planning-status-actions">
-            <button type="button" className="pill-link" onClick={() => void loadData()}>
-              Refresh
-            </button>
-          </div>
-        </section>
+        {showJournalStatusStrip ? (
+          <section className={`calendar-status-strip ${errorMessage ? "is-error" : "is-success"}`} aria-live="polite">
+            <div className="calendar-status-copy">
+              <small>{errorMessage ? "Journal status" : "Live view"}</small>
+              <strong>{journalStatusMessage}</strong>
+            </div>
+            <div className="planning-status-actions">
+              <button type="button" className="pill-link" onClick={() => void loadData()}>
+                Refresh
+              </button>
+            </div>
+          </section>
+        ) : null}
 
         <div className="journal-canonical-grid">
           <div className="journal-canonical-main">
             <DashboardHeroBand
               dateLabel="Friday, May 23, 2025"
-              weatherLabel={`${entries.length} entries`}
+              weatherLabel={`${displayEntries.length} entries`}
               title="Today's reflection room"
               summary={heroSummary}
               progressLabel="Reflection cadence"
-              progressPercent={Math.min(92, Math.max(22, entries.length * 9))}
+              progressPercent={Math.min(92, Math.max(22, displayEntries.length * 9))}
               metrics={[
-                { label: "Entries", value: `${entries.length}`, icon: <JournalGlyph name="journal" /> },
-                { label: "Life areas", value: `${lifeAreas.length}`, icon: <JournalGlyph name="spark" /> },
+                { label: "Entries", value: `${displayEntries.length}`, icon: <JournalGlyph name="journal" /> },
+                { label: "Life areas", value: `${displayLifeAreas.length}`, icon: <JournalGlyph name="spark" /> },
                 { label: "Mood", value: formatMood(latestEntry?.mood ?? null), icon: <JournalGlyph name="mood" /> },
                 {
                   label: "Balance",
-                  value: balance ? `${balance.meta.global_balance_score.toFixed(0)}` : "74",
+                  value: displayBalance ? `${displayBalance.meta.global_balance_score.toFixed(0)}` : "74",
                   icon: <JournalGlyph name="balance" />,
                 },
               ]}
@@ -781,7 +883,11 @@ export default function JournalPage() {
                     <span>Life areas</span>
                     <div className="journal-chip-row journal-chip-row-canonical">
                       {lifeAreas.length === 0 ? (
-                        <p className="journal-empty-copy">No life areas yet. Add one below and the reflections will gain more shape.</p>
+                        <p className="journal-empty-copy">
+                          {useJournalShowcase
+                            ? "Save a few life areas to let this warmer canonical structure become fully yours."
+                            : "No life areas yet. Add one below and the reflections will gain more shape."}
+                        </p>
                       ) : (
                         lifeAreas.map((area) => (
                           <label
@@ -945,6 +1051,28 @@ export default function JournalPage() {
                               </button>
                             </div>
                           </div>
+                        ) : useJournalShowcase ? (
+                          <>
+                            <div className={`journal-entry-mood-badge is-${entry.mood ?? "none"}`}>
+                              <JournalGlyph name="mood" />
+                            </div>
+                            <div className="journal-entry-main">
+                              <strong>{entry.title}</strong>
+                              <div className="journal-entry-meta">
+                                <span>{formatEntryDate(entry.entry_date)}</span>
+                                <span className={`journal-inline-mood is-${entry.mood ?? "none"}`}>{formatMood(entry.mood)}</span>
+                                {linkedAreas.map((area) => (
+                                  <span key={area.id} className="journal-inline-chip" style={{ "--chip-accent": area.color } as CSSProperties}>
+                                    {area.name}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <p className="journal-entry-excerpt">{entry.body.slice(0, 160)}</p>
+                            <div className="journal-entry-actions">
+                              <span className="planning-row-actions is-muted">Preview</span>
+                            </div>
+                          </>
                         ) : (
                           <>
                             <div className={`journal-entry-mood-badge is-${entry.mood ?? "none"}`}>
@@ -1247,7 +1375,7 @@ export default function JournalPage() {
               <div className="dashboard-balance-grid">
                 <div className="dashboard-balance-donut" style={{ background: balanceGradient ? `conic-gradient(${balanceGradient})` : "conic-gradient(#83915c 0deg 360deg)" }}>
                   <div className="dashboard-balance-donut-inner">
-                    <strong>{balance ? `${balance.meta.global_balance_score.toFixed(0)}%` : "74%"}</strong>
+                    <strong>{displayBalance ? `${displayBalance.meta.global_balance_score.toFixed(0)}%` : "74%"}</strong>
                   </div>
                 </div>
                 <ul className="dashboard-balance-legend">

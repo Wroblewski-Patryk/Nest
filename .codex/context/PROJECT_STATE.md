@@ -24,6 +24,17 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-276` Calendar and Journal desktop showcase
+  fallback pass. Added denser canonical preview datasets and calmer preview
+  behavior so both routes preserve premium first-view composition when live
+  data is empty or unavailable. Calendar now hides the top status strip and
+  lower management panels in showcase mode, while Journal uses showcase entry,
+  life-area, and balance content to keep the hero, recent entries, and right
+  rail structurally faithful. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_276_calendar_journal_desktop_showcase_fallback_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-275` mobile canonical order closure. Tightened
   mobile ordering in `apps/web/src/app/globals.css` so Calendar now reads much
   closer to the intended hero -> day-flow -> support -> ladder sequence, while

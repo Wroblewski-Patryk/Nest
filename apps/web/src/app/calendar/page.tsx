@@ -309,6 +309,46 @@ function TimelineGlyph({ name }: { name: "event" | "focus" | "sync" | "task" | "
   );
 }
 
+function atTime(value: Date, hours: number, minutes: number): string {
+  const next = new Date(value);
+  next.setHours(hours, minutes, 0, 0);
+  return next.toISOString();
+}
+
+function createShowcaseCalendarEvents(referenceDate: Date): CalendarEventItem[] {
+  const monday = startOfWeekMonday(referenceDate);
+  const tuesday = addDays(monday, 1);
+  const wednesday = addDays(monday, 2);
+  const thursday = addDays(monday, 3);
+  const friday = addDays(monday, 4);
+  const saturday = addDays(monday, 5);
+
+  return [
+    { id: "showcase-event-1", title: "Morning routine", start_at: atTime(tuesday, 6, 0), end_at: atTime(tuesday, 7, 0), all_day: false, linked_entity_type: "routine" },
+    { id: "showcase-event-2", title: "Workout", start_at: atTime(tuesday, 8, 0), end_at: atTime(tuesday, 9, 0), all_day: false, linked_entity_type: "habit" },
+    { id: "showcase-event-3", title: "Product strategy workshop", start_at: atTime(wednesday, 10, 15), end_at: atTime(wednesday, 11, 0), all_day: false, linked_entity_type: "goal" },
+    { id: "showcase-event-4", title: "Lunch break", start_at: atTime(wednesday, 12, 15), end_at: atTime(wednesday, 13, 0), all_day: false, linked_entity_type: "personal" },
+    { id: "showcase-event-5", title: "Deep work block", start_at: atTime(wednesday, 13, 30), end_at: atTime(wednesday, 15, 30), all_day: false, linked_entity_type: "task" },
+    { id: "showcase-event-6", title: "Project review", start_at: atTime(wednesday, 16, 0), end_at: atTime(wednesday, 17, 0), all_day: false, linked_entity_type: "review" },
+    { id: "showcase-event-7", title: "Content planning", start_at: atTime(thursday, 9, 30), end_at: atTime(thursday, 10, 15), all_day: false, linked_entity_type: "list" },
+    { id: "showcase-event-8", title: "Design review", start_at: atTime(thursday, 11, 15), end_at: atTime(thursday, 12, 0), all_day: false, linked_entity_type: "work" },
+    { id: "showcase-event-9", title: "Family time", start_at: atTime(friday, 18, 0), end_at: atTime(friday, 20, 0), all_day: false, linked_entity_type: "personal" },
+    { id: "showcase-event-10", title: "Wind down", start_at: atTime(saturday, 21, 30), end_at: atTime(saturday, 22, 0), all_day: false, linked_entity_type: "routine" },
+  ];
+}
+
+function createShowcaseCalendarTasks(referenceDate: Date): TaskCalendarItem[] {
+  const monday = startOfWeekMonday(referenceDate);
+  const wednesday = addDays(monday, 2);
+  const friday = addDays(monday, 4);
+
+  return [
+    { id: "showcase-task-1", title: "Define positioning and launch plan", status: "in_progress", priority: "high", due_date: atTime(wednesday, 10, 15) },
+    { id: "showcase-task-2", title: "Review planning notes", status: "todo", priority: "medium", due_date: atTime(wednesday, 16, 0) },
+    { id: "showcase-task-3", title: "Protect family reset time", status: "todo", priority: "low", due_date: atTime(friday, 18, 0) },
+  ];
+}
+
 export default function CalendarPage() {
   const router = useRouter();
   const [events, setEvents] = useState<CalendarEventItem[]>([]);
@@ -374,6 +414,19 @@ export default function CalendarPage() {
     };
   }, [handleUnauthorized, loadData]);
 
+  const showcaseReferenceDate = useMemo(() => startOfDay(new Date()), []);
+  const showcaseEvents = useMemo(
+    () => createShowcaseCalendarEvents(showcaseReferenceDate),
+    [showcaseReferenceDate]
+  );
+  const showcaseTasks = useMemo(
+    () => createShowcaseCalendarTasks(showcaseReferenceDate),
+    [showcaseReferenceDate]
+  );
+  const useCalendarShowcase = !isLoading && events.length === 0 && tasks.length === 0;
+  const eventSource = useCalendarShowcase ? showcaseEvents : events;
+  const taskSource = useCalendarShowcase ? showcaseTasks : tasks;
+
   const anchorDay = useMemo(() => fromDateInput(anchorDate), [anchorDate]);
   const windowStart = useMemo(() => resolveWindow(viewMode, anchorDay).start, [anchorDay, viewMode]);
   const windowEnd = useMemo(() => resolveWindow(viewMode, anchorDay).end, [anchorDay, viewMode]);
@@ -382,7 +435,7 @@ export default function CalendarPage() {
   const dayEnd = useMemo(() => addDays(dayStart, 1), [dayStart]);
   const visibleEvents = useMemo(
     () =>
-      events
+        eventSource
         .filter((item) => {
           const startAt = new Date(item.start_at);
           const endAt = new Date(item.end_at);
@@ -392,12 +445,12 @@ export default function CalendarPage() {
           return overlapsRange(startAt, endAt, windowStart, windowEnd);
         })
         .sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime()),
-    [events, windowEnd, windowStart]
+    [eventSource, windowEnd, windowStart]
   );
 
   const visibleTasks = useMemo(
     () =>
-      tasks.filter((item) => {
+      taskSource.filter((item) => {
         if (!item.due_date) {
           return false;
         }
@@ -407,12 +460,12 @@ export default function CalendarPage() {
         }
         return isInRange(dueDate, windowStart, windowEnd);
       }),
-    [tasks, windowEnd, windowStart]
+    [taskSource, windowEnd, windowStart]
   );
 
   const visibleDayEvents = useMemo(
     () =>
-      events
+        eventSource
         .filter((item) => {
           const startAt = new Date(item.start_at);
           const endAt = new Date(item.end_at);
@@ -422,7 +475,7 @@ export default function CalendarPage() {
           return overlapsRange(startAt, endAt, dayStart, dayEnd);
         })
         .sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime()),
-    [dayEnd, dayStart, events]
+    [dayEnd, dayStart, eventSource]
   );
 
   const planningFeed = useMemo(() => {
@@ -472,7 +525,7 @@ export default function CalendarPage() {
 
   const nextDeckEvent = useMemo(() => {
     const nowTimestamp = Date.now();
-    const sortedEvents = [...events].sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime());
+    const sortedEvents = [...eventSource].sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime());
 
     const ongoing = sortedEvents.find((item) => {
       const startAt = new Date(item.start_at).getTime();
@@ -485,7 +538,7 @@ export default function CalendarPage() {
 
     const upcoming = sortedEvents.find((item) => new Date(item.start_at).getTime() >= nowTimestamp);
     return upcoming ?? visibleDayEvents[0] ?? null;
-  }, [events, visibleDayEvents]);
+  }, [eventSource, visibleDayEvents]);
 
   useEffect(() => {
     if (selectedEventId && visibleEvents.some((item) => item.id === selectedEventId)) {
@@ -510,10 +563,10 @@ export default function CalendarPage() {
 
     const normalizedEventTitle = selectedEvent.title.toLowerCase();
     return (
-      tasks.find((task) => normalizedEventTitle.includes(task.title.toLowerCase()) || task.title.toLowerCase().includes(normalizedEventTitle)) ??
+      taskSource.find((task) => normalizedEventTitle.includes(task.title.toLowerCase()) || task.title.toLowerCase().includes(normalizedEventTitle)) ??
       null
     );
-  }, [selectedEvent, tasks]);
+  }, [selectedEvent, taskSource]);
 
   const weekStripDays = useMemo(() => {
     const weekStart = startOfWeekMonday(anchorDay);
@@ -765,6 +818,7 @@ export default function CalendarPage() {
     18,
     Math.min(96, Math.round(((todayEventsCount * 14 + protectedBlocksCount * 11 + focusBlocksCount * 10) / 56) * 100))
   );
+  const showCalendarStatusStrip = !useCalendarShowcase;
   const statusMessage = errorMessage
     ? errorMessage
     : isLoading
@@ -783,17 +837,19 @@ export default function CalendarPage() {
       hideRailFooterActions
     >
       <div className="calendar-canonical-shell">
-        <section className={`calendar-status-strip ${errorMessage ? "is-error" : "is-success"}`} aria-live="polite">
-          <div className="calendar-status-copy">
-            <small>{errorMessage ? "Calendar status" : isLoading ? "Loading state" : "Live view"}</small>
-            <strong>{statusMessage}</strong>
-          </div>
-          <div className="planning-status-actions">
-            <button type="button" className="pill-link" onClick={() => void loadData()} disabled={isLoading}>
-              {isLoading ? "Refreshing..." : "Refresh"}
-            </button>
-          </div>
-        </section>
+        {showCalendarStatusStrip ? (
+          <section className={`calendar-status-strip ${errorMessage ? "is-error" : "is-success"}`} aria-live="polite">
+            <div className="calendar-status-copy">
+              <small>{errorMessage ? "Calendar status" : isLoading ? "Loading state" : "Live view"}</small>
+              <strong>{statusMessage}</strong>
+            </div>
+            <div className="planning-status-actions">
+              <button type="button" className="pill-link" onClick={() => void loadData()} disabled={isLoading}>
+                {isLoading ? "Refreshing..." : "Refresh"}
+              </button>
+            </div>
+          </section>
+        ) : null}
 
         <div className="calendar-canonical-grid">
           <div className="calendar-canonical-main">
@@ -801,7 +857,7 @@ export default function CalendarPage() {
               dateLabel={dayStart.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
               weatherLabel={`${todayEventsCount} events today`}
               title="Today's time map"
-              summary="Protect the few blocks that make the rest of the day easier."
+              summary={useCalendarShowcase ? "A balanced day with protected focus." : "Protect the few blocks that make the rest of the day easier."}
               progressLabel="Day load"
               progressPercent={dayLoadPercent}
               metrics={[
@@ -1073,7 +1129,11 @@ export default function CalendarPage() {
               </div>
             </section>
 
-            <Panel id="calendar-add-event" title="Add event" className="calendar-management-panel">
+            <Panel
+              id="calendar-add-event"
+              title="Add event"
+              className={`calendar-management-panel ${useCalendarShowcase ? "is-preview-hidden" : ""}`}
+            >
               <form className="form-grid" onSubmit={createEvent}>
                 <label className="field">
                   <span>Title</span>
@@ -1112,7 +1172,7 @@ export default function CalendarPage() {
               </form>
             </Panel>
 
-            <details className="collapsible-panel">
+            <details className={`collapsible-panel ${useCalendarShowcase ? "is-preview-hidden" : ""}`}>
               <summary>Manage all events</summary>
               <div className="collapsible-content">
                 <Panel title="All events" className="calendar-management-panel">
