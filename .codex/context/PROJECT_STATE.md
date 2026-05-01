@@ -25,6 +25,19 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-290` Journal canonical material finish. Web
+  Journal now carries an explicit showcase shell state, reuses the approved
+  dashboard/Journal painterly material for the reflection hero, and tightens
+  the showcase focus/composer density so Recent entries return into the first
+  desktop viewport rhythm. Existing API-backed Journal create/edit/delete
+  behavior was preserved, and mobile application work remains V2 scope. Fresh
+  evidence:
+  `docs/ux_canonical_artifacts/2026-05-02/nest-journal-web-parity-preview-current.png`
+  and
+  `docs/ux_canonical_artifacts/2026-05-02/nest-journal-web-parity-preview-phaseB.png`.
+  Web typecheck, lint, build, unit tests, Playwright screenshot smoke, and
+  `git diff --check` passed. Report:
+  `docs/ux/nest_290_journal_canonical_material_finish_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-289` Dashboard canonical proportion finish.
   Web Dashboard now promotes sparse current-day states into the existing
   canonical showcase path, so authenticated days without enough live tasks,

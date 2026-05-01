@@ -24,6 +24,30 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-290 Journal canonical material finish
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-269
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Web-only V1 task to close the remaining Journal desktop drift against
+      the approved canonical reference.
+    - Added an explicit Journal showcase shell state, reused approved
+      dashboard/Journal painterly assets for the hero, and tightened the
+      showcase focus/composer density so Recent entries return into the first
+      desktop viewport rhythm.
+    - Preserved the existing Journal API-backed create/edit/delete behavior;
+      mobile application work remains V2 scope.
+    - Report:
+      `docs/ux/nest_290_journal_canonical_material_finish_2026-05-02.md`.
+    - Evidence:
+      `docs/ux_canonical_artifacts/2026-05-02/nest-journal-web-parity-preview-current.png`,
+      `docs/ux_canonical_artifacts/2026-05-02/nest-journal-web-parity-preview-phaseB.png`.
+    - Validation:
+      web typecheck, lint, build, unit tests, Playwright screenshot smoke, and
+      `git diff --check`.
+
 - [x] NEST-289 Dashboard canonical proportion finish
   - Status: DONE
   - Owner: Execution Agent

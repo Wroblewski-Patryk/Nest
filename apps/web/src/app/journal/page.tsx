@@ -757,7 +757,7 @@ export default function JournalPage() {
       hideAssistantNav
       hideRailFooterActions
     >
-      <div className="journal-canonical-shell">
+      <div className={`journal-canonical-shell ${useJournalShowcase ? "is-showcase" : ""}`}>
         {showJournalStatusStrip ? (
           <section className={`calendar-status-strip ${errorMessage ? "is-error" : "is-success"}`} aria-live="polite">
             <div className="calendar-status-copy">
@@ -893,7 +893,7 @@ export default function JournalPage() {
                     value={entryBody}
                     onChange={(event) => setEntryBody(event.target.value)}
                     placeholder="What happened today? How did it feel? What mattered most?"
-                    rows={5}
+                    rows={useJournalShowcase ? 3 : 5}
                     disabled={isCreatingEntry}
                   />
                   {useJournalShowcase ? <small className="journal-textarea-count">{showcaseReflectionCount}</small> : null}
