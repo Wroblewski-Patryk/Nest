@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-234` web lower-route localization copy pass.
+  Automations, Billing, and Insights now use shared EN/PL localization keys
+  for route chrome, status messages, empty states, panel labels, and primary
+  actions. API payloads, endpoint paths, dynamic enum/status values, auth, and
+  data behavior were preserved. Web typecheck and lint passed, and targeted
+  static inspection confirmed route `translate` usage and dictionary keys.
+  Report:
+  `docs/planning/nest_234_web_lower_route_localization_copy_pass_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-233` web route request cast cleanup. Web routes
   now reuse the typed `apiRequest` wrapper exported from the existing web API
   client module instead of defining repeated route-local

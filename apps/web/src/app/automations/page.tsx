@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { AutomationRuleItem, AutomationRunItem, UiAsyncState } from "@nest/shared-types";
-import { formatLocalizedDateTime, resolveLanguage } from "@nest/shared-types";
+import { formatLocalizedDateTime, resolveLanguage, translate } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
 import { describeApiIssue, STATE_LABELS } from "@/lib/ux-contract";
@@ -15,8 +15,9 @@ type ActionOption = (typeof ACTION_OPTIONS)[number];
 
 export default function AutomationsPage() {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
+  const t = useCallback((key: string, fallback: string) => translate(key, language, fallback), [language]);
   const [state, setState] = useState<UiAsyncState>("loading");
-  const [detail, setDetail] = useState("Loading your automation rules and recent runs...");
+  const [detail, setDetail] = useState(t("automations.loading", "Loading your automation rules and recent runs..."));
   const [rules, setRules] = useState<AutomationRuleItem[]>([]);
   const [runs, setRuns] = useState<AutomationRunItem[]>([]);
   const [selectedRun, setSelectedRun] = useState<AutomationRunItem | null>(null);
@@ -46,19 +47,19 @@ export default function AutomationsPage() {
       .then(() => {
         if (!mounted) return;
         setState("success");
-        setDetail("Automation rules and recent runs are ready.");
+        setDetail(t("automations.ready", "Automation rules and recent runs are ready."));
       })
       .catch((error) => {
         if (!mounted) return;
 
         setState("error");
-        setDetail(`We couldn't load automations right now. ${describeApiIssue(error)}`);
+        setDetail(`${t("automations.error.load", "We couldn't load automations right now.")} ${describeApiIssue(error)}`);
       });
 
     return () => {
       mounted = false;
     };
-  }, [loadData, runStatusFilter]);
+  }, [loadData, runStatusFilter, t]);
 
   const createRule = useCallback(async () => {
     setIsCreating(true);
@@ -103,14 +104,14 @@ export default function AutomationsPage() {
 
       await loadData();
       setState("success");
-      setDetail("Automation rule created and the workspace has been refreshed.");
+      setDetail(t("automations.created", "Automation rule created and the workspace has been refreshed."));
     } catch (error) {
       setState("error");
-      setDetail(`We couldn't create that automation rule. ${describeApiIssue(error)}`);
+      setDetail(`${t("automations.error.create", "We couldn't create that automation rule.")} ${describeApiIssue(error)}`);
     } finally {
       setIsCreating(false);
     }
-  }, [actionType, loadData, name]);
+  }, [actionType, loadData, name, t]);
 
   const toggleRule = useCallback(
     async (rule: AutomationRuleItem) => {
@@ -172,17 +173,17 @@ export default function AutomationsPage() {
 
   const metrics = useMemo(
     () => [
-      { label: "Rules", value: String(rules.length) },
-      { label: "Active", value: String(rules.filter((rule) => rule.status === "active").length) },
-      { label: "Runs", value: String(runs.length) },
+      { label: t("automations.metric.rules", "Rules"), value: String(rules.length) },
+      { label: t("automations.metric.active", "Active"), value: String(rules.filter((rule) => rule.status === "active").length) },
+      { label: t("automations.metric.runs", "Runs"), value: String(runs.length) },
     ],
-    [rules, runs]
+    [rules, runs, t]
   );
 
   return (
     <WorkspaceShell
-      title="Automations"
-      subtitle="Create trigger-based workflows and control active/paused execution."
+      title={t("automations.title", "Automations")}
+      subtitle={t("automations.subtitle", "Create trigger-based workflows and control active or paused execution.")}
       module="automations"
     >
       <div className="stack">
@@ -191,11 +192,11 @@ export default function AutomationsPage() {
         ))}
       </div>
 
-      <Panel title="Builder">
+      <Panel title={t("automations.panel.builder", "Builder")}>
         <div className="panel-content">
-          <p className="callout">Create a basic automation and run it manually for verification.</p>
+          <p className="callout">{t("automations.builder.callout", "Create a basic automation and run it manually for verification.")}</p>
           <label className="mono-note" htmlFor="rule-name">
-            Rule name
+            {t("automations.field.rule_name", "Rule name")}
           </label>
           <input
             id="rule-name"
@@ -204,7 +205,7 @@ export default function AutomationsPage() {
             onChange={(event) => setName(event.target.value)}
           />
           <label className="mono-note" htmlFor="rule-action">
-            Action type
+            {t("automations.field.action_type", "Action type")}
           </label>
           <select
             id="rule-action"
@@ -219,12 +220,12 @@ export default function AutomationsPage() {
             ))}
           </select>
           <button className="btn-primary" onClick={createRule} disabled={isCreating || name.trim().length === 0}>
-            {isCreating ? "Creating..." : "Create Rule"}
+            {isCreating ? t("automations.action.creating", "Creating...") : t("automations.action.create", "Create rule")}
           </button>
         </div>
       </Panel>
 
-      <Panel title="Rule Control">
+      <Panel title={t("automations.panel.rule_control", "Rule control")}>
         <ul className="list">
           {rules.map((rule) => (
             <li className="list-row" key={rule.id}>
@@ -234,10 +235,10 @@ export default function AutomationsPage() {
               </div>
               <div className="row-inline">
                 <button className="pill-link" onClick={() => toggleRule(rule)} disabled={busyRuleId === rule.id}>
-                  {rule.status === "active" ? "Pause" : "Activate"}
+                  {rule.status === "active" ? t("automations.action.pause", "Pause") : t("automations.action.activate", "Activate")}
                 </button>
                 <button className="pill-link" onClick={() => executeRule(rule.id)} disabled={busyRuleId === rule.id}>
-                  Run
+                  {t("automations.action.run", "Run")}
                 </button>
               </div>
             </li>
@@ -245,10 +246,10 @@ export default function AutomationsPage() {
         </ul>
       </Panel>
 
-      <Panel title="Recent Runs">
+      <Panel title={t("automations.panel.recent_runs", "Recent runs")}>
         <div className="panel-content">
           <label className="mono-note" htmlFor="run-filter">
-            Run status filter
+            {t("automations.filter.run_status", "Run status filter")}
           </label>
           <select
             id="run-filter"
@@ -259,14 +260,14 @@ export default function AutomationsPage() {
               setRunStatusFilter(value);
               loadData(value).catch((error) => {
                 setState("error");
-                setDetail(`We couldn't refresh runs for that filter. ${describeApiIssue(error)}`);
+                setDetail(`${t("automations.error.filter", "We couldn't refresh runs for that filter.")} ${describeApiIssue(error)}`);
               });
             }}
           >
-            <option value="all">all</option>
-            <option value="success">success</option>
-            <option value="failed">failed</option>
-            <option value="skipped">skipped</option>
+            <option value="all">{t("automations.filter.all", "all")}</option>
+            <option value="success">{t("automations.filter.success", "success")}</option>
+            <option value="failed">{t("automations.filter.failed", "failed")}</option>
+            <option value="skipped">{t("automations.filter.skipped", "skipped")}</option>
           </select>
         </div>
         <ul className="list">
@@ -274,16 +275,16 @@ export default function AutomationsPage() {
             <li className="list-row" key={run.id}>
               <div>
                 <strong>{run.status}</strong>
-                <p>Rule: {run.rule_id}</p>
-                {run.error_code ? <p>Error: {run.error_code}</p> : null}
+                <p>{t("automations.run.rule", "Rule")}: {run.rule_id}</p>
+                {run.error_code ? <p>{t("automations.run.error", "Error")}: {run.error_code}</p> : null}
               </div>
               <div className="row-inline">
                 <span className="pill">{formatLocalizedDateTime(run.started_at, language)}</span>
                 <button className="pill-link" onClick={() => inspectRun(run.id)} disabled={busyRunId === run.id}>
-                  Inspect
+                  {t("automations.action.inspect", "Inspect")}
                 </button>
                 <button className="pill-link" onClick={() => replayRun(run.id)} disabled={busyRunId === run.id}>
-                  Replay
+                  {t("automations.action.replay", "Replay")}
                 </button>
               </div>
             </li>
@@ -291,21 +292,21 @@ export default function AutomationsPage() {
         </ul>
       </Panel>
 
-      <Panel title="Run Debug">
+      <Panel title={t("automations.panel.run_debug", "Run debug")}>
         {selectedRun ? (
           <div className="panel-content">
             <p className="callout">
-              Selected run: {selectedRun.id} ({selectedRun.status})
+              {t("automations.debug.selected", "Selected run")}: {selectedRun.id} ({selectedRun.status})
             </p>
             <pre className="mono-note">{JSON.stringify(selectedRun.action_results ?? [], null, 2)}</pre>
             {selectedRun.error_message ? <pre className="mono-note">{selectedRun.error_message}</pre> : null}
           </div>
         ) : (
-          <p className="callout">Choose a run with Inspect to view action trace and errors.</p>
+          <p className="callout">{t("automations.debug.empty", "Choose a run with Inspect to view action trace and errors.")}</p>
         )}
       </Panel>
 
-      <Panel title="Automation API Status">
+      <Panel title={t("automations.panel.api_status", "Automation API status")}>
         <div className="panel-content">
           <span className={`pill state-${state}`}>{STATE_LABELS[state]}</span>
           <p className="callout">{detail}</p>

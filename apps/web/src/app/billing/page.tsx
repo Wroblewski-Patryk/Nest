@@ -9,7 +9,7 @@ import type {
   BillingSubscriptionItem,
   UiAsyncState,
 } from "@nest/shared-types";
-import { formatLocalizedDateTime, resolveLanguage } from "@nest/shared-types";
+import { formatLocalizedDateTime, resolveLanguage, translate } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
 import { describeApiIssue, STATE_LABELS } from "@/lib/ux-contract";
@@ -18,8 +18,9 @@ type BillingAction = "trial" | "activate" | "past_due" | "cancel" | "recover" | 
 
 export default function BillingPage() {
   const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
+  const t = useCallback((key: string, fallback: string) => translate(key, language, fallback), [language]);
   const [state, setState] = useState<UiAsyncState>("loading");
-  const [detail, setDetail] = useState("Loading billing status, recovery activity, and self-serve sessions...");
+  const [detail, setDetail] = useState(t("billing.loading", "Loading billing status, recovery activity, and self-serve sessions..."));
   const [subscription, setSubscription] = useState<BillingSubscriptionItem | null>(null);
   const [events, setEvents] = useState<BillingEventItem[]>([]);
   const [dunningAttempts, setDunningAttempts] = useState<BillingDunningAttemptItem[]>([]);
@@ -74,19 +75,19 @@ export default function BillingPage() {
       .then(() => {
         if (!mounted) return;
         setState("success");
-        setDetail("Billing status and recovery activity are up to date.");
+        setDetail(t("billing.ready", "Billing status and recovery activity are up to date."));
       })
       .catch((error) => {
         if (!mounted) return;
 
         setState("error");
-        setDetail(`We couldn't load billing details right now. ${describeApiIssue(error)}`);
+        setDetail(`${t("billing.error.load", "We couldn't load billing details right now.")} ${describeApiIssue(error)}`);
       });
 
     return () => {
       mounted = false;
     };
-  }, [loadData, pricingExperiment.experimentKey, pricingExperiment.variantKey]);
+  }, [loadData, pricingExperiment.experimentKey, pricingExperiment.variantKey, t]);
 
   const runAction = useCallback(
     async (action: BillingAction) => {
@@ -126,32 +127,32 @@ export default function BillingPage() {
 
         await loadData();
         setState("success");
-        setDetail("Billing action completed and the latest status has been refreshed.");
+        setDetail(t("billing.action.completed", "Billing action completed and the latest status has been refreshed."));
       } catch (error) {
         setState("error");
-        setDetail(`We couldn't complete that billing action. ${describeApiIssue(error)}`);
+        setDetail(`${t("billing.error.action", "We couldn't complete that billing action.")} ${describeApiIssue(error)}`);
       } finally {
         setBusyAction(null);
       }
     },
-    [loadData, pricingExperiment.experimentKey, pricingExperiment.variantKey, subscription?.plan?.plan_code]
+    [loadData, pricingExperiment.experimentKey, pricingExperiment.variantKey, subscription?.plan?.plan_code, t]
   );
 
   const metrics = useMemo(
     () => [
-      { label: "Status", value: subscription?.status ?? "none" },
-      { label: "Plan", value: subscription?.plan?.plan_code ?? "none" },
-      { label: "Events", value: String(events.length) },
-      { label: "Dunning", value: String(dunningAttempts.length) },
-      { label: "Reconciled", value: reconciliation?.is_reconciled ? "yes" : "no" },
+      { label: t("billing.metric.status", "Status"), value: subscription?.status ?? "none" },
+      { label: t("billing.metric.plan", "Plan"), value: subscription?.plan?.plan_code ?? "none" },
+      { label: t("billing.metric.events", "Events"), value: String(events.length) },
+      { label: t("billing.metric.dunning", "Dunning"), value: String(dunningAttempts.length) },
+      { label: t("billing.metric.reconciled", "Reconciled"), value: reconciliation?.is_reconciled ? t("billing.reconciled.yes", "yes") : t("billing.reconciled.no", "no") },
     ],
-    [dunningAttempts.length, events.length, reconciliation?.is_reconciled, subscription?.plan?.plan_code, subscription?.status]
+    [dunningAttempts.length, events.length, reconciliation?.is_reconciled, subscription?.plan?.plan_code, subscription?.status, t]
   );
 
   return (
     <WorkspaceShell
-      title="Billing"
-      subtitle="Run self-serve checkout/portal flows and monitor automated dunning recovery."
+      title={t("billing.title", "Billing")}
+      subtitle={t("billing.subtitle", "Run self-serve checkout and portal flows while monitoring automated recovery.")}
       module="billing"
     >
       <div className="stack">
@@ -160,53 +161,53 @@ export default function BillingPage() {
         ))}
       </div>
 
-      <Panel title="Self-Serve Actions">
+      <Panel title={t("billing.panel.self_serve", "Self-serve actions")}>
         <div className="panel-content">
           <p className="callout">
-            Checkout and portal sessions are generated on demand and logged in tenant billing events.
+            {t("billing.self_serve.callout", "Checkout and portal sessions are generated on demand and logged in tenant billing events.")}
           </p>
           <div className="row-inline">
             <button className="btn-primary" onClick={() => runAction("checkout")} disabled={busyAction !== null}>
-              {busyAction === "checkout" ? "Opening..." : "Create Checkout Session"}
+              {busyAction === "checkout" ? t("billing.action.checkout_busy", "Opening...") : t("billing.action.checkout", "Create checkout session")}
             </button>
             <button className="btn-secondary" onClick={() => runAction("portal")} disabled={busyAction !== null}>
-              {busyAction === "portal" ? "Opening..." : "Create Portal Session"}
+              {busyAction === "portal" ? t("billing.action.portal_busy", "Opening...") : t("billing.action.portal", "Create portal session")}
             </button>
             <button className="btn-secondary" onClick={() => runAction("recover")} disabled={busyAction !== null}>
-              {busyAction === "recover" ? "Recovering..." : "Recover Past Due"}
+              {busyAction === "recover" ? t("billing.action.recover_busy", "Recovering...") : t("billing.action.recover", "Recover past due")}
             </button>
           </div>
         </div>
       </Panel>
 
-      <Panel title="Lifecycle Controls">
+      <Panel title={t("billing.panel.lifecycle", "Lifecycle controls")}>
         <div className="panel-content">
           <div className="row-inline">
             <button className="btn-primary" onClick={() => runAction("trial")} disabled={busyAction !== null}>
-              {busyAction === "trial" ? "Starting..." : "Start Trial (plus)"}
+              {busyAction === "trial" ? t("billing.action.trial_busy", "Starting...") : t("billing.action.trial", "Start trial (plus)")}
             </button>
             <button className="btn-secondary" onClick={() => runAction("activate")} disabled={busyAction !== null}>
-              {busyAction === "activate" ? "Activating..." : "Activate"}
+              {busyAction === "activate" ? t("billing.action.activate_busy", "Activating...") : t("billing.action.activate", "Activate")}
             </button>
             <button className="btn-secondary" onClick={() => runAction("past_due")} disabled={busyAction !== null}>
-              {busyAction === "past_due" ? "Marking..." : "Mark Past Due"}
+              {busyAction === "past_due" ? t("billing.action.past_due_busy", "Marking...") : t("billing.action.past_due", "Mark past due")}
             </button>
             <button className="btn-secondary" onClick={() => runAction("cancel")} disabled={busyAction !== null}>
-              {busyAction === "cancel" ? "Canceling..." : "Cancel"}
+              {busyAction === "cancel" ? t("billing.action.cancel_busy", "Canceling...") : t("billing.action.cancel", "Cancel")}
             </button>
           </div>
         </div>
       </Panel>
 
-      <Panel title="Recent Sessions">
+      <Panel title={t("billing.panel.sessions", "Recent sessions")}>
         <ul className="list">
           {sessions.length === 0 ? (
             <li className="list-row">
               <div>
-                <strong>No local session actions yet</strong>
-                <p>Run checkout or portal action to create self-serve session records.</p>
+                <strong>{t("billing.empty.sessions.title", "No local session actions yet")}</strong>
+                <p>{t("billing.empty.sessions.body", "Run checkout or portal action to create self-serve session records.")}</p>
               </div>
-              <span className="pill">empty</span>
+              <span className="pill">{t("billing.empty.badge", "empty")}</span>
             </li>
           ) : (
             sessions.map((session) => (
@@ -222,15 +223,15 @@ export default function BillingPage() {
         </ul>
       </Panel>
 
-      <Panel title="Dunning Attempts">
+      <Panel title={t("billing.panel.dunning", "Dunning attempts")}>
         <ul className="list">
           {dunningAttempts.length === 0 ? (
             <li className="list-row">
               <div>
-                <strong>No dunning attempts</strong>
-                <p>Attempts appear when past_due subscriptions are processed.</p>
+                <strong>{t("billing.empty.dunning.title", "No dunning attempts")}</strong>
+                <p>{t("billing.empty.dunning.body", "Attempts appear when past-due subscriptions are processed.")}</p>
               </div>
-              <span className="pill">clear</span>
+              <span className="pill">{t("billing.clear.badge", "clear")}</span>
             </li>
           ) : (
             dunningAttempts.map((attempt) => (
@@ -246,7 +247,7 @@ export default function BillingPage() {
         </ul>
       </Panel>
 
-      <Panel title="Billing Events">
+      <Panel title={t("billing.panel.events", "Billing events")}>
         <ul className="list">
           {events.map((event) => (
             <li className="list-row" key={event.id}>
@@ -260,21 +261,25 @@ export default function BillingPage() {
         </ul>
       </Panel>
 
-      <Panel title="Audit Reconciliation">
+      <Panel title={t("billing.panel.audit", "Audit reconciliation")}>
         <div className="panel-content">
-          <span className="pill">{reconciliation?.is_reconciled ? "reconciled" : "needs review"}</span>
+          <span className="pill">
+            {reconciliation?.is_reconciled
+              ? t("billing.audit.reconciled", "reconciled")
+              : t("billing.audit.needs_review", "needs review")}
+          </span>
           <p className="callout">
-            Expected status event: {reconciliation?.events.status_event_expected ?? "n/a"} | Present:
+            {t("billing.audit.expected_status", "Expected status event")}: {reconciliation?.events.status_event_expected ?? "n/a"} | {t("billing.audit.present", "Present")}:
             {" "}
-            {reconciliation?.events.status_event_present ? "yes" : "no"}
+            {reconciliation?.events.status_event_present ? t("billing.reconciled.yes", "yes") : t("billing.reconciled.no", "no")}
           </p>
           <p className="mono-note">
-            Dunning attempts without event link: {reconciliation?.dunning.attempts_without_event_link ?? 0}
+            {t("billing.audit.dunning_without_event", "Dunning attempts without event link")}: {reconciliation?.dunning.attempts_without_event_link ?? 0}
           </p>
         </div>
       </Panel>
 
-      <Panel title="Billing API Status">
+      <Panel title={t("billing.panel.status", "Billing API status")}>
         <div className="panel-content">
           <span className={`pill state-${state}`}>{STATE_LABELS[state]}</span>
           <p className="callout">{detail}</p>

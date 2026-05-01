@@ -4,7 +4,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { clearAuthSession } from "@/lib/auth-session";
-import { apiRequest, nestApiClient } from "@/lib/api-client";
+import { apiRequest } from "@/lib/api-client";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type RoutineStep = {

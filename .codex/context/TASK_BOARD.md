@@ -24,6 +24,26 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-234 Web lower-route localization copy pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-233
+  - Done on: 2026-05-01
+  - Priority: P1
+  - Notes:
+    - Added shared EN/PL localization keys for web Automations, Billing, and
+      Insights route chrome, status messages, empty states, panel labels, and
+      primary actions.
+    - Updated the three routes to use `translate` while preserving API
+      payloads, dynamic enum values, endpoint paths, auth, and data behavior.
+    - Removed the stale `nestApiClient` import from web Routines surfaced by
+      lint after the request-helper cleanup.
+    - Added report:
+      `docs/planning/nest_234_web_lower_route_localization_copy_pass_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit`, `pnpm lint`, and targeted static localization
+      inspection in `apps/web`.
+
 - [x] NEST-233 Web route request cast cleanup
   - Status: DONE
   - Owner: Execution Agent
