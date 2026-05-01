@@ -25,6 +25,17 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-288` Calendar canonical showcase convergence.
+  Web Calendar now promotes sparse current-day live states into the existing
+  canonical showcase path, preventing authenticated fallback renders from
+  showing a thin empty live layout when the current day lacks enough events.
+  The showcase shell, flow panel, week strip, now-card, and timeboard density
+  were tightened against the approved desktop reference while preserving
+  API-backed Calendar event/task operations. Captured fresh evidence:
+  `docs/ux_canonical_artifacts/2026-05-02/nest-calendar-web-parity-preview-phaseB.png`.
+  Web typecheck, lint, build, unit tests, Playwright screenshot smoke, and
+  `git diff --check` passed. Report:
+  `docs/ux/nest_288_calendar_canonical_showcase_convergence_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-242` web-first V1 and mobile V2 scope decision.
   The user explicitly paused mobile application work for V1 and clarified that
   current V1 views should be implemented in the web layer; the mobile

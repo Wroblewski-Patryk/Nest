@@ -409,7 +409,19 @@ export default function CalendarPage() {
     () => createShowcaseCalendarTasks(showcaseReferenceDate),
     [showcaseReferenceDate]
   );
-  const hasMeaningfulLiveCalendar = events.length >= 4 || tasks.length >= 2;
+  const anchorDay = useMemo(() => fromDateInput(anchorDate), [anchorDate]);
+  const dayStart = useMemo(() => startOfDay(anchorDay), [anchorDay]);
+  const dayEnd = useMemo(() => addDays(dayStart, 1), [dayStart]);
+  const liveEventsOnAnchorDay = useMemo(
+    () =>
+      events.filter((item) => {
+        const eventStart = new Date(item.start_at);
+        return eventStart >= dayStart && eventStart < dayEnd;
+      }),
+    [dayEnd, dayStart, events]
+  );
+  const hasMeaningfulLiveCalendar =
+    liveEventsOnAnchorDay.length >= 2 || (liveEventsOnAnchorDay.length >= 1 && tasks.length >= 1);
   const useCalendarShowcase = !isLoading && (Boolean(errorMessage) || !hasMeaningfulLiveCalendar);
   const eventSource = useCalendarShowcase ? showcaseEvents : events;
   const taskSource = useCalendarShowcase ? showcaseTasks : tasks;
@@ -428,12 +440,9 @@ export default function CalendarPage() {
     }
   }, [anchorDate, showcaseReferenceDate, useCalendarShowcase, viewMode]);
 
-  const anchorDay = useMemo(() => fromDateInput(anchorDate), [anchorDate]);
   const windowStart = useMemo(() => resolveWindow(viewMode, anchorDay).start, [anchorDay, viewMode]);
   const windowEnd = useMemo(() => resolveWindow(viewMode, anchorDay).end, [anchorDay, viewMode]);
   const windowLabel = useMemo(() => formatRangeLabel(viewMode, windowStart, windowEnd), [viewMode, windowStart, windowEnd]);
-  const dayStart = useMemo(() => startOfDay(anchorDay), [anchorDay]);
-  const dayEnd = useMemo(() => addDays(dayStart, 1), [dayStart]);
   const visibleEvents = useMemo(
     () =>
         eventSource
@@ -969,7 +978,7 @@ export default function CalendarPage() {
       hideAssistantNav
       hideRailFooterActions
     >
-      <div className="calendar-canonical-shell">
+      <div className={`calendar-canonical-shell ${useCalendarShowcase ? "is-showcase" : ""}`}>
         {showCalendarStatusStrip ? (
           <section className={`calendar-status-strip ${errorMessage ? "is-error" : "is-success"}`} aria-live="polite">
             <div className="calendar-status-copy">
@@ -988,7 +997,7 @@ export default function CalendarPage() {
           <div className="calendar-canonical-main">
             <DashboardHeroBand
               dateLabel={dayStart.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
-              weatherLabel={`${todayEventsCount} events today`}
+              weatherLabel={`${useCalendarShowcase ? 7 : todayEventsCount} events today`}
               title="Today's time map"
               summary={useCalendarShowcase ? "A balanced day with protected focus." : "Protect the few blocks that make the rest of the day easier."}
               progressLabel="Day load"
@@ -1037,9 +1046,7 @@ export default function CalendarPage() {
                       <span className="calendar-showcase-focus-chip">{nextDeckEvent ? toneLabel(resolveEventTone(nextDeckEvent)) : "Calm"}</span>
                       <span className="calendar-showcase-focus-chip">Goal: Launch product</span>
                     </div>
-                    <p className="calendar-showcase-focus-detail">
-                      Define positioning, milestones and launch plan.
-                    </p>
+                    <p className="calendar-showcase-focus-detail">Define positioning, milestones and launch plan.</p>
                   </div>
                   <div className="calendar-showcase-focus-actions">
                     <a href="#calendar-event-intelligence" className="btn-primary">

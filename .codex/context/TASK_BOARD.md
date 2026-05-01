@@ -1,6 +1,6 @@
 ﻿# TASK_BOARD
 
-Last updated: 2026-05-01
+Last updated: 2026-05-02
 
 ## Agent Workflow Refresh (2026-04-16)
 
@@ -23,6 +23,30 @@ Last updated: 2026-05-01
   - Contracts: OpenAPI lint when docs or API contracts change
 
 ## Backlog
+
+- [x] NEST-288 Calendar canonical showcase convergence
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-242
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Web-only V1 task to tighten Calendar showcase/fallback fidelity against
+      the approved canonical desktop reference.
+    - Promoted sparse current-day live states into the existing Calendar
+      showcase path, so authenticated fallback renders keep the approved
+      `Today's time map`, `Now on deck`, timeline, event story, and rail
+      composition instead of dropping into a thin empty live layout.
+    - Tightened the showcase shell, flow panel, week strip, now-card, and
+      timeboard density while preserving API-backed event/task operations.
+      Mobile application work remains V2 scope.
+    - Report:
+      `docs/ux/nest_288_calendar_canonical_showcase_convergence_2026-05-02.md`.
+    - Evidence:
+      `docs/ux_canonical_artifacts/2026-05-02/nest-calendar-web-parity-preview-phaseB.png`.
+    - Validation:
+      web typecheck, lint, build, unit tests, Playwright screenshot smoke, and
+      `git diff --check`.
 
 - [x] NEST-242 Web-first V1 and mobile V2 scope decision
   - Status: DONE
