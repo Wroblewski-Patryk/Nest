@@ -10,6 +10,7 @@
 - Owner: Documentation Agent | Planning Agent | Execution Agent | Review Agent
 - Depends on:
 - Priority: P0 | P1 | P2
+- Coverage Ledger Rows:
 
 ## Context
 Where this work sits in the current Nest architecture and execution wave.
@@ -57,6 +58,8 @@ Describe exactly what should be produced in the current stage only.
 - Manual checks:
 - Screenshots/logs:
 - High-risk checks:
+- Coverage ledger updated: yes | no | not applicable
+- Coverage rows closed or changed:
 
 ## Architecture Evidence (required for architecture-impacting tasks)
 

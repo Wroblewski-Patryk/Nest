@@ -35,6 +35,8 @@ quality, or task context across API, web, mobile, and docs.
 - `docs/governance/code-quality-guardrails.md` (optional)
 - `docs/governance/template-usage.md`
 - `docs/governance/new-project-bootstrap.md`
+- `docs/governance/function-coverage-ledger-standard.md`
+- `docs/governance/function-coverage-ledger-template.csv`
 
 ### Architecture and UX Truth
 
@@ -94,6 +96,16 @@ include:
 - Do not mark work done without evidence.
 - Keep planning docs, task board, project state, and architecture docs in sync
   when repo truth changes.
+- When active work is unclear, a release or handoff needs confidence, or the
+  queue goes stale, use the function coverage ledger standard to turn Nest
+  module confidence gaps into explicit evidence, blocker, fix, or scope-decision
+  tasks before inventing new feature work.
+- If a coverage ledger exists, derive follow-up tasks in this order: release
+  blockers, implementation-review rows, `P0` evidence rows, `P0/P1` unverified
+  rows, then lower-priority scope decisions.
+- Do not turn every `PARTIAL` or evidence-missing ledger row into feature work.
+  Plan verification first, then create a narrow fix only when proof or code
+  inspection finds a real defect.
 
 ### 6. Stage-Based Delivery Workflow
 

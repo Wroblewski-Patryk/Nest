@@ -66,6 +66,12 @@ description: Workspace rules for Nest (LifeOS)
 - Keep changes scoped and reversible.
 - Require acceptance evidence before completion.
 - Keep planning docs and task board synchronized.
+- For release readiness, handoffs, incidents, stale queues, or broad confidence
+  reviews, use `docs/governance/function-coverage-ledger-standard.md` to map
+  Nest module functions, evidence gaps, blockers, and the next smallest
+  verification or fix task.
+- If a function coverage ledger exists, update the smallest truthful row after
+  verification, fixes, deferrals, or release-gate reruns.
 - Declare the current delivery stage in each task and keep output aligned to
   that stage only.
 - Do not skip from analysis or planning straight to implementation unless

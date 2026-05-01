@@ -1690,6 +1690,8 @@ Last updated: 2026-05-01
 - `docs/engineering/development_and_deployment.md`
 - `docs/engineering/contracts/openapi_core_modules_v1.yaml`
 - `docs/engineering/mvp_database_schema.md`
+- `docs/governance/function-coverage-ledger-standard.md`
+- `docs/governance/function-coverage-ledger-template.csv`
 
 - Dashboard editorial-entry and shell-serenity pass landed on 2026-04-26 to
   further soften the rail, tighten the hero/focus composition, and calm the

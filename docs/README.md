@@ -95,6 +95,8 @@ This is the canonical index for repository documentation.
 - `template-usage.md`
 - `subagent-delegation-policy.md`
 - `new-project-bootstrap.md`
+- `function-coverage-ledger-standard.md`
+- `function-coverage-ledger-template.csv`
 
 ## ADR (`docs/adr/`)
 
@@ -107,6 +109,7 @@ Additional cross-project standards synced from `!template`:
 - `.agents/workflows/user-collaboration.md`
 - `.agents/workflows/world-class-delivery.md`
 - `docs/governance/world-class-product-engineering-standard.md`
+- `docs/governance/function-coverage-ledger-standard.md`
 - `docs/operations/service-reliability-and-observability.md`
 - `docs/security/secure-development-lifecycle.md`
 - `docs/ux/evidence-driven-ux-review.md`
