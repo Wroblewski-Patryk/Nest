@@ -52,6 +52,8 @@ type ApiRequestInit = Omit<RequestInit, "body"> & {
 };
 
 const JOURNAL_SHOWCASE_REFERENCE = new Date("2025-05-23T12:00:00");
+const JOURNAL_SHOWCASE_ENTRY_COUNT = 18;
+const JOURNAL_SHOWCASE_CADENCE = 68;
 
 async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
   const requestFn = nestApiClient.request as unknown as (
@@ -761,6 +763,7 @@ export default function JournalPage() {
 
   const journalStatusMessage = errorMessage || feedback;
   const showJournalStatusStrip = !useJournalShowcase;
+  const composerDateValue = useJournalShowcase && !entryDate ? "2025-05-23" : entryDate;
 
   return (
     <WorkspaceShell
@@ -792,13 +795,21 @@ export default function JournalPage() {
           <div className="journal-canonical-main">
             <DashboardHeroBand
               dateLabel="Friday, May 23, 2025"
-              weatherLabel={`${displayEntries.length} entries`}
+              weatherLabel={`${useJournalShowcase ? JOURNAL_SHOWCASE_ENTRY_COUNT : displayEntries.length} entries`}
               title="Today's reflection room"
               summary={heroSummary}
               progressLabel="Reflection cadence"
-              progressPercent={Math.min(92, Math.max(22, displayEntries.length * 9))}
+              progressPercent={
+                useJournalShowcase
+                  ? JOURNAL_SHOWCASE_CADENCE
+                  : Math.min(92, Math.max(22, displayEntries.length * 9))
+              }
               metrics={[
-                { label: "Entries", value: `${displayEntries.length}`, icon: <JournalGlyph name="journal" /> },
+                {
+                  label: "Entries",
+                  value: `${useJournalShowcase ? JOURNAL_SHOWCASE_ENTRY_COUNT : displayEntries.length}`,
+                  icon: <JournalGlyph name="journal" />,
+                },
                 { label: "Life areas", value: `${displayLifeAreas.length}`, icon: <JournalGlyph name="spark" /> },
                 { label: "Mood", value: formatMood(latestEntry?.mood ?? null), icon: <JournalGlyph name="mood" /> },
                 {
@@ -854,7 +865,7 @@ export default function JournalPage() {
                     <input
                       className="list-row"
                       type="date"
-                      value={entryDate}
+                      value={composerDateValue}
                       onChange={(event) => setEntryDate(event.target.value)}
                       disabled={isCreatingEntry}
                     />

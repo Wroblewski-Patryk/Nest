@@ -24,6 +24,13 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-279` canonical showcase story-details pass.
+  Calendar showcase now carries stronger linked-goal, ownership, and sync
+  storytelling around the workshop event, while Journal showcase uses the
+  founder-style hero counts and a prefilled composer date to read more like the
+  approved canonical room. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`.
 - 2026-05-01: Completed `NEST-278` showcase focal polish. Calendar showcase now
   centers the product strategy workshop and uses reference-matching hero
   metrics, while Journal showcase hides lower management and context surfaces

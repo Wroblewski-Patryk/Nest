@@ -38,6 +38,12 @@ type ApiRequestInit = Omit<RequestInit, "body"> & {
 
 const CALENDAR_SHOWCASE_REFERENCE = new Date("2025-05-23T12:00:00");
 const CALENDAR_SHOWCASE_PRIMARY_EVENT_ID = "showcase-event-4";
+const CALENDAR_SHOWCASE_LINKED_TASK_LABELS: Record<string, string> = {
+  "showcase-event-3": "Launch product",
+  "showcase-event-4": "Launch product",
+  "showcase-event-5": "Define positioning and launch plan",
+  "showcase-event-7": "Define positioning and launch plan",
+};
 
 async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
   const requestFn = nestApiClient.request as unknown as (
@@ -587,12 +593,21 @@ export default function CalendarPage() {
       return null;
     }
 
+    if (useCalendarShowcase) {
+      const showcaseLabel = CALENDAR_SHOWCASE_LINKED_TASK_LABELS[selectedEvent.id];
+      if (!showcaseLabel) {
+        return null;
+      }
+
+      return taskSource.find((task) => task.title === showcaseLabel) ?? null;
+    }
+
     const normalizedEventTitle = selectedEvent.title.toLowerCase();
     return (
       taskSource.find((task) => normalizedEventTitle.includes(task.title.toLowerCase()) || task.title.toLowerCase().includes(normalizedEventTitle)) ??
       null
     );
-  }, [selectedEvent, taskSource]);
+  }, [selectedEvent, taskSource, useCalendarShowcase]);
 
   const weekStripDays = useMemo(() => {
     const weekStart = startOfWeekMonday(anchorDay);
@@ -679,28 +694,51 @@ export default function CalendarPage() {
     .join(", ");
 
   const eventIntelligence = selectedEvent
-    ? [
-        {
-          label: "Source",
-          value: selectedEvent.linked_entity_type ? `${selectedEvent.linked_entity_type} linked` : "Standalone block",
-          detail: selectedEvent.all_day ? "All-day visibility is on." : "Timed event with direct schedule ownership.",
-        },
-        {
-          label: "Linked work",
-          value: linkedTask ? linkedTask.title : "No task linked yet",
-          detail: linkedTask ? `${linkedTask.priority} priority, ${linkedTask.status} state.` : "Use this block as the bridge between planning and action.",
-        },
-        {
-          label: "Privacy",
-          value: selectedEvent.all_day ? "Broad visibility" : "Focused scope",
-          detail: selectedEvent.all_day ? "Best for anchors, rituals, and travel." : "Keeps the day readable without over-sharing.",
-        },
-        {
-          label: "Sync health",
-          value: syncIssuesCount > 0 ? `${syncIssuesCount} conflict cue${syncIssuesCount === 1 ? "" : "s"}` : "Quiet and aligned",
-          detail: syncIssuesCount > 0 ? "There is overlap pressure in this day window." : "No overlap or source drift detected in the visible day.",
-        },
-      ]
+    ? useCalendarShowcase
+      ? [
+          {
+            label: "Created",
+            value: "May 21, 14:32",
+            detail: "Captured as the anchor for the protected work block.",
+          },
+          {
+            label: "Synced with",
+            value: "Google Calendar",
+            detail: "Latest sync landed a minute after the planning pass.",
+          },
+          {
+            label: "Linked to goal",
+            value: linkedTask?.title ?? "Launch product",
+            detail: "This block keeps launch positioning and decision-making moving.",
+          },
+          {
+            label: "Ownership and source",
+            value: "Personal | Private",
+            detail: "Readable to you first, without adding social noise to the day.",
+          },
+        ]
+      : [
+          {
+            label: "Source",
+            value: selectedEvent.linked_entity_type ? `${selectedEvent.linked_entity_type} linked` : "Standalone block",
+            detail: selectedEvent.all_day ? "All-day visibility is on." : "Timed event with direct schedule ownership.",
+          },
+          {
+            label: "Linked work",
+            value: linkedTask ? linkedTask.title : "No task linked yet",
+            detail: linkedTask ? `${linkedTask.priority} priority, ${linkedTask.status} state.` : "Use this block as the bridge between planning and action.",
+          },
+          {
+            label: "Privacy",
+            value: selectedEvent.all_day ? "Broad visibility" : "Focused scope",
+            detail: selectedEvent.all_day ? "Best for anchors, rituals, and travel." : "Keeps the day readable without over-sharing.",
+          },
+          {
+            label: "Sync health",
+            value: syncIssuesCount > 0 ? `${syncIssuesCount} conflict cue${syncIssuesCount === 1 ? "" : "s"}` : "Quiet and aligned",
+            detail: syncIssuesCount > 0 ? "There is overlap pressure in this day window." : "No overlap or source drift detected in the visible day.",
+          },
+        ]
     : [
         {
           label: "Source",
@@ -931,7 +969,7 @@ export default function CalendarPage() {
                     : "Your next event will become the dominant action card as soon as the day has one."
                 }
                 supportingLabel="Linked context"
-                supportingValue={linkedTask?.title ?? "Calendar event"}
+                supportingValue={useCalendarShowcase ? "Goal: Launch product" : linkedTask?.title ?? "Calendar event"}
                 meta={[
                   { label: "Energy", value: nextDeckEvent ? toneLabel(resolveEventTone(nextDeckEvent)) : "Calm" },
                   { label: "Window", value: nextDeckEvent ? formatMonthDayLabel(new Date(nextDeckEvent.start_at)) : "Today" },
@@ -952,7 +990,7 @@ export default function CalendarPage() {
                         className={`calendar-view-button ${viewMode === mode ? "is-active" : ""}`}
                         onClick={() => setViewMode(mode)}
                       >
-                        {mode === "day" ? "Day" : mode === "week" ? "Week" : "Month"}
+                        {mode === "day" ? "Day" : mode === "week" ? "Week" : useCalendarShowcase ? "Agenda" : "Month"}
                       </button>
                     ))}
                   </div>

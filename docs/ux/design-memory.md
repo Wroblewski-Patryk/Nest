@@ -164,6 +164,10 @@
   In canonical preview, `Now on deck`, the centered `Now` lane, and the ladder
   should point to the same flagship event rather than drifting to whichever
   time block happens to sort first.
+- Calendar showcase context fidelity:
+  When the canonical reference implies origin, sync, and ownership context, the
+  preview state should surface those cues directly instead of falling back to
+  generic event metadata.
 
 ## Journal Canonical Patterns (2026-04-30)
 
@@ -202,6 +206,10 @@
   If lower life-area management and context panels are not part of the desktop
   canonical reference, showcase mode should stop after the reflection ladder
   instead of extending into admin-heavy surfaces.
+- Journal showcase metric fidelity:
+  If the founder-approved hero uses established cadence and entry-count numbers,
+  the preview state may mirror those values even when the visible synthetic
+  entry feed is intentionally shorter.
 
 ## Workspace Shell Patterns (2026-04-26)
 

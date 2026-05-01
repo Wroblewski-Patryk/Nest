@@ -24,6 +24,27 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-279 Strengthen canonical showcase story details
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-278
+  - Done on: 2026-05-01
+  - Notes:
+    - Added explicit showcase linkage so Calendar canonical preview now tells a
+      clearer event story around the workshop, linked goal, ownership, and sync
+      context.
+    - Shifted Journal showcase hero metrics to the founder-style reference
+      numbers and prefilled the showcase composer date so the writing surface
+      reads more like the approved canonical screen.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-278 Spotlight canonical showcase focal moments
   - Status: DONE
   - Owner: Execution Agent
