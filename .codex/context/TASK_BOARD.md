@@ -24,6 +24,26 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-241 Mobile Habits localization closure
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-240
+  - Done on: 2026-05-01
+  - Priority: P1
+  - Notes:
+    - Added shared EN/PL `mobile.habits.*` localization keys for mobile
+      Habits/Routines loading, feedback, validation, delete alerts, metrics,
+      type/cadence/status labels, metadata, action labels, placeholders, and
+      empty states.
+    - Updated `apps/mobile/app/(tabs)/habits.tsx` to use `useUiLanguage` and
+      `translate` while preserving API, auth, tenant, habit logging, and
+      routine step behavior.
+    - Report:
+      `docs/planning/nest_241_mobile_habits_localization_closure_2026-05-01.md`.
+    - Validation:
+      mobile typecheck, mobile unit contract, mobile Expo web export, static
+      localization inspection, and `git diff --check`.
+
 - [x] NEST-240 Mobile Goals localization closure
   - Status: DONE
   - Owner: Execution Agent

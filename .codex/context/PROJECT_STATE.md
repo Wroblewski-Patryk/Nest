@@ -24,6 +24,15 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-241` Mobile Habits localization closure. Mobile
+  Habits/Routines now uses shared EN/PL `mobile.habits.*` localization keys
+  for loading, feedback, validation, delete alerts, metrics,
+  type/cadence/status labels, metadata, action labels, placeholders, and empty
+  states. API endpoints, auth behavior, tenancy boundaries, habit logging, and
+  routine step payload behavior were unchanged. Mobile typecheck, mobile unit
+  contract, mobile Expo web export, static localization inspection, and
+  `git diff --check` passed. Report:
+  `docs/planning/nest_241_mobile_habits_localization_closure_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-240` Mobile Goals localization closure. Mobile
   Goals/Targets now uses shared EN/PL `mobile.goals.*` localization keys for
   loading, feedback, validation, archive alerts, metrics, status labels, action

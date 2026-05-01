@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { translate } from '@nest/shared-types';
 import { apiRequest, nestApiClient } from '@/constants/apiClient';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
+import { useUiLanguage } from '@/lib/ui-language';
 import { getUserSafeErrorMessage } from '@/lib/ux-contract';
 
 type HabitType = 'boolean' | 'numeric' | 'duration';
@@ -39,6 +41,21 @@ function resolveCadenceType(cadence: Record<string, unknown> | null | undefined)
 }
 
 export default function HabitsScreen() {
+  const language = useUiLanguage();
+  const t = useCallback((key: string, fallback: string) => translate(key, language, fallback), [language]);
+  const tx = useCallback(
+    (key: string, fallback: string, replacements: Record<string, string>) =>
+      Object.entries(replacements).reduce(
+        (message, [token, value]) => message.replace(`{${token}}`, value),
+        t(key, fallback)
+      ),
+    [t]
+  );
+  const formatHabitType = (type: HabitType) => t(`mobile.habits.type.${type}`, type);
+  const formatCadence = (cadence: 'daily' | 'weekly') => t(`mobile.habits.cadence.${cadence}`, cadence);
+  const formatActive = (active: boolean) =>
+    active ? t('mobile.habits.status.active', 'active') : t('mobile.habits.status.inactive', 'inactive');
+
   const [auraA, auraB, auraC] = useMemo(() => getAuraPalette('tasks'), []);
 
   const [habits, setHabits] = useState<HabitItem[]>([]);
@@ -47,7 +64,7 @@ export default function HabitsScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [busyHabitId, setBusyHabitId] = useState<string | null>(null);
   const [busyRoutineId, setBusyRoutineId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState('Habits and routines are ready.');
+  const [feedback, setFeedback] = useState(t('mobile.habits.feedback.ready', 'Habits and routines are ready.'));
   const [errorMessage, setErrorMessage] = useState('');
 
   const [newHabitTitle, setNewHabitTitle] = useState('');
@@ -85,7 +102,7 @@ export default function HabitsScreen() {
 
     loadWorkspace()
       .then(() => {
-        if (mounted) setFeedback('Habits and routines are loaded.');
+        if (mounted) setFeedback(t('mobile.habits.feedback.loaded', 'Habits and routines are loaded.'));
       })
       .catch((error) => {
         if (mounted) setErrorMessage(getUserSafeErrorMessage(error));
@@ -97,7 +114,7 @@ export default function HabitsScreen() {
     return () => {
       mounted = false;
     };
-  }, [loadWorkspace]);
+  }, [loadWorkspace, t]);
 
   const activeHabits = useMemo(() => habits.filter((habit) => habit.is_active).length, [habits]);
   const activeRoutines = useMemo(() => routines.filter((routine) => routine.is_active).length, [routines]);
@@ -108,7 +125,7 @@ export default function HabitsScreen() {
 
     try {
       await loadWorkspace();
-      setFeedback('Habits and routines have been refreshed.');
+      setFeedback(t('mobile.habits.feedback.refreshed', 'Habits and routines have been refreshed.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -118,7 +135,7 @@ export default function HabitsScreen() {
 
   async function createHabit() {
     if (!newHabitTitle.trim()) {
-      setErrorMessage('Habit title is required.');
+      setErrorMessage(t('mobile.habits.validation.habit_title_required', 'Habit title is required.'));
       return;
     }
 
@@ -137,7 +154,7 @@ export default function HabitsScreen() {
       setNewHabitType('boolean');
       setNewHabitCadence('daily');
       await loadWorkspace();
-      setFeedback('Habit created successfully.');
+      setFeedback(t('mobile.habits.feedback.habit_created', 'Habit created successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     }
@@ -153,7 +170,7 @@ export default function HabitsScreen() {
 
   async function saveHabit(habitId: string) {
     if (!editHabitTitle.trim()) {
-      setErrorMessage('Habit title is required.');
+      setErrorMessage(t('mobile.habits.validation.habit_title_required', 'Habit title is required.'));
       return;
     }
 
@@ -171,7 +188,7 @@ export default function HabitsScreen() {
       });
       setEditingHabitId(null);
       await loadWorkspace();
-      setFeedback('Habit updated successfully.');
+      setFeedback(t('mobile.habits.feedback.habit_updated', 'Habit updated successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -187,7 +204,11 @@ export default function HabitsScreen() {
         body: { is_active: !habit.is_active },
       });
       await loadWorkspace();
-      setFeedback(habit.is_active ? 'Habit paused.' : 'Habit reactivated.');
+      setFeedback(
+        habit.is_active
+          ? t('mobile.habits.feedback.habit_paused', 'Habit paused.')
+          : t('mobile.habits.feedback.habit_reactivated', 'Habit reactivated.')
+      );
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -209,7 +230,7 @@ export default function HabitsScreen() {
         method: 'POST',
         body: payload,
       });
-      setFeedback('Habit log saved.');
+      setFeedback(t('mobile.habits.feedback.habit_log_saved', 'Habit log saved.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -218,10 +239,10 @@ export default function HabitsScreen() {
   }
 
   function deleteHabit(habitId: string) {
-    Alert.alert('Delete habit?', 'The habit will be removed from the active mobile flow.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('mobile.habits.alert.delete_habit_title', 'Delete habit?'), t('mobile.habits.alert.delete_habit_body', 'The habit will be removed from the active mobile flow.'), [
+      { text: t('mobile.habits.action.cancel', 'Cancel'), style: 'cancel' },
       {
-        text: 'Delete',
+        text: t('mobile.habits.action.delete', 'Delete'),
         style: 'destructive',
         onPress: () => {
           void (async () => {
@@ -232,7 +253,7 @@ export default function HabitsScreen() {
                 setEditingHabitId(null);
               }
               await loadWorkspace();
-              setFeedback('Habit deleted successfully.');
+              setFeedback(t('mobile.habits.feedback.habit_deleted', 'Habit deleted successfully.'));
             } catch (error) {
               setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
@@ -246,12 +267,12 @@ export default function HabitsScreen() {
 
   async function createRoutine() {
     if (!newRoutineTitle.trim()) {
-      setErrorMessage('Routine title is required.');
+      setErrorMessage(t('mobile.habits.validation.routine_title_required', 'Routine title is required.'));
       return;
     }
 
     if (!newRoutineStepTitle.trim()) {
-      setErrorMessage('At least one routine step is required.');
+      setErrorMessage(t('mobile.habits.validation.routine_step_required', 'At least one routine step is required.'));
       return;
     }
 
@@ -274,7 +295,7 @@ export default function HabitsScreen() {
       setNewRoutineStepTitle('');
       setNewRoutineStepDuration('15');
       await loadWorkspace();
-      setFeedback('Routine created successfully.');
+      setFeedback(t('mobile.habits.feedback.routine_created', 'Routine created successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     }
@@ -290,12 +311,12 @@ export default function HabitsScreen() {
 
   async function saveRoutine(routineId: string) {
     if (!editRoutineTitle.trim()) {
-      setErrorMessage('Routine title is required.');
+      setErrorMessage(t('mobile.habits.validation.routine_title_required', 'Routine title is required.'));
       return;
     }
 
     if (!editRoutineStepTitle.trim()) {
-      setErrorMessage('At least one routine step is required.');
+      setErrorMessage(t('mobile.habits.validation.routine_step_required', 'At least one routine step is required.'));
       return;
     }
 
@@ -317,7 +338,7 @@ export default function HabitsScreen() {
       });
       setEditingRoutineId(null);
       await loadWorkspace();
-      setFeedback('Routine updated successfully.');
+      setFeedback(t('mobile.habits.feedback.routine_updated', 'Routine updated successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -340,7 +361,11 @@ export default function HabitsScreen() {
         },
       });
       await loadWorkspace();
-      setFeedback(routine.is_active ? 'Routine paused.' : 'Routine reactivated.');
+      setFeedback(
+        routine.is_active
+          ? t('mobile.habits.feedback.routine_paused', 'Routine paused.')
+          : t('mobile.habits.feedback.routine_reactivated', 'Routine reactivated.')
+      );
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -349,10 +374,10 @@ export default function HabitsScreen() {
   }
 
   function deleteRoutine(routineId: string) {
-    Alert.alert('Delete routine?', 'The routine will be removed from the active mobile flow.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('mobile.habits.alert.delete_routine_title', 'Delete routine?'), t('mobile.habits.alert.delete_routine_body', 'The routine will be removed from the active mobile flow.'), [
+      { text: t('mobile.habits.action.cancel', 'Cancel'), style: 'cancel' },
       {
-        text: 'Delete',
+        text: t('mobile.habits.action.delete', 'Delete'),
         style: 'destructive',
         onPress: () => {
           void (async () => {
@@ -363,7 +388,7 @@ export default function HabitsScreen() {
                 setEditingRoutineId(null);
               }
               await loadWorkspace();
-              setFeedback('Routine deleted successfully.');
+              setFeedback(t('mobile.habits.feedback.routine_deleted', 'Routine deleted successfully.'));
             } catch (error) {
               setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
@@ -379,7 +404,7 @@ export default function HabitsScreen() {
     return (
       <View style={styles.loadingWrap}>
         <ActivityIndicator color={mobileUiTokens.accent} />
-        <Text style={styles.loadingText}>Loading habits and routines...</Text>
+        <Text style={styles.loadingText}>{t('mobile.habits.loading', 'Loading habits and routines...')}</Text>
       </View>
     );
   }
@@ -392,14 +417,14 @@ export default function HabitsScreen() {
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.hero}>
-          <Text style={styles.heroTitle}>Habits + Routines</Text>
-          <Text style={styles.heroSubtitle}>Keep consistency visible with habit tracking and repeatable routines.</Text>
+          <Text style={styles.heroTitle}>{t('mobile.habits.title', 'Habits + Routines')}</Text>
+          <Text style={styles.heroSubtitle}>{t('mobile.habits.subtitle', 'Keep consistency visible with habit tracking and repeatable routines.')}</Text>
           <View style={styles.metricsRow}>
-            <Text style={styles.metric}>Habits: {habits.length}</Text>
-            <Text style={styles.metric}>Active habits: {activeHabits}</Text>
-            <Text style={styles.metric}>Active routines: {activeRoutines}</Text>
+            <Text style={styles.metric}>{tx('mobile.habits.metric.habits', 'Habits: {count}', { count: String(habits.length) })}</Text>
+            <Text style={styles.metric}>{tx('mobile.habits.metric.active_habits', 'Active habits: {count}', { count: String(activeHabits) })}</Text>
+            <Text style={styles.metric}>{tx('mobile.habits.metric.active_routines', 'Active routines: {count}', { count: String(activeRoutines) })}</Text>
             <Pressable onPress={() => void refreshWorkspace()} disabled={isRefreshing}>
-              <Text style={styles.metric}>{isRefreshing ? 'Refreshing...' : 'Refresh'}</Text>
+              <Text style={styles.metric}>{isRefreshing ? t('mobile.habits.action.refreshing', 'Refreshing...') : t('mobile.habits.action.refresh', 'Refresh')}</Text>
             </Pressable>
           </View>
         </View>
@@ -408,42 +433,42 @@ export default function HabitsScreen() {
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Create habit</Text>
-          <TextInput style={styles.input} value={newHabitTitle} onChangeText={setNewHabitTitle} placeholder="Habit title" />
+          <Text style={styles.panelTitle}>{t('mobile.habits.panel.create_habit', 'Create habit')}</Text>
+          <TextInput style={styles.input} value={newHabitTitle} onChangeText={setNewHabitTitle} placeholder={t('mobile.habits.field.habit_title', 'Habit title')} />
           <View style={styles.rowWrap}>
             {(['boolean', 'numeric', 'duration'] as const).map((type) => (
               <Pressable key={type} style={[styles.chip, newHabitType === type && styles.chipActive]} onPress={() => setNewHabitType(type)}>
-                <Text style={styles.chipText}>{type}</Text>
+                <Text style={styles.chipText}>{formatHabitType(type)}</Text>
               </Pressable>
             ))}
           </View>
           <View style={styles.rowWrap}>
             {(['daily', 'weekly'] as const).map((cadence) => (
               <Pressable key={cadence} style={[styles.chip, newHabitCadence === cadence && styles.chipActive]} onPress={() => setNewHabitCadence(cadence)}>
-                <Text style={styles.chipText}>{cadence}</Text>
+                <Text style={styles.chipText}>{formatCadence(cadence)}</Text>
               </Pressable>
             ))}
           </View>
           <Pressable style={styles.primaryButton} onPress={() => void createHabit()}>
-            <Text style={styles.primaryButtonText}>Create habit</Text>
+            <Text style={styles.primaryButtonText}>{t('mobile.habits.action.create_habit', 'Create habit')}</Text>
           </Pressable>
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Create routine</Text>
-          <TextInput style={styles.input} value={newRoutineTitle} onChangeText={setNewRoutineTitle} placeholder="Routine title" />
+          <Text style={styles.panelTitle}>{t('mobile.habits.panel.create_routine', 'Create routine')}</Text>
+          <TextInput style={styles.input} value={newRoutineTitle} onChangeText={setNewRoutineTitle} placeholder={t('mobile.habits.field.routine_title', 'Routine title')} />
           <View style={styles.rowSplit}>
-            <TextInput style={[styles.input, styles.splitInput]} value={newRoutineStepTitle} onChangeText={setNewRoutineStepTitle} placeholder="First step" />
-            <TextInput style={[styles.input, styles.splitInput]} value={newRoutineStepDuration} onChangeText={setNewRoutineStepDuration} placeholder="Minutes" keyboardType="numeric" />
+            <TextInput style={[styles.input, styles.splitInput]} value={newRoutineStepTitle} onChangeText={setNewRoutineStepTitle} placeholder={t('mobile.habits.field.first_step_title', 'First step title')} />
+            <TextInput style={[styles.input, styles.splitInput]} value={newRoutineStepDuration} onChangeText={setNewRoutineStepDuration} placeholder={t('mobile.habits.field.step_duration', 'Step duration minutes')} keyboardType="numeric" />
           </View>
           <Pressable style={styles.primaryButton} onPress={() => void createRoutine()}>
-            <Text style={styles.primaryButtonText}>Create routine</Text>
+            <Text style={styles.primaryButtonText}>{t('mobile.habits.action.create_routine', 'Create routine')}</Text>
           </Pressable>
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Habits</Text>
-          {habits.length === 0 ? <Text style={styles.emptyState}>No habits yet.</Text> : null}
+          <Text style={styles.panelTitle}>{t('mobile.habits.panel.habits', 'Habits')}</Text>
+          {habits.length === 0 ? <Text style={styles.emptyState}>{t('mobile.habits.empty.habits', 'No habits yet.')}</Text> : null}
 
           {habits.map((habit) => (
             <View key={habit.id} style={styles.card}>
@@ -453,24 +478,24 @@ export default function HabitsScreen() {
                   <View style={styles.rowWrap}>
                     {(['boolean', 'numeric', 'duration'] as const).map((type) => (
                       <Pressable key={type} style={[styles.chip, editHabitType === type && styles.chipActive]} onPress={() => setEditHabitType(type)}>
-                        <Text style={styles.chipText}>{type}</Text>
+                        <Text style={styles.chipText}>{formatHabitType(type)}</Text>
                       </Pressable>
                     ))}
                   </View>
                   <View style={styles.rowWrap}>
                     {(['daily', 'weekly'] as const).map((cadence) => (
                       <Pressable key={cadence} style={[styles.chip, editHabitCadence === cadence && styles.chipActive]} onPress={() => setEditHabitCadence(cadence)}>
-                        <Text style={styles.chipText}>{cadence}</Text>
+                        <Text style={styles.chipText}>{formatCadence(cadence)}</Text>
                       </Pressable>
                     ))}
                   </View>
                   <View style={styles.rowWrap}>
                     <Pressable style={[styles.chip, editHabitIsActive && styles.chipActive]} onPress={() => setEditHabitIsActive((current) => !current)}>
-                      <Text style={styles.chipText}>{editHabitIsActive ? 'active' : 'inactive'}</Text>
+                      <Text style={styles.chipText}>{formatActive(editHabitIsActive)}</Text>
                     </Pressable>
                   </View>
                   <Pressable style={styles.primaryButton} onPress={() => void saveHabit(habit.id)} disabled={busyHabitId === habit.id}>
-                    <Text style={styles.primaryButtonText}>{busyHabitId === habit.id ? 'Saving...' : 'Save habit'}</Text>
+                    <Text style={styles.primaryButtonText}>{busyHabitId === habit.id ? t('mobile.habits.action.saving', 'Saving...') : t('mobile.habits.action.save_habit', 'Save habit')}</Text>
                   </Pressable>
                 </View>
               ) : (
@@ -479,21 +504,25 @@ export default function HabitsScreen() {
                     <View style={styles.headerTextWrap}>
                       <Text style={styles.cardTitle}>{habit.title}</Text>
                       <Text style={styles.cardMeta}>
-                        {habit.type} | cadence: {resolveCadenceType(habit.cadence)} | {habit.is_active ? 'active' : 'inactive'}
+                        {tx('mobile.habits.meta.habit', '{type} | cadence: {cadence} | {status}', {
+                          type: formatHabitType(habit.type),
+                          cadence: formatCadence(resolveCadenceType(habit.cadence)),
+                          status: formatActive(habit.is_active),
+                        })}
                       </Text>
                     </View>
                     <View style={styles.rowWrap}>
                       <Pressable style={styles.ghostButton} onPress={() => void logHabit(habit)} disabled={busyHabitId === habit.id}>
-                        <Text style={styles.ghostText}>{busyHabitId === habit.id ? 'Saving...' : 'Log'}</Text>
+                        <Text style={styles.ghostText}>{busyHabitId === habit.id ? t('mobile.habits.action.saving', 'Saving...') : t('mobile.habits.action.log', 'Log')}</Text>
                       </Pressable>
                       <Pressable style={styles.ghostButton} onPress={() => startHabitEdit(habit)}>
-                        <Text style={styles.ghostText}>Edit</Text>
+                        <Text style={styles.ghostText}>{t('mobile.habits.action.edit', 'Edit')}</Text>
                       </Pressable>
                       <Pressable style={styles.ghostButton} onPress={() => void toggleHabitActive(habit)} disabled={busyHabitId === habit.id}>
-                        <Text style={styles.ghostText}>{habit.is_active ? 'Pause' : 'Activate'}</Text>
+                        <Text style={styles.ghostText}>{habit.is_active ? t('mobile.habits.action.pause', 'Pause') : t('mobile.habits.action.activate', 'Activate')}</Text>
                       </Pressable>
                       <Pressable style={styles.ghostButton} onPress={() => deleteHabit(habit.id)} disabled={busyHabitId === habit.id}>
-                        <Text style={styles.ghostText}>Delete</Text>
+                        <Text style={styles.ghostText}>{t('mobile.habits.action.delete', 'Delete')}</Text>
                       </Pressable>
                     </View>
                   </View>
@@ -504,8 +533,8 @@ export default function HabitsScreen() {
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Routines</Text>
-          {routines.length === 0 ? <Text style={styles.emptyState}>No routines yet.</Text> : null}
+          <Text style={styles.panelTitle}>{t('mobile.habits.panel.routines', 'Routines')}</Text>
+          {routines.length === 0 ? <Text style={styles.emptyState}>{t('mobile.habits.empty.routines', 'No routines yet.')}</Text> : null}
 
           {routines.map((routine) => (
             <View key={routine.id} style={styles.card}>
@@ -513,16 +542,16 @@ export default function HabitsScreen() {
                 <View style={styles.stack}>
                   <TextInput style={styles.input} value={editRoutineTitle} onChangeText={setEditRoutineTitle} />
                   <View style={styles.rowSplit}>
-                    <TextInput style={[styles.input, styles.splitInput]} value={editRoutineStepTitle} onChangeText={setEditRoutineStepTitle} placeholder="First step" />
+                    <TextInput style={[styles.input, styles.splitInput]} value={editRoutineStepTitle} onChangeText={setEditRoutineStepTitle} placeholder={t('mobile.habits.field.first_step_title', 'First step title')} />
                     <TextInput style={[styles.input, styles.splitInput]} value={editRoutineStepDuration} onChangeText={setEditRoutineStepDuration} keyboardType="numeric" />
                   </View>
                   <View style={styles.rowWrap}>
                     <Pressable style={[styles.chip, editRoutineIsActive && styles.chipActive]} onPress={() => setEditRoutineIsActive((current) => !current)}>
-                      <Text style={styles.chipText}>{editRoutineIsActive ? 'active' : 'inactive'}</Text>
+                      <Text style={styles.chipText}>{formatActive(editRoutineIsActive)}</Text>
                     </Pressable>
                   </View>
                   <Pressable style={styles.primaryButton} onPress={() => void saveRoutine(routine.id)} disabled={busyRoutineId === routine.id}>
-                    <Text style={styles.primaryButtonText}>{busyRoutineId === routine.id ? 'Saving...' : 'Save routine'}</Text>
+                    <Text style={styles.primaryButtonText}>{busyRoutineId === routine.id ? t('mobile.habits.action.saving', 'Saving...') : t('mobile.habits.action.save_routine', 'Save routine')}</Text>
                   </Pressable>
                 </View>
               ) : (
@@ -531,24 +560,27 @@ export default function HabitsScreen() {
                     <View style={styles.headerTextWrap}>
                       <Text style={styles.cardTitle}>{routine.title}</Text>
                       <Text style={styles.cardMeta}>
-                        {routine.steps.length} steps | {routine.is_active ? 'active' : 'inactive'}
+                        {tx('mobile.habits.meta.routine_steps', '{count} steps | {status}', {
+                          count: String(routine.steps.length),
+                          status: formatActive(routine.is_active),
+                        })}
                       </Text>
                       {routine.steps[0] ? (
                         <Text style={styles.cardMeta}>
-                          First step: {routine.steps[0].title}
-                          {routine.steps[0].duration_minutes ? ` (${routine.steps[0].duration_minutes} min)` : ''}
+                          {tx('mobile.habits.meta.first_step', 'First step: {title}', { title: routine.steps[0].title })}
+                          {routine.steps[0].duration_minutes ? ` ${tx('mobile.habits.meta.duration_minutes', '({count} min)', { count: String(routine.steps[0].duration_minutes) })}` : ''}
                         </Text>
                       ) : null}
                     </View>
                     <View style={styles.rowWrap}>
                       <Pressable style={styles.ghostButton} onPress={() => startRoutineEdit(routine)}>
-                        <Text style={styles.ghostText}>Edit</Text>
+                        <Text style={styles.ghostText}>{t('mobile.habits.action.edit', 'Edit')}</Text>
                       </Pressable>
                       <Pressable style={styles.ghostButton} onPress={() => void toggleRoutineActive(routine)} disabled={busyRoutineId === routine.id}>
-                        <Text style={styles.ghostText}>{routine.is_active ? 'Pause' : 'Activate'}</Text>
+                        <Text style={styles.ghostText}>{routine.is_active ? t('mobile.habits.action.pause', 'Pause') : t('mobile.habits.action.activate', 'Activate')}</Text>
                       </Pressable>
                       <Pressable style={styles.ghostButton} onPress={() => deleteRoutine(routine.id)} disabled={busyRoutineId === routine.id}>
-                        <Text style={styles.ghostText}>Delete</Text>
+                        <Text style={styles.ghostText}>{t('mobile.habits.action.delete', 'Delete')}</Text>
                       </Pressable>
                     </View>
                   </View>
