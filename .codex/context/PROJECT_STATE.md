@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-239` Mobile Tasks localization closure. Mobile
+  Tasks/Lists now uses shared EN/PL `mobile.tasks.*` localization keys for
+  loading, feedback, validation, alerts, metrics, filters, status/priority
+  labels, action labels, and empty states. API endpoints, auth behavior,
+  tenancy boundaries, pagination, filtering, and CRUD payloads were unchanged.
+  Mobile typecheck, mobile unit contract, mobile Expo web export, static
+  localization inspection, and `git diff --check` passed. Report:
+  `docs/planning/nest_239_mobile_tasks_localization_closure_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-238` mobile route request cast cleanup. Mobile
   Tasks, Goals, Habits, and Journal now use the shared typed `apiRequest`
   helper exported from the existing mobile API client module instead of

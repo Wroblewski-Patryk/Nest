@@ -24,6 +24,25 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-239 Mobile Tasks localization closure
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-238
+  - Done on: 2026-05-01
+  - Priority: P1
+  - Notes:
+    - Added shared EN/PL `mobile.tasks.*` localization keys for mobile
+      Tasks/Lists loading, feedback, validation, alerts, metrics, filters,
+      status/priority labels, action labels, and empty states.
+    - Updated `apps/mobile/app/(tabs)/index.tsx` to use `useUiLanguage` and
+      `translate` while preserving API, auth, tenant, pagination, and CRUD
+      behavior.
+    - Report:
+      `docs/planning/nest_239_mobile_tasks_localization_closure_2026-05-01.md`.
+    - Validation:
+      mobile typecheck, mobile unit contract, mobile Expo web export, static
+      localization inspection, and `git diff --check`.
+
 - [x] NEST-238 Mobile route request cast cleanup
   - Status: DONE
   - Owner: Execution Agent

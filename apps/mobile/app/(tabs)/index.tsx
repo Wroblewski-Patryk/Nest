@@ -1,7 +1,9 @@
 ﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { translate } from '@nest/shared-types';
 import { apiRequest, nestApiClient } from '@/constants/apiClient';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
+import { useUiLanguage } from '@/lib/ui-language';
 import { getUserSafeErrorMessage } from '@/lib/ux-contract';
 
 type TaskStatus = 'todo' | 'in_progress' | 'done' | 'canceled';
@@ -39,15 +41,31 @@ function buildListParentPayload(type: ListParentType, id: string) {
   return { goal_id: null, target_id: null, life_area_id: null };
 }
 
-function formatPriority(priority: TaskPriority): string {
-  return priority === 'urgent' ? 'Urgent' : priority === 'high' ? 'High' : priority === 'medium' ? 'Medium' : 'Low';
-}
-
-function formatStatus(status: TaskStatus): string {
-  return status === 'in_progress' ? 'In progress' : status === 'done' ? 'Done' : status === 'canceled' ? 'Canceled' : 'To do';
-}
-
 export default function TasksScreen() {
+  const language = useUiLanguage();
+  const t = useCallback((key: string, fallback: string) => translate(key, language, fallback), [language]);
+  const tx = useCallback(
+    (key: string, fallback: string, replacements: Record<string, string>) =>
+      Object.entries(replacements).reduce(
+        (message, [token, value]) => message.replace(`{${token}}`, value),
+        t(key, fallback)
+      ),
+    [t]
+  );
+  const formatPriority = (priority: TaskPriority) =>
+    t(`mobile.tasks.priority.${priority}`, priority === 'urgent' ? 'Urgent' : priority === 'high' ? 'High' : priority === 'medium' ? 'Medium' : 'Low');
+  const formatStatus = (status: TaskStatus) =>
+    t(
+      `mobile.tasks.status.${status}`,
+      status === 'in_progress' ? 'In progress' : status === 'done' ? 'Done' : status === 'canceled' ? 'Canceled' : 'To do'
+    );
+  const formatParentType = (type: ListParentType) =>
+    t(
+      `mobile.tasks.parent.${type}`,
+      type === 'life_area' ? 'life area' : type
+    );
+  const formatFilter = (filter: 'all' | 'open' | 'done') => t(`mobile.tasks.filter.${filter}`, filter);
+
   const [auraA, auraB, auraC] = useMemo(() => getAuraPalette('tasks'), []);
 
   const [lists, setLists] = useState<ListItem[]>([]);
@@ -61,7 +79,7 @@ export default function TasksScreen() {
   const [busyListId, setBusyListId] = useState<string | null>(null);
   const [busyTaskId, setBusyTaskId] = useState<string | null>(null);
 
-  const [feedback, setFeedback] = useState('Tasks and lists are ready.');
+  const [feedback, setFeedback] = useState(t('mobile.tasks.feedback.ready', 'Tasks and lists are ready.'));
   const [errorMessage, setErrorMessage] = useState('');
 
   const [newListName, setNewListName] = useState('');
@@ -123,7 +141,7 @@ export default function TasksScreen() {
 
     loadWorkspace()
       .then(() => {
-        if (mounted) setFeedback('Tasks and lists are loaded.');
+        if (mounted) setFeedback(t('mobile.tasks.feedback.loaded', 'Tasks and lists are loaded.'));
       })
       .catch((error) => {
         if (!mounted) return;
@@ -136,7 +154,7 @@ export default function TasksScreen() {
     return () => {
       mounted = false;
     };
-  }, [loadWorkspace]);
+  }, [loadWorkspace, t]);
 
   const filteredTasks = useMemo(() => {
     const normalizedSearch = searchQuery.trim().toLowerCase();
@@ -182,7 +200,7 @@ export default function TasksScreen() {
 
     try {
       await loadWorkspace();
-      setFeedback('Tasks and lists have been refreshed.');
+      setFeedback(t('mobile.tasks.feedback.refreshed', 'Tasks and lists have been refreshed.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -192,12 +210,12 @@ export default function TasksScreen() {
 
   async function createList() {
     if (!newListName.trim()) {
-      setErrorMessage('List name is required.');
+      setErrorMessage(t('mobile.tasks.validation.list_name_required', 'List name is required.'));
       return;
     }
 
     if (newListParentType !== 'none' && !newListParentId) {
-      setErrorMessage('Select parent for selected parent type.');
+      setErrorMessage(t('mobile.tasks.validation.select_parent_required', 'Select parent for selected parent type.'));
       return;
     }
 
@@ -216,7 +234,7 @@ export default function TasksScreen() {
       setNewListParentType('none');
       setNewListParentId('');
       await loadWorkspace();
-      setFeedback('List created successfully.');
+      setFeedback(t('mobile.tasks.feedback.list_created', 'List created successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     }
@@ -230,7 +248,7 @@ export default function TasksScreen() {
 
   async function saveList(list: ListItem) {
     if (!editListName.trim()) {
-      setErrorMessage('List name is required.');
+      setErrorMessage(t('mobile.tasks.validation.list_name_required', 'List name is required.'));
       return;
     }
 
@@ -249,7 +267,7 @@ export default function TasksScreen() {
       });
       setEditingListId(null);
       await loadWorkspace();
-      setFeedback('List updated successfully.');
+      setFeedback(t('mobile.tasks.feedback.list_updated', 'List updated successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -258,10 +276,10 @@ export default function TasksScreen() {
   }
 
   function deleteList(listId: string) {
-    Alert.alert('Delete list?', 'Tasks in this list will lose list assignment.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('mobile.tasks.alert.delete_list_title', 'Delete list?'), t('mobile.tasks.alert.delete_list_body', 'Tasks in this list will lose list assignment.'), [
+      { text: t('mobile.tasks.action.cancel', 'Cancel'), style: 'cancel' },
       {
-        text: 'Delete',
+        text: t('mobile.tasks.action.delete', 'Delete'),
         style: 'destructive',
         onPress: () => {
           void (async () => {
@@ -269,7 +287,7 @@ export default function TasksScreen() {
             try {
               await apiRequest(`/lists/${listId}`, { method: 'DELETE' });
               await loadWorkspace();
-              setFeedback('List deleted successfully.');
+              setFeedback(t('mobile.tasks.feedback.list_deleted', 'List deleted successfully.'));
             } catch (error) {
               setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
@@ -283,7 +301,7 @@ export default function TasksScreen() {
 
   async function createTask() {
     if (!newTaskTitle.trim()) {
-      setErrorMessage('Task title is required.');
+      setErrorMessage(t('mobile.tasks.validation.task_title_required', 'Task title is required.'));
       return;
     }
 
@@ -301,7 +319,7 @@ export default function TasksScreen() {
       setNewTaskPriority('medium');
       setNewTaskListId('');
       await loadWorkspace();
-      setFeedback('Task created successfully.');
+      setFeedback(t('mobile.tasks.feedback.task_created', 'Task created successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     }
@@ -317,7 +335,7 @@ export default function TasksScreen() {
 
   async function saveTask(taskId: string) {
     if (!editTaskTitle.trim()) {
-      setErrorMessage('Task title is required.');
+      setErrorMessage(t('mobile.tasks.validation.task_title_required', 'Task title is required.'));
       return;
     }
 
@@ -335,7 +353,7 @@ export default function TasksScreen() {
       });
       setEditingTaskId(null);
       await loadWorkspace();
-      setFeedback('Task updated successfully.');
+      setFeedback(t('mobile.tasks.feedback.task_updated', 'Task updated successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -351,7 +369,11 @@ export default function TasksScreen() {
         body: { status: task.status === 'done' ? 'todo' : 'done' },
       });
       await loadWorkspace();
-      setFeedback(task.status === 'done' ? 'Task reopened.' : 'Task completed.');
+      setFeedback(
+        task.status === 'done'
+          ? t('mobile.tasks.feedback.task_reopened', 'Task reopened.')
+          : t('mobile.tasks.feedback.task_completed', 'Task completed.')
+      );
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -360,10 +382,10 @@ export default function TasksScreen() {
   }
 
   function deleteTask(taskId: string) {
-    Alert.alert('Delete task?', 'This action cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('mobile.tasks.alert.delete_task_title', 'Delete task?'), t('mobile.tasks.alert.delete_task_body', 'This action cannot be undone.'), [
+      { text: t('mobile.tasks.action.cancel', 'Cancel'), style: 'cancel' },
       {
-        text: 'Delete',
+        text: t('mobile.tasks.action.delete', 'Delete'),
         style: 'destructive',
         onPress: () => {
           void (async () => {
@@ -371,7 +393,7 @@ export default function TasksScreen() {
             try {
               await apiRequest(`/tasks/${taskId}`, { method: 'DELETE' });
               await loadWorkspace();
-              setFeedback('Task deleted successfully.');
+              setFeedback(t('mobile.tasks.feedback.task_deleted', 'Task deleted successfully.'));
             } catch (error) {
               setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
@@ -396,7 +418,7 @@ export default function TasksScreen() {
     return (
       <View style={styles.loadingWrap}>
         <ActivityIndicator color={mobileUiTokens.accent} />
-        <Text style={styles.loadingText}>Loading tasks and lists...</Text>
+        <Text style={styles.loadingText}>{t('mobile.tasks.loading', 'Loading tasks and lists...')}</Text>
       </View>
     );
   }
@@ -409,13 +431,13 @@ export default function TasksScreen() {
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.hero}>
-          <Text style={styles.heroTitle}>Tasks + Lists</Text>
-          <Text style={styles.heroSubtitle}>Practical mobile flow for standalone tasks and list structure.</Text>
+          <Text style={styles.heroTitle}>{t('mobile.tasks.title', 'Tasks + Lists')}</Text>
+          <Text style={styles.heroSubtitle}>{t('mobile.tasks.subtitle', 'Practical mobile flow for standalone tasks and list structure.')}</Text>
           <View style={styles.metricsRow}>
-            <Text style={styles.metric}>Open: {openTasksCount}</Text>
-            <Text style={styles.metric}>Lists: {lists.length}</Text>
+            <Text style={styles.metric}>{tx('mobile.tasks.metric.open', 'Open: {count}', { count: String(openTasksCount) })}</Text>
+            <Text style={styles.metric}>{tx('mobile.tasks.metric.lists', 'Lists: {count}', { count: String(lists.length) })}</Text>
             <Pressable onPress={() => void refreshWorkspace()} disabled={isRefreshing}>
-              <Text style={styles.metric}>{isRefreshing ? 'Refreshing...' : 'Refresh'}</Text>
+              <Text style={styles.metric}>{isRefreshing ? t('mobile.tasks.action.refreshing', 'Refreshing...') : t('mobile.tasks.action.refresh', 'Refresh')}</Text>
             </Pressable>
           </View>
         </View>
@@ -424,19 +446,19 @@ export default function TasksScreen() {
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
         <View style={styles.focusPanel}>
-          <Text style={styles.focusKicker}>Daily focus</Text>
+          <Text style={styles.focusKicker}>{t('mobile.tasks.focus.title', 'Daily focus')}</Text>
           {dailyFocusTask ? (
             <>
               <Text style={styles.focusTitle}>{dailyFocusTask.title}</Text>
               <Text style={styles.focusDetail}>
                 {formatStatus(dailyFocusTask.status)} - {formatPriority(dailyFocusTask.priority)}
                 {dailyFocusTask.list_id
-                  ? ` - ${lists.find((list) => list.id === dailyFocusTask.list_id)?.name ?? 'List'}`
-                  : ' - No list'}
+                  ? ` - ${lists.find((list) => list.id === dailyFocusTask.list_id)?.name ?? t('mobile.tasks.fallback.list', 'List')}`
+                  : ` - ${t('mobile.tasks.focus.no_list', 'No list')}`}
               </Text>
               <View style={styles.focusMetaRow}>
-                <Text style={styles.focusMeta}>{openTasksCount} open</Text>
-                <Text style={styles.focusMeta}>{lists.length} lists</Text>
+                <Text style={styles.focusMeta}>{tx('mobile.tasks.focus.open_count', '{count} open', { count: String(openTasksCount) })}</Text>
+                <Text style={styles.focusMeta}>{tx('mobile.tasks.focus.list_count', '{count} lists', { count: String(lists.length) })}</Text>
               </View>
               <View style={styles.rowWrap}>
                 <Pressable
@@ -445,32 +467,32 @@ export default function TasksScreen() {
                   disabled={busyTaskId === dailyFocusTask.id}
                 >
                   <Text style={styles.primaryButtonText}>
-                    {busyTaskId === dailyFocusTask.id ? 'Updating...' : 'Mark done'}
+                    {busyTaskId === dailyFocusTask.id ? t('mobile.tasks.action.updating', 'Updating...') : t('mobile.tasks.action.mark_done', 'Mark done')}
                   </Text>
                 </Pressable>
                 <Pressable style={styles.ghostButton} onPress={() => startTaskEdit(dailyFocusTask)}>
-                  <Text style={styles.ghostText}>Review task</Text>
+                  <Text style={styles.ghostText}>{t('mobile.tasks.action.review_task', 'Review task')}</Text>
                 </Pressable>
               </View>
             </>
           ) : (
             <>
-              <Text style={styles.focusTitle}>Plan one concrete next step</Text>
+              <Text style={styles.focusTitle}>{t('mobile.tasks.focus.fallback_title', 'Plan one concrete next step')}</Text>
               <Text style={styles.focusDetail}>
-                Create a task below, then Nest will keep the next useful action here.
+                {t('mobile.tasks.focus.fallback_body', 'Create a task below, then Nest will keep the next useful action here.')}
               </Text>
             </>
           )}
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Create list</Text>
-          <TextInput style={styles.input} value={newListName} onChangeText={setNewListName} placeholder='List name' />
-          <TextInput style={styles.input} value={newListColor} onChangeText={setNewListColor} placeholder='#789262' />
+          <Text style={styles.panelTitle}>{t('mobile.tasks.panel.create_list', 'Create list')}</Text>
+          <TextInput style={styles.input} value={newListName} onChangeText={setNewListName} placeholder={t('mobile.tasks.field.list_name', 'List name')} />
+          <TextInput style={styles.input} value={newListColor} onChangeText={setNewListColor} placeholder={t('mobile.tasks.field.list_color', '#789262')} />
           <View style={styles.rowWrap}>
             {(['none', 'goal', 'target', 'life_area'] as const).map((type) => (
               <Pressable key={type} style={[styles.chip, newListParentType === type && styles.chipActive]} onPress={() => { setNewListParentType(type); setNewListParentId(''); }}>
-                <Text style={styles.chipText}>{type}</Text>
+                <Text style={styles.chipText}>{formatParentType(type)}</Text>
               </Pressable>
             ))}
           </View>
@@ -484,23 +506,23 @@ export default function TasksScreen() {
             </View>
           ) : null}
           <Pressable style={styles.primaryButton} onPress={() => void createList()}>
-            <Text style={styles.primaryButtonText}>Create list</Text>
+            <Text style={styles.primaryButtonText}>{t('mobile.tasks.action.create_list', 'Create list')}</Text>
           </Pressable>
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Create task</Text>
-          <TextInput style={styles.input} value={newTaskTitle} onChangeText={setNewTaskTitle} placeholder='Task title' />
+          <Text style={styles.panelTitle}>{t('mobile.tasks.panel.create_task', 'Create task')}</Text>
+          <TextInput style={styles.input} value={newTaskTitle} onChangeText={setNewTaskTitle} placeholder={t('mobile.tasks.field.task_title', 'Task title')} />
           <View style={styles.rowWrap}>
             {(['low', 'medium', 'high', 'urgent'] as const).map((priority) => (
               <Pressable key={priority} style={[styles.chip, newTaskPriority === priority && styles.chipActive]} onPress={() => setNewTaskPriority(priority)}>
-                <Text style={styles.chipText}>{priority}</Text>
+                <Text style={styles.chipText}>{formatPriority(priority)}</Text>
               </Pressable>
             ))}
           </View>
           <View style={styles.rowWrap}>
             <Pressable style={[styles.chip, newTaskListId === '' && styles.chipActive]} onPress={() => setNewTaskListId('')}>
-              <Text style={styles.chipText}>No list</Text>
+              <Text style={styles.chipText}>{t('mobile.tasks.focus.no_list', 'No list')}</Text>
             </Pressable>
             {lists.map((list) => (
               <Pressable key={list.id} style={[styles.chip, newTaskListId === list.id && styles.chipActive]} onPress={() => setNewTaskListId(list.id)}>
@@ -509,24 +531,24 @@ export default function TasksScreen() {
             ))}
           </View>
           <Pressable style={styles.primaryButton} onPress={() => void createTask()}>
-            <Text style={styles.primaryButtonText}>Create task</Text>
+            <Text style={styles.primaryButtonText}>{t('mobile.tasks.action.create_task', 'Create task')}</Text>
           </Pressable>
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Filters</Text>
-          <TextInput style={styles.input} value={searchQuery} onChangeText={setSearchQuery} placeholder='Search tasks' />
+          <Text style={styles.panelTitle}>{t('mobile.tasks.panel.filters', 'Filters')}</Text>
+          <TextInput style={styles.input} value={searchQuery} onChangeText={setSearchQuery} placeholder={t('mobile.tasks.field.search', 'Search tasks')} />
           <View style={styles.rowWrap}>
             {(['all', 'open', 'done'] as const).map((filter) => (
               <Pressable key={filter} style={[styles.chip, statusFilter === filter && styles.chipActive]} onPress={() => setStatusFilter(filter)}>
-                <Text style={styles.chipText}>{filter}</Text>
+                <Text style={styles.chipText}>{formatFilter(filter)}</Text>
               </Pressable>
             ))}
           </View>
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>No list tasks</Text>
+          <Text style={styles.panelTitle}>{t('mobile.tasks.panel.no_list_tasks', 'No list tasks')}</Text>
           {(tasksByListId.get('') ?? []).map((task) => (
             <View key={task.id} style={styles.taskCard}>
               {editingTaskId === task.id ? (
@@ -535,19 +557,19 @@ export default function TasksScreen() {
                   <View style={styles.rowWrap}>
                     {(['todo', 'in_progress', 'done', 'canceled'] as const).map((status) => (
                       <Pressable key={status} style={[styles.chip, editTaskStatus === status && styles.chipActive]} onPress={() => setEditTaskStatus(status)}>
-                        <Text style={styles.chipText}>{status}</Text>
+                        <Text style={styles.chipText}>{formatStatus(status)}</Text>
                       </Pressable>
                     ))}
                   </View>
                   <View style={styles.rowWrap}>
                     {(['low', 'medium', 'high', 'urgent'] as const).map((priority) => (
                       <Pressable key={priority} style={[styles.chip, editTaskPriority === priority && styles.chipActive]} onPress={() => setEditTaskPriority(priority)}>
-                        <Text style={styles.chipText}>{priority}</Text>
+                        <Text style={styles.chipText}>{formatPriority(priority)}</Text>
                       </Pressable>
                     ))}
                   </View>
                   <View style={styles.rowWrap}>
-                    <Pressable style={[styles.chip, editTaskListId === '' && styles.chipActive]} onPress={() => setEditTaskListId('')}><Text style={styles.chipText}>No list</Text></Pressable>
+                    <Pressable style={[styles.chip, editTaskListId === '' && styles.chipActive]} onPress={() => setEditTaskListId('')}><Text style={styles.chipText}>{t('mobile.tasks.focus.no_list', 'No list')}</Text></Pressable>
                     {lists.map((list) => (
                       <Pressable key={`edit-${list.id}`} style={[styles.chip, editTaskListId === list.id && styles.chipActive]} onPress={() => setEditTaskListId(list.id)}>
                         <Text style={styles.chipText}>{list.name}</Text>
@@ -555,7 +577,7 @@ export default function TasksScreen() {
                     ))}
                   </View>
                   <Pressable style={styles.primaryButton} onPress={() => void saveTask(task.id)} disabled={busyTaskId === task.id}>
-                    <Text style={styles.primaryButtonText}>Save task</Text>
+                    <Text style={styles.primaryButtonText}>{t('mobile.tasks.action.save_task', 'Save task')}</Text>
                   </Pressable>
                 </View>
               ) : (
@@ -563,9 +585,9 @@ export default function TasksScreen() {
                   <Text style={styles.taskTitle}>{task.title}</Text>
                   <Text style={styles.taskMeta}>{formatStatus(task.status)} • {formatPriority(task.priority)}</Text>
                   <View style={styles.rowWrap}>
-                    <Pressable style={styles.ghostButton} onPress={() => void toggleDone(task)}><Text style={styles.ghostText}>{task.status === 'done' ? 'Reopen' : 'Done'}</Text></Pressable>
-                    <Pressable style={styles.ghostButton} onPress={() => startTaskEdit(task)}><Text style={styles.ghostText}>Edit</Text></Pressable>
-                    <Pressable style={styles.ghostButton} onPress={() => deleteTask(task.id)}><Text style={styles.ghostText}>Delete</Text></Pressable>
+                    <Pressable style={styles.ghostButton} onPress={() => void toggleDone(task)}><Text style={styles.ghostText}>{task.status === 'done' ? t('mobile.tasks.action.reopen', 'Reopen') : t('mobile.tasks.action.done', 'Done')}</Text></Pressable>
+                    <Pressable style={styles.ghostButton} onPress={() => startTaskEdit(task)}><Text style={styles.ghostText}>{t('mobile.tasks.action.edit', 'Edit')}</Text></Pressable>
+                    <Pressable style={styles.ghostButton} onPress={() => deleteTask(task.id)}><Text style={styles.ghostText}>{t('mobile.tasks.action.delete', 'Delete')}</Text></Pressable>
                   </View>
                 </>
               )}
@@ -578,10 +600,10 @@ export default function TasksScreen() {
             <View style={styles.rowWrap}>
               <Text style={styles.panelTitle}>{list.name}</Text>
               <Pressable style={styles.ghostButton} onPress={() => startListEdit(list)}>
-                <Text style={styles.ghostText}>Edit list</Text>
+                <Text style={styles.ghostText}>{t('mobile.tasks.action.edit_list', 'Edit list')}</Text>
               </Pressable>
               <Pressable style={styles.ghostButton} onPress={() => deleteList(list.id)} disabled={busyListId === list.id}>
-                <Text style={styles.ghostText}>{busyListId === list.id ? 'Deleting...' : 'Delete list'}</Text>
+                <Text style={styles.ghostText}>{busyListId === list.id ? t('mobile.tasks.action.deleting', 'Deleting...') : t('mobile.tasks.action.delete_list', 'Delete list')}</Text>
               </Pressable>
             </View>
 
@@ -590,25 +612,25 @@ export default function TasksScreen() {
                 <TextInput style={styles.input} value={editListName} onChangeText={setEditListName} />
                 <TextInput style={styles.input} value={editListColor} onChangeText={setEditListColor} />
                 <Pressable style={styles.primaryButton} onPress={() => void saveList(list)} disabled={busyListId === list.id}>
-                  <Text style={styles.primaryButtonText}>{busyListId === list.id ? 'Saving...' : 'Save list'}</Text>
+                  <Text style={styles.primaryButtonText}>{busyListId === list.id ? t('mobile.tasks.action.saving', 'Saving...') : t('mobile.tasks.action.save_list', 'Save list')}</Text>
                 </Pressable>
               </View>
             ) : null}
 
-            {(tasksByListId.get(list.id) ?? []).length === 0 ? <Text style={styles.taskMeta}>No tasks.</Text> : null}
+            {(tasksByListId.get(list.id) ?? []).length === 0 ? <Text style={styles.taskMeta}>{t('mobile.tasks.empty.no_tasks', 'No tasks.')}</Text> : null}
             {(tasksByListId.get(list.id) ?? []).map((task) => (
               <View key={task.id} style={styles.taskCard}>
                 <Text style={styles.taskTitle}>{task.title}</Text>
                 <Text style={styles.taskMeta}>{formatStatus(task.status)} • {formatPriority(task.priority)}</Text>
                 <View style={styles.rowWrap}>
                   <Pressable style={styles.ghostButton} onPress={() => void toggleDone(task)}>
-                    <Text style={styles.ghostText}>{task.status === 'done' ? 'Reopen' : 'Done'}</Text>
+                    <Text style={styles.ghostText}>{task.status === 'done' ? t('mobile.tasks.action.reopen', 'Reopen') : t('mobile.tasks.action.done', 'Done')}</Text>
                   </Pressable>
                   <Pressable style={styles.ghostButton} onPress={() => startTaskEdit(task)}>
-                    <Text style={styles.ghostText}>Edit</Text>
+                    <Text style={styles.ghostText}>{t('mobile.tasks.action.edit', 'Edit')}</Text>
                   </Pressable>
                   <Pressable style={styles.ghostButton} onPress={() => deleteTask(task.id)}>
-                    <Text style={styles.ghostText}>Delete</Text>
+                    <Text style={styles.ghostText}>{t('mobile.tasks.action.delete', 'Delete')}</Text>
                   </Pressable>
                 </View>
               </View>
