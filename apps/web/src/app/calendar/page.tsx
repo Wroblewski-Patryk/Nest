@@ -747,6 +747,39 @@ export default function CalendarPage() {
         },
       ];
 
+  const showcaseStoryItems = useCalendarShowcase
+    ? [
+        {
+          label: "Created",
+          value: "May 21, 14:32",
+          detail: "Captured as the anchor for the protected work block.",
+          icon: <TimelineGlyph name="focus" />,
+        },
+        {
+          label: "Synced with",
+          value: "Google Calendar",
+          detail: "Latest sync landed a minute after the planning pass.",
+          icon: <TimelineGlyph name="sync" />,
+        },
+        {
+          label: "Linked to goal",
+          value: linkedTask?.title ?? "Launch product",
+          detail: "May 21, 15:02",
+          icon: <TimelineGlyph name="task" />,
+        },
+        {
+          label: "Reminder due",
+          value: "10 min before",
+          detail: "May 23, 10:05",
+          icon: <TimelineGlyph name="event" />,
+        },
+      ]
+    : [];
+
+  const showcaseOwnershipChips = useCalendarShowcase
+    ? ["Personal", "Google synced", "Private"]
+    : [];
+
   function moveWindow(direction: -1 | 1) {
     const anchor = fromDateInput(anchorDate);
     const next = new Date(anchor);
@@ -1143,36 +1176,76 @@ export default function CalendarPage() {
               </section>
             </div>
 
-            <DashboardContextRibbon title="Event intelligence" items={eventIntelligence} />
+            {useCalendarShowcase ? (
+              <section id="calendar-event-intelligence" className="calendar-showcase-story" aria-label="Event timeline">
+                <div className="calendar-showcase-story-main">
+                  <div className="calendar-showcase-story-head">
+                    <h3>Event timeline</h3>
+                    <span>{selectedEvent ? `${toneLabel(selectedEventTone ?? "meeting")} | ${selectedEventDuration}` : "No event selected"}</span>
+                  </div>
+                  <div className="calendar-showcase-story-chain">
+                    {showcaseStoryItems.map((item, index) => (
+                      <article key={item.label} className="calendar-showcase-story-item">
+                        <span className="calendar-showcase-story-icon" aria-hidden="true">
+                          {item.icon}
+                        </span>
+                        <small>{item.label}</small>
+                        <strong>{item.value}</strong>
+                        <p>{item.detail}</p>
+                        {index < showcaseStoryItems.length - 1 ? <span className="calendar-showcase-story-arrow" aria-hidden="true">{"->"}</span> : null}
+                      </article>
+                    ))}
+                  </div>
+                </div>
+                <div className="calendar-showcase-ownership">
+                  <h4>Ownership and source</h4>
+                  <div className="calendar-showcase-ownership-chips">
+                    {showcaseOwnershipChips.map((chip) => (
+                      <span key={chip} className="calendar-showcase-ownership-chip">
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <>
+                <DashboardContextRibbon title="Event intelligence" items={eventIntelligence} />
 
-            <Panel
-              id="calendar-event-intelligence"
-              title="Event timeline"
-              className="dashboard-dayflow-panel calendar-management-panel calendar-event-timeline-panel"
-              actions={
-                <span className="dashboard-inline-link">
-                  {selectedEvent ? `${toneLabel(selectedEventTone ?? "meeting")} | ${selectedEventDuration}` : "No event selected"}
-                </span>
-              }
+                <Panel
+                  id="calendar-event-intelligence"
+                  title="Event timeline"
+                  className="dashboard-dayflow-panel calendar-management-panel calendar-event-timeline-panel"
+                  actions={
+                    <span className="dashboard-inline-link">
+                      {selectedEvent ? `${toneLabel(selectedEventTone ?? "meeting")} | ${selectedEventDuration}` : "No event selected"}
+                    </span>
+                  }
+                >
+                  <ul className="calendar-event-ledger">
+                    {planningFeed.length === 0 ? (
+                      <li className="calendar-event-ledger-empty">No tasks or events in the selected window yet.</li>
+                    ) : (
+                      planningFeed.map((entry) => (
+                        <li key={entry.key} className="calendar-event-ledger-item">
+                          <div>
+                            <strong>{entry.title}</strong>
+                            <p>{entry.detail}</p>
+                          </div>
+                          <span className="pill">{entry.tag}</span>
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                </Panel>
+              </>
+            )}
+
+            <section
+              id="calendar-time-ladder"
+              className={`planning-ladder calendar-time-ladder ${useCalendarShowcase ? "is-showcase" : ""}`}
+              aria-label="Time ladder"
             >
-              <ul className="calendar-event-ledger">
-                {planningFeed.length === 0 ? (
-                  <li className="calendar-event-ledger-empty">No tasks or events in the selected window yet.</li>
-                ) : (
-                  planningFeed.map((entry) => (
-                    <li key={entry.key} className="calendar-event-ledger-item">
-                      <div>
-                        <strong>{entry.title}</strong>
-                        <p>{entry.detail}</p>
-                      </div>
-                      <span className="pill">{entry.tag}</span>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </Panel>
-
-            <section id="calendar-time-ladder" className="planning-ladder calendar-time-ladder" aria-label="Time ladder">
               <div className="planning-ladder-copy">
                 <h3>Time ladder</h3>
                 <p>See how calendar time connects planning to reflection.</p>
@@ -1201,6 +1274,13 @@ export default function CalendarPage() {
                   <span>Close the loop in Journal while the signal is fresh.</span>
                 </article>
               </div>
+              {useCalendarShowcase ? (
+                <div className="calendar-ladder-links">
+                  <small>View related</small>
+                  <a href="/goals">Open goal</a>
+                  <a href="/tasks">Related tasks</a>
+                </div>
+              ) : null}
             </section>
 
             <details className="collapsible-panel">

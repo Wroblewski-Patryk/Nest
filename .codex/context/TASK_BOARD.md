@@ -24,6 +24,29 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-281 Align Calendar and Journal showcase structure to references
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-280
+  - Done on: 2026-05-01
+  - Notes:
+    - Replaced the Calendar showcase lower-context stack with a compact event
+      story strip and ownership/source chips so the desktop structure reads
+      much closer to the approved canonical reference.
+    - Moved the Journal showcase reflection ladder into the support rail and
+      tightened recent entries to a denser three-row canonical presentation.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`,
+      `apps/web/src/app/globals.css`.
+    - Added implementation report:
+      `docs/ux/nest_281_calendar_journal_reference_structure_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-280 Tighten Calendar and Journal canonical composition
   - Status: DONE
   - Owner: Execution Agent

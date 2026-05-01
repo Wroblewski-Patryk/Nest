@@ -24,6 +24,16 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-281` Calendar and Journal reference-structure
+  pass. Calendar showcase now uses a tighter event-story strip plus
+  ownership/source chips instead of the previous ribbon-plus-ledger stack, and
+  its ladder now carries related-link context. Journal showcase now keeps the
+  reflection ladder in the support rail and trims recent entries to a denser
+  desktop preview. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`,
+  `apps/web/src/app/globals.css`. Added report:
+  `docs/ux/nest_281_calendar_journal_reference_structure_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-280` Calendar and Journal composition polish.
   Tightened Calendar desktop toolbar grouping, anchor control framing, week
   strip density, card rhythm, and footer separation so the canonical time map

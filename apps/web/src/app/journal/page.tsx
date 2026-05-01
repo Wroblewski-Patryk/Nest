@@ -725,6 +725,7 @@ export default function JournalPage() {
       return true;
     });
   }, [displayEntries, entryFilter]);
+  const visibleEntries = useJournalShowcase ? filteredEntries.slice(0, 3) : filteredEntries;
 
   const heroSummary =
     displayEntries.length > 0
@@ -951,7 +952,11 @@ export default function JournalPage() {
               </form>
             </Panel>
 
-            <Panel title="Recent entries" className="journal-canonical-entries">
+            <Panel
+              title="Recent entries"
+              className="journal-canonical-entries"
+              actions={useJournalShowcase ? <a href="/journal" className="dashboard-inline-action">View all entries</a> : undefined}
+            >
               <div className="journal-entry-toolbar">
                 <div className="journal-entry-filters" role="group" aria-label="Journal entry filters">
                   {([
@@ -974,12 +979,12 @@ export default function JournalPage() {
               </div>
 
               <div className="journal-entry-feed">
-                {filteredEntries.length === 0 ? (
+                {visibleEntries.length === 0 ? (
                   <div className="journal-entry-row journal-entry-row-empty">
                     <p>No entries match this view yet.</p>
                   </div>
                 ) : (
-                  filteredEntries.map((entry) => {
+                  visibleEntries.map((entry) => {
                     const linkedAreas = entry.life_areas ?? entry.lifeAreas ?? [];
                     return (
                       <article key={entry.id} className="journal-entry-row">
@@ -1143,7 +1148,11 @@ export default function JournalPage() {
               </div>
             </Panel>
 
-            <section id="journal-reflection-ladder" className="planning-ladder journal-reflection-ladder" aria-label="Reflection ladder">
+            <section
+              id="journal-reflection-ladder"
+              className={`planning-ladder journal-reflection-ladder ${useJournalShowcase ? "is-preview-hidden" : ""}`}
+              aria-label="Reflection ladder"
+            >
               <div className="planning-ladder-copy">
                 <h3>Your reflection ladder</h3>
                 <p>Connect the day to feeling, context, and next intention.</p>
@@ -1418,6 +1427,28 @@ export default function JournalPage() {
                 </ul>
               </div>
             </article>
+
+            {useJournalShowcase ? (
+              <article className="dashboard-sidebar-card journal-ladder-card">
+                <div className="dashboard-sidebar-card-head">
+                  <h3>Your reflection ladder</h3>
+                </div>
+                <div className="journal-ladder-mini">
+                  {[
+                    { label: "Day event", value: latestEntry?.title ?? "A lighter morning" },
+                    { label: "Feeling", value: formatMood(latestEntry?.mood ?? "good") },
+                    { label: "Life area", value: latestEntryAreas[0]?.name ?? topLifeArea?.name ?? "Health" },
+                    { label: "Next intention", value: "Carry one calmer move" },
+                  ].map((item) => (
+                    <div key={item.label} className="journal-ladder-mini-item">
+                      <small>{item.label}</small>
+                      <strong>{item.value}</strong>
+                    </div>
+                  ))}
+                </div>
+                <p className="dashboard-sidebar-card-note">Connected to Calendar, Life Areas and Planning.</p>
+              </article>
+            ) : null}
           </aside>
         </div>
 

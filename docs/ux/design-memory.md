@@ -172,6 +172,10 @@
   keep date anchor, stepping controls, and week selection visually grouped so
   the day-flow panel reads as composed orientation rather than raw scheduling
   chrome.
+- Calendar showcase lower context should collapse into one story strip:
+  if the canonical reference treats origin, sync, linked goal, reminder, and
+  ownership as one horizontal narrative, prefer one compact showcase surface
+  over a ribbon plus a second ledger panel.
 
 ## Journal Canonical Patterns (2026-04-30)
 
@@ -218,6 +222,10 @@
   keep recent-entry rows compact enough that the reflection room feels lived-in,
   but preserve enough line-height and excerpt width for the writing to stay
   humane rather than dashboard-like.
+- Journal showcase ladder belongs in the support rail:
+  if the approved desktop reference frames the reflection ladder as companion
+  context rather than a lower-page band, showcase mode should keep it in the
+  rail and avoid duplicating it below the feed.
 
 ## Workspace Shell Patterns (2026-04-26)
 
