@@ -24,6 +24,15 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-240` Mobile Goals localization closure. Mobile
+  Goals/Targets now uses shared EN/PL `mobile.goals.*` localization keys for
+  loading, feedback, validation, archive alerts, metrics, status labels, action
+  labels, placeholders, due-date metadata, and empty states. API endpoints,
+  auth behavior, tenancy boundaries, pagination, and goal/target create,
+  update, and archive payloads were unchanged. Mobile typecheck, mobile unit
+  contract, mobile Expo web export, static localization inspection, and
+  `git diff --check` passed. Report:
+  `docs/planning/nest_240_mobile_goals_localization_closure_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-239` Mobile Tasks localization closure. Mobile
   Tasks/Lists now uses shared EN/PL `mobile.tasks.*` localization keys for
   loading, feedback, validation, alerts, metrics, filters, status/priority

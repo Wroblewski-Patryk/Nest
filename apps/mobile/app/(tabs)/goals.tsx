@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { translate } from '@nest/shared-types';
 import { apiRequest, nestApiClient } from '@/constants/apiClient';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
+import { useUiLanguage } from '@/lib/ui-language';
 import { getUserSafeErrorMessage } from '@/lib/ux-contract';
 
 type GoalStatus = 'active' | 'paused' | 'completed' | 'archived';
@@ -27,18 +29,27 @@ type TargetItem = {
   status: TargetStatus;
 };
 
-function formatStatus(status: GoalStatus): string {
-  if (status === 'completed') return 'Completed';
-  if (status === 'paused') return 'Paused';
-  if (status === 'archived') return 'Archived';
-  return 'Active';
-}
-
 function formatTargetProgress(target: TargetItem): string {
   return `${target.value_current}/${target.value_target}${target.unit ? ` ${target.unit}` : ''}`;
 }
 
 export default function GoalsScreen() {
+  const language = useUiLanguage();
+  const t = useCallback((key: string, fallback: string) => translate(key, language, fallback), [language]);
+  const tx = useCallback(
+    (key: string, fallback: string, replacements: Record<string, string>) =>
+      Object.entries(replacements).reduce(
+        (message, [token, value]) => message.replace(`{${token}}`, value),
+        t(key, fallback)
+      ),
+    [t]
+  );
+  const formatStatus = (status: GoalStatus) =>
+    t(
+      `mobile.goals.status.${status}`,
+      status === 'completed' ? 'Completed' : status === 'paused' ? 'Paused' : status === 'archived' ? 'Archived' : 'Active'
+    );
+
   const [auraA, auraB, auraC] = useMemo(() => getAuraPalette('tasks'), []);
 
   const [goals, setGoals] = useState<GoalItem[]>([]);
@@ -47,7 +58,7 @@ export default function GoalsScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [busyGoalId, setBusyGoalId] = useState<string | null>(null);
   const [busyTargetId, setBusyTargetId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState('Goals and targets are ready.');
+  const [feedback, setFeedback] = useState(t('mobile.goals.feedback.ready', 'Goals and targets are ready.'));
   const [errorMessage, setErrorMessage] = useState('');
 
   const [newGoalTitle, setNewGoalTitle] = useState('');
@@ -92,7 +103,7 @@ export default function GoalsScreen() {
 
     loadWorkspace()
       .then(() => {
-        if (mounted) setFeedback('Goals and targets are loaded.');
+        if (mounted) setFeedback(t('mobile.goals.feedback.loaded', 'Goals and targets are loaded.'));
       })
       .catch((error) => {
         if (mounted) setErrorMessage(getUserSafeErrorMessage(error));
@@ -104,7 +115,7 @@ export default function GoalsScreen() {
     return () => {
       mounted = false;
     };
-  }, [loadWorkspace]);
+  }, [loadWorkspace, t]);
 
   const activeGoalsCount = useMemo(() => goals.filter((goal) => goal.status === 'active').length, [goals]);
   const targetsByGoalId = useMemo(() => {
@@ -130,7 +141,7 @@ export default function GoalsScreen() {
 
     try {
       await loadWorkspace();
-      setFeedback('Goals and targets have been refreshed.');
+      setFeedback(t('mobile.goals.feedback.refreshed', 'Goals and targets have been refreshed.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -140,7 +151,7 @@ export default function GoalsScreen() {
 
   async function createGoal() {
     if (!newGoalTitle.trim()) {
-      setErrorMessage('Goal title is required.');
+      setErrorMessage(t('mobile.goals.validation.goal_title_required', 'Goal title is required.'));
       return;
     }
 
@@ -158,7 +169,7 @@ export default function GoalsScreen() {
       setNewGoalDescription('');
       setNewGoalTargetDate('');
       await loadWorkspace();
-      setFeedback('Goal created successfully.');
+      setFeedback(t('mobile.goals.feedback.goal_created', 'Goal created successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     }
@@ -174,7 +185,7 @@ export default function GoalsScreen() {
 
   async function saveGoal(goalId: string) {
     if (!editGoalTitle.trim()) {
-      setErrorMessage('Goal title is required.');
+      setErrorMessage(t('mobile.goals.validation.goal_title_required', 'Goal title is required.'));
       return;
     }
 
@@ -192,7 +203,7 @@ export default function GoalsScreen() {
       });
       setEditingGoalId(null);
       await loadWorkspace();
-      setFeedback('Goal updated successfully.');
+      setFeedback(t('mobile.goals.feedback.goal_updated', 'Goal updated successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -201,10 +212,10 @@ export default function GoalsScreen() {
   }
 
   function deleteGoal(goalId: string) {
-    Alert.alert('Archive goal?', 'The goal will be archived and removed from the active mobile flow.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('mobile.goals.alert.archive_goal_title', 'Archive goal?'), t('mobile.goals.alert.archive_goal_body', 'The goal will be archived and removed from the active mobile flow.'), [
+      { text: t('mobile.goals.action.cancel', 'Cancel'), style: 'cancel' },
       {
-        text: 'Archive',
+        text: t('mobile.goals.action.archive', 'Archive'),
         style: 'destructive',
         onPress: () => {
           void (async () => {
@@ -212,7 +223,7 @@ export default function GoalsScreen() {
             try {
               await apiRequest(`/goals/${goalId}`, { method: 'DELETE' });
               await loadWorkspace();
-              setFeedback('Goal archived successfully.');
+              setFeedback(t('mobile.goals.feedback.goal_archived', 'Goal archived successfully.'));
             } catch (error) {
               setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
@@ -226,12 +237,12 @@ export default function GoalsScreen() {
 
   async function createTarget() {
     if (!newTargetGoalId) {
-      setErrorMessage('Choose a goal for the target.');
+      setErrorMessage(t('mobile.goals.validation.choose_goal', 'Choose a goal for the target.'));
       return;
     }
 
     if (!newTargetTitle.trim()) {
-      setErrorMessage('Target title is required.');
+      setErrorMessage(t('mobile.goals.validation.target_title_required', 'Target title is required.'));
       return;
     }
 
@@ -256,7 +267,7 @@ export default function GoalsScreen() {
       setNewTargetUnit('');
       setNewTargetDueDate('');
       await loadWorkspace();
-      setFeedback('Target created successfully.');
+      setFeedback(t('mobile.goals.feedback.target_created', 'Target created successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     }
@@ -275,7 +286,7 @@ export default function GoalsScreen() {
 
   async function saveTarget(targetId: string) {
     if (!editTargetTitle.trim()) {
-      setErrorMessage('Target title is required.');
+      setErrorMessage(t('mobile.goals.validation.target_title_required', 'Target title is required.'));
       return;
     }
 
@@ -296,7 +307,7 @@ export default function GoalsScreen() {
       });
       setEditingTargetId(null);
       await loadWorkspace();
-      setFeedback('Target updated successfully.');
+      setFeedback(t('mobile.goals.feedback.target_updated', 'Target updated successfully.'));
     } catch (error) {
       setErrorMessage(getUserSafeErrorMessage(error));
     } finally {
@@ -305,10 +316,10 @@ export default function GoalsScreen() {
   }
 
   function deleteTarget(targetId: string) {
-    Alert.alert('Archive target?', 'The target will be archived and removed from the active mobile flow.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('mobile.goals.alert.archive_target_title', 'Archive target?'), t('mobile.goals.alert.archive_target_body', 'The target will be archived and removed from the active mobile flow.'), [
+      { text: t('mobile.goals.action.cancel', 'Cancel'), style: 'cancel' },
       {
-        text: 'Archive',
+        text: t('mobile.goals.action.archive', 'Archive'),
         style: 'destructive',
         onPress: () => {
           void (async () => {
@@ -316,7 +327,7 @@ export default function GoalsScreen() {
             try {
               await apiRequest(`/targets/${targetId}`, { method: 'DELETE' });
               await loadWorkspace();
-              setFeedback('Target archived successfully.');
+              setFeedback(t('mobile.goals.feedback.target_archived', 'Target archived successfully.'));
             } catch (error) {
               setErrorMessage(getUserSafeErrorMessage(error));
             } finally {
@@ -332,7 +343,7 @@ export default function GoalsScreen() {
     return (
       <View style={styles.loadingWrap}>
         <ActivityIndicator color={mobileUiTokens.accent} />
-        <Text style={styles.loadingText}>Loading goals and targets...</Text>
+        <Text style={styles.loadingText}>{t('mobile.goals.loading', 'Loading goals and targets...')}</Text>
       </View>
     );
   }
@@ -345,14 +356,14 @@ export default function GoalsScreen() {
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.hero}>
-          <Text style={styles.heroTitle}>Goals + Targets</Text>
-          <Text style={styles.heroSubtitle}>Real mobile planning flow with API-backed goals and measurable checkpoints.</Text>
+          <Text style={styles.heroTitle}>{t('mobile.goals.title', 'Goals + Targets')}</Text>
+          <Text style={styles.heroSubtitle}>{t('mobile.goals.subtitle', 'Real mobile planning flow with API-backed goals and measurable checkpoints.')}</Text>
           <View style={styles.metricsRow}>
-            <Text style={styles.metric}>Goals: {goals.length}</Text>
-            <Text style={styles.metric}>Active: {activeGoalsCount}</Text>
-            <Text style={styles.metric}>Targets: {targets.length}</Text>
+            <Text style={styles.metric}>{tx('mobile.goals.metric.goals', 'Goals: {count}', { count: String(goals.length) })}</Text>
+            <Text style={styles.metric}>{tx('mobile.goals.metric.active', 'Active: {count}', { count: String(activeGoalsCount) })}</Text>
+            <Text style={styles.metric}>{tx('mobile.goals.metric.targets', 'Targets: {count}', { count: String(targets.length) })}</Text>
             <Pressable onPress={() => void refreshWorkspace()} disabled={isRefreshing}>
-              <Text style={styles.metric}>{isRefreshing ? 'Refreshing...' : 'Refresh'}</Text>
+              <Text style={styles.metric}>{isRefreshing ? t('mobile.goals.action.refreshing', 'Refreshing...') : t('mobile.goals.action.refresh', 'Refresh')}</Text>
             </Pressable>
           </View>
         </View>
@@ -361,23 +372,23 @@ export default function GoalsScreen() {
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Create goal</Text>
-          <TextInput style={styles.input} value={newGoalTitle} onChangeText={setNewGoalTitle} placeholder="Goal title" />
+          <Text style={styles.panelTitle}>{t('mobile.goals.panel.create_goal', 'Create goal')}</Text>
+          <TextInput style={styles.input} value={newGoalTitle} onChangeText={setNewGoalTitle} placeholder={t('mobile.goals.field.goal_title', 'Goal title')} />
           <TextInput
             style={[styles.input, styles.multilineInput]}
             value={newGoalDescription}
             onChangeText={setNewGoalDescription}
-            placeholder="Short description"
+            placeholder={t('mobile.goals.field.short_description', 'Short description')}
             multiline
           />
-          <TextInput style={styles.input} value={newGoalTargetDate} onChangeText={setNewGoalTargetDate} placeholder="Target date (YYYY-MM-DD)" />
+          <TextInput style={styles.input} value={newGoalTargetDate} onChangeText={setNewGoalTargetDate} placeholder={t('mobile.goals.field.target_date', 'Target date (YYYY-MM-DD)')} />
           <Pressable style={styles.primaryButton} onPress={() => void createGoal()}>
-            <Text style={styles.primaryButtonText}>Create goal</Text>
+            <Text style={styles.primaryButtonText}>{t('mobile.goals.action.create_goal', 'Create goal')}</Text>
           </Pressable>
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Create target</Text>
+          <Text style={styles.panelTitle}>{t('mobile.goals.panel.create_target', 'Create target')}</Text>
           <View style={styles.rowWrap}>
             {goals.map((goal) => (
               <Pressable
@@ -389,18 +400,18 @@ export default function GoalsScreen() {
               </Pressable>
             ))}
           </View>
-          <TextInput style={styles.input} value={newTargetTitle} onChangeText={setNewTargetTitle} placeholder="Target title" />
-          <TextInput style={styles.input} value={newTargetMetricType} onChangeText={setNewTargetMetricType} placeholder="Metric type (count, percent, steps...)" />
+          <TextInput style={styles.input} value={newTargetTitle} onChangeText={setNewTargetTitle} placeholder={t('mobile.goals.field.target_title', 'Target title')} />
+          <TextInput style={styles.input} value={newTargetMetricType} onChangeText={setNewTargetMetricType} placeholder={t('mobile.goals.field.metric_type', 'Metric type (count, percent, steps...)')} />
           <View style={styles.rowSplit}>
-            <TextInput style={[styles.input, styles.splitInput]} value={newTargetValueTarget} onChangeText={setNewTargetValueTarget} placeholder="Target value" keyboardType="numeric" />
-            <TextInput style={[styles.input, styles.splitInput]} value={newTargetValueCurrent} onChangeText={setNewTargetValueCurrent} placeholder="Current value" keyboardType="numeric" />
+            <TextInput style={[styles.input, styles.splitInput]} value={newTargetValueTarget} onChangeText={setNewTargetValueTarget} placeholder={t('mobile.goals.field.target_value', 'Target value')} keyboardType="numeric" />
+            <TextInput style={[styles.input, styles.splitInput]} value={newTargetValueCurrent} onChangeText={setNewTargetValueCurrent} placeholder={t('mobile.goals.field.current_value', 'Current value')} keyboardType="numeric" />
           </View>
           <View style={styles.rowSplit}>
-            <TextInput style={[styles.input, styles.splitInput]} value={newTargetUnit} onChangeText={setNewTargetUnit} placeholder="Unit" />
-            <TextInput style={[styles.input, styles.splitInput]} value={newTargetDueDate} onChangeText={setNewTargetDueDate} placeholder="Due date" />
+            <TextInput style={[styles.input, styles.splitInput]} value={newTargetUnit} onChangeText={setNewTargetUnit} placeholder={t('mobile.goals.field.unit', 'Unit')} />
+            <TextInput style={[styles.input, styles.splitInput]} value={newTargetDueDate} onChangeText={setNewTargetDueDate} placeholder={t('mobile.goals.field.due_date', 'Due date')} />
           </View>
           <Pressable style={styles.primaryButton} onPress={() => void createTarget()}>
-            <Text style={styles.primaryButtonText}>Create target</Text>
+            <Text style={styles.primaryButtonText}>{t('mobile.goals.action.create_target', 'Create target')}</Text>
           </Pressable>
         </View>
 
@@ -416,10 +427,10 @@ export default function GoalsScreen() {
               </View>
               <View style={styles.rowWrap}>
                 <Pressable style={styles.ghostButton} onPress={() => startGoalEdit(goal)}>
-                  <Text style={styles.ghostText}>Edit</Text>
+                  <Text style={styles.ghostText}>{t('mobile.goals.action.edit', 'Edit')}</Text>
                 </Pressable>
                 <Pressable style={styles.ghostButton} onPress={() => deleteGoal(goal.id)} disabled={busyGoalId === goal.id}>
-                  <Text style={styles.ghostText}>{busyGoalId === goal.id ? 'Archiving...' : 'Archive'}</Text>
+                  <Text style={styles.ghostText}>{busyGoalId === goal.id ? t('mobile.goals.action.archiving', 'Archiving...') : t('mobile.goals.action.archive', 'Archive')}</Text>
                 </Pressable>
               </View>
             </View>
@@ -435,7 +446,7 @@ export default function GoalsScreen() {
                   onChangeText={setEditGoalDescription}
                   multiline
                 />
-                <TextInput style={styles.input} value={editGoalTargetDate} onChangeText={setEditGoalTargetDate} placeholder="YYYY-MM-DD" />
+                <TextInput style={styles.input} value={editGoalTargetDate} onChangeText={setEditGoalTargetDate} placeholder={t('mobile.goals.field.date', 'YYYY-MM-DD')} />
                 <View style={styles.rowWrap}>
                   {(['active', 'paused', 'completed'] as const).map((status) => (
                     <Pressable
@@ -443,18 +454,18 @@ export default function GoalsScreen() {
                       style={[styles.chip, editGoalStatus === status && styles.chipActive]}
                       onPress={() => setEditGoalStatus(status)}
                     >
-                      <Text style={styles.chipText}>{status}</Text>
+                      <Text style={styles.chipText}>{formatStatus(status)}</Text>
                     </Pressable>
                   ))}
                 </View>
                 <Pressable style={styles.primaryButton} onPress={() => void saveGoal(goal.id)} disabled={busyGoalId === goal.id}>
-                  <Text style={styles.primaryButtonText}>{busyGoalId === goal.id ? 'Saving...' : 'Save goal'}</Text>
+                  <Text style={styles.primaryButtonText}>{busyGoalId === goal.id ? t('mobile.goals.action.saving', 'Saving...') : t('mobile.goals.action.save_goal', 'Save goal')}</Text>
                 </Pressable>
               </View>
             ) : null}
 
-            <Text style={styles.sectionLabel}>Targets</Text>
-            {(targetsByGoalId.get(goal.id) ?? []).length === 0 ? <Text style={styles.emptyState}>No targets yet.</Text> : null}
+            <Text style={styles.sectionLabel}>{t('mobile.goals.panel.targets', 'Targets')}</Text>
+            {(targetsByGoalId.get(goal.id) ?? []).length === 0 ? <Text style={styles.emptyState}>{t('mobile.goals.empty.targets', 'No targets yet.')}</Text> : null}
 
             {(targetsByGoalId.get(goal.id) ?? []).map((target) => (
               <View key={target.id} style={styles.targetCard}>
@@ -467,8 +478,8 @@ export default function GoalsScreen() {
                       <TextInput style={[styles.input, styles.splitInput]} value={editTargetValueCurrent} onChangeText={setEditTargetValueCurrent} keyboardType="numeric" />
                     </View>
                     <View style={styles.rowSplit}>
-                      <TextInput style={[styles.input, styles.splitInput]} value={editTargetUnit} onChangeText={setEditTargetUnit} placeholder="Unit" />
-                      <TextInput style={[styles.input, styles.splitInput]} value={editTargetDueDate} onChangeText={setEditTargetDueDate} placeholder="YYYY-MM-DD" />
+                      <TextInput style={[styles.input, styles.splitInput]} value={editTargetUnit} onChangeText={setEditTargetUnit} placeholder={t('mobile.goals.field.unit', 'Unit')} />
+                      <TextInput style={[styles.input, styles.splitInput]} value={editTargetDueDate} onChangeText={setEditTargetDueDate} placeholder={t('mobile.goals.field.date', 'YYYY-MM-DD')} />
                     </View>
                     <View style={styles.rowWrap}>
                       {(['active', 'paused', 'completed'] as const).map((status) => (
@@ -477,12 +488,12 @@ export default function GoalsScreen() {
                           style={[styles.chip, editTargetStatus === status && styles.chipActive]}
                           onPress={() => setEditTargetStatus(status)}
                         >
-                          <Text style={styles.chipText}>{status}</Text>
+                          <Text style={styles.chipText}>{formatStatus(status)}</Text>
                         </Pressable>
                       ))}
                     </View>
                     <Pressable style={styles.primaryButton} onPress={() => void saveTarget(target.id)} disabled={busyTargetId === target.id}>
-                      <Text style={styles.primaryButtonText}>{busyTargetId === target.id ? 'Saving...' : 'Save target'}</Text>
+                      <Text style={styles.primaryButtonText}>{busyTargetId === target.id ? t('mobile.goals.action.saving', 'Saving...') : t('mobile.goals.action.save_target', 'Save target')}</Text>
                     </Pressable>
                   </View>
                 ) : (
@@ -491,13 +502,13 @@ export default function GoalsScreen() {
                     <Text style={styles.targetMeta}>
                       {formatStatus(target.status)} | {target.metric_type} | {formatTargetProgress(target)}
                     </Text>
-                    {target.due_date ? <Text style={styles.targetMeta}>Due: {target.due_date}</Text> : null}
+                    {target.due_date ? <Text style={styles.targetMeta}>{tx('mobile.goals.meta.due', 'Due: {date}', { date: target.due_date })}</Text> : null}
                     <View style={styles.rowWrap}>
                       <Pressable style={styles.ghostButton} onPress={() => startTargetEdit(target)}>
-                        <Text style={styles.ghostText}>Edit</Text>
+                        <Text style={styles.ghostText}>{t('mobile.goals.action.edit', 'Edit')}</Text>
                       </Pressable>
                       <Pressable style={styles.ghostButton} onPress={() => deleteTarget(target.id)} disabled={busyTargetId === target.id}>
-                        <Text style={styles.ghostText}>{busyTargetId === target.id ? 'Archiving...' : 'Archive'}</Text>
+                        <Text style={styles.ghostText}>{busyTargetId === target.id ? t('mobile.goals.action.archiving', 'Archiving...') : t('mobile.goals.action.archive', 'Archive')}</Text>
                       </Pressable>
                     </View>
                   </>
