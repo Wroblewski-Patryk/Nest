@@ -24,6 +24,32 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-277 Align showcase reference dates and collapse legacy calendar tools
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-276
+  - Done on: 2026-05-01
+  - Notes:
+    - Aligned Calendar and Journal showcase data to the canonical May 23, 2025
+      reference so preview surfaces no longer mix live chrome dates with
+      synthetic 2026 content.
+    - Promoted Calendar showcase mode for sparse live states and collapsed
+      lower event creation and management into one quiet `Calendar tools`
+      section so the desktop canonical viewport stays cleaner.
+    - Restored preview life-area chips inside the Journal composer so the
+      canonical writing surface remains structurally faithful even without live
+      life-area data.
+    - Updated implementation in:
+      `apps/web/src/app/calendar/page.tsx`,
+      `apps/web/src/app/journal/page.tsx`.
+    - Added implementation report:
+      `docs/ux/nest_277_showcase_reference_alignment_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`,
+      `pnpm lint` in `apps/web`,
+      `pnpm build` in `apps/web`,
+      `pnpm test:unit` in `apps/web`.
+
 - [x] NEST-276 Add canonical desktop showcase fallback for Calendar and Journal
   - Status: DONE
   - Owner: Execution Agent

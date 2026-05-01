@@ -36,6 +36,8 @@ type ApiRequestInit = Omit<RequestInit, "body"> & {
   query?: Record<string, unknown>;
 };
 
+const CALENDAR_SHOWCASE_REFERENCE = new Date("2025-05-23T12:00:00");
+
 async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
   const requestFn = nestApiClient.request as unknown as (
     requestPath: string,
@@ -318,33 +320,32 @@ function atTime(value: Date, hours: number, minutes: number): string {
 function createShowcaseCalendarEvents(referenceDate: Date): CalendarEventItem[] {
   const monday = startOfWeekMonday(referenceDate);
   const tuesday = addDays(monday, 1);
-  const wednesday = addDays(monday, 2);
-  const thursday = addDays(monday, 3);
   const friday = addDays(monday, 4);
   const saturday = addDays(monday, 5);
+  const sunday = addDays(monday, 6);
 
   return [
     { id: "showcase-event-1", title: "Morning routine", start_at: atTime(tuesday, 6, 0), end_at: atTime(tuesday, 7, 0), all_day: false, linked_entity_type: "routine" },
     { id: "showcase-event-2", title: "Workout", start_at: atTime(tuesday, 8, 0), end_at: atTime(tuesday, 9, 0), all_day: false, linked_entity_type: "habit" },
-    { id: "showcase-event-3", title: "Product strategy workshop", start_at: atTime(wednesday, 10, 15), end_at: atTime(wednesday, 11, 0), all_day: false, linked_entity_type: "goal" },
-    { id: "showcase-event-4", title: "Lunch break", start_at: atTime(wednesday, 12, 15), end_at: atTime(wednesday, 13, 0), all_day: false, linked_entity_type: "personal" },
-    { id: "showcase-event-5", title: "Deep work block", start_at: atTime(wednesday, 13, 30), end_at: atTime(wednesday, 15, 30), all_day: false, linked_entity_type: "task" },
-    { id: "showcase-event-6", title: "Project review", start_at: atTime(wednesday, 16, 0), end_at: atTime(wednesday, 17, 0), all_day: false, linked_entity_type: "review" },
-    { id: "showcase-event-7", title: "Content planning", start_at: atTime(thursday, 9, 30), end_at: atTime(thursday, 10, 15), all_day: false, linked_entity_type: "list" },
-    { id: "showcase-event-8", title: "Design review", start_at: atTime(thursday, 11, 15), end_at: atTime(thursday, 12, 0), all_day: false, linked_entity_type: "work" },
+    { id: "showcase-event-3", title: "Content planning", start_at: atTime(friday, 9, 30), end_at: atTime(friday, 10, 15), all_day: false, linked_entity_type: "list" },
+    { id: "showcase-event-4", title: "Product strategy workshop", start_at: atTime(friday, 10, 15), end_at: atTime(friday, 11, 0), all_day: false, linked_entity_type: "goal" },
+    { id: "showcase-event-5", title: "Design review", start_at: atTime(friday, 11, 15), end_at: atTime(friday, 12, 0), all_day: false, linked_entity_type: "work" },
+    { id: "showcase-event-6", title: "Lunch break", start_at: atTime(friday, 12, 15), end_at: atTime(friday, 13, 0), all_day: false, linked_entity_type: "personal" },
+    { id: "showcase-event-7", title: "Focus block", start_at: atTime(friday, 13, 30), end_at: atTime(friday, 15, 30), all_day: false, linked_entity_type: "task" },
+    { id: "showcase-event-8", title: "Project review", start_at: atTime(friday, 16, 0), end_at: atTime(friday, 17, 0), all_day: false, linked_entity_type: "review" },
     { id: "showcase-event-9", title: "Family time", start_at: atTime(friday, 18, 0), end_at: atTime(friday, 20, 0), all_day: false, linked_entity_type: "personal" },
     { id: "showcase-event-10", title: "Wind down", start_at: atTime(saturday, 21, 30), end_at: atTime(saturday, 22, 0), all_day: false, linked_entity_type: "routine" },
+    { id: "showcase-event-11", title: "Weekly review", start_at: atTime(sunday, 18, 0), end_at: atTime(sunday, 19, 0), all_day: false, linked_entity_type: "review" },
   ];
 }
 
 function createShowcaseCalendarTasks(referenceDate: Date): TaskCalendarItem[] {
   const monday = startOfWeekMonday(referenceDate);
-  const wednesday = addDays(monday, 2);
   const friday = addDays(monday, 4);
 
   return [
-    { id: "showcase-task-1", title: "Define positioning and launch plan", status: "in_progress", priority: "high", due_date: atTime(wednesday, 10, 15) },
-    { id: "showcase-task-2", title: "Review planning notes", status: "todo", priority: "medium", due_date: atTime(wednesday, 16, 0) },
+    { id: "showcase-task-1", title: "Launch product", status: "in_progress", priority: "high", due_date: atTime(friday, 10, 15) },
+    { id: "showcase-task-2", title: "Define positioning and launch plan", status: "todo", priority: "high", due_date: atTime(friday, 16, 0) },
     { id: "showcase-task-3", title: "Protect family reset time", status: "todo", priority: "low", due_date: atTime(friday, 18, 0) },
   ];
 }
@@ -414,7 +415,7 @@ export default function CalendarPage() {
     };
   }, [handleUnauthorized, loadData]);
 
-  const showcaseReferenceDate = useMemo(() => startOfDay(new Date()), []);
+  const showcaseReferenceDate = useMemo(() => startOfDay(new Date(CALENDAR_SHOWCASE_REFERENCE)), []);
   const showcaseEvents = useMemo(
     () => createShowcaseCalendarEvents(showcaseReferenceDate),
     [showcaseReferenceDate]
@@ -423,9 +424,24 @@ export default function CalendarPage() {
     () => createShowcaseCalendarTasks(showcaseReferenceDate),
     [showcaseReferenceDate]
   );
-  const useCalendarShowcase = !isLoading && events.length === 0 && tasks.length === 0;
+  const hasMeaningfulLiveCalendar = events.length >= 4 || tasks.length >= 2;
+  const useCalendarShowcase = !isLoading && (Boolean(errorMessage) || !hasMeaningfulLiveCalendar);
   const eventSource = useCalendarShowcase ? showcaseEvents : events;
   const taskSource = useCalendarShowcase ? showcaseTasks : tasks;
+
+  useEffect(() => {
+    if (!useCalendarShowcase) {
+      return;
+    }
+
+    const showcaseAnchor = toDateInputValue(showcaseReferenceDate);
+    if (anchorDate !== showcaseAnchor) {
+      setAnchorDate(showcaseAnchor);
+    }
+    if (viewMode !== "day") {
+      setViewMode("day");
+    }
+  }, [anchorDate, showcaseReferenceDate, useCalendarShowcase, viewMode]);
 
   const anchorDay = useMemo(() => fromDateInput(anchorDate), [anchorDate]);
   const windowStart = useMemo(() => resolveWindow(viewMode, anchorDay).start, [anchorDay, viewMode]);
@@ -1129,52 +1145,48 @@ export default function CalendarPage() {
               </div>
             </section>
 
-            <Panel
-              id="calendar-add-event"
-              title="Add event"
-              className={`calendar-management-panel ${useCalendarShowcase ? "is-preview-hidden" : ""}`}
-            >
-              <form className="form-grid" onSubmit={createEvent}>
-                <label className="field">
-                  <span>Title</span>
-                  <input
-                    className="list-row"
-                    type="text"
-                    value={newEventTitle}
-                    onChange={(event) => setNewEventTitle(event.target.value)}
-                    placeholder="Example: Weekly life planning"
-                    disabled={isCreating}
-                  />
-                </label>
-                <label className="field">
-                  <span>Start</span>
-                  <input
-                    className="list-row"
-                    type="datetime-local"
-                    value={newEventStartAt}
-                    onChange={(event) => setNewEventStartAt(event.target.value)}
-                    disabled={isCreating}
-                  />
-                </label>
-                <label className="field">
-                  <span>End</span>
-                  <input
-                    className="list-row"
-                    type="datetime-local"
-                    value={newEventEndAt}
-                    onChange={(event) => setNewEventEndAt(event.target.value)}
-                    disabled={isCreating}
-                  />
-                </label>
-                <button type="submit" className="btn-primary" disabled={isCreating}>
-                  {isCreating ? "Adding..." : "Add event"}
-                </button>
-              </form>
-            </Panel>
-
-            <details className={`collapsible-panel ${useCalendarShowcase ? "is-preview-hidden" : ""}`}>
-              <summary>Manage all events</summary>
+            <details className="collapsible-panel">
+              <summary>{useCalendarShowcase ? "Calendar tools" : "Add event"}</summary>
               <div className="collapsible-content">
+                <Panel id="calendar-add-event" title="Add event" className="calendar-management-panel">
+                  <form className="form-grid" onSubmit={createEvent}>
+                    <label className="field">
+                      <span>Title</span>
+                      <input
+                        className="list-row"
+                        type="text"
+                        value={newEventTitle}
+                        onChange={(event) => setNewEventTitle(event.target.value)}
+                        placeholder="Example: Weekly life planning"
+                        disabled={isCreating}
+                      />
+                    </label>
+                    <label className="field">
+                      <span>Start</span>
+                      <input
+                        className="list-row"
+                        type="datetime-local"
+                        value={newEventStartAt}
+                        onChange={(event) => setNewEventStartAt(event.target.value)}
+                        disabled={isCreating}
+                      />
+                    </label>
+                    <label className="field">
+                      <span>End</span>
+                      <input
+                        className="list-row"
+                        type="datetime-local"
+                        value={newEventEndAt}
+                        onChange={(event) => setNewEventEndAt(event.target.value)}
+                        disabled={isCreating}
+                      />
+                    </label>
+                    <button type="submit" className="btn-primary" disabled={isCreating}>
+                      {isCreating ? "Adding..." : "Add event"}
+                    </button>
+                  </form>
+                </Panel>
+
                 <Panel title="All events" className="calendar-management-panel">
                   <ul className="list">
                     {events.length === 0 ? (

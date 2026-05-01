@@ -156,6 +156,10 @@
   When live calendar data is absent, preserve a dense canonical desktop story
   with believable week-strip, timeline, and support-rail content instead of
   leading with an error strip or lower CRUD panels.
+- Calendar canonical reference date:
+  When a founder-approved Calendar screenshot is the active fidelity target,
+  align showcase date-dependent content to that exact canonical date rather
+  than mixing fixed chrome labels with today-derived synthetic events.
 
 ## Journal Canonical Patterns (2026-04-30)
 
@@ -186,6 +190,10 @@
   showcase layer to keep the hero, recent entries, and support rail feeling
   like a real reflection room; do not let empty runtime data flatten the
   screen into raw management or failure messaging.
+- Journal showcase structure:
+  Preview mode should still carry visible life-area chips and date-consistent
+  recent-entry rows inside the composer and feed; otherwise the writing surface
+  loses too much of the canonical rhythm.
 
 ## Workspace Shell Patterns (2026-04-26)
 

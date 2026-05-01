@@ -51,6 +51,8 @@ type ApiRequestInit = Omit<RequestInit, "body"> & {
   query?: Record<string, unknown>;
 };
 
+const JOURNAL_SHOWCASE_REFERENCE = new Date("2025-05-23T12:00:00");
+
 async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
   const requestFn = nestApiClient.request as unknown as (
     requestPath: string,
@@ -395,7 +397,7 @@ export default function JournalPage() {
     };
   }, [handleUnauthorized, loadData]);
 
-  const showcaseReferenceDate = useMemo(() => shiftDays(new Date(), 0), []);
+  const showcaseReferenceDate = useMemo(() => new Date(JOURNAL_SHOWCASE_REFERENCE), []);
   const showcaseLifeAreas = useMemo(() => createShowcaseLifeAreas(), []);
   const showcaseEntries = useMemo(
     () => createShowcaseJournalEntries(showcaseReferenceDate, showcaseLifeAreas),
@@ -883,11 +885,19 @@ export default function JournalPage() {
                     <span>Life areas</span>
                     <div className="journal-chip-row journal-chip-row-canonical">
                       {lifeAreas.length === 0 ? (
-                        <p className="journal-empty-copy">
-                          {useJournalShowcase
-                            ? "Save a few life areas to let this warmer canonical structure become fully yours."
-                            : "No life areas yet. Add one below and the reflections will gain more shape."}
-                        </p>
+                        useJournalShowcase ? (
+                          displayLifeAreas.map((area) => (
+                            <span
+                              key={`preview-${area.id}`}
+                              className="journal-chip journal-chip-canonical is-active is-preview"
+                              style={{ "--chip-accent": area.color } as CSSProperties}
+                            >
+                              <span>{area.name}</span>
+                            </span>
+                          ))
+                        ) : (
+                          <p className="journal-empty-copy">No life areas yet. Add one below and the reflections will gain more shape.</p>
+                        )
                       ) : (
                         lifeAreas.map((area) => (
                           <label

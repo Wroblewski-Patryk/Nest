@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-277` showcase reference alignment pass. Calendar
+  and Journal showcase content now uses the canonical May 23, 2025 reference
+  date, Calendar promotes showcase mode for sparse desktop states, lower
+  Calendar tools are collapsed into one quieter section, and Journal composer
+  preview chips now preserve the intended life-area structure. Updated:
+  `apps/web/src/app/calendar/page.tsx`,
+  `apps/web/src/app/journal/page.tsx`. Added report:
+  `docs/ux/nest_277_showcase_reference_alignment_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-276` Calendar and Journal desktop showcase
   fallback pass. Added denser canonical preview datasets and calmer preview
   behavior so both routes preserve premium first-view composition when live
