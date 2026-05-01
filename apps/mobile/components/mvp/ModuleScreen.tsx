@@ -1,14 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type {
   IntegrationConnectionItem,
   IntegrationHealthProviderItem,
   ModuleKey,
+  SupportedLanguage,
   TelemetryEventName,
   UiAsyncState,
 } from '@nest/shared-types';
-import { resolveLanguage, translate } from '@nest/shared-types';
+import { resolveLocale, translate } from '@nest/shared-types';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
+import { useUiLanguage } from '@/lib/ui-language';
 
 type Metric = {
   label: string;
@@ -41,6 +43,8 @@ type ModuleScreenProps = {
   quickActions?: Array<{
     label: string;
     variant?: 'primary' | 'secondary';
+    onPress?: () => void;
+    disabled?: boolean;
   }>;
   connectivity?: {
     state: UiAsyncState;
@@ -61,9 +65,10 @@ type ModuleScreenProps = {
   };
   connections?: {
     items: IntegrationConnectionItem[];
-    onConnect: (provider: string) => void;
+    onConnect?: (provider: string) => void;
     onRevoke: (provider: string) => void;
     busyProvider?: string | null;
+    connectUnavailableMessage?: string;
   };
   integrationHealth?: {
     items: IntegrationHealthProviderItem[];
@@ -71,13 +76,7 @@ type ModuleScreenProps = {
     busyKey?: string | null;
     message?: string | null;
   };
-};
-
-const stateLabels: Record<UiAsyncState, string> = {
-  loading: 'Loading',
-  empty: 'Empty',
-  error: 'Error',
-  success: 'Success',
+  children?: ReactNode;
 };
 
 const providerLeastPrivilegeScopes: Record<string, string[]> = {
@@ -102,28 +101,45 @@ function reviewConnectionScopes(connection: IntegrationConnectionItem): {
   if (granted.length === 0) {
     return {
       level: 'warn',
-      message: 'No granted scopes detected.',
+      message: 'mobile.module.connection.no_scopes',
     };
   }
 
   if (extras.length > 0) {
     return {
       level: 'warn',
-      message: `Least-privilege warning: extra scopes (${extras.join(', ')})`,
+      message: `${translateMessageKey('mobile.module.connection.extra_scopes', extras.join(', '))}`,
     };
   }
 
   if (missing.length > 0) {
     return {
       level: 'warn',
-      message: `Missing required scopes: ${missing.join(', ')}`,
+      message: `${translateMessageKey('mobile.module.connection.missing_scopes', missing.join(', '))}`,
     };
   }
 
   return {
     level: 'ok',
-    message: 'Scope set matches least-privilege baseline.',
+    message: 'mobile.module.connection.baseline_ok',
   };
+}
+
+function translateMessageKey(key: string, value: string) {
+  return `${key}::${value}`;
+}
+
+function resolveReviewMessage(review: ReturnType<typeof reviewConnectionScopes>, language: SupportedLanguage) {
+  if (!review) {
+    return '';
+  }
+
+  if (review.message.includes('::')) {
+    const [key, suffix] = review.message.split('::');
+    return `${translate(key, language)}: ${suffix}`;
+  }
+
+  return translate(review.message, language);
 }
 
 export function ModuleScreen({
@@ -141,12 +157,20 @@ export function ModuleScreen({
   conflicts,
   connections,
   integrationHealth,
+  children,
 }: ModuleScreenProps) {
-  const language = resolveLanguage(process.env.EXPO_PUBLIC_NEST_DEFAULT_LANGUAGE);
+  const language = useUiLanguage();
+  const t = (key: string, fallback?: string) => translate(key, language, fallback);
+  const stateLabels: Record<UiAsyncState, string> = {
+    loading: t('mobile.module.state.loading', 'Loading'),
+    empty: t('mobile.module.state.empty', 'Empty'),
+    error: t('mobile.module.state.error', 'Error'),
+    success: t('mobile.module.state.success', 'Success'),
+  };
   const [auraA, auraB, auraC] = useMemo(() => getAuraPalette(moduleKey), [moduleKey]);
   const dateLabel = useMemo(
     () =>
-      new Date().toLocaleDateString(language === 'pl' ? 'pl-PL' : 'en-US', {
+      new Date().toLocaleDateString(resolveLocale(language), {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
@@ -162,7 +186,7 @@ export function ModuleScreen({
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <View style={styles.hero}>
-          <Text style={styles.brand}>{translate('app.kicker', language)}</Text>
+          <Text style={styles.brand}>{t('app.kicker', 'Nest LifeOS MVP')}</Text>
           <Text style={styles.dateLabel}>{dateLabel}</Text>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>{subtitle}</Text>
@@ -186,7 +210,7 @@ export function ModuleScreen({
 
         {dailySections && dailySections.length > 0 ? (
           <View style={styles.panel}>
-            <Text style={styles.panelTitle}>Twoje dzisiaj</Text>
+            <Text style={styles.panelTitle}>{t('mobile.module.panel.today', 'Your day')}</Text>
             {dailySections.map((section) => (
               <View key={section.label} style={styles.sectionWrap}>
                 <Text style={[styles.sectionLabel, section.highlight && styles.sectionLabelHighlight]}>
@@ -211,7 +235,7 @@ export function ModuleScreen({
 
         {quickActions && quickActions.length > 0 ? (
           <View style={styles.panel}>
-            <Text style={styles.panelTitle}>Quick Actions</Text>
+            <Text style={styles.panelTitle}>{t('mobile.module.panel.quick_actions', 'Quick actions')}</Text>
             <View style={styles.actionRow}>
               {quickActions.map((action) => (
                 <Pressable
@@ -219,7 +243,12 @@ export function ModuleScreen({
                   style={[
                     styles.actionButton,
                     action.variant === 'primary' ? styles.actionButtonPrimary : styles.actionButtonSecondary,
+                    action.disabled && styles.actionButtonDisabled,
                   ]}
+                  onPress={action.onPress}
+                  disabled={action.disabled}
+                  accessibilityRole="button"
+                  accessibilityLabel={action.label}
                 >
                   <Text
                     style={[
@@ -235,8 +264,10 @@ export function ModuleScreen({
           </View>
         ) : null}
 
+        {children}
+
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Live Snapshot</Text>
+          <Text style={styles.panelTitle}>{t('mobile.module.panel.live_snapshot', 'Live snapshot')}</Text>
           {rows.map((row) => (
             <View key={`${row.title}-${row.badge}`} style={styles.row}>
               <View style={styles.rowTextWrap}>
@@ -252,14 +283,14 @@ export function ModuleScreen({
 
         {connectivity ? (
           <View style={styles.panel}>
-            <Text style={styles.panelTitle}>API Client Status</Text>
+            <Text style={styles.panelTitle}>{t('mobile.module.panel.api_status', 'API client status')}</Text>
             <View style={styles.row}>
               <View style={styles.rowTextWrap}>
                 <Text style={styles.rowTitle}>{stateLabels[connectivity.state]}</Text>
                 <Text style={styles.rowDetail}>{connectivity.detail}</Text>
               </View>
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>shared client</Text>
+                <Text style={styles.badgeText}>{t('mobile.module.badge.shared_client', 'shared client')}</Text>
               </View>
             </View>
           </View>
@@ -267,15 +298,15 @@ export function ModuleScreen({
 
         {conflicts ? (
           <View style={styles.panel}>
-            <Text style={styles.panelTitle}>Conflict Queue</Text>
+            <Text style={styles.panelTitle}>{t('mobile.module.panel.conflict_queue', 'Conflict queue')}</Text>
             {conflicts.items.length === 0 ? (
               <View style={styles.row}>
                 <View style={styles.rowTextWrap}>
-                  <Text style={styles.rowTitle}>No open conflicts</Text>
-                  <Text style={styles.rowDetail}>Queue is clear for this module.</Text>
+                  <Text style={styles.rowTitle}>{t('mobile.module.empty.conflicts.title', 'No open conflicts')}</Text>
+                  <Text style={styles.rowDetail}>{t('mobile.module.empty.conflicts.detail', 'Queue is clear for this module.')}</Text>
                 </View>
                 <View style={styles.badge}>
-                  <Text style={styles.badgeText}>clear</Text>
+                  <Text style={styles.badgeText}>{t('mobile.module.badge.clear', 'clear')}</Text>
                 </View>
               </View>
             ) : (
@@ -303,7 +334,7 @@ export function ModuleScreen({
                       ) : null}
                     </View>
                     <View style={styles.badge}>
-                      <Text style={styles.badgeText}>open</Text>
+                      <Text style={styles.badgeText}>{t('mobile.module.badge.open', 'open')}</Text>
                     </View>
                   </View>
                   <View style={styles.actionRow}>
@@ -314,8 +345,10 @@ export function ModuleScreen({
                       ]}
                       onPress={() => conflicts.onResolve(conflict.id, 'accept')}
                       disabled={conflicts.resolvingId === conflict.id}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Accept ${conflict.provider} conflict`}
                     >
-                      <Text style={styles.actionButtonText}>Accept</Text>
+                      <Text style={styles.actionButtonText}>{t('mobile.module.action.accept', 'Accept')}</Text>
                     </Pressable>
                     <Pressable
                       style={[
@@ -324,8 +357,10 @@ export function ModuleScreen({
                       ]}
                       onPress={() => conflicts.onResolve(conflict.id, 'override')}
                       disabled={conflicts.resolvingId === conflict.id}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Override ${conflict.provider} conflict`}
                     >
-                      <Text style={styles.actionButtonText}>Override</Text>
+                      <Text style={styles.actionButtonText}>{t('mobile.module.action.override', 'Override')}</Text>
                     </Pressable>
                   </View>
                 </View>
@@ -336,7 +371,7 @@ export function ModuleScreen({
 
         {connections ? (
           <View style={styles.panel}>
-            <Text style={styles.panelTitle}>Provider Permissions</Text>
+            <Text style={styles.panelTitle}>{t('mobile.module.panel.connections', 'Connections')}</Text>
             {connections.items.map((connection) => {
               const review = reviewConnectionScopes(connection);
 
@@ -346,13 +381,13 @@ export function ModuleScreen({
                     <View style={styles.rowTextWrap}>
                       <Text style={styles.rowTitle}>{connection.provider}</Text>
                       <Text style={styles.rowDetail}>Status: {connection.status}</Text>
-                      <Text style={styles.scopeHeading}>Connection scopes</Text>
+                      <Text style={styles.scopeHeading}>{t('mobile.module.connection.scopes', 'Scopes')}</Text>
                       <Text style={styles.rowDetail}>
-                        Granted: {connection.scopes.length > 0 ? connection.scopes.join(', ') : 'none'}
+                        {t('mobile.module.connection.scopes', 'Scopes')}: {connection.scopes.length > 0 ? connection.scopes.join(', ') : t('mobile.module.connection.none', 'none')}
                       </Text>
                       {connection.status === 'connected' ? (
                         <Text style={review.level === 'warn' ? styles.scopeWarnText : styles.scopeOkText}>
-                          {review.message}
+                          {resolveReviewMessage(review, language)}
                         </Text>
                       ) : null}
                     </View>
@@ -362,19 +397,26 @@ export function ModuleScreen({
                       </Text>
                     </View>
                   </View>
+                  {connections.connectUnavailableMessage ? (
+                    <Text style={styles.rowDetail}>{connections.connectUnavailableMessage}</Text>
+                  ) : null}
                   <View style={styles.actionRow}>
-                    <Pressable
-                      style={[
-                        styles.actionButton,
-                        connections.busyProvider === connection.provider && styles.actionButtonDisabled,
-                      ]}
-                      onPress={() => connections.onConnect(connection.provider)}
-                      disabled={connections.busyProvider === connection.provider}
-                    >
-                      <Text style={styles.actionButtonText}>
-                        {connection.status === 'connected' ? 'Reconnect' : 'Connect'}
-                      </Text>
-                    </Pressable>
+                    {connections.onConnect ? (
+                      <Pressable
+                        style={[
+                          styles.actionButton,
+                          connections.busyProvider === connection.provider && styles.actionButtonDisabled,
+                        ]}
+                        onPress={() => connections.onConnect?.(connection.provider)}
+                        disabled={connections.busyProvider === connection.provider}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Connect ${connection.provider}`}
+                      >
+                        <Text style={styles.actionButtonText}>
+                          {t('mobile.module.action.connect', 'Connect')}
+                        </Text>
+                      </Pressable>
+                    ) : null}
                     <Pressable
                       style={[
                         styles.actionButton,
@@ -382,8 +424,10 @@ export function ModuleScreen({
                       ]}
                       onPress={() => connections.onRevoke(connection.provider)}
                       disabled={connections.busyProvider === connection.provider}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Revoke ${connection.provider}`}
                     >
-                      <Text style={styles.actionButtonText}>Revoke</Text>
+                      <Text style={styles.actionButtonText}>{t('mobile.module.action.revoke', 'Revoke')}</Text>
                     </Pressable>
                   </View>
                 </View>
@@ -394,18 +438,20 @@ export function ModuleScreen({
 
         {integrationHealth ? (
           <View style={styles.panel}>
-            <Text style={styles.panelTitle}>Integration Health Center</Text>
+            <Text style={styles.panelTitle}>{t('mobile.module.panel.integration_health', 'Integration health')}</Text>
             {integrationHealth.message ? (
-              <Text style={styles.rowDetail}>{integrationHealth.message}</Text>
+              <Text style={styles.rowDetail}>
+                {t('mobile.module.health.message', 'Health update')}: {integrationHealth.message}
+              </Text>
             ) : null}
             {integrationHealth.items.length === 0 ? (
               <View style={styles.row}>
                 <View style={styles.rowTextWrap}>
-                  <Text style={styles.rowTitle}>No provider health data</Text>
+                  <Text style={styles.rowTitle}>{t('mobile.module.state.empty', 'Empty')}</Text>
                   <Text style={styles.rowDetail}>Health data appears after first sync window.</Text>
                 </View>
                 <View style={styles.badge}>
-                  <Text style={styles.badgeText}>empty</Text>
+                  <Text style={styles.badgeText}>{t('mobile.module.state.empty', 'Empty')}</Text>
                 </View>
               </View>
             ) : (
@@ -414,13 +460,13 @@ export function ModuleScreen({
                   <View style={styles.row}>
                     <View style={styles.rowTextWrap}>
                       <Text style={styles.rowTitle}>{item.display_name}</Text>
-                      <Text style={styles.rowDetail}>Health: {item.health.status}</Text>
-                      <Text style={styles.rowDetail}>Connection: {item.connection.status}</Text>
+                      <Text style={styles.rowDetail}>{t('mobile.module.health.summary', 'Summary')}: {item.health.status}</Text>
+                      <Text style={styles.rowDetail}>{t('mobile.module.panel.connections', 'Connections')}: {item.connection.status}</Text>
                       <Text style={styles.rowDetail}>
-                        Sync success: {item.sync_window.success_rate_percent}%
+                        {t('mobile.module.health.window', 'Window')}: {item.sync_window.success_rate_percent}%
                       </Text>
                       <Text style={styles.rowDetail}>
-                        Dropped events: {item.events.dropped_count}/{item.events.received_count}
+                        {t('mobile.module.health.drop_rate', 'Drop rate')}: {item.events.dropped_count}/{item.events.received_count}
                       </Text>
                     </View>
                     <View style={styles.badge}>
@@ -440,6 +486,8 @@ export function ModuleScreen({
                           ]}
                           onPress={() => integrationHealth.onRemediate(item.provider, action.action)}
                           disabled={!action.enabled || integrationHealth.busyKey === key}
+                          accessibilityRole="button"
+                          accessibilityLabel={`${action.label} for ${item.display_name}`}
                         >
                           <Text style={styles.actionButtonText}>{action.label}</Text>
                         </Pressable>

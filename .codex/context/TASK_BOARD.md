@@ -24,6 +24,365 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-232 Fix web Calendar event query page size contract
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-230
+  - Done on: 2026-05-01
+  - Priority: P0
+  - Notes:
+    - Changed web Calendar event/task initial loads from `per_page: 200` to
+      `per_page: 100`, matching the API contract.
+    - Added report:
+      `docs/planning/nest_232_web_calendar_page_size_contract_2026-05-01.md`.
+    - Validation:
+      web typecheck, web build, static inspection for removed `per_page: 200`,
+      browser Calendar CRUD smoke passing create/edit/delete, and
+      `git diff --check`.
+
+- [x] NEST-230 Fix local founder-smoke CORS defaults for web/mobile dev origins
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-229
+  - Done on: 2026-05-01
+  - Priority: P0
+  - Notes:
+    - Added local/testing-only CORS defaults for documented local web/mobile
+      founder-smoke origins:
+      `http://localhost:9001`, `http://127.0.0.1:9001`,
+      `http://localhost:9002`, `http://127.0.0.1:9002`.
+    - Preserved production explicitness: no wildcard origin and no production
+      default when `CORS_ALLOWED_ORIGINS` is empty.
+    - Added report:
+      `docs/planning/nest_230_local_founder_smoke_cors_defaults_2026-05-01.md`.
+    - Validation:
+      `php artisan test --filter=CorsConfigurationTest --env=testing`,
+      `php artisan test --filter=CalendarEventsApiTest --env=testing`,
+      manual local preflight returned `204` with
+      `Access-Control-Allow-Origin`.
+
+- [ ] NEST-231 Decide and implement mobile authenticated API session path
+  - Status: BLOCKED
+  - Owner: Execution Agent
+  - Depends on: NEST-232
+  - Priority: P0
+  - Notes:
+    - `NEST-229` found mobile web export cannot prove real authenticated API
+      behavior because the mobile `nestApiClient` has no token source.
+    - Decision brief:
+      `docs/planning/nest_231_mobile_authenticated_api_session_path_2026-05-01.md`.
+    - Valid options:
+      implement real mobile auth/onboarding now, add a local smoke-session
+      bridge only, or narrow the V1 claim to web-first founder readiness.
+
+- [x] NEST-229 Run founder smoke evidence for scoped V1 candidate
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-228
+  - Done on: 2026-05-01
+  - Priority: P0
+  - Notes:
+    - Ran automated route smoke and browser smoke fallback.
+    - Result:
+      `BLOCKED WITH REQUIRED FIXES`.
+    - Report:
+      `docs/planning/nest_229_founder_smoke_evidence_2026-05-01.md`.
+    - Findings:
+      local browser UI calls are blocked by missing local CORS defaults, and
+      mobile lacks an authenticated API session path.
+
+- [x] NEST-224 Resolve mobile Calendar event CRUD parity
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-223
+  - Done on: 2026-05-01
+  - Priority: P0
+  - Notes:
+    - Added real mobile Calendar event load, create, inline edit, delete,
+      refresh, feedback, validation, and force-sync behavior through the
+      existing shared `nestApiClient`.
+    - Extended `ModuleScreen` quick actions so they can invoke optional
+      handlers, and added a route-specific children slot for live panels.
+    - Preserved existing integration conflict, connection, and health panels.
+    - Updated implementation in:
+      `apps/mobile/app/(tabs)/calendar.tsx`,
+      `apps/mobile/components/mvp/ModuleScreen.tsx`.
+    - Added implementation report:
+      `docs/planning/nest_224_mobile_calendar_event_crud_parity_2026-05-01.md`.
+    - Validation:
+      `.\node_modules\.bin\tsc.CMD --noEmit` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`,
+      `.\node_modules\.bin\expo.CMD export --platform web` in `apps/mobile`,
+      `git diff --check`.
+
+- [x] NEST-225 Resolve provider connection production semantics
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-223
+  - Done on: 2026-05-01
+  - Priority: P0
+  - Notes:
+    - Selected Option B after user continuation: provider connect is outside
+      the V1 founder-ready claim.
+    - Removed the misleading production-like connect affordance from mobile
+      Calendar and the web provider connections card.
+    - Preserved provider health, remediation, and revoke surfaces.
+    - Added implementation report:
+      `docs/planning/nest_225_provider_connection_production_semantics_2026-05-01.md`.
+    - Validation:
+      mobile typecheck, mobile unit contract, mobile Expo web export,
+      web typecheck, web lint with `.next` ignored, web build,
+      static inspection for removed `manual-token-*` connect paths, and
+      `git diff --check`.
+
+- [x] NEST-226 Implement accessibility baseline closure
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-223
+  - Done on: 2026-05-01
+  - Priority: P0
+  - Notes:
+    - Added shared web `:focus-visible` styling for links, buttons, form
+      fields, summaries, and ARIA button/tab roles.
+    - Added explicit mobile roles/labels to shared `ModuleScreen` controls,
+      mobile Calendar CRUD controls, Settings shortcuts, and advanced modal
+      language/sync/notification/Copilot controls.
+    - Updated implementation in:
+      `apps/web/src/app/globals.css`,
+      `apps/mobile/components/mvp/ModuleScreen.tsx`,
+      `apps/mobile/app/(tabs)/calendar.tsx`,
+      `apps/mobile/app/(tabs)/settings.tsx`,
+      `apps/mobile/app/modal.tsx`.
+    - Added implementation report:
+      `docs/planning/nest_226_accessibility_baseline_closure_2026-05-01.md`.
+    - Validation:
+      mobile typecheck, mobile unit contract, mobile Expo web export,
+      web typecheck, web lint with `.next` ignored, web build, and
+      `git diff --check`.
+
+- [x] NEST-227 Refresh API/security validation evidence
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-223
+  - Done on: 2026-05-01
+  - Priority: P0
+  - Notes:
+    - Refreshed API Integration, Unit, Feature, and security-control evidence.
+    - Initial security-control run reported a warning for stale secret rotation
+      evidence; ran the existing `secrets:rotate` command in `--env=testing`
+      and reran security controls successfully.
+    - Added validation report:
+      `docs/planning/nest_227_api_security_validation_refresh_2026-05-01.md`.
+    - Validation:
+      `php artisan test --testsuite=Integration --env=testing`
+      passed 11 tests / 75 assertions,
+      `php artisan test --testsuite=Unit --env=testing`
+      passed 20 tests / 60 assertions,
+      `php artisan test --testsuite=Feature --env=testing`
+      passed 215 tests / 1259 assertions,
+      `php artisan security:controls:verify --json --env=testing`
+      ended at `severity: ok`, 6 checks, 0 failed.
+
+- [x] NEST-228 Re-run founder-ready gate after P0 blockers close
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-224, NEST-225, NEST-226, NEST-227
+  - Done on: 2026-05-01
+  - Priority: P0
+  - Notes:
+    - Published the final P0 gate rerun:
+      `docs/planning/nest_228_founder_ready_gate_rerun_2026-05-01.md`.
+    - Recommendation:
+      `FOUNDER-READY CANDIDATE - scoped V1 is implementation-ready, but final
+      human smoke evidence is still required before declaring full v1
+      founder-ready`.
+    - P0 blockers from `NEST-223` are closed or scoped by `NEST-224` through
+      `NEST-227`.
+    - Remaining evidence:
+      narrow web/mobile founder smoke, accessibility smoke, and contrast
+      measurement.
+
+- [x] NEST-223 Publish V1 founder-ready blocker review and launch recommendation
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-222
+  - Done on: 2026-05-01
+  - Notes:
+    - Published:
+      `docs/planning/nest_223_founder_ready_blocker_review_2026-05-01.md`.
+    - Recommendation:
+      `BLOCKED - do not call Nest v1 founder-ready yet`.
+    - Hard blockers:
+      mobile Calendar event CRUD parity,
+      provider connection production semantics,
+      accessibility baseline closure,
+      API/security validation freshness.
+    - Validation:
+      `git diff --check`.
+
+- [x] NEST-222 Run accessibility baseline for repaired founder-critical screens
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-221
+  - Done on: 2026-05-01
+  - Notes:
+    - Published the accessibility baseline for repaired founder-critical web
+      and mobile surfaces.
+    - Web has strong native button/label coverage in core flows, but remains
+      partial because no shared `:focus-visible` styling baseline was found.
+    - Mobile remains partial because scoped custom `Pressable` controls and
+      placeholder-heavy `TextInput` fields do not carry explicit
+      `accessibilityRole`/`accessibilityLabel` coverage.
+    - Contrast remains open because no automated or sampled measurement was
+      run in this docs-only slice.
+    - Mobile Calendar quick actions remain a product/accessibility blocker
+      because they look actionable but have no handlers.
+    - Added report:
+      `docs/planning/nest_222_accessibility_baseline_2026-05-01.md`.
+    - Validation:
+      `git diff --check`.
+
+- [x] NEST-221 Run repaired web/mobile parity audit
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-220
+  - Done on: 2026-05-01
+  - Notes:
+    - Published the repaired parity audit after `NEST-218` through `NEST-220`.
+    - Confirmed real outcome parity for Tasks/Lists, Habits/Routines,
+      Goals/Targets, Journal/Life Areas, language switching, sync/API recovery,
+      and settings/support reachability.
+    - Recorded mobile Calendar as partial: it supports conflicts,
+      connections, and integration health recovery, but not event CRUD; current
+      `ModuleScreen` quick actions are presentational without handlers.
+    - Kept provider connection production semantics blocked because mobile
+      Calendar `manual-token-*` behavior is a local integration harness.
+    - Added audit report:
+      `docs/planning/nest_221_web_mobile_parity_audit_2026-05-01.md`.
+    - Validation:
+      `git diff --check`.
+
+- [x] NEST-220 Produce refreshed V1 readiness matrix
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-219
+  - Done on: 2026-05-01
+  - Notes:
+    - Published the refreshed V1 readiness matrix across repository truth, API,
+      web, mobile, cross-surface integrity, daily-use quality, and final gate
+      evidence.
+    - Current status is `PARTIAL - not founder-ready yet`.
+    - Explicitly records mobile Calendar `manual-token-*` provider connection
+      behavior as a local integration harness, not production-ready
+      OAuth/provider auth.
+    - Leaves the next evidence tasks as `NEST-221` parity audit, `NEST-222`
+      accessibility baseline, and `NEST-223` final blocker review.
+    - Added/updated docs:
+      `docs/planning/v1_readiness_matrix_2026-05-01.md`,
+      `docs/planning/v1_founder_ready_checklist_2026-04-26.md`,
+      `docs/planning/nest_220_v1_readiness_matrix_2026-05-01.md`.
+    - Validation:
+      `git diff --check`.
+
+- [x] NEST-219 Tighten settings and support IA for founder-critical actions only
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-218
+  - Done on: 2026-05-01
+  - Notes:
+    - Added a top `Support Map` to mobile advanced settings so language, sync
+      recovery, notifications, and Copilot/support are visible as separate
+      jobs before the long modal flow.
+    - Strengthened modal section framing while preserving existing settings,
+      sync, notification, and Copilot handlers.
+    - Classified mobile Calendar `manual-token-*` provider connection behavior
+      as a local integration harness only, not production-ready provider OAuth.
+    - Updated implementation in:
+      `apps/mobile/app/modal.tsx`.
+    - Added implementation report:
+      `docs/planning/nest_219_settings_support_ia_2026-05-01.md`.
+    - Validation:
+      `.\node_modules\.bin\tsc.CMD --noEmit` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`,
+      `.\node_modules\.bin\expo.CMD export --platform web` in `apps/mobile`.
+
+- [x] NEST-218 Re-audit mobile daily-loop ergonomics
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-217
+  - Done on: 2026-05-01
+  - Notes:
+    - Added a real-data `Daily focus` band to the mobile Tasks tab so repeated
+      mobile use starts with the next useful open task instead of list/task
+      administration.
+    - The focus band prefers in-progress work, then urgent or high-priority
+      open work, then the first open task; users can mark it done or review it
+      from the band.
+    - Existing mobile Tasks CRUD, search, filter, and list sections remain
+      available below.
+    - Updated implementation in:
+      `apps/mobile/app/(tabs)/index.tsx`.
+    - Added implementation report:
+      `docs/planning/nest_218_mobile_daily_loop_ergonomics_2026-05-01.md`.
+    - Validation:
+      `.\node_modules\.bin\tsc.CMD --noEmit` in `apps/mobile`,
+      `pnpm test:unit` in `apps/mobile`,
+      `.\node_modules\.bin\expo.CMD export --platform web` in `apps/mobile`.
+
+- [x] NEST-217 Re-audit web dashboard and planning for repeated daily use
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-216
+  - Done on: 2026-05-01
+  - Notes:
+    - Re-audited web Dashboard and Planning against canonical direction and
+      repeated-use quality.
+    - Fixed the Dashboard live hero progress copy so it uses real route data:
+      completed tasks plus active habits, instead of deriving a habit count
+      from `progressPercent - todayDoneTasksCount`.
+    - Planning's current canonical workspace was reviewed and left unchanged
+      for this narrow slice; broader cleanup remains future incremental work.
+    - Updated implementation in:
+      `apps/web/src/app/dashboard/page.tsx`,
+      `packages/shared-types/src/localization.js`.
+    - Added implementation report:
+      `docs/planning/nest_217_web_dashboard_planning_daily_use_audit_2026-05-01.md`.
+    - Validation:
+      `.\node_modules\.bin\tsc.CMD --noEmit` in `apps/web`,
+      `node .\node_modules\eslint\bin\eslint.js .` in `apps/web`,
+      `node .\scripts\unit-contract.mjs` in `apps/web`,
+      `pnpm build` in `apps/web`.
+
+- [x] NEST-216 Verify and harden offline/manual sync user flow
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-215
+  - Done on: 2026-05-01
+  - Notes:
+    - Hardened web and mobile offline/manual sync against the richer shared API
+      error envelope from `NEST-215`.
+    - Exposed `getApiErrorCode(...)` and `getApiErrorRetryable(...)` through
+      the existing web/mobile UX contract wrappers.
+    - Failed queue items now keep retryability metadata; auto-sync skips
+      `retryable: false` failures instead of immediately retrying them, while
+      manual `Retry Sync` remains available as an explicit recovery action.
+    - Updated implementation in:
+      `apps/web/src/lib/ux-contract.ts`,
+      `apps/web/src/components/offline-sync-card.tsx`,
+      `apps/mobile/lib/ux-contract.ts`,
+      `apps/mobile/app/modal.tsx`,
+      `apps/mobile/constants/offlineQueue.ts`,
+      `apps/mobile/constants/offlineSyncScheduler.ts`.
+    - Added implementation report:
+      `docs/planning/nest_216_offline_manual_sync_hardening_2026-05-01.md`.
+    - Validation:
+      `.\node_modules\.bin\tsc.CMD --noEmit` in `apps/web`,
+      `node .\node_modules\eslint\bin\eslint.js .` in `apps/web`,
+      `node .\scripts\unit-contract.mjs` in `apps/web`,
+      `.\node_modules\.bin\tsc.CMD --noEmit` in `apps/mobile`,
+      `node .\scripts\unit-contract.mjs` in `apps/mobile`,
+      `.\node_modules\.bin\expo.CMD export --platform web` in `apps/mobile`.
+
 - [x] NEST-287 Tighten Journal editorial fidelity
   - Status: DONE
   - Owner: Execution Agent

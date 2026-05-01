@@ -1,8 +1,10 @@
 import React from 'react';
 import { Pressable, StyleSheet, View, type GestureResponderEvent } from 'react-native';
+import { translate } from '@nest/shared-types';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { mobileUiTokens } from '@/constants/uiTokens';
+import { useUiLanguage } from '@/lib/ui-language';
 
 type TabIconName =
   | 'list-alt'
@@ -38,6 +40,9 @@ function SeedlingButton({
 }
 
 export default function TabLayout() {
+  const language = useUiLanguage();
+  const t = (key: string, fallback: string) => translate(key, language, fallback);
+
   return (
     <Tabs
       screenOptions={{
@@ -52,7 +57,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tasks',
+          title: t('mobile.tab.tasks', 'Tasks'),
           tabBarIcon: ({ color }) => <TabIcon name="list-alt" color={color} />,
           tabBarButton: (props) => (
             <SeedlingButton
@@ -65,42 +70,42 @@ export default function TabLayout() {
       <Tabs.Screen
         name="habits"
         options={{
-          title: 'Habits',
+          title: t('mobile.tab.habits', 'Habits'),
           tabBarIcon: ({ color }) => <TabIcon name="checklist" color={color} />,
         }}
       />
       <Tabs.Screen
         name="goals"
         options={{
-          title: 'Goals',
+          title: t('mobile.tab.goals', 'Goals'),
           tabBarIcon: ({ color }) => <TabIcon name="flag" color={color} />,
         }}
       />
       <Tabs.Screen
         name="journal"
         options={{
-          title: 'Journal',
+          title: t('mobile.tab.journal', 'Journal'),
           tabBarIcon: ({ color }) => <TabIcon name="menu-book" color={color} />,
         }}
       />
       <Tabs.Screen
         name="calendar"
         options={{
-          title: 'Calendar',
+          title: t('mobile.tab.calendar', 'Calendar'),
           tabBarIcon: ({ color }) => <TabIcon name="calendar-today" color={color} />,
         }}
       />
       <Tabs.Screen
         name="insights"
         options={{
-          title: 'Insights',
+          title: t('mobile.tab.insights', 'Insights'),
           tabBarIcon: ({ color }) => <TabIcon name="insights" color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: t('mobile.tab.settings', 'Settings'),
           tabBarIcon: ({ color }) => <TabIcon name="settings" color={color} />,
         }}
       />

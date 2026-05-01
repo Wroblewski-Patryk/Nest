@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { resolveLanguage } from '@nest/shared-types';
+import { translate } from '@nest/shared-types';
 import { loadOfflineQueue } from '@/constants/offlineQueue';
 import { loadOfflineSyncSchedulerState } from '@/constants/offlineSyncScheduler';
-import { nestApiClient } from '@/constants/apiClient';
 import { getAuraPalette, mobileUiTokens } from '@/constants/uiTokens';
+import { useUiLanguage } from '@/lib/ui-language';
 
 type RouteTarget =
   | '/modal'
@@ -19,29 +19,19 @@ type RouteTarget =
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const language = useUiLanguage();
+  const t = (key: string, fallback: string) => translate(key, language, fallback);
   const [auraA, auraB, auraC] = useMemo(() => getAuraPalette('journal'), []);
-  const [language, setLanguage] = useState<'en' | 'pl'>('en');
   const [queueCount, setQueueCount] = useState(0);
-  const [schedulerSummary, setSchedulerSummary] = useState('Manual sync available.');
+  const [autoSyncEnabled, setAutoSyncEnabled] = useState(false);
+  const [schedulerLagSeconds, setSchedulerLagSeconds] = useState(0);
 
   useEffect(() => {
-    nestApiClient
-      .getLocalizationOptions()
-      .then((response) => {
-        setLanguage(resolveLanguage(response.data.detected_language));
-      })
-      .catch(() => {
-        setLanguage('en');
-      });
-
     const queue = loadOfflineQueue();
     const scheduler = loadOfflineSyncSchedulerState();
     setQueueCount(queue.filter((item) => item.status === 'pending').length);
-    setSchedulerSummary(
-      scheduler.auto_sync_enabled
-        ? `Auto sync on | lag ${scheduler.scheduler_lag_seconds}s`
-        : 'Auto sync paused | manual sync available'
-    );
+    setAutoSyncEnabled(scheduler.auto_sync_enabled);
+    setSchedulerLagSeconds(scheduler.scheduler_lag_seconds);
   }, []);
 
   function openRoute(route: RouteTarget) {
@@ -56,59 +46,109 @@ export default function SettingsScreen() {
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.hero}>
-          <Text style={styles.heroTitle}>Settings + More</Text>
-          <Text style={styles.heroSubtitle}>Reach core mobile settings, sync tools, and the extra surfaces that do not belong in the main daily tab loop.</Text>
+          <Text style={styles.heroTitle}>{t('mobile.settings.title', 'Settings + more')}</Text>
+          <Text style={styles.heroSubtitle}>
+            {t('mobile.settings.subtitle', 'Reach core mobile settings, sync tools, and the extra surfaces that do not belong in the main daily tab loop.')}
+          </Text>
           <View style={styles.metricsRow}>
-            <Text style={styles.metric}>Language: {language}</Text>
-            <Text style={styles.metric}>Pending sync items: {queueCount}</Text>
-            <Text style={styles.metric}>{schedulerSummary}</Text>
+            <Text style={styles.metric}>
+              {t('mobile.settings.metric.language', 'Language')}: {language === 'pl' ? 'Polski' : 'English'}
+            </Text>
+            <Text style={styles.metric}>
+              {t('mobile.settings.metric.pending_sync_items', 'Pending sync items')}: {queueCount}
+            </Text>
+            <Text style={styles.metric}>
+              {autoSyncEnabled
+                ? `${t('mobile.settings.metric.auto_sync_on', 'Auto sync on')} | ${t('mobile.settings.metric.lag', 'lag')} ${schedulerLagSeconds}s`
+                : `${t('mobile.settings.metric.auto_sync_paused', 'Auto sync paused')} | ${t('mobile.settings.metric.manual_sync_available', 'manual sync available')}`}
+            </Text>
           </View>
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Core settings</Text>
+          <Text style={styles.panelTitle}>{t('mobile.settings.panel.core_settings', 'Core settings')}</Text>
           <Text style={styles.panelText}>
-            Open the advanced settings modal for language selection, offline sync, notifications, and Copilot controls.
+            {t('mobile.settings.panel.core_settings_text', 'Open the advanced settings modal for language selection, offline sync, notifications, and Copilot controls.')}
           </Text>
-          <Pressable style={styles.primaryButton} onPress={() => openRoute('/modal')}>
-            <Text style={styles.primaryButtonText}>Open advanced settings</Text>
+          <Pressable
+            style={styles.primaryButton}
+            onPress={() => openRoute('/modal')}
+            accessibilityRole="button"
+            accessibilityLabel="Open advanced settings"
+          >
+            <Text style={styles.primaryButtonText}>{t('mobile.settings.panel.open_advanced', 'Open advanced settings')}</Text>
           </Pressable>
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Module access</Text>
+          <Text style={styles.panelTitle}>{t('mobile.settings.panel.module_access', 'Module access')}</Text>
           <Text style={styles.panelText}>
-            Routines and life areas are managed from the mobile habits and journal flows. These shortcuts make that easier to reach.
+            {t('mobile.settings.panel.module_access_text', 'Routines and life areas are managed from the mobile habits and journal flows. These shortcuts make that easier to reach.')}
           </Text>
           <View style={styles.rowWrap}>
-            <Pressable style={styles.ghostButton} onPress={() => openRoute('/(tabs)/habits')}>
-              <Text style={styles.ghostText}>Habits + Routines</Text>
+            <Pressable
+              style={styles.ghostButton}
+              onPress={() => openRoute('/(tabs)/habits')}
+              accessibilityRole="button"
+              accessibilityLabel="Open Habits and Routines"
+            >
+              <Text style={styles.ghostText}>{t('mobile.settings.route.habits_routines', 'Habits + Routines')}</Text>
             </Pressable>
-            <Pressable style={styles.ghostButton} onPress={() => openRoute('/(tabs)/journal')}>
-              <Text style={styles.ghostText}>Journal + Life Areas</Text>
+            <Pressable
+              style={styles.ghostButton}
+              onPress={() => openRoute('/(tabs)/journal')}
+              accessibilityRole="button"
+              accessibilityLabel="Open Journal and Life Areas"
+            >
+              <Text style={styles.ghostText}>{t('mobile.settings.route.journal_life_areas', 'Journal + Life Areas')}</Text>
             </Pressable>
-            <Pressable style={styles.ghostButton} onPress={() => openRoute('/(tabs)/goals')}>
-              <Text style={styles.ghostText}>Goals + Targets</Text>
+            <Pressable
+              style={styles.ghostButton}
+              onPress={() => openRoute('/(tabs)/goals')}
+              accessibilityRole="button"
+              accessibilityLabel="Open Goals and Targets"
+            >
+              <Text style={styles.ghostText}>{t('mobile.settings.route.goals_targets', 'Goals + Targets')}</Text>
             </Pressable>
-            <Pressable style={styles.ghostButton} onPress={() => openRoute('/(tabs)')}>
-              <Text style={styles.ghostText}>Tasks + Lists</Text>
+            <Pressable
+              style={styles.ghostButton}
+              onPress={() => openRoute('/(tabs)')}
+              accessibilityRole="button"
+              accessibilityLabel="Open Tasks and Lists"
+            >
+              <Text style={styles.ghostText}>{t('mobile.settings.route.tasks_lists', 'Tasks + Lists')}</Text>
             </Pressable>
           </View>
         </View>
 
         <View style={styles.panel}>
-          <Text style={styles.panelTitle}>Additional surfaces</Text>
+          <Text style={styles.panelTitle}>{t('mobile.settings.panel.additional_surfaces', 'Additional surfaces')}</Text>
           <Text style={styles.panelText}>
-            Keep the main tab bar focused on the daily loop while still exposing the non-core surfaces already available in the app.
+            {t('mobile.settings.panel.additional_surfaces_text', 'Keep the main tab bar focused on the daily loop while still exposing the non-core surfaces already available in the app.')}
           </Text>
           <View style={styles.rowWrap}>
-            <Pressable style={styles.ghostButton} onPress={() => openRoute('/(tabs)/calendar')}>
-              <Text style={styles.ghostText}>Calendar</Text>
+            <Pressable
+              style={styles.ghostButton}
+              onPress={() => openRoute('/(tabs)/calendar')}
+              accessibilityRole="button"
+              accessibilityLabel="Open Calendar"
+            >
+              <Text style={styles.ghostText}>{t('app.nav.calendar', 'Calendar')}</Text>
             </Pressable>
-            <Pressable style={styles.ghostButton} onPress={() => openRoute('/(tabs)/insights')}>
-              <Text style={styles.ghostText}>Insights</Text>
+            <Pressable
+              style={styles.ghostButton}
+              onPress={() => openRoute('/(tabs)/insights')}
+              accessibilityRole="button"
+              accessibilityLabel="Open Insights"
+            >
+              <Text style={styles.ghostText}>{t('app.nav.insights', 'Insights')}</Text>
             </Pressable>
-            <Pressable style={styles.ghostButton} onPress={() => openRoute('/(tabs)/billing')}>
+            <Pressable
+              style={styles.ghostButton}
+              onPress={() => openRoute('/(tabs)/billing')}
+              accessibilityRole="button"
+              accessibilityLabel="Open Billing"
+            >
               <Text style={styles.ghostText}>Billing</Text>
             </Pressable>
           </View>

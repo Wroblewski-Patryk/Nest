@@ -1,6 +1,6 @@
 # MVP Next Commits
 
-Last updated: 2026-04-26
+Last updated: 2026-05-01
 
 This file is now aligned to the refreshed `v1` practical-product framing.
 
@@ -11,21 +11,17 @@ Primary planning source:
 
 ## NOW (execute in order)
 
-- [ ] `NEST-210` audit live localization coverage on the founder-critical path
-- [ ] `NEST-211` move web shell and dashboard copy to shared localization keys
+- [ ] Decision required: `NEST-231` mobile authenticated API session path
 
 ## NEXT
 
-- [ ] `NEST-212` move mobile founder-critical shell copy to shared localization
-  keys
-- [ ] `NEST-213` close localization behavior for settings-driven language
-  changes
+- [ ] Route-local cast cleanup and localization lower-route copy pass
+- [ ] Future provider OAuth/auth implementation only if provider connect enters
+  a later release claim
 
 ## LATER
 
-- [ ] `NEST-220` produce the refreshed `v1` readiness matrix
-- [ ] `NEST-221` run the repaired web/mobile parity audit
-- [ ] `NEST-223` publish the `v1 founder-ready` blocker review
+- [ ] Refill from founder smoke findings
 
 ## Refill Rules
 

@@ -24,6 +24,151 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Started `NEST-231` mobile authenticated API session path and
+  stopped at the required architecture/product decision. Mobile core screens
+  use the shared API client, but `apps/mobile/constants/apiClient.ts` has no
+  `getToken` source while the API requires Sanctum auth for core routes.
+  Published decision brief:
+  `docs/planning/nest_231_mobile_authenticated_api_session_path_2026-05-01.md`.
+  Implementation is blocked until the user chooses real mobile auth/onboarding,
+  a local smoke-session bridge, or a narrowed web-first V1 readiness claim.
+- 2026-05-01: Completed `NEST-232` web Calendar page-size contract fix. Web
+  Calendar now requests events and tasks with `per_page: 100`, matching the API
+  validation contract. Web typecheck and build passed, static inspection found
+  no remaining `per_page: 200` in the route, and browser Calendar CRUD smoke
+  passed real create/edit/delete through the web UI. Mobile authenticated API
+  smoke remains blocked by `NEST-231`. Report:
+  `docs/planning/nest_232_web_calendar_page_size_contract_2026-05-01.md`.
+- 2026-05-01: Completed `NEST-230` local founder-smoke CORS defaults. API CORS
+  now allows the documented local web/mobile smoke origins in local/testing
+  environments only, while production still requires explicit
+  `CORS_ALLOWED_ORIGINS`. Targeted CORS and Calendar API tests passed; manual
+  preflight from `http://127.0.0.1:9001` to local API returned `204` with
+  `Access-Control-Allow-Origin`. Browser smoke now reaches the API and exposed
+  the next blocker: web Calendar requests `per_page=200`, which the API rejects
+  with `422`. Added `NEST-232` for that query contract fix. Report:
+  `docs/planning/nest_230_local_founder_smoke_cors_defaults_2026-05-01.md`.
+- 2026-05-01: Completed `NEST-229` founder smoke evidence with result
+  `BLOCKED WITH REQUIRED FIXES`. Automated route smoke passed for web and
+  mobile. Browser smoke confirmed authenticated web Dashboard navigation and
+  Calendar route/form reachability, but real Calendar create failed because
+  browser API requests from local web to local API are blocked by CORS defaults
+  when no `CORS_ALLOWED_ORIGINS` is configured. Mobile web export also cannot
+  prove authenticated API behavior because the mobile `nestApiClient` has no
+  token source. Added `NEST-230` for local CORS defaults and `NEST-231` for the
+  mobile authenticated API session path. Report:
+  `docs/planning/nest_229_founder_smoke_evidence_2026-05-01.md`.
+- 2026-05-01: Completed `NEST-228` founder-ready gate rerun. The current
+  recommendation is `FOUNDER-READY CANDIDATE - scoped V1 is
+  implementation-ready, but final human smoke evidence is still required before
+  declaring full v1 founder-ready`. `NEST-224` through `NEST-227` closed or
+  scoped the `NEST-223` P0 blockers. Remaining evidence is a narrow web/mobile
+  founder smoke, accessibility smoke, and contrast measurement. Added report:
+  `docs/planning/nest_228_founder_ready_gate_rerun_2026-05-01.md`.
+  Added `NEST-229` as the next READY task for that smoke evidence.
+- 2026-05-01: Completed `NEST-225` provider connection production semantics
+  with Option B. Provider connect is now explicitly outside the V1
+  founder-ready claim; mobile Calendar and the web provider connections card no
+  longer expose the misleading production-like connect affordance backed by a
+  local manual-token harness. Provider health, remediation, and revoke surfaces
+  remain available. Added report:
+  `docs/planning/nest_225_provider_connection_production_semantics_2026-05-01.md`.
+- 2026-05-01: Completed `NEST-227` API/security validation refresh. API
+  Integration passed 11 tests / 75 assertions, Unit passed 20 tests / 60
+  assertions, and Feature passed 215 tests / 1259 assertions. Initial security
+  controls returned a warning for `secret_rotation_recency`; running
+  `php artisan secrets:rotate --json --env=testing --no-interaction` refreshed
+  testing evidence, and the final
+  `php artisan security:controls:verify --json --env=testing` passed with
+  `severity: ok`, 6 checks, 0 failed. Added report:
+  `docs/planning/nest_227_api_security_validation_refresh_2026-05-01.md`.
+- 2026-05-01: Completed `NEST-226` accessibility baseline closure. Added a
+  shared web `:focus-visible` baseline and explicit mobile
+  `accessibilityRole`/`accessibilityLabel` metadata to shared ModuleScreen
+  actions, mobile Calendar CRUD controls, Settings shortcuts, and advanced
+  modal language/sync/notification/Copilot controls. Updated:
+  `apps/web/src/app/globals.css`,
+  `apps/mobile/components/mvp/ModuleScreen.tsx`,
+  `apps/mobile/app/(tabs)/calendar.tsx`,
+  `apps/mobile/app/(tabs)/settings.tsx`,
+  `apps/mobile/app/modal.tsx`. Added report:
+  `docs/planning/nest_226_accessibility_baseline_closure_2026-05-01.md`.
+- 2026-05-01: Completed `NEST-224` mobile Calendar event CRUD parity. Mobile
+  Calendar now loads real calendar events and supports create, inline edit,
+  delete, refresh, validation, feedback, and force-sync through the existing
+  shared `nestApiClient`. `ModuleScreen` quick actions now support optional
+  handlers and a route-specific content slot, so Calendar quick actions are no
+  longer presentational-only. Updated:
+  `apps/mobile/app/(tabs)/calendar.tsx`,
+  `apps/mobile/components/mvp/ModuleScreen.tsx`. Added report:
+  `docs/planning/nest_224_mobile_calendar_event_crud_parity_2026-05-01.md`.
+- 2026-05-01: Completed `NEST-223` founder-ready blocker review. Published
+  `docs/planning/nest_223_founder_ready_blocker_review_2026-05-01.md` with the
+  recommendation `BLOCKED - do not call Nest v1 founder-ready yet`. Current
+  hard blockers are mobile Calendar event CRUD parity, provider connection
+  production semantics, accessibility baseline closure, and API/security
+  validation freshness. Added follow-up queue `NEST-224` through `NEST-228`.
+- 2026-05-01: Completed `NEST-222` accessibility baseline. Published
+  `docs/planning/nest_222_accessibility_baseline_2026-05-01.md`. Web has
+  strong native button/label coverage in core flows, but remains partial
+  because no shared `:focus-visible` styling baseline was found. Mobile remains
+  partial because scoped custom `Pressable` controls and placeholder-heavy
+  `TextInput` fields do not carry explicit `accessibilityRole` or
+  `accessibilityLabel` coverage. Contrast measurement remains open. Mobile
+  Calendar quick actions are recorded as a product/accessibility blocker
+  because they look actionable but have no handlers.
+- 2026-05-01: Completed `NEST-221` repaired web/mobile parity audit. Published
+  `docs/planning/nest_221_web_mobile_parity_audit_2026-05-01.md`. The audit
+  confirms outcome parity for Tasks/Lists, Habits/Routines, Goals/Targets,
+  Journal/Life Areas, language switching, sync/API recovery, and
+  settings/support reachability. It records mobile Calendar as partial because
+  it supports conflicts, connections, and integration health recovery but not
+  event CRUD; current `ModuleScreen` quick actions are presentational without
+  handlers. Provider connection production semantics remain blocked by the
+  mobile Calendar `manual-token-*` local integration harness.
+- 2026-05-01: Completed `NEST-220` refreshed V1 readiness matrix. Published
+  `docs/planning/v1_readiness_matrix_2026-05-01.md` and updated the
+  founder-ready checklist with the current `PARTIAL - not founder-ready yet`
+  status. The matrix records current PASS/PARTIAL/OPEN/BLOCKED evidence across
+  repository truth, API, web, mobile, cross-surface integrity, daily-use
+  quality, and final gate readiness, and explicitly classifies mobile Calendar
+  `manual-token-*` provider connection behavior as a local integration harness
+  rather than production-ready OAuth/provider auth. Next evidence tasks:
+  `NEST-221` parity audit, `NEST-222` accessibility baseline, and `NEST-223`
+  final blocker review.
+- 2026-05-01: Completed `NEST-219` settings/support IA. Mobile advanced
+  settings now starts with a job-based `Support Map` for language, sync
+  recovery, notifications, and Copilot/support, with stronger modal section
+  framing. Classified mobile Calendar `manual-token-*` provider connection as
+  a local integration harness rather than production-ready OAuth. Updated:
+  `apps/mobile/app/modal.tsx`. Added report:
+  `docs/planning/nest_219_settings_support_ia_2026-05-01.md`.
+- 2026-05-01: Completed `NEST-218` mobile daily-loop ergonomics. The mobile
+  Tasks tab now opens with a real-data `Daily focus` band that promotes the
+  next useful open task and direct complete/review actions before create,
+  filter, and list administration. Updated:
+  `apps/mobile/app/(tabs)/index.tsx`. Added report:
+  `docs/planning/nest_218_mobile_daily_loop_ergonomics_2026-05-01.md`.
+- 2026-05-01: Completed `NEST-217` web Dashboard and Planning repeated-use
+  audit. Fixed Dashboard live hero copy so active habit counts come from real
+  loaded habit data instead of a percent/count calculation, and recorded that
+  Planning's current canonical workspace can stand for this slice while larger
+  cleanup remains future work. Updated:
+  `apps/web/src/app/dashboard/page.tsx`,
+  `packages/shared-types/src/localization.js`. Added report:
+  `docs/planning/nest_217_web_dashboard_planning_daily_use_audit_2026-05-01.md`.
+- 2026-05-01: Completed `NEST-216` offline/manual sync hardening for the
+  refreshed `v1` queue. Web and mobile sync flows now preserve backend
+  retryability metadata from the shared error envelope, skip automatic retries
+  for `retryable: false` failures, and keep manual `Retry Sync` as the
+  user-controlled recovery path. Updated:
+  `apps/web/src/lib/ux-contract.ts`,
+  `apps/web/src/components/offline-sync-card.tsx`,
+  `apps/mobile/lib/ux-contract.ts`,
+  `apps/mobile/app/modal.tsx`,
+  `apps/mobile/constants/offlineQueue.ts`,
+  `apps/mobile/constants/offlineSyncScheduler.ts`. Added report:
+  `docs/planning/nest_216_offline_manual_sync_hardening_2026-05-01.md`.
 - 2026-05-01: Completed `NEST-287` Journal editorial fidelity pass. Added a
   subtle showcase textarea count in the Journal composer and replaced the
   generic showcase row affordance with calmer passive action icons so the

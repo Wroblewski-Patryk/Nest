@@ -1,7 +1,24 @@
 import type {
   AnalyticsExperimentHookItem,
   AnalyticsLoopDecisionDashboardResponse,
+  ApiErrorCode,
+  ApiErrorEnvelope,
   ApiCollectionMeta,
+  CalendarEventCreatePayload,
+  CalendarEventItem as SharedCalendarEventItem,
+  CalendarEventUpdatePayload,
+  GoalCreatePayload,
+  GoalItem as SharedGoalItem,
+  GoalUpdatePayload,
+  HabitCreatePayload,
+  HabitItem as SharedHabitItem,
+  HabitLogItem,
+  HabitLogPayload,
+  HabitUpdatePayload,
+  JournalEntryCreatePayload,
+  JournalEntryItem as SharedJournalEntryItem,
+  JournalEntryUpdatePayload,
+  LifeAreaCreatePayload,
   AutomationRuleItem,
   AutomationRunItem,
   BillingAuditReconciliationItem,
@@ -15,8 +32,21 @@ import type {
   CollaborationSpaceMemberItem,
   InsightsTrendResponse,
   LifeAreaBalanceResponse,
+  LifeAreaItem,
+  ListCreatePayload,
+  ListItem as SharedListItem,
+  ListUpdatePayload,
   LocalizationOptionsResponse,
+  RoutineCreatePayload,
+  RoutineItem,
+  RoutineUpdatePayload,
   SupportedLanguage,
+  TargetCreatePayload,
+  TargetItem,
+  TargetUpdatePayload,
+  TaskCreatePayload,
+  TaskItem as SharedTaskItem,
+  TaskUpdatePayload,
 } from "./index";
 
 export type ApiCollectionResponse<TItem> = {
@@ -24,47 +54,12 @@ export type ApiCollectionResponse<TItem> = {
   meta: ApiCollectionMeta;
 };
 
-export type ListItem = {
-  id: string;
-  name: string;
-  color: string;
-};
-
-export type TaskItem = {
-  id: string;
-  title: string;
-  status: string;
-  priority: string;
-  assignee_user_id?: string | null;
-  reminder_owner_user_id?: string | null;
-};
-
-export type HabitItem = {
-  id: string;
-  title: string;
-  is_active: boolean;
-};
-
-export type GoalItem = {
-  id: string;
-  title: string;
-  status: string;
-};
-
-export type JournalEntryItem = {
-  id: string;
-  title: string;
-  mood: string | null;
-};
-
-export type CalendarEventItem = {
-  id: string;
-  title: string;
-  start_at: string;
-  end_at: string;
-  assignee_user_id?: string | null;
-  reminder_owner_user_id?: string | null;
-};
+export type ListItem = SharedListItem;
+export type TaskItem = SharedTaskItem;
+export type HabitItem = SharedHabitItem;
+export type GoalItem = SharedGoalItem;
+export type JournalEntryItem = SharedJournalEntryItem;
+export type CalendarEventItem = SharedCalendarEventItem;
 
 export type AssignmentTimelineItem = {
   id: string;
@@ -471,6 +466,15 @@ export type AiBriefingItem = {
   updated_at: string | null;
 };
 
+export type NestApiClientError = Error & {
+  status?: number;
+  code?: ApiErrorCode | string;
+  retryable?: boolean;
+  payload?: ApiErrorEnvelope | Record<string, unknown> | null;
+  details?: Record<string, unknown>;
+  errors?: Record<string, string[]>;
+};
+
 export type NestApiClient = {
   request(path: string, init?: RequestInit & { query?: Record<string, unknown> }): Promise<unknown>;
   getLocalizationOptions(): Promise<{ data: LocalizationOptionsResponse }>;
@@ -574,13 +578,55 @@ export type NestApiClient = {
   shareListToCollaborationSpace(spaceId: string, listId: string): Promise<{ data: ListItem }>;
   shareGoalToCollaborationSpace(spaceId: string, goalId: string): Promise<{ data: GoalItem }>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
+  createList(payload: ListCreatePayload): Promise<{ data: ListItem }>;
+  getList(listId: string): Promise<{ data: ListItem }>;
+  updateList(listId: string, payload: ListUpdatePayload): Promise<{ data: ListItem }>;
+  deleteList(listId: string): Promise<void>;
   getTasks(query?: Record<string, unknown>): Promise<ApiCollectionResponse<TaskItem>>;
+  createTask(payload: TaskCreatePayload): Promise<{ data: TaskItem }>;
+  getTask(taskId: string): Promise<{ data: TaskItem }>;
+  updateTask(taskId: string, payload: TaskUpdatePayload): Promise<{ data: TaskItem }>;
   getTaskAssignmentTimeline(taskId: string): Promise<{ data: AssignmentTimelineItem[] }>;
+  deleteTask(taskId: string): Promise<void>;
   getHabits(query?: Record<string, unknown>): Promise<ApiCollectionResponse<HabitItem>>;
+  createHabit(payload: HabitCreatePayload): Promise<{ data: HabitItem }>;
+  getHabit(habitId: string): Promise<{ data: HabitItem }>;
+  updateHabit(habitId: string, payload: HabitUpdatePayload): Promise<{ data: HabitItem }>;
+  deleteHabit(habitId: string): Promise<void>;
+  logHabit(habitId: string, payload: HabitLogPayload): Promise<{ data: HabitLogItem }>;
+  getRoutines(query?: Record<string, unknown>): Promise<ApiCollectionResponse<RoutineItem>>;
+  createRoutine(payload: RoutineCreatePayload): Promise<{ data: RoutineItem }>;
+  getRoutine(routineId: string): Promise<{ data: RoutineItem }>;
+  updateRoutine(routineId: string, payload: RoutineUpdatePayload): Promise<{ data: RoutineItem }>;
+  deleteRoutine(routineId: string): Promise<void>;
   getGoals(query?: Record<string, unknown>): Promise<ApiCollectionResponse<GoalItem>>;
+  createGoal(payload: GoalCreatePayload): Promise<{ data: GoalItem }>;
+  getGoal(goalId: string): Promise<{ data: GoalItem }>;
+  updateGoal(goalId: string, payload: GoalUpdatePayload): Promise<{ data: GoalItem }>;
+  deleteGoal(goalId: string): Promise<void>;
+  getTargets(query?: Record<string, unknown>): Promise<ApiCollectionResponse<TargetItem>>;
+  createTarget(payload: TargetCreatePayload): Promise<{ data: TargetItem }>;
+  getTarget(targetId: string): Promise<{ data: TargetItem }>;
+  updateTarget(targetId: string, payload: TargetUpdatePayload): Promise<{ data: TargetItem }>;
+  deleteTarget(targetId: string): Promise<void>;
+  getLifeAreas(query?: {
+    include_archived?: boolean;
+  }): Promise<{ data: LifeAreaItem[] }>;
+  createLifeArea(payload: LifeAreaCreatePayload): Promise<{ data: LifeAreaItem }>;
+  getLifeArea(lifeAreaId: string): Promise<{ data: LifeAreaItem }>;
+  updateLifeArea(lifeAreaId: string, payload: LifeAreaUpdatePayload): Promise<{ data: LifeAreaItem }>;
+  deleteLifeArea(lifeAreaId: string): Promise<void>;
   getJournalEntries(query?: Record<string, unknown>): Promise<ApiCollectionResponse<JournalEntryItem>>;
+  createJournalEntry(payload: JournalEntryCreatePayload): Promise<{ data: JournalEntryItem }>;
+  getJournalEntry(journalEntryId: string): Promise<{ data: JournalEntryItem }>;
+  updateJournalEntry(journalEntryId: string, payload: JournalEntryUpdatePayload): Promise<{ data: JournalEntryItem }>;
+  deleteJournalEntry(journalEntryId: string): Promise<void>;
   getCalendarEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<CalendarEventItem>>;
+  createCalendarEvent(payload: CalendarEventCreatePayload): Promise<{ data: CalendarEventItem }>;
+  getCalendarEvent(eventId: string): Promise<{ data: CalendarEventItem }>;
+  updateCalendarEvent(eventId: string, payload: CalendarEventUpdatePayload): Promise<{ data: CalendarEventItem }>;
   getCalendarEventAssignmentTimeline(eventId: string): Promise<{ data: AssignmentTimelineItem[] }>;
+  deleteCalendarEvent(eventId: string): Promise<void>;
   getLifeAreaBalance(query?: {
     window_days?: number;
   }): Promise<LifeAreaBalanceResponse>;
@@ -778,6 +824,14 @@ export function createNestApiClient(options: {
   getToken?: () => string | undefined | null;
   timeoutMs?: number;
 }): NestApiClient;
+
+export function getApiErrorStatus(error: unknown): number | null;
+export function getApiErrorCode(error: unknown): ApiErrorCode | string | null;
+export function getApiErrorRetryable(error: unknown): boolean | null;
+export function getApiPayloadMessage(error: unknown): string | null;
+export function getApiFieldErrorMessage(error: unknown): string | null;
+export function describeApiIssue(error: unknown): string;
+export function getUserSafeErrorMessage(error: unknown, fallbackAction?: string): string;
 
 export function resolveLanguage(value: unknown): SupportedLanguage;
 export function resolveLocale(language?: SupportedLanguage | string | null, override?: string | null): string;

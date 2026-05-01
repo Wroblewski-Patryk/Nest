@@ -13,12 +13,17 @@ export type ModuleKey =
   | "billing";
 
 export type Priority = "low" | "medium" | "high" | "urgent";
+export type TaskStatus = "todo" | "in_progress" | "done" | "canceled";
+export type GoalStatus = "active" | "paused" | "completed" | "archived";
+export type HabitType = "boolean" | "numeric" | "duration";
+export type JournalMood = "low" | "neutral" | "good" | "great";
+export type CalendarLinkedEntityType = "task" | "goal" | "routine";
 
 export interface TaskSummary {
   id: string;
   listId: string;
   title: string;
-  status: "todo" | "in_progress" | "done" | "canceled";
+  status: TaskStatus;
   priority: Priority;
   dueDate: string | null;
 }
@@ -32,7 +37,7 @@ export interface ListSummary {
 export interface GoalSummary {
   id: string;
   title: string;
-  status: "active" | "paused" | "completed" | "archived";
+  status: GoalStatus;
 }
 
 export interface ApiCollectionMeta {
@@ -72,29 +77,120 @@ export type ApiCollectionResponse<TItem> = {
 
 export type ListItem = {
   id: string;
+  tenant_id: string;
+  user_id: string;
+  goal_id: string | null;
+  target_id: string | null;
+  life_area_id: string | null;
   name: string;
   color: string;
+  position: number;
+  is_archived: boolean;
+  visibility: "private" | "shared";
+  collaboration_space_id: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 };
 
 export type TaskItem = {
   id: string;
+  tenant_id: string;
+  user_id: string;
+  list_id: string | null;
   title: string;
-  status: string;
-  priority: string;
+  description: string | null;
+  status: TaskStatus;
+  priority: Priority;
+  due_date: string | null;
+  starts_at: string | null;
+  completed_at: string | null;
+  life_area_id: string | null;
   assignee_user_id?: string | null;
   reminder_owner_user_id?: string | null;
+  source: string;
+  sort_order: number;
+  created_at: string | null;
+  updated_at: string | null;
 };
 
 export type HabitItem = {
   id: string;
+  tenant_id: string;
+  user_id: string;
   title: string;
+  description: string | null;
+  type: HabitType;
+  cadence: Record<string, unknown>;
   is_active: boolean;
+  created_at: string | null;
+  updated_at: string | null;
 };
 
 export type GoalItem = {
   id: string;
+  tenant_id: string;
+  user_id: string;
   title: string;
-  status: string;
+  description: string | null;
+  status: GoalStatus;
+  visibility: "private" | "shared";
+  collaboration_space_id: string | null;
+  target_date: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+  targets?: TargetItem[];
+};
+
+export type RoutineStepItem = {
+  id: string;
+  tenant_id: string;
+  routine_id: string;
+  step_order: number;
+  title: string;
+  details: string | null;
+  duration_minutes: number | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+export type RoutineItem = {
+  id: string;
+  tenant_id: string;
+  user_id: string;
+  title: string;
+  description: string | null;
+  is_active: boolean;
+  created_at: string | null;
+  updated_at: string | null;
+  steps: RoutineStepItem[];
+};
+
+export type TargetItem = {
+  id: string;
+  tenant_id: string;
+  goal_id: string;
+  title: string;
+  metric_type: string;
+  value_target: number;
+  value_current: number;
+  unit: string | null;
+  due_date: string | null;
+  status: GoalStatus;
+  created_at: string | null;
+  updated_at: string | null;
+  goal?: GoalItem | null;
+};
+
+export type LifeAreaItem = {
+  id: string;
+  tenant_id: string;
+  user_id: string;
+  name: string;
+  color: string;
+  weight: number;
+  is_archived: boolean;
+  created_at: string | null;
+  updated_at: string | null;
 };
 
 export type CollaborationMemberRole = "owner" | "editor" | "viewer" | "member";
@@ -143,17 +239,230 @@ export type CollaborationInviteItem = {
 
 export type JournalEntryItem = {
   id: string;
+  tenant_id: string;
+  user_id: string;
   title: string;
-  mood: string | null;
+  body: string;
+  mood: JournalMood | null;
+  entry_date: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+  life_areas?: LifeAreaItem[];
 };
 
 export type CalendarEventItem = {
   id: string;
+  tenant_id: string;
+  user_id: string;
   title: string;
+  description: string | null;
   start_at: string;
   end_at: string;
+  timezone: string;
+  all_day: boolean;
+  source: string;
+  linked_entity_type: CalendarLinkedEntityType | null;
+  linked_entity_id: string | null;
   assignee_user_id?: string | null;
   reminder_owner_user_id?: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+export type ListCreatePayload = {
+  name: string;
+  color?: string | null;
+  position?: number;
+  goal_id?: string | null;
+  target_id?: string | null;
+  life_area_id?: string | null;
+};
+
+export type ListUpdatePayload = {
+  name?: string;
+  color?: string | null;
+  position?: number;
+  is_archived?: boolean;
+  goal_id?: string | null;
+  target_id?: string | null;
+  life_area_id?: string | null;
+};
+
+export type TaskCreatePayload = {
+  list_id?: string | null;
+  title: string;
+  description?: string | null;
+  status?: TaskStatus;
+  priority?: Priority;
+  due_date?: string | null;
+  starts_at?: string | null;
+  life_area_id?: string | null;
+  assignee_user_id?: string | null;
+  reminder_owner_user_id?: string | null;
+  handoff_note?: string | null;
+};
+
+export type TaskUpdatePayload = {
+  list_id?: string | null;
+  title?: string;
+  description?: string | null;
+  status?: TaskStatus;
+  priority?: Priority;
+  due_date?: string | null;
+  starts_at?: string | null;
+  completed_at?: string | null;
+  life_area_id?: string | null;
+  assignee_user_id?: string | null;
+  reminder_owner_user_id?: string | null;
+  handoff_note?: string | null;
+};
+
+export type HabitCreatePayload = {
+  title: string;
+  description?: string | null;
+  type: HabitType;
+  cadence: Record<string, unknown>;
+  is_active?: boolean;
+};
+
+export type HabitUpdatePayload = {
+  title?: string;
+  description?: string | null;
+  type?: HabitType;
+  cadence?: Record<string, unknown>;
+  is_active?: boolean;
+};
+
+export type HabitLogPayload = {
+  logged_at: string;
+  value_numeric?: number | null;
+  value_seconds?: number | null;
+  note?: string | null;
+};
+
+export type HabitLogItem = {
+  id: string;
+  tenant_id: string;
+  user_id: string;
+  habit_id: string;
+  logged_at: string;
+  value_numeric: number | null;
+  value_seconds: number | null;
+  note: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+export type RoutineStepInput = {
+  title: string;
+  details?: string | null;
+  duration_minutes?: number | null;
+};
+
+export type RoutineCreatePayload = {
+  title: string;
+  description?: string | null;
+  is_active?: boolean;
+  steps: RoutineStepInput[];
+};
+
+export type RoutineUpdatePayload = {
+  title?: string;
+  description?: string | null;
+  is_active?: boolean;
+  steps?: RoutineStepInput[];
+};
+
+export type GoalCreatePayload = {
+  title: string;
+  description?: string | null;
+  status?: GoalStatus;
+  target_date?: string | null;
+};
+
+export type GoalUpdatePayload = {
+  title?: string;
+  description?: string | null;
+  status?: GoalStatus;
+  target_date?: string | null;
+};
+
+export type TargetCreatePayload = {
+  goal_id: string;
+  title: string;
+  metric_type: string;
+  value_target: number;
+  value_current?: number;
+  unit?: string | null;
+  due_date?: string | null;
+  status?: GoalStatus;
+};
+
+export type TargetUpdatePayload = {
+  title?: string;
+  metric_type?: string;
+  value_target?: number;
+  value_current?: number;
+  unit?: string | null;
+  due_date?: string | null;
+  status?: GoalStatus;
+};
+
+export type LifeAreaCreatePayload = {
+  name: string;
+  color?: string | null;
+  weight?: number;
+};
+
+export type LifeAreaUpdatePayload = {
+  name?: string;
+  color?: string | null;
+  weight?: number;
+  is_archived?: boolean;
+};
+
+export type JournalEntryCreatePayload = {
+  title: string;
+  body: string;
+  mood?: JournalMood | null;
+  entry_date?: string | null;
+  life_area_ids?: string[];
+};
+
+export type JournalEntryUpdatePayload = {
+  title?: string;
+  body?: string;
+  mood?: JournalMood | null;
+  entry_date?: string | null;
+  life_area_ids?: string[];
+};
+
+export type CalendarEventCreatePayload = {
+  title: string;
+  description?: string | null;
+  start_at: string;
+  end_at: string;
+  timezone?: string | null;
+  all_day?: boolean;
+  linked_entity_type?: CalendarLinkedEntityType | null;
+  linked_entity_id?: string | null;
+  assignee_user_id?: string | null;
+  reminder_owner_user_id?: string | null;
+  handoff_note?: string | null;
+};
+
+export type CalendarEventUpdatePayload = {
+  title?: string;
+  description?: string | null;
+  start_at?: string;
+  end_at?: string;
+  timezone?: string | null;
+  all_day?: boolean;
+  linked_entity_type?: CalendarLinkedEntityType | null;
+  linked_entity_id?: string | null;
+  assignee_user_id?: string | null;
+  reminder_owner_user_id?: string | null;
+  handoff_note?: string | null;
 };
 
 export type AssignmentTimelineItem = {
@@ -817,7 +1126,18 @@ export type ApiErrorEnvelope = {
   };
 };
 
+export type NestApiClientError = Error & {
+  status?: number;
+  code?: ApiErrorCode | string;
+  retryable?: boolean;
+  payload?: ApiErrorEnvelope | Record<string, unknown> | null;
+  details?: Record<string, unknown>;
+  errors?: Record<string, string[]>;
+};
+
 export function getApiErrorStatus(error: unknown): number | null;
+export function getApiErrorCode(error: unknown): ApiErrorCode | string | null;
+export function getApiErrorRetryable(error: unknown): boolean | null;
 export function getApiPayloadMessage(error: unknown): string | null;
 export function getApiFieldErrorMessage(error: unknown): string | null;
 export function describeApiIssue(error: unknown): string;
@@ -972,13 +1292,55 @@ export type NestApiClient = {
   shareListToCollaborationSpace(spaceId: string, listId: string): Promise<{ data: ListItem }>;
   shareGoalToCollaborationSpace(spaceId: string, goalId: string): Promise<{ data: GoalItem }>;
   getLists(query?: Record<string, unknown>): Promise<ApiCollectionResponse<ListItem>>;
+  createList(payload: ListCreatePayload): Promise<{ data: ListItem }>;
+  getList(listId: string): Promise<{ data: ListItem }>;
+  updateList(listId: string, payload: ListUpdatePayload): Promise<{ data: ListItem }>;
+  deleteList(listId: string): Promise<void>;
   getTasks(query?: Record<string, unknown>): Promise<ApiCollectionResponse<TaskItem>>;
+  createTask(payload: TaskCreatePayload): Promise<{ data: TaskItem }>;
+  getTask(taskId: string): Promise<{ data: TaskItem }>;
+  updateTask(taskId: string, payload: TaskUpdatePayload): Promise<{ data: TaskItem }>;
   getTaskAssignmentTimeline(taskId: string): Promise<{ data: AssignmentTimelineItem[] }>;
+  deleteTask(taskId: string): Promise<void>;
   getHabits(query?: Record<string, unknown>): Promise<ApiCollectionResponse<HabitItem>>;
+  createHabit(payload: HabitCreatePayload): Promise<{ data: HabitItem }>;
+  getHabit(habitId: string): Promise<{ data: HabitItem }>;
+  updateHabit(habitId: string, payload: HabitUpdatePayload): Promise<{ data: HabitItem }>;
+  deleteHabit(habitId: string): Promise<void>;
+  logHabit(habitId: string, payload: HabitLogPayload): Promise<{ data: HabitLogItem }>;
+  getRoutines(query?: Record<string, unknown>): Promise<ApiCollectionResponse<RoutineItem>>;
+  createRoutine(payload: RoutineCreatePayload): Promise<{ data: RoutineItem }>;
+  getRoutine(routineId: string): Promise<{ data: RoutineItem }>;
+  updateRoutine(routineId: string, payload: RoutineUpdatePayload): Promise<{ data: RoutineItem }>;
+  deleteRoutine(routineId: string): Promise<void>;
   getGoals(query?: Record<string, unknown>): Promise<ApiCollectionResponse<GoalItem>>;
+  createGoal(payload: GoalCreatePayload): Promise<{ data: GoalItem }>;
+  getGoal(goalId: string): Promise<{ data: GoalItem }>;
+  updateGoal(goalId: string, payload: GoalUpdatePayload): Promise<{ data: GoalItem }>;
+  deleteGoal(goalId: string): Promise<void>;
+  getTargets(query?: Record<string, unknown>): Promise<ApiCollectionResponse<TargetItem>>;
+  createTarget(payload: TargetCreatePayload): Promise<{ data: TargetItem }>;
+  getTarget(targetId: string): Promise<{ data: TargetItem }>;
+  updateTarget(targetId: string, payload: TargetUpdatePayload): Promise<{ data: TargetItem }>;
+  deleteTarget(targetId: string): Promise<void>;
+  getLifeAreas(query?: {
+    include_archived?: boolean;
+  }): Promise<{ data: LifeAreaItem[] }>;
+  createLifeArea(payload: LifeAreaCreatePayload): Promise<{ data: LifeAreaItem }>;
+  getLifeArea(lifeAreaId: string): Promise<{ data: LifeAreaItem }>;
+  updateLifeArea(lifeAreaId: string, payload: LifeAreaUpdatePayload): Promise<{ data: LifeAreaItem }>;
+  deleteLifeArea(lifeAreaId: string): Promise<void>;
   getJournalEntries(query?: Record<string, unknown>): Promise<ApiCollectionResponse<JournalEntryItem>>;
+  createJournalEntry(payload: JournalEntryCreatePayload): Promise<{ data: JournalEntryItem }>;
+  getJournalEntry(journalEntryId: string): Promise<{ data: JournalEntryItem }>;
+  updateJournalEntry(journalEntryId: string, payload: JournalEntryUpdatePayload): Promise<{ data: JournalEntryItem }>;
+  deleteJournalEntry(journalEntryId: string): Promise<void>;
   getCalendarEvents(query?: Record<string, unknown>): Promise<ApiCollectionResponse<CalendarEventItem>>;
+  createCalendarEvent(payload: CalendarEventCreatePayload): Promise<{ data: CalendarEventItem }>;
+  getCalendarEvent(eventId: string): Promise<{ data: CalendarEventItem }>;
+  updateCalendarEvent(eventId: string, payload: CalendarEventUpdatePayload): Promise<{ data: CalendarEventItem }>;
   getCalendarEventAssignmentTimeline(eventId: string): Promise<{ data: AssignmentTimelineItem[] }>;
+  deleteCalendarEvent(eventId: string): Promise<void>;
   getLifeAreaBalance(query?: {
     window_days?: number;
   }): Promise<LifeAreaBalanceResponse>;

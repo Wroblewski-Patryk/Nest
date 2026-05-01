@@ -13,7 +13,12 @@ import {
   decryptOfflineCachePayload,
   encryptOfflineCachePayload,
 } from "@/lib/offline-cache-crypto";
-import { describeApiIssue, getApiErrorStatus } from "@/lib/ux-contract";
+import {
+  describeApiIssue,
+  getApiErrorCode,
+  getApiErrorRetryable,
+  getApiErrorStatus,
+} from "@/lib/ux-contract";
 
 type OfflineAction = "sync_list_tasks" | "sync_calendar" | "sync_journal";
 type QueueStatus = "pending" | "synced" | "failed";
@@ -26,6 +31,7 @@ type QueueItem = {
   last_error?: string;
   retry_count?: number;
   next_retry_at?: string;
+  retryable?: boolean;
 };
 
 const STORAGE_KEY = "nest.offlineQueue.v1";
@@ -127,6 +133,10 @@ function computeRetryDelaySeconds(retryCount: number, seed: string): number {
 }
 
 function isRetryDue(item: QueueItem, nowMs: number): boolean {
+  if (item.retryable === false) {
+    return false;
+  }
+
   if (!item.next_retry_at) {
     return true;
   }
@@ -235,16 +245,28 @@ export function OfflineSyncCard() {
             setDetail(`${item.action} synced successfully.`);
           } catch (error) {
             const status = getApiErrorStatus(error);
+            const code = getApiErrorCode(error);
+            const retryable = getApiErrorRetryable(error);
+            const shouldRetryAutomatically = retryable !== false;
             const retryCount = (item.retry_count ?? 0) + 1;
             const retryDelaySeconds = computeRetryDelaySeconds(retryCount, item.id);
             item.status = "failed";
             item.retry_count = retryCount;
-            item.next_retry_at = new Date(Date.now() + retryDelaySeconds * 1000).toISOString();
-            item.last_error = status === null ? "request_failed" : `HTTP ${status}`;
+            item.retryable = retryable ?? true;
+            if (shouldRetryAutomatically) {
+              item.next_retry_at = new Date(Date.now() + retryDelaySeconds * 1000).toISOString();
+            } else {
+              delete item.next_retry_at;
+            }
+            item.last_error = code ?? (status === null ? "request_failed" : `HTTP ${status}`);
             hadFailure = true;
             lastError = item.last_error;
             setDetail(
-              `${options.source === "auto" ? "Auto-sync" : "Manual sync"} could not finish ${item.action}. ${describeApiIssue(error)} Next retry in ${retryDelaySeconds}s.`
+              `${options.source === "auto" ? "Auto-sync" : "Manual sync"} could not finish ${item.action}. ${describeApiIssue(error)} ${
+                shouldRetryAutomatically
+                  ? `Next retry in ${retryDelaySeconds}s.`
+                  : "Resolve the issue, then use Retry Sync to try again."
+              }`
             );
             if (options.stopOnError) {
               break;
@@ -281,6 +303,7 @@ export function OfflineSyncCard() {
             status: "pending" as const,
             last_error: undefined,
             next_retry_at: undefined,
+            retryable: undefined,
           }
         : item
     );

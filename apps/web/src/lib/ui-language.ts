@@ -1,8 +1,34 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { resolveLanguage } from "@nest/shared-types";
 
 const UI_LANGUAGE_STORAGE_KEY = "nest.ui.language";
+const UI_LANGUAGE_EVENT = "nest:ui-language-change";
+
+function getDefaultUiLanguage(): "en" | "pl" {
+  return resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE ?? "en");
+}
+
+function getUiLanguageSnapshot(): "en" | "pl" {
+  return getStoredUiLanguage() ?? getDefaultUiLanguage();
+}
+
+function subscribeToUiLanguage(callback: () => void): () => void {
+  if (typeof window === "undefined") {
+    return () => {};
+  }
+
+  const handleChange = () => callback();
+
+  window.addEventListener(UI_LANGUAGE_EVENT, handleChange);
+  window.addEventListener("storage", handleChange);
+
+  return () => {
+    window.removeEventListener(UI_LANGUAGE_EVENT, handleChange);
+    window.removeEventListener("storage", handleChange);
+  };
+}
 
 export function getStoredUiLanguage(): "en" | "pl" | null {
   if (typeof window === "undefined") {
@@ -22,7 +48,12 @@ export function setStoredUiLanguage(language: string): "en" | "pl" {
 
   if (typeof window !== "undefined") {
     window.localStorage.setItem(UI_LANGUAGE_STORAGE_KEY, resolved);
+    window.dispatchEvent(new CustomEvent(UI_LANGUAGE_EVENT, { detail: resolved }));
   }
 
   return resolved;
+}
+
+export function useUiLanguage(): "en" | "pl" {
+  return useSyncExternalStore(subscribeToUiLanguage, getUiLanguageSnapshot, getDefaultUiLanguage);
 }

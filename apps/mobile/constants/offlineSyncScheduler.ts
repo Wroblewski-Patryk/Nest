@@ -9,6 +9,7 @@ export type MobileOfflineQueueSchedulerItem = {
   created_at: string;
   status: QueueStatus;
   retry_count?: number;
+  retryable?: boolean;
 };
 
 export type MobileOfflineSyncSchedulerState = {

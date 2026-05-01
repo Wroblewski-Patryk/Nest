@@ -377,8 +377,8 @@ export default function CalendarPage() {
 
   const loadData = useCallback(async () => {
     const [eventsResponse, tasksResponse] = await Promise.all([
-      nestApiClient.getCalendarEvents({ per_page: 200 }),
-      nestApiClient.getTasks({ per_page: 200 }),
+      nestApiClient.getCalendarEvents({ per_page: 100 }),
+      nestApiClient.getTasks({ per_page: 100 }),
     ]);
     setEvents((eventsResponse.data ?? []) as CalendarEventItem[]);
     setTasks((tasksResponse.data ?? []) as TaskCalendarItem[]);

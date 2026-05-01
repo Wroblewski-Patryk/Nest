@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { resolveAuraVariant, resolveLanguage, translate, type ModuleKey } from "@nest/shared-types";
+import { resolveAuraVariant, resolveLocale, translate, type ModuleKey, type SupportedLanguage } from "@nest/shared-types";
 import { WorkspaceLogoutButton } from "@/components/workspace-logout-button";
+import { useUiLanguage } from "@/lib/ui-language";
 
 type WorkspaceNavKey = ModuleKey | "dashboard" | "settings" | "assistant";
 type PlanningSubnavKey = "tasks" | "lists" | "targets" | "goals";
@@ -10,6 +13,7 @@ type MobileNavKey = "dashboard" | "tasks" | "calendar" | "journal" | "settings";
 type WorkspaceShellProps = {
   title: string;
   subtitle: string;
+  language?: SupportedLanguage;
   module?: ModuleKey;
   navKey?: WorkspaceNavKey | "none";
   contentLayout?: "single" | "grid";
@@ -224,6 +228,7 @@ function UtilityIcon({ name }: { name: "search" | "bell" }) {
 export function WorkspaceShell({
   title,
   subtitle,
+  language,
   module,
   navKey,
   contentLayout,
@@ -235,11 +240,12 @@ export function WorkspaceShell({
   planningSubnav,
   children,
 }: WorkspaceShellProps) {
-  const language = resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE);
+  const storedUiLanguage = useUiLanguage();
+  const uiLanguage = language ?? storedUiLanguage;
   const auraVariant = resolveAuraVariant(module ?? "tasks");
   const activeNavKey = navKey === "none" ? null : (navKey ?? module ?? null);
   const layoutClass = contentLayout === "grid" ? "is-grid" : "is-single";
-  const resolvedUtilityDateLabel = utilityDateLabel ?? new Date().toLocaleDateString("en-US", {
+  const resolvedUtilityDateLabel = utilityDateLabel ?? new Date().toLocaleDateString(resolveLocale(uiLanguage), {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -264,13 +270,14 @@ export function WorkspaceShell({
                 </svg>
               </span>
             </div>
-            {shellTone === "dashboard-canonical" ? null : <p className="workspace-kicker">{translate("app.kicker", language)}</p>}
+            {shellTone === "dashboard-canonical" ? null : <p className="workspace-kicker">{translate("app.kicker", uiLanguage)}</p>}
           </div>
 
-          <nav className="workspace-rail-nav" aria-label="Core modules">
+          <nav className="workspace-rail-nav" aria-label={translate("app.nav.core_modules", uiLanguage)}>
             {visibleNavItems.map((item) => {
               const isActive = activeNavKey === item.key;
               const isPlanning = item.key === "tasks";
+              const itemLabel = translate(`app.nav.${item.key}`, uiLanguage, item.label);
 
               if (!isPlanning || !planningSubnav) {
                 return (
@@ -282,7 +289,7 @@ export function WorkspaceShell({
                     <span className="workspace-rail-icon">
                       <MenuIcon name={item.icon} />
                     </span>
-                    <span>{item.label}</span>
+                    <span>{itemLabel}</span>
                   </Link>
                 );
               }
@@ -293,16 +300,16 @@ export function WorkspaceShell({
                     <span className="workspace-rail-icon">
                       <MenuIcon name={item.icon} />
                     </span>
-                    <span>{item.label}</span>
+                    <span>{itemLabel}</span>
                   </Link>
-                  <nav className="workspace-rail-subnav" aria-label="Planning sections">
+                  <nav className="workspace-rail-subnav" aria-label={translate("app.nav.planning", uiLanguage)}>
                     {PLANNING_SUBNAV_ITEMS.map((subitem) => (
                       <Link
                         key={subitem.key}
                         href={subitem.href}
                         className={`workspace-rail-sublink ${planningSubnav.active === subitem.key ? "is-active" : ""}`}
                       >
-                        {subitem.label}
+                        {translate(`app.nav.${subitem.key}`, uiLanguage, subitem.label)}
                       </Link>
                     ))}
                   </nav>
@@ -320,7 +327,7 @@ export function WorkspaceShell({
               <span className="workspace-rail-plant-leaf workspace-rail-plant-leaf-right" />
             </div>
             <blockquote className="workspace-rail-quote">
-              <p>&ldquo;A life well lived is built daily, intentionally.&rdquo;</p>
+              <p>&ldquo;{translate("app.quote.daily_intention", uiLanguage)}&rdquo;</p>
               <span>Nest</span>
             </blockquote>
             <div className="workspace-account-card">
@@ -328,7 +335,7 @@ export function WorkspaceShell({
                 A
               </div>
               <div>
-                <small>Welcome back,</small>
+                <small>{translate("app.account.welcome_back", uiLanguage)}</small>
                 <strong>Alexandra</strong>
               </div>
               <span className="workspace-account-chevron" aria-hidden="true">
@@ -339,7 +346,10 @@ export function WorkspaceShell({
             </div>
             {hideRailFooterActions ? null : (
               <div className="workspace-rail-footer-actions">
-                <WorkspaceLogoutButton />
+                <WorkspaceLogoutButton
+                  idleLabel={translate("app.action.sign_out", uiLanguage)}
+                  busyLabel={translate("app.action.signing_out", uiLanguage)}
+                />
               </div>
             )}
           </div>
@@ -368,17 +378,25 @@ export function WorkspaceShell({
                     <span>{resolvedUtilityWeatherLabel}</span>
                   </small>
                 </div>
-                <Link href="/assistant" className="workspace-utility-button" aria-label="Search or ask Assistant">
+                <Link
+                  href="/assistant"
+                  className="workspace-utility-button"
+                  aria-label={translate("app.utility.search_assistant", uiLanguage)}
+                >
                   <UtilityIcon name="search" />
                 </Link>
-                <Link href="/settings" className="workspace-utility-button" aria-label="Notifications">
+                <Link
+                  href="/settings"
+                  className="workspace-utility-button"
+                  aria-label={translate("app.utility.notifications", uiLanguage)}
+                >
                   <UtilityIcon name="bell" />
                   <span className="workspace-utility-badge">3</span>
                 </Link>
               </div>
             </header>
 
-            <nav className="workspace-mobile-nav" aria-label="Mobile modules">
+            <nav className="workspace-mobile-nav" aria-label={translate("app.nav.mobile_modules", uiLanguage)}>
               {MOBILE_NAV_ITEMS.map((item) => (
                 <Link
                   key={`mobile-${item.href}`}
@@ -386,7 +404,7 @@ export function WorkspaceShell({
                   className={`workspace-mobile-link ${activeNavKey === item.key ? "is-active" : ""}`}
                 >
                   <MenuIcon name={item.icon} />
-                  <span>{item.label}</span>
+                  <span>{translate(`app.nav.${item.key}`, uiLanguage, item.label)}</span>
                 </Link>
               ))}
             </nav>

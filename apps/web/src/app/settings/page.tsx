@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { nestApiClient } from "@/lib/api-client";
 import { clearAuthSession, getAuthToken } from "@/lib/auth-session";
+import { setStoredUiLanguage } from "@/lib/ui-language";
 
 type SettingsTab = "profile" | "application" | "access" | "subscription";
 type ProfileLanguage = "en" | "pl";
@@ -336,7 +337,9 @@ export default function SettingsPage() {
 
       setUser(response.data);
       setProfileName(response.data.name ?? profileName.trim());
-      setProfileLanguage(response.data.language === "pl" ? "pl" : normalizedLanguage);
+      const resolvedLanguage = response.data.language === "pl" ? "pl" : normalizedLanguage;
+      setProfileLanguage(resolvedLanguage);
+      setStoredUiLanguage(resolvedLanguage);
       setFeedback(successMessage);
     } catch (error) {
       if (getErrorStatus(error) === 401) {

@@ -4,7 +4,6 @@ import { Platform, Pressable, ScrollView, StyleSheet, TextInput } from 'react-na
 import { useCallback, useEffect, useState } from 'react';
 import {
   type AiCopilotConversationResponse,
-  resolveLanguage,
   type InAppNotificationItem,
   type NotificationChannel,
   type NotificationChannelDeliveryItem,
@@ -29,7 +28,13 @@ import {
   saveOfflineSyncSchedulerState,
   type MobileOfflineSyncSchedulerState,
 } from '@/constants/offlineSyncScheduler';
-import { describeApiIssue, getApiErrorStatus } from '@/lib/ux-contract';
+import { setStoredUiLanguage, useUiLanguage } from '@/lib/ui-language';
+import {
+  describeApiIssue,
+  getApiErrorCode,
+  getApiErrorRetryable,
+  getApiErrorStatus,
+} from '@/lib/ux-contract';
 
 const AUTO_SYNC_INTERVAL_MS = 15000;
 const BASE_RETRY_SECONDS = 15;
@@ -99,6 +104,10 @@ function computeRetryDelaySeconds(retryCount: number, seed: string): number {
 }
 
 function isRetryDue(item: MobileOfflineQueueItem, nowMs: number): boolean {
+  if (item.retryable === false) {
+    return false;
+  }
+
   if (!item.next_retry_at) {
     return true;
   }
@@ -113,7 +122,7 @@ function isRetryDue(item: MobileOfflineQueueItem, nowMs: number): boolean {
 
 export default function ModalScreen() {
   const router = useRouter();
-  const [selected, setSelected] = useState<'en' | 'pl'>('en');
+  const selected = useUiLanguage();
   const [queue, setQueue] = useState<MobileOfflineQueueItem[]>([]);
   const [detail, setDetail] = useState('Queue offline changes here and run a manual sync when you are ready.');
   const [notificationDetail, setNotificationDetail] = useState('Loading your in-app notifications...');
@@ -312,15 +321,6 @@ export default function ModalScreen() {
   );
 
   useEffect(() => {
-    nestApiClient
-      .getLocalizationOptions()
-      .then((response) => {
-        setSelected(resolveLanguage(response.data.detected_language));
-      })
-      .catch(() => {
-        setSelected('en');
-      });
-
     setQueue(loadOfflineQueue());
     setScheduler(loadOfflineSyncSchedulerState());
     void refreshNotifications();
@@ -375,16 +375,28 @@ export default function ModalScreen() {
             setDetail(`${item.action} synced successfully.`);
           } catch (error) {
             const status = getApiErrorStatus(error);
+            const code = getApiErrorCode(error);
+            const retryable = getApiErrorRetryable(error);
+            const shouldRetryAutomatically = retryable !== false;
             const retryCount = (item.retry_count ?? 0) + 1;
             const retryDelaySeconds = computeRetryDelaySeconds(retryCount, item.id);
             item.status = 'failed';
             item.retry_count = retryCount;
-            item.next_retry_at = new Date(Date.now() + retryDelaySeconds * 1000).toISOString();
-            item.last_error = status === null ? 'request_failed' : `HTTP ${status}`;
+            item.retryable = retryable ?? true;
+            if (shouldRetryAutomatically) {
+              item.next_retry_at = new Date(Date.now() + retryDelaySeconds * 1000).toISOString();
+            } else {
+              delete item.next_retry_at;
+            }
+            item.last_error = code ?? (status === null ? 'request_failed' : `HTTP ${status}`);
             hadFailure = true;
             lastError = item.last_error;
             setDetail(
-              `${options.source === 'auto' ? 'Auto-sync' : 'Manual sync'} could not finish ${item.action}. ${describeApiIssue(error)} Next retry in ${retryDelaySeconds}s.`
+              `${options.source === 'auto' ? 'Auto-sync' : 'Manual sync'} could not finish ${item.action}. ${describeApiIssue(error)} ${
+                shouldRetryAutomatically
+                  ? `Next retry in ${retryDelaySeconds}s.`
+                  : 'Resolve the issue, then use Retry Sync to try again.'
+              }`
             );
             if (options.stopOnError) {
               break;
@@ -421,6 +433,7 @@ export default function ModalScreen() {
             status: 'pending' as const,
             last_error: undefined,
             next_retry_at: undefined,
+            retryable: undefined,
           }
         : item
     );
@@ -480,16 +493,49 @@ export default function ModalScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Support Map</Text>
+      <Text style={styles.description}>
+        Start with the recovery job you need, then use the matching section below.
+      </Text>
+      <View style={styles.supportMap}>
+        <View style={styles.supportCard}>
+          <Text style={styles.supportCardTitle}>Language</Text>
+          <Text style={styles.supportCardText}>Switch active UI language.</Text>
+        </View>
+        <View style={styles.supportCard}>
+          <Text style={styles.supportCardTitle}>Sync recovery</Text>
+          <Text style={styles.supportCardText}>Queue, force, retry, or wipe sync state.</Text>
+        </View>
+        <View style={styles.supportCard}>
+          <Text style={styles.supportCardTitle}>Notifications</Text>
+          <Text style={styles.supportCardText}>Review alerts and channel rules.</Text>
+        </View>
+        <View style={styles.supportCard}>
+          <Text style={styles.supportCardTitle}>Copilot</Text>
+          <Text style={styles.supportCardText}>Ask for planning or recovery help.</Text>
+        </View>
+      </View>
+
       <Text style={styles.title}>Pre-Auth Language</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text style={styles.description}>
         Choose your language before signing in and onboarding.
       </Text>
       <View style={styles.actionRow}>
-        <Pressable style={[styles.languageButton, selected === 'en' && styles.languageButtonActive]} onPress={() => setSelected('en')}>
+        <Pressable
+          style={[styles.languageButton, selected === 'en' && styles.languageButtonActive]}
+          onPress={() => setStoredUiLanguage('en')}
+          accessibilityRole="button"
+          accessibilityLabel="Switch language to English"
+        >
           <Text style={styles.languageButtonText}>English</Text>
         </Pressable>
-        <Pressable style={[styles.languageButton, selected === 'pl' && styles.languageButtonActive]} onPress={() => setSelected('pl')}>
+        <Pressable
+          style={[styles.languageButton, selected === 'pl' && styles.languageButtonActive]}
+          onPress={() => setStoredUiLanguage('pl')}
+          accessibilityRole="button"
+          accessibilityLabel="Switch language to Polish"
+        >
           <Text style={styles.languageButtonText}>Polski</Text>
         </Pressable>
       </View>
@@ -497,13 +543,13 @@ export default function ModalScreen() {
       <Text style={styles.title}>Sync Options</Text>
       <Text style={styles.description}>{detail}</Text>
       <View style={styles.actionRow}>
-        <Pressable style={styles.languageButton} onPress={() => enqueue('sync_list_tasks')}>
+        <Pressable style={styles.languageButton} onPress={() => enqueue('sync_list_tasks')} accessibilityRole="button" accessibilityLabel="Queue tasks sync">
           <Text style={styles.languageButtonText}>Queue Tasks</Text>
         </Pressable>
-        <Pressable style={styles.languageButton} onPress={() => enqueue('sync_calendar')}>
+        <Pressable style={styles.languageButton} onPress={() => enqueue('sync_calendar')} accessibilityRole="button" accessibilityLabel="Queue calendar sync">
           <Text style={styles.languageButtonText}>Queue Calendar</Text>
         </Pressable>
-        <Pressable style={styles.languageButton} onPress={() => enqueue('sync_journal')}>
+        <Pressable style={styles.languageButton} onPress={() => enqueue('sync_journal')} accessibilityRole="button" accessibilityLabel="Queue journal sync">
           <Text style={styles.languageButtonText}>Queue Journal</Text>
         </Pressable>
       </View>
@@ -511,6 +557,8 @@ export default function ModalScreen() {
         style={[styles.languageButton, styles.languageButtonActive]}
         onPress={() => void forceSync()}
         disabled={isSyncing || pending === 0}
+        accessibilityRole="button"
+        accessibilityLabel="Force sync"
       >
         <Text style={styles.languageButtonText}>{isSyncing ? 'Syncing...' : 'Force Sync'}</Text>
       </Pressable>
@@ -518,6 +566,8 @@ export default function ModalScreen() {
         style={styles.languageButton}
         onPress={() => void retrySync()}
         disabled={isSyncing}
+        accessibilityRole="button"
+        accessibilityLabel="Retry sync"
       >
         <Text style={styles.languageButtonText}>Retry Sync</Text>
       </Pressable>
@@ -530,6 +580,8 @@ export default function ModalScreen() {
           }))
         }
         disabled={isSyncing}
+        accessibilityRole="button"
+        accessibilityLabel={autoSyncEnabled ? 'Pause auto sync' : 'Resume auto sync'}
       >
         <Text style={styles.languageButtonText}>{autoSyncEnabled ? 'Pause Auto Sync' : 'Resume Auto Sync'}</Text>
       </Pressable>
@@ -537,6 +589,8 @@ export default function ModalScreen() {
         style={styles.languageButton}
         onPress={secureWipeCache}
         disabled={isSyncing}
+        accessibilityRole="button"
+        accessibilityLabel="Secure wipe cache"
       >
         <Text style={styles.languageButtonText}>Secure Wipe Cache</Text>
       </Pressable>
@@ -564,6 +618,8 @@ export default function ModalScreen() {
               style={styles.languageButton}
               onPress={() => openNotificationContext(item)}
               disabled={notificationBusyId === item.id}
+              accessibilityRole="button"
+              accessibilityLabel={`Open notification ${item.title}`}
             >
               <Text style={styles.languageButtonText}>Open</Text>
             </Pressable>
@@ -571,6 +627,8 @@ export default function ModalScreen() {
               style={styles.languageButton}
               onPress={() => void toggleRead(item)}
               disabled={notificationBusyId === item.id}
+              accessibilityRole="button"
+              accessibilityLabel={item.is_read ? `Mark ${item.title} unread` : `Mark ${item.title} read`}
             >
               <Text style={styles.languageButtonText}>{item.is_read ? 'Mark Unread' : 'Mark Read'}</Text>
             </Pressable>
@@ -578,6 +636,8 @@ export default function ModalScreen() {
               style={styles.languageButton}
               onPress={() => void snoozeNotification(item)}
               disabled={notificationBusyId === item.id}
+              accessibilityRole="button"
+              accessibilityLabel={`Snooze notification ${item.title} for one hour`}
             >
               <Text style={styles.languageButtonText}>Snooze 1h</Text>
             </Pressable>
@@ -600,6 +660,8 @@ export default function ModalScreen() {
                 ]}
                 onPress={() => toggleMatrixGlobalChannel(channel)}
                 disabled={isSavingMatrix}
+                accessibilityRole="button"
+                accessibilityLabel={`Toggle ${CHANNEL_LABEL[channel]} notifications`}
               >
                 <Text style={styles.languageButtonText}>
                   {CHANNEL_LABEL[channel]} {notificationPreferences.channels[channel] ? 'on' : 'off'}
@@ -624,6 +686,8 @@ export default function ModalScreen() {
               })
             }
             disabled={isSavingMatrix}
+            accessibilityRole="button"
+            accessibilityLabel="Toggle quiet hours"
           >
             <Text style={styles.languageButtonText}>
               {notificationPreferences.quiet_hours.enabled ? 'Quiet hours enabled' : 'Quiet hours disabled'}
@@ -644,6 +708,7 @@ export default function ModalScreen() {
             }
             editable={!isSavingMatrix}
             placeholder="Start (HH:mm)"
+            accessibilityLabel="Quiet hours start time"
           />
           <TextInput
             style={styles.matrixInput}
@@ -660,6 +725,7 @@ export default function ModalScreen() {
             }
             editable={!isSavingMatrix}
             placeholder="End (HH:mm)"
+            accessibilityLabel="Quiet hours end time"
           />
           <TextInput
             style={styles.matrixInput}
@@ -676,6 +742,7 @@ export default function ModalScreen() {
             }
             editable={!isSavingMatrix}
             placeholder="Timezone"
+            accessibilityLabel="Quiet hours timezone"
           />
 
           <Text style={styles.notificationTitle}>Per-event channels</Text>
@@ -692,6 +759,8 @@ export default function ModalScreen() {
                       style={[styles.languageButton, eventChannels[channel] && styles.languageButtonActive]}
                       onPress={() => toggleMatrixEventChannel(eventType, channel)}
                       disabled={isSavingMatrix}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Toggle ${CHANNEL_LABEL[channel]} for ${eventType}`}
                     >
                       <Text style={styles.languageButtonText}>
                         {CHANNEL_LABEL[channel]} {eventChannels[channel] ? 'on' : 'off'}
@@ -707,6 +776,8 @@ export default function ModalScreen() {
             style={[styles.languageButton, styles.languageButtonActive]}
             onPress={() => void saveNotificationMatrix()}
             disabled={isSavingMatrix}
+            accessibilityRole="button"
+            accessibilityLabel="Save notification settings"
           >
             <Text style={styles.languageButtonText}>
               {isSavingMatrix ? 'Saving notification settings...' : 'Save notification settings'}
@@ -738,11 +809,14 @@ export default function ModalScreen() {
         editable={!isCopilotBusy}
         multiline
         placeholder="Ask about priorities, scheduling, habits, goals, or reflection."
+        accessibilityLabel="Copilot question"
       />
       <Pressable
         style={[styles.languageButton, styles.languageButtonActive]}
         onPress={() => void askCopilot()}
         disabled={isCopilotBusy}
+        accessibilityRole="button"
+        accessibilityLabel="Ask Copilot"
       >
         <Text style={styles.languageButtonText}>{isCopilotBusy ? 'Thinking...' : 'Ask Copilot'}</Text>
       </Pressable>
@@ -776,6 +850,11 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
+    width: '100%',
+    borderTopWidth: 1,
+    borderTopColor: '#cbd5e1',
+    paddingTop: 16,
+    marginTop: 8,
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -791,8 +870,34 @@ const styles = StyleSheet.create({
   },
   actionRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 10,
     marginBottom: 12,
+  },
+  supportMap: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
+  },
+  supportCard: {
+    width: '48%',
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: '#ffffff',
+  },
+  supportCardTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0f172a',
+    marginBottom: 4,
+  },
+  supportCardText: {
+    fontSize: 12,
+    color: '#475569',
   },
   languageButton: {
     borderWidth: 1,

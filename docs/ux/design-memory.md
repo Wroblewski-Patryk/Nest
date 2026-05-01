@@ -506,8 +506,13 @@
     cards secondary to weekly direction and action flow;
   - Journal mobile should hide management/status chrome from the canonical first
     viewport;
-  - Calendar mobile still needs one more parity closure pass before it can be
-    treated as visually locked.
+  - Calendar mobile week-strip parity closure landed on 2026-05-01 in:
+    apps/web/src/app/calendar/page.tsx,
+    apps/web/src/app/globals.css
+    with report:
+    docs/ux/nest_288_calendar_mobile_week_strip_parity_2026-05-01.md.
+  - Treat the mobile Calendar week strip as locked to one horizontal Monday to
+    Sunday orientation layer; reduce pill density before collapsing the strip.
 - Mobile canonical order closure landed on 2026-05-01 in:
   `apps/web/src/app/globals.css`
   with report:

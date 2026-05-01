@@ -1,6 +1,6 @@
 # V1 Founder-Ready Checklist
 
-Last updated: 2026-04-26
+Last updated: 2026-05-01
 
 ## Purpose
 
@@ -81,7 +81,32 @@ Use this checklist as the canonical readiness gate during the `v1` repair wave.
 - `OPEN` the product can be used without relying on hidden setup knowledge from
   the repository author.
 
-## Current Status Snapshot (2026-04-26)
+## Current Status Snapshot (2026-05-01)
+
+- `PARTIAL` refreshed readiness evidence now lives in
+  `docs/planning/v1_readiness_matrix_2026-05-01.md`.
+- `PASS` repository startup truth, current task/context truth, shared error
+  envelope handling, offline/manual sync retryability, and the web/mobile
+  validation baselines covered by recent slices have current evidence.
+- `PASS` API validation freshness was refreshed by `NEST-227`.
+- `PARTIAL` route-local contract cleanup,
+  localization completeness, repeated-flow quality, and tenant-isolation
+  release evidence still need final confirmation before the gate can close.
+- `PASS WITH SCOPE BOUNDARY` provider connect is outside the V1 founder-ready
+  claim after `NEST-225`; Nest-first Calendar event CRUD, provider health,
+  remediation, and revoke remain in scope.
+- `PARTIAL` parity has current evidence from `NEST-221`, and `NEST-224` closed
+  mobile Calendar event CRUD; provider connect is no longer a V1
+  founder-ready dependency.
+- `PARTIAL` accessibility has a static baseline from `NEST-222` and baseline
+  closure from `NEST-226`; contrast and manual screen-reader/device smoke
+  remain final-gate evidence.
+- `FOUNDER-READY CANDIDATE` `NEST-228` reran the gate and found the scoped V1
+  implementation ready for final smoke, but not yet safe to declare fully
+  `v1 founder-ready` without narrow web/mobile UI, accessibility, and contrast
+  evidence.
+
+## Previous Status Snapshot (2026-04-26)
 
 - `PASS` repository startup truth recovery has started and the main doc drift
   was corrected.

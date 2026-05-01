@@ -1,5 +1,7 @@
 import {
   describeApiIssue as sharedDescribeApiIssue,
+  getApiErrorCode as sharedGetApiErrorCode,
+  getApiErrorRetryable as sharedGetApiErrorRetryable,
   getApiErrorStatus as sharedGetApiErrorStatus,
   getUserSafeErrorMessage as sharedGetUserSafeErrorMessage,
   type UiAsyncState,
@@ -14,6 +16,14 @@ export const STATE_LABELS: Record<UiAsyncState, string> = {
 
 export function getApiErrorStatus(error: unknown): number | null {
   return sharedGetApiErrorStatus(error);
+}
+
+export function getApiErrorCode(error: unknown): string | null {
+  return sharedGetApiErrorCode(error);
+}
+
+export function getApiErrorRetryable(error: unknown): boolean | null {
+  return sharedGetApiErrorRetryable(error);
 }
 
 export function describeApiIssue(error: unknown): string {

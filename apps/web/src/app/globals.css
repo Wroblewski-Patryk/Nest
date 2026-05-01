@@ -1002,6 +1002,12 @@ input[type="color"].list-row {
   cursor: not-allowed;
 }
 
+:where(a, button, input, select, textarea, summary, [role="button"], [role="tab"]):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent), #ffffff 18%);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent-soft), transparent 18%);
+}
+
 .state-loading {
   background: rgb(233 232 228 / 80%);
   border-color: var(--line-ghost);

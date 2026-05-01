@@ -101,7 +101,7 @@ export function ProviderConnectionsCard() {
       setState(items.length > 0 ? "success" : "empty");
       setDetail(
         items.length > 0
-          ? "Connect, reconnect, or revoke your integrations."
+          ? "Review or revoke provider connections. New provider auth is outside the V1 founder-ready scope."
           : "No provider connections are available yet."
       );
     } catch (error) {
@@ -113,30 +113,6 @@ export function ProviderConnectionsCard() {
   useEffect(() => {
     void loadConnections();
   }, [loadConnections]);
-
-  const connectProvider = useCallback(
-    async (provider: string) => {
-      const typedProvider = asProvider(provider);
-      if (typedProvider === null) return;
-
-      setBusyProvider(provider);
-      try {
-        await nestApiClient.upsertIntegrationConnection(typedProvider, {
-          access_token: `manual-token-${provider}-${Date.now()}`,
-          scopes: providerScopes[provider] ?? [],
-        });
-        await loadConnections();
-        setState("success");
-        setDetail(`${providerLabels[provider] ?? provider} is connected and ready.`);
-      } catch (error) {
-        setState("error");
-        setDetail(`We couldn't connect ${providerLabels[provider] ?? provider} right now. ${describeApiIssue(error)}`);
-      } finally {
-        setBusyProvider(null);
-      }
-    },
-    [loadConnections]
-  );
 
   const revokeProvider = useCallback(
     async (provider: string) => {
@@ -185,14 +161,9 @@ export function ProviderConnectionsCard() {
                     ) : null}
                   </div>
                   <div className="row-inline">
-                    <button
-                      type="button"
-                      className={connection.status === "connected" ? "btn-secondary" : "btn-primary"}
-                      onClick={() => void connectProvider(connection.provider)}
-                      disabled={busyProvider === connection.provider}
-                    >
-                      {connection.status === "connected" ? "Reconnect" : "Connect"}
-                    </button>
+                    {connection.status !== "connected" ? (
+                      <span className="pill state-empty">Connect outside V1</span>
+                    ) : null}
                     <button
                       type="button"
                       className="btn-secondary"

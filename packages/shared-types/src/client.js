@@ -8,17 +8,91 @@ export {
 } from "./localization.js";
 
 /**
+ * @param {unknown} value
+ * @returns {value is Record<string, unknown>}
+ */
+function isRecord(value) {
+  return typeof value === "object" && value !== null;
+}
+
+/**
+ * @param {unknown} error
+ * @returns {Record<string, unknown> | null}
+ */
+function getApiPayload(error) {
+  if (!isRecord(error) || !("payload" in error) || !isRecord(error.payload)) {
+    return null;
+  }
+
+  return error.payload;
+}
+
+/**
+ * @param {unknown} error
+ * @returns {Record<string, unknown> | null}
+ */
+function getApiEnvelope(error) {
+  const payload = getApiPayload(error);
+
+  if (payload && isRecord(payload.error)) {
+    return payload.error;
+  }
+
+  if (isRecord(error) && isRecord(error.error)) {
+    return error.error;
+  }
+
+  return null;
+}
+
+/**
  * @param {unknown} error
  * @returns {number | null}
  */
 export function getApiErrorStatus(error) {
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "status" in error &&
-    typeof error.status === "number"
-  ) {
+  if (isRecord(error) && "status" in error && typeof error.status === "number") {
     return error.status;
+  }
+
+  const envelope = getApiEnvelope(error);
+  if (envelope && typeof envelope.http_status === "number") {
+    return envelope.http_status;
+  }
+
+  return null;
+}
+
+/**
+ * @param {unknown} error
+ * @returns {string | null}
+ */
+export function getApiErrorCode(error) {
+  const envelope = getApiEnvelope(error);
+
+  if (envelope && typeof envelope.code === "string") {
+    return envelope.code;
+  }
+
+  if (isRecord(error) && typeof error.code === "string") {
+    return error.code;
+  }
+
+  return null;
+}
+
+/**
+ * @param {unknown} error
+ * @returns {boolean | null}
+ */
+export function getApiErrorRetryable(error) {
+  const envelope = getApiEnvelope(error);
+
+  if (envelope && typeof envelope.retryable === "boolean") {
+    return envelope.retryable;
+  }
+
+  if (isRecord(error) && typeof error.retryable === "boolean") {
+    return error.retryable;
   }
 
   return null;
@@ -29,15 +103,13 @@ export function getApiErrorStatus(error) {
  * @returns {string | null}
  */
 export function getApiPayloadMessage(error) {
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "payload" in error &&
-    typeof error.payload === "object" &&
-    error.payload !== null &&
-    typeof error.payload.message === "string"
-  ) {
-    return error.payload.message;
+  const payload = getApiPayload(error);
+  if (payload && typeof payload.message === "string") {
+    return payload.message;
+  }
+
+  if (isRecord(error) && typeof error.message === "string") {
+    return error.message;
   }
 
   return null;
@@ -48,20 +120,15 @@ export function getApiPayloadMessage(error) {
  * @returns {string | null}
  */
 export function getApiFieldErrorMessage(error) {
-  if (
-    typeof error !== "object" ||
-    error === null ||
-    !("payload" in error) ||
-    typeof error.payload !== "object" ||
-    error.payload === null ||
-    !("errors" in error.payload) ||
-    typeof error.payload.errors !== "object" ||
-    error.payload.errors === null
-  ) {
+  const payload = getApiPayload(error);
+  const fieldErrors =
+    payload && isRecord(payload.errors) ? payload.errors : isRecord(error) && isRecord(error.errors) ? error.errors : null;
+
+  if (!fieldErrors) {
     return null;
   }
 
-  const firstFieldError = Object.values(error.payload.errors).find(
+  const firstFieldError = Object.values(fieldErrors).find(
     (value) => Array.isArray(value) && typeof value[0] === "string"
   );
 
@@ -75,7 +142,40 @@ export function getApiFieldErrorMessage(error) {
  * @returns {string}
  */
 export function describeApiIssue(error) {
+  const code = getApiErrorCode(error);
   const status = getApiErrorStatus(error);
+
+  if (code === "auth_required") {
+    return "Please sign in again and retry.";
+  }
+
+  if (code === "forbidden") {
+    return "Your account does not currently have access to this action.";
+  }
+
+  if (code === "resource_not_found") {
+    return "The requested data is no longer available.";
+  }
+
+  if (code === "validation_failed") {
+    return "Some details need attention before this can be saved.";
+  }
+
+  if (code === "rate_limited") {
+    return "Too many requests were sent at once. Please retry in a moment.";
+  }
+
+  if (code === "tenant_quota_exceeded" || code === "entitlement_limit_exceeded") {
+    return "This workspace has reached a current limit for that action.";
+  }
+
+  if (code === "entitlement_denied") {
+    return "Your current plan does not include this action yet.";
+  }
+
+  if (code === "internal_error") {
+    return "Nest is having trouble completing this request right now. Please try again shortly.";
+  }
 
   if (status === 401) {
     return "Please sign in again and retry.";
@@ -122,6 +222,10 @@ export function getUserSafeErrorMessage(error, fallbackAction = "We couldn't com
     }
 
     return payloadMessage;
+  }
+
+  if (getApiErrorRetryable(error) === false && getApiErrorCode(error) === "forbidden") {
+    return "Your account does not currently have access to this action.";
   }
 
   return `${fallbackAction}. ${describeApiIssue(error)}`;
@@ -257,6 +361,26 @@ export function createNestApiClient(options) {
         error.status = response.status;
         // @ts-ignore runtime extension
         error.payload = payload;
+        if (payload && typeof payload.message === "string") {
+          // @ts-ignore runtime extension
+          error.message = payload.message;
+        }
+        if (payload && isRecord(payload.error)) {
+          // @ts-ignore runtime extension
+          error.code = typeof payload.error.code === "string" ? payload.error.code : undefined;
+          // @ts-ignore runtime extension
+          error.retryable = typeof payload.error.retryable === "boolean" ? payload.error.retryable : undefined;
+          // @ts-ignore runtime extension
+          error.details = isRecord(payload.error.details) ? payload.error.details : undefined;
+          if (typeof payload.error.http_status === "number") {
+            // @ts-ignore runtime extension
+            error.status = payload.error.http_status;
+          }
+        }
+        if (payload && isRecord(payload.errors)) {
+          // @ts-ignore runtime extension
+          error.errors = payload.errors;
+        }
         throw error;
       }
 
@@ -373,13 +497,156 @@ export function createNestApiClient(options) {
         method: "POST",
       }),
     getLists: (query = {}) => request("/lists", { query }),
+    createList: (payload) =>
+      request("/lists", {
+        method: "POST",
+        body: payload,
+      }),
+    getList: (listId) => request(`/lists/${listId}`),
+    updateList: (listId, payload) =>
+      request(`/lists/${listId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
+    deleteList: (listId) =>
+      request(`/lists/${listId}`, {
+        method: "DELETE",
+      }),
     getTasks: (query = {}) => request("/tasks", { query }),
+    createTask: (payload) =>
+      request("/tasks", {
+        method: "POST",
+        body: payload,
+      }),
+    getTask: (taskId) => request(`/tasks/${taskId}`),
+    updateTask: (taskId, payload) =>
+      request(`/tasks/${taskId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
     getTaskAssignmentTimeline: (taskId) => request(`/tasks/${taskId}/assignment-timeline`),
+    deleteTask: (taskId) =>
+      request(`/tasks/${taskId}`, {
+        method: "DELETE",
+      }),
     getHabits: (query = {}) => request("/habits", { query }),
+    createHabit: (payload) =>
+      request("/habits", {
+        method: "POST",
+        body: payload,
+      }),
+    getHabit: (habitId) => request(`/habits/${habitId}`),
+    updateHabit: (habitId, payload) =>
+      request(`/habits/${habitId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
+    deleteHabit: (habitId) =>
+      request(`/habits/${habitId}`, {
+        method: "DELETE",
+      }),
+    logHabit: (habitId, payload) =>
+      request(`/habits/${habitId}/logs`, {
+        method: "POST",
+        body: payload,
+      }),
+    getRoutines: (query = {}) => request("/routines", { query }),
+    createRoutine: (payload) =>
+      request("/routines", {
+        method: "POST",
+        body: payload,
+      }),
+    getRoutine: (routineId) => request(`/routines/${routineId}`),
+    updateRoutine: (routineId, payload) =>
+      request(`/routines/${routineId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
+    deleteRoutine: (routineId) =>
+      request(`/routines/${routineId}`, {
+        method: "DELETE",
+      }),
     getGoals: (query = {}) => request("/goals", { query }),
+    createGoal: (payload) =>
+      request("/goals", {
+        method: "POST",
+        body: payload,
+      }),
+    getGoal: (goalId) => request(`/goals/${goalId}`),
+    updateGoal: (goalId, payload) =>
+      request(`/goals/${goalId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
+    deleteGoal: (goalId) =>
+      request(`/goals/${goalId}`, {
+        method: "DELETE",
+      }),
+    getTargets: (query = {}) => request("/targets", { query }),
+    createTarget: (payload) =>
+      request("/targets", {
+        method: "POST",
+        body: payload,
+      }),
+    getTarget: (targetId) => request(`/targets/${targetId}`),
+    updateTarget: (targetId, payload) =>
+      request(`/targets/${targetId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
+    deleteTarget: (targetId) =>
+      request(`/targets/${targetId}`, {
+        method: "DELETE",
+      }),
+    getLifeAreas: (query = {}) => request("/life-areas", { query }),
+    createLifeArea: (payload) =>
+      request("/life-areas", {
+        method: "POST",
+        body: payload,
+      }),
+    getLifeArea: (lifeAreaId) => request(`/life-areas/${lifeAreaId}`),
+    updateLifeArea: (lifeAreaId, payload) =>
+      request(`/life-areas/${lifeAreaId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
+    deleteLifeArea: (lifeAreaId) =>
+      request(`/life-areas/${lifeAreaId}`, {
+        method: "DELETE",
+      }),
     getJournalEntries: (query = {}) => request("/journal-entries", { query }),
+    createJournalEntry: (payload) =>
+      request("/journal-entries", {
+        method: "POST",
+        body: payload,
+      }),
+    getJournalEntry: (journalEntryId) => request(`/journal-entries/${journalEntryId}`),
+    updateJournalEntry: (journalEntryId, payload) =>
+      request(`/journal-entries/${journalEntryId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
+    deleteJournalEntry: (journalEntryId) =>
+      request(`/journal-entries/${journalEntryId}`, {
+        method: "DELETE",
+      }),
     getCalendarEvents: (query = {}) => request("/calendar-events", { query }),
+    createCalendarEvent: (payload) =>
+      request("/calendar-events", {
+        method: "POST",
+        body: payload,
+      }),
+    getCalendarEvent: (eventId) => request(`/calendar-events/${eventId}`),
+    updateCalendarEvent: (eventId, payload) =>
+      request(`/calendar-events/${eventId}`, {
+        method: "PATCH",
+        body: payload,
+      }),
     getCalendarEventAssignmentTimeline: (eventId) => request(`/calendar-events/${eventId}/assignment-timeline`),
+    deleteCalendarEvent: (eventId) =>
+      request(`/calendar-events/${eventId}`, {
+        method: "DELETE",
+      }),
     getLifeAreaBalance: (query = {}) => request("/insights/life-area-balance", { query }),
     getInsightsTrends: (module, query = {}) => request(`/insights/trends/${module}`, { query }),
     getAnalyticsDecisionDashboard: (query = {}) =>

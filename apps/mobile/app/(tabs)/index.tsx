@@ -179,6 +179,14 @@ export default function TasksScreen() {
     () => tasks.filter((task) => task.status !== 'done' && task.status !== 'canceled').length,
     [tasks]
   );
+  const dailyFocusTask = useMemo(
+    () =>
+      tasks.find((task) => task.status === 'in_progress') ??
+      tasks.find((task) => task.status !== 'done' && task.status !== 'canceled' && (task.priority === 'urgent' || task.priority === 'high')) ??
+      tasks.find((task) => task.status !== 'done' && task.status !== 'canceled') ??
+      null,
+    [tasks]
+  );
 
   async function refreshWorkspace() {
     setIsRefreshing(true);
@@ -428,6 +436,46 @@ export default function TasksScreen() {
         {feedback ? <Text style={styles.feedback}>{feedback}</Text> : null}
         {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
+        <View style={styles.focusPanel}>
+          <Text style={styles.focusKicker}>Daily focus</Text>
+          {dailyFocusTask ? (
+            <>
+              <Text style={styles.focusTitle}>{dailyFocusTask.title}</Text>
+              <Text style={styles.focusDetail}>
+                {formatStatus(dailyFocusTask.status)} - {formatPriority(dailyFocusTask.priority)}
+                {dailyFocusTask.list_id
+                  ? ` - ${lists.find((list) => list.id === dailyFocusTask.list_id)?.name ?? 'List'}`
+                  : ' - No list'}
+              </Text>
+              <View style={styles.focusMetaRow}>
+                <Text style={styles.focusMeta}>{openTasksCount} open</Text>
+                <Text style={styles.focusMeta}>{lists.length} lists</Text>
+              </View>
+              <View style={styles.rowWrap}>
+                <Pressable
+                  style={styles.primaryButton}
+                  onPress={() => void toggleDone(dailyFocusTask)}
+                  disabled={busyTaskId === dailyFocusTask.id}
+                >
+                  <Text style={styles.primaryButtonText}>
+                    {busyTaskId === dailyFocusTask.id ? 'Updating...' : 'Mark done'}
+                  </Text>
+                </Pressable>
+                <Pressable style={styles.ghostButton} onPress={() => startTaskEdit(dailyFocusTask)}>
+                  <Text style={styles.ghostText}>Review task</Text>
+                </Pressable>
+              </View>
+            </>
+          ) : (
+            <>
+              <Text style={styles.focusTitle}>Plan one concrete next step</Text>
+              <Text style={styles.focusDetail}>
+                Create a task below, then Nest will keep the next useful action here.
+              </Text>
+            </>
+          )}
+        </View>
+
         <View style={styles.panel}>
           <Text style={styles.panelTitle}>Create list</Text>
           <TextInput style={styles.input} value={newListName} onChangeText={setNewListName} placeholder='List name' />
@@ -601,6 +649,12 @@ const styles = StyleSheet.create({
   metric: { color: mobileUiTokens.ink, fontSize: 12, fontWeight: '600' },
   feedback: { borderWidth: 1, borderColor: mobileUiTokens.outlineGhost, backgroundColor: mobileUiTokens.accentSoft, color: mobileUiTokens.ink, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 8, fontSize: 12 },
   error: { borderWidth: 1, borderColor: '#d06363', backgroundColor: '#ffe3e1', color: '#a02121', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 8, fontSize: 12 },
+  focusPanel: { borderWidth: 1, borderColor: mobileUiTokens.accent, borderRadius: 16, backgroundColor: '#f8fbf2', padding: 14, gap: 8 },
+  focusKicker: { color: mobileUiTokens.accent, fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.7 },
+  focusTitle: { color: mobileUiTokens.ink, fontSize: 20, fontWeight: '700', lineHeight: 24 },
+  focusDetail: { color: mobileUiTokens.muted, fontSize: 13, lineHeight: 18 },
+  focusMetaRow: { flexDirection: 'row', gap: 8, flexWrap: 'wrap' },
+  focusMeta: { color: mobileUiTokens.ink, fontSize: 12, fontWeight: '600', fontVariant: ['tabular-nums'] },
   panel: { borderWidth: 1, borderColor: mobileUiTokens.outlineGhost, borderRadius: 14, backgroundColor: 'rgba(255,255,255,0.76)', padding: 12, gap: 8 },
   panelTitle: { fontSize: 14, fontWeight: '700', color: mobileUiTokens.ink, textTransform: 'uppercase', letterSpacing: 0.7 },
   input: { borderWidth: 1, borderColor: mobileUiTokens.outlineGhost, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 8, color: mobileUiTokens.ink, backgroundColor: '#fff', fontSize: 13 },

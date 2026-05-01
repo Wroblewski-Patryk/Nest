@@ -5,7 +5,15 @@ import { useRouter } from "next/navigation";
 import { nestApiClient } from "@/lib/api-client";
 import { clearAuthSession } from "@/lib/auth-session";
 
-export function WorkspaceLogoutButton() {
+type WorkspaceLogoutButtonProps = {
+  idleLabel?: string;
+  busyLabel?: string;
+};
+
+export function WorkspaceLogoutButton({
+  idleLabel = "Sign out",
+  busyLabel = "Signing out...",
+}: WorkspaceLogoutButtonProps) {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -33,7 +41,7 @@ export function WorkspaceLogoutButton() {
 
   return (
     <button type="button" className="workspace-logout-button" onClick={handleLogout} disabled={isLoggingOut}>
-      {isLoggingOut ? "Signing out..." : "Sign out"}
+      {isLoggingOut ? busyLabel : idleLabel}
     </button>
   );
 }
