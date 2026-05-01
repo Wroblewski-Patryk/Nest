@@ -9,7 +9,7 @@ import {
   DashboardHeroBand,
 } from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
-import { nestApiClient } from "@/lib/api-client";
+import { apiRequest, nestApiClient } from "@/lib/api-client";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type LifeAreaItem = {
@@ -47,23 +47,9 @@ type LifeAreaBalanceResponse = {
 
 type JournalFilter = "all" | "good" | "heavy" | "week";
 
-type ApiRequestInit = Omit<RequestInit, "body"> & {
-  body?: Record<string, unknown>;
-  query?: Record<string, unknown>;
-};
-
 const JOURNAL_SHOWCASE_REFERENCE = new Date("2025-05-23T12:00:00");
 const JOURNAL_SHOWCASE_ENTRY_COUNT = 18;
 const JOURNAL_SHOWCASE_CADENCE = 68;
-
-async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
-  const requestFn = nestApiClient.request as unknown as (
-    requestPath: string,
-    requestInit?: ApiRequestInit
-  ) => Promise<unknown>;
-
-  return (await requestFn(path, init)) as TResponse;
-}
 
 function getErrorStatus(error: unknown): number | null {
   if (

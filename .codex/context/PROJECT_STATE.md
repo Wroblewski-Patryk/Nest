@@ -24,6 +24,14 @@ Last updated: 2026-05-01
 
 ## Recent Execution Updates
 
+- 2026-05-01: Completed `NEST-233` web route request cast cleanup. Web routes
+  now reuse the typed `apiRequest` wrapper exported from the existing web API
+  client module instead of defining repeated route-local
+  `nestApiClient.request as unknown as ...` helpers. Auth token sourcing,
+  endpoint paths, tenancy boundaries, and user-facing behavior are unchanged.
+  Web typecheck passed and static inspection found no remaining route-local
+  request casts in `apps/web/src/app/**/*.tsx`. Report:
+  `docs/planning/nest_233_web_route_request_cast_cleanup_2026-05-01.md`.
 - 2026-05-01: Started `NEST-231` mobile authenticated API session path and
   stopped at the required architecture/product decision. Mobile core screens
   use the shared API client, but `apps/mobile/constants/apiClient.ts` has no

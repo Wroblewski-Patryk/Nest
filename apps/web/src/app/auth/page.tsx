@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { resolveLanguage, translate } from "@nest/shared-types";
 import { PublicShell } from "@/components/public-shell";
 import { PreAuthLanguageSelector } from "@/components/pre-auth-language-selector";
-import { nestApiClient } from "@/lib/api-client";
+import { apiRequest } from "@/lib/api-client";
 import { clearAuthSession, getAuthToken, setAuthSession } from "@/lib/auth-session";
 import { getStoredUiLanguage } from "@/lib/ui-language";
 
@@ -68,15 +68,7 @@ export default function AuthPage() {
     }
 
     let mounted = true;
-    const requestFn = nestApiClient.request as unknown as <TResponse = unknown>(
-      path: string,
-      init?: {
-        method?: string;
-        body?: Record<string, unknown>;
-      }
-    ) => Promise<TResponse>;
-
-    void requestFn<{ data: AuthUser }>("/auth/me")
+    void apiRequest<{ data: AuthUser }>("/auth/me")
       .then((response) => {
         if (!mounted) {
           return;
@@ -105,12 +97,7 @@ export default function AuthPage() {
     setFeedback("");
 
     try {
-      const requestFn = nestApiClient.request as unknown as (
-        path: string,
-        init?: { method?: string; body?: Record<string, unknown> }
-      ) => Promise<AuthResponse>;
-
-      const response = await requestFn("/auth/login", {
+      const response = await apiRequest<AuthResponse>("/auth/login", {
         method: "POST",
         body: {
           email: loginEmail.trim(),
@@ -152,12 +139,7 @@ export default function AuthPage() {
     }
 
     try {
-      const requestFn = nestApiClient.request as unknown as (
-        path: string,
-        init?: { method?: string; body?: Record<string, unknown> }
-      ) => Promise<AuthResponse>;
-
-      const response = await requestFn("/auth/register", {
+      const response = await apiRequest<AuthResponse>("/auth/register", {
         method: "POST",
         body: {
           name: registerName.trim(),

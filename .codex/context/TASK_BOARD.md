@@ -24,6 +24,25 @@ Last updated: 2026-05-01
 
 ## Backlog
 
+- [x] NEST-233 Web route request cast cleanup
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-232
+  - Done on: 2026-05-01
+  - Priority: P1
+  - Notes:
+    - Exported one typed `apiRequest` wrapper from the existing web API client
+      module and replaced duplicated route-local `nestApiClient.request`
+      casts in auth, calendar, habits, journal, life-areas, routines,
+      settings, and tasks routes.
+    - Preserved endpoint paths, auth token sourcing, tenancy boundaries, and
+      user-facing behavior.
+    - Added report:
+      `docs/planning/nest_233_web_route_request_cast_cleanup_2026-05-01.md`.
+    - Validation:
+      `pnpm exec tsc --noEmit` in `apps/web`, plus static inspection for
+      removed route-local request casts.
+
 - [x] NEST-232 Fix web Calendar event query page size contract
   - Status: DONE
   - Owner: Execution Agent

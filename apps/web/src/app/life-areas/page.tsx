@@ -4,7 +4,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { clearAuthSession } from "@/lib/auth-session";
-import { nestApiClient } from "@/lib/api-client";
+import { apiRequest, nestApiClient } from "@/lib/api-client";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type LifeAreaItem = {
@@ -29,20 +29,6 @@ type LifeAreaBalanceResponse = {
     global_balance_score: number;
   };
 };
-
-type ApiRequestInit = Omit<RequestInit, "body"> & {
-  body?: Record<string, unknown>;
-  query?: Record<string, unknown>;
-};
-
-async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
-  const requestFn = nestApiClient.request as unknown as (
-    requestPath: string,
-    requestInit?: ApiRequestInit
-  ) => Promise<unknown>;
-
-  return (await requestFn(path, init)) as TResponse;
-}
 
 function getErrorStatus(error: unknown): number | null {
   if (

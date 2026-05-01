@@ -9,7 +9,7 @@ import {
   DashboardHeroBand,
 } from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
-import { nestApiClient } from "@/lib/api-client";
+import { apiRequest, nestApiClient } from "@/lib/api-client";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type CalendarEventItem = {
@@ -32,11 +32,6 @@ type TaskCalendarItem = {
 type CalendarViewMode = "day" | "week" | "month";
 type EventTone = "focus" | "meeting" | "personal" | "review";
 
-type ApiRequestInit = Omit<RequestInit, "body"> & {
-  body?: Record<string, unknown>;
-  query?: Record<string, unknown>;
-};
-
 const CALENDAR_SHOWCASE_REFERENCE = new Date("2025-05-23T12:00:00");
 const CALENDAR_SHOWCASE_PRIMARY_EVENT_ID = "showcase-event-4";
 const CALENDAR_SHOWCASE_LINKED_TASK_LABELS: Record<string, string> = {
@@ -45,15 +40,6 @@ const CALENDAR_SHOWCASE_LINKED_TASK_LABELS: Record<string, string> = {
   "showcase-event-5": "Define positioning and launch plan",
   "showcase-event-7": "Define positioning and launch plan",
 };
-
-async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
-  const requestFn = nestApiClient.request as unknown as (
-    requestPath: string,
-    requestInit?: ApiRequestInit
-  ) => Promise<unknown>;
-
-  return (await requestFn(path, init)) as TResponse;
-}
 
 function getErrorStatus(error: unknown): number | null {
   if (

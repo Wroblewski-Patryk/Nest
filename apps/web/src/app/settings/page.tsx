@@ -3,7 +3,7 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Panel, WorkspaceShell } from "@/components/workspace-shell";
-import { nestApiClient } from "@/lib/api-client";
+import { apiRequest, nestApiClient } from "@/lib/api-client";
 import { clearAuthSession, getAuthToken } from "@/lib/auth-session";
 import { setStoredUiLanguage } from "@/lib/ui-language";
 
@@ -59,11 +59,6 @@ type AgentCredentialDraft = {
   expiresAtLocal: string;
 };
 
-type ApiRequestInit = Omit<RequestInit, "body"> & {
-  body?: Record<string, unknown>;
-  query?: Record<string, unknown>;
-};
-
 const FALLBACK_SCOPES = ["tasks:read", "tasks:write", "lists:read", "lists:write"];
 
 function detectSettingsTab(value: string | null): SettingsTab {
@@ -80,15 +75,6 @@ function detectSettingsTab(value: string | null): SettingsTab {
   }
 
   return "profile";
-}
-
-async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
-  const requestFn = nestApiClient.request as unknown as (
-    requestPath: string,
-    requestInit?: ApiRequestInit
-  ) => Promise<unknown>;
-
-  return (await requestFn(path, init)) as TResponse;
 }
 
 function getErrorStatus(error: unknown): number | null {

@@ -15,7 +15,8 @@ Primary planning source:
 
 ## NEXT
 
-- [ ] Route-local cast cleanup and localization lower-route copy pass
+- [x] Route-local cast cleanup
+- [ ] Localization lower-route copy pass
 - [ ] Future provider OAuth/auth implementation only if provider connect enters
   a later release claim
 

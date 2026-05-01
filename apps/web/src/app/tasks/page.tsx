@@ -8,7 +8,7 @@ import {
   DashboardHeroBand,
 } from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
-import { nestApiClient } from "@/lib/api-client";
+import { apiRequest, nestApiClient } from "@/lib/api-client";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type TaskStatus = "todo" | "in_progress" | "done" | "canceled";
@@ -68,11 +68,6 @@ type TaskDraft = {
   lifeAreaId: string;
 };
 
-type ApiRequestInit = Omit<RequestInit, "body"> & {
-  body?: Record<string, unknown>;
-  query?: Record<string, unknown>;
-};
-
 const UNASSIGNED_COLUMN_ID = "__unassigned__";
 const TASKS_PAGE_SIZE = 100;
 const TASKS_PAGE_GUARD_LIMIT = 20;
@@ -84,15 +79,6 @@ function createEmptyTaskDraft(): TaskDraft {
     dueDate: "",
     lifeAreaId: "",
   };
-}
-
-async function apiRequest<TResponse>(path: string, init?: ApiRequestInit): Promise<TResponse> {
-  const requestFn = nestApiClient.request as unknown as (
-    requestPath: string,
-    requestInit?: ApiRequestInit
-  ) => Promise<unknown>;
-
-  return (await requestFn(path, init)) as TResponse;
 }
 
 function getErrorStatus(error: unknown): number | null {
