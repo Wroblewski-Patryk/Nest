@@ -212,22 +212,27 @@ export default function LifeAreasPage() {
   return (
     <WorkspaceShell
       title="Life Areas"
-      subtitle="Ustal priorytety zyciowe i kontroluj, czy codzienne dzialania sa z nimi zgodne."
+      subtitle="Set life priorities and see whether daily actions stay aligned."
       module="life_areas"
+      shellTone="dashboard-canonical"
+      utilityDateLabel="Friday, May 23, 2025"
+      utilityWeatherLabel="18°C"
+      hideRailFooterActions
     >
-      <div className="stack">
-        <MetricCard label="Areas" value={String(lifeAreas.length)} />
-        <MetricCard
-          label="Global balance"
-          value={balance ? balance.meta.global_balance_score.toFixed(1) : "n/a"}
-        />
-        <MetricCard
-          label="Top weight"
-          value={lifeAreas.length > 0 ? `${Math.max(...lifeAreas.map((item) => item.weight))}%` : "n/a"}
-        />
-      </div>
+      <div className="daily-system-shell">
+        <div className="stack daily-system-metrics">
+          <MetricCard label="Areas" value={String(lifeAreas.length)} />
+          <MetricCard
+            label="Global balance"
+            value={balance ? balance.meta.global_balance_score.toFixed(1) : "n/a"}
+          />
+          <MetricCard
+            label="Top weight"
+            value={lifeAreas.length > 0 ? `${Math.max(...lifeAreas.map((item) => item.weight))}%` : "n/a"}
+          />
+        </div>
 
-      <Panel title="Add Life Area">
+      <Panel title="Add Life Area" className="daily-system-panel daily-system-composer">
         <form className="form-grid" onSubmit={createLifeArea}>
           <label className="field">
             <span>Name</span>
@@ -270,7 +275,7 @@ export default function LifeAreasPage() {
         </form>
       </Panel>
 
-      <Panel title="Area List">
+      <Panel title="Area List" className="daily-system-panel daily-system-list-panel">
         <ul className="list">
           {lifeAreas.length === 0 ? (
             <li className="list-row">
@@ -375,16 +380,17 @@ export default function LifeAreasPage() {
         </ul>
       </Panel>
 
-      {feedback ? (
-        <Panel title="Status">
-          <p className="callout">{feedback}</p>
-        </Panel>
-      ) : null}
-      {errorMessage ? (
-        <Panel title="Error">
-          <p className="callout state-error">{errorMessage}</p>
-        </Panel>
-      ) : null}
+        {feedback ? (
+          <Panel title="Status" className="daily-system-panel daily-system-status">
+            <p className="callout">{feedback}</p>
+          </Panel>
+        ) : null}
+        {errorMessage ? (
+          <Panel title="Error" className="daily-system-panel daily-system-status">
+            <p className="callout state-error">{errorMessage}</p>
+          </Panel>
+        ) : null}
+      </div>
     </WorkspaceShell>
   );
 }

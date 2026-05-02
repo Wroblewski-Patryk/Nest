@@ -222,188 +222,194 @@ export default function HabitsPage() {
       title="Habits"
       subtitle="Track recurring actions with clear, low-friction creation flow."
       module="habits"
+      shellTone="dashboard-canonical"
+      utilityDateLabel="Friday, May 23, 2025"
+      utilityWeatherLabel="18°C"
+      hideRailFooterActions
     >
-      <div className="stack">
-        <MetricCard label="Habits tracked" value={String(habits.length)} />
-        <MetricCard label="Active habits" value={String(activeHabits)} />
-        <MetricCard label="Paused habits" value={String(habits.length - activeHabits)} />
-      </div>
+      <div className="daily-system-shell">
+        <div className="stack daily-system-metrics">
+          <MetricCard label="Habits tracked" value={String(habits.length)} />
+          <MetricCard label="Active habits" value={String(activeHabits)} />
+          <MetricCard label="Paused habits" value={String(habits.length - activeHabits)} />
+        </div>
 
-      <Panel title="Add Habit">
-        <form className="form-grid" onSubmit={createHabit}>
-          <label className="field">
-            <span>Title</span>
-            <input
-              className="list-row"
-              type="text"
-              value={newHabitTitle}
-              onChange={(event) => setNewHabitTitle(event.target.value)}
-              placeholder="Example: 20 min reading"
-              disabled={isCreating}
-            />
-          </label>
-          <label className="field">
-            <span>Type</span>
-            <select
-              className="list-row"
-              value={newHabitType}
-              onChange={(event) => setNewHabitType(event.target.value as HabitItem["type"])}
-              disabled={isCreating}
-            >
-              <option value="boolean">Boolean</option>
-              <option value="numeric">Numeric</option>
-              <option value="duration">Duration</option>
-            </select>
-          </label>
-          <label className="field">
-            <span>Cadence</span>
-            <select
-              className="list-row"
-              value={newHabitCadence}
-              onChange={(event) => setNewHabitCadence(event.target.value as "daily" | "weekly")}
-              disabled={isCreating}
-            >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-            </select>
-          </label>
-          <button type="submit" className="btn-primary" disabled={isCreating}>
-            {isCreating ? "Adding..." : "Add habit"}
-          </button>
-        </form>
-      </Panel>
+        <Panel title="Add Habit" className="daily-system-panel daily-system-composer">
+          <form className="form-grid" onSubmit={createHabit}>
+            <label className="field">
+              <span>Title</span>
+              <input
+                className="list-row"
+                type="text"
+                value={newHabitTitle}
+                onChange={(event) => setNewHabitTitle(event.target.value)}
+                placeholder="Example: 20 min reading"
+                disabled={isCreating}
+              />
+            </label>
+            <label className="field">
+              <span>Type</span>
+              <select
+                className="list-row"
+                value={newHabitType}
+                onChange={(event) => setNewHabitType(event.target.value as HabitItem["type"])}
+                disabled={isCreating}
+              >
+                <option value="boolean">Boolean</option>
+                <option value="numeric">Numeric</option>
+                <option value="duration">Duration</option>
+              </select>
+            </label>
+            <label className="field">
+              <span>Cadence</span>
+              <select
+                className="list-row"
+                value={newHabitCadence}
+                onChange={(event) => setNewHabitCadence(event.target.value as "daily" | "weekly")}
+                disabled={isCreating}
+              >
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+              </select>
+            </label>
+            <button type="submit" className="btn-primary" disabled={isCreating}>
+              {isCreating ? "Adding..." : "Add habit"}
+            </button>
+          </form>
+        </Panel>
 
-      <Panel title="Habit List">
-        <ul className="list">
-          {habits.length === 0 ? (
-            <li className="list-row">
-              <p>No habits yet. Add your first one above.</p>
-            </li>
-          ) : (
-            habits.map((habit) => (
-              <li className="list-row" key={habit.id}>
-                {editingHabitId === habit.id ? (
-                  <div className="form-grid">
-                    <label className="field">
-                      <span>Title</span>
-                      <input
-                        className="list-row"
-                        type="text"
-                        value={editHabitTitle}
-                        onChange={(event) => setEditHabitTitle(event.target.value)}
-                        disabled={busyHabitId === habit.id}
-                      />
-                    </label>
-                    <div className="row-inline">
-                      <label className="field">
-                        <span>Type</span>
-                        <select
-                          className="list-row"
-                          value={editHabitType}
-                          onChange={(event) => setEditHabitType(event.target.value as HabitItem["type"])}
-                          disabled={busyHabitId === habit.id}
-                        >
-                          <option value="boolean">Boolean</option>
-                          <option value="numeric">Numeric</option>
-                          <option value="duration">Duration</option>
-                        </select>
-                      </label>
-                      <label className="field">
-                        <span>Cadence</span>
-                        <select
-                          className="list-row"
-                          value={editHabitCadence}
-                          onChange={(event) => setEditHabitCadence(event.target.value as "daily" | "weekly")}
-                          disabled={busyHabitId === habit.id}
-                        >
-                          <option value="daily">Daily</option>
-                          <option value="weekly">Weekly</option>
-                        </select>
-                      </label>
-                    </div>
-                    <label className="field">
-                      <span>Active</span>
-                      <input
-                        type="checkbox"
-                        checked={editHabitIsActive}
-                        onChange={(event) => setEditHabitIsActive(event.target.checked)}
-                        disabled={busyHabitId === habit.id}
-                      />
-                    </label>
-                    <div className="row-inline">
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => void saveHabitEdit(habit.id)}
-                        disabled={busyHabitId === habit.id}
-                      >
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => setEditingHabitId(null)}
-                        disabled={busyHabitId === habit.id}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div>
-                      <strong>{habit.title}</strong>
-                      <p>
-                        {habit.type} | cadence: {String(habit.cadence?.type ?? "custom")}
-                      </p>
-                    </div>
-                    <div className="row-inline">
-                      <span className={`pill ${habit.is_active ? "state-success" : ""}`}>
-                        {habit.is_active ? "active" : "inactive"}
-                      </span>
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => startHabitEdit(habit)}
-                        disabled={busyHabitId === habit.id}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => void toggleHabitActive(habit)}
-                        disabled={busyHabitId === habit.id}
-                      >
-                        {habit.is_active ? "Pause" : "Activate"}
-                      </button>
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => void deleteHabit(habit.id)}
-                        disabled={busyHabitId === habit.id}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </>
-                )}
+        <Panel title="Habit List" className="daily-system-panel daily-system-list-panel">
+          <ul className="list">
+            {habits.length === 0 ? (
+              <li className="list-row">
+                <p>No habits yet. Add your first one above.</p>
               </li>
-            ))
-          )}
-        </ul>
-      </Panel>
+            ) : (
+              habits.map((habit) => (
+                <li className="list-row" key={habit.id}>
+                  {editingHabitId === habit.id ? (
+                    <div className="form-grid">
+                      <label className="field">
+                        <span>Title</span>
+                        <input
+                          className="list-row"
+                          type="text"
+                          value={editHabitTitle}
+                          onChange={(event) => setEditHabitTitle(event.target.value)}
+                          disabled={busyHabitId === habit.id}
+                        />
+                      </label>
+                      <div className="row-inline">
+                        <label className="field">
+                          <span>Type</span>
+                          <select
+                            className="list-row"
+                            value={editHabitType}
+                            onChange={(event) => setEditHabitType(event.target.value as HabitItem["type"])}
+                            disabled={busyHabitId === habit.id}
+                          >
+                            <option value="boolean">Boolean</option>
+                            <option value="numeric">Numeric</option>
+                            <option value="duration">Duration</option>
+                          </select>
+                        </label>
+                        <label className="field">
+                          <span>Cadence</span>
+                          <select
+                            className="list-row"
+                            value={editHabitCadence}
+                            onChange={(event) => setEditHabitCadence(event.target.value as "daily" | "weekly")}
+                            disabled={busyHabitId === habit.id}
+                          >
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                          </select>
+                        </label>
+                      </div>
+                      <label className="field">
+                        <span>Active</span>
+                        <input
+                          type="checkbox"
+                          checked={editHabitIsActive}
+                          onChange={(event) => setEditHabitIsActive(event.target.checked)}
+                          disabled={busyHabitId === habit.id}
+                        />
+                      </label>
+                      <div className="row-inline">
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void saveHabitEdit(habit.id)}
+                          disabled={busyHabitId === habit.id}
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => setEditingHabitId(null)}
+                          disabled={busyHabitId === habit.id}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <strong>{habit.title}</strong>
+                        <p>
+                          {habit.type} | cadence: {String(habit.cadence?.type ?? "custom")}
+                        </p>
+                      </div>
+                      <div className="row-inline">
+                        <span className={`pill ${habit.is_active ? "state-success" : ""}`}>
+                          {habit.is_active ? "active" : "inactive"}
+                        </span>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => startHabitEdit(habit)}
+                          disabled={busyHabitId === habit.id}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void toggleHabitActive(habit)}
+                          disabled={busyHabitId === habit.id}
+                        >
+                          {habit.is_active ? "Pause" : "Activate"}
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void deleteHabit(habit.id)}
+                          disabled={busyHabitId === habit.id}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </li>
+              ))
+            )}
+          </ul>
+        </Panel>
 
-      {feedback ? (
-        <Panel title="Status">
-          <p className="callout">{feedback}</p>
-        </Panel>
-      ) : null}
-      {errorMessage ? (
-        <Panel title="Error">
-          <p className="callout state-error">{errorMessage}</p>
-        </Panel>
-      ) : null}
+        {feedback ? (
+          <Panel title="Status" className="daily-system-panel daily-system-status">
+            <p className="callout">{feedback}</p>
+          </Panel>
+        ) : null}
+        {errorMessage ? (
+          <Panel title="Error" className="daily-system-panel daily-system-status">
+            <p className="callout state-error">{errorMessage}</p>
+          </Panel>
+        ) : null}
+      </div>
     </WorkspaceShell>
   );
 }

@@ -25,6 +25,23 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-293` Core daily systems canonical shell
+  alignment. Web Habits, Routines, and Life Areas now use the dashboard
+  canonical workspace shell tone, approved painterly material treatment for
+  route metrics and panels, softened panel headings, and a narrow responsive
+  metric/list safety rule. Existing API-backed CRUD behavior, auth handling,
+  and tenant-scoped service paths were unchanged; mobile application work
+  remains V2 scope. Fresh evidence:
+  `docs/ux_canonical_artifacts/2026-05-02/nest-habits-web-beauty-preview-current.png`,
+  `docs/ux_canonical_artifacts/2026-05-02/nest-habits-web-beauty-preview-phaseA.png`,
+  `docs/ux_canonical_artifacts/2026-05-02/nest-routines-web-beauty-preview-current.png`,
+  `docs/ux_canonical_artifacts/2026-05-02/nest-routines-web-beauty-preview-phaseA.png`,
+  `docs/ux_canonical_artifacts/2026-05-02/nest-life-areas-web-beauty-preview-current.png`,
+  and
+  `docs/ux_canonical_artifacts/2026-05-02/nest-life-areas-web-beauty-preview-phaseA.png`.
+  Web typecheck, lint, build, unit tests, Playwright desktop screenshot smoke,
+  Playwright 390px responsive smoke, and `git diff --check` passed. Report:
+  `docs/ux/nest_293_core_daily_systems_canonical_shell_alignment_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-292` Assistant canonical shell alignment.
   Optional-surface Assistant now renders in the current dashboard canonical
   workspace shell tone, uses existing approved dashboard material assets for
@@ -2131,7 +2148,7 @@ Last updated: 2026-05-02
 
 ## Autonomous Iteration State
 - Current iteration:
-- Current operation mode: BUILDER | ARCHITECT | TESTER
-- Last completed iteration:
-- Last completed task:
-- Next required mode:
+- Current operation mode:
+- Last completed iteration: 293
+- Last completed task: NEST-293 Core daily systems canonical shell alignment
+- Next required mode: ARCHITECT

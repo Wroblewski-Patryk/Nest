@@ -970,6 +970,115 @@ input[type="color"].list-row {
   padding: 0.24rem;
 }
 
+.daily-system-shell {
+  display: grid;
+  gap: 0.78rem;
+}
+
+.daily-system-metrics.stack {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.68rem;
+}
+
+.shell-dashboard-canonical .daily-system-shell .metric-card {
+  min-height: 4.45rem;
+  border-color: rgb(220 212 199 / 72%);
+  border-radius: 1.05rem;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 74%), rgb(250 246 237 / 78%)),
+    url("/assets/dashboard/dashboard-support-card-wash-canonical-v1.png");
+  background-repeat: no-repeat, no-repeat;
+  background-size: auto, cover;
+  background-position: center, center;
+  box-shadow: 0 16px 30px -28px rgb(75 63 52 / 22%);
+}
+
+.shell-dashboard-canonical .daily-system-shell .metric-card span {
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+}
+
+.shell-dashboard-canonical .daily-system-shell .metric-card strong {
+  font-family: var(--font-display);
+  font-size: 1.42rem;
+  font-weight: 500;
+}
+
+.daily-system-panel.panel {
+  gap: 0.58rem;
+  border-radius: 1.12rem;
+  border-color: rgb(220 212 199 / 74%);
+  padding: 0.92rem 0.96rem;
+}
+
+.daily-system-panel .panel-header {
+  padding-bottom: 0.04rem;
+}
+
+.daily-system-panel .panel-header h2 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.daily-system-composer .form-grid {
+  gap: 0.5rem;
+}
+
+.daily-system-composer .field span,
+.daily-system-list-panel .field span {
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+}
+
+.daily-system-shell .list {
+  gap: 0.4rem;
+}
+
+.daily-system-shell .list-row {
+  border-color: rgb(222 214 201 / 70%);
+  border-radius: 0.9rem;
+  background: rgb(255 255 255 / 72%);
+}
+
+.daily-system-shell li.list-row {
+  transition: transform 170ms ease, border-color 170ms ease, background 170ms ease;
+}
+
+.daily-system-shell li.list-row:hover {
+  transform: translateY(-1px);
+  border-color: rgb(205 197 183 / 76%);
+  background: rgb(255 255 255 / 84%);
+}
+
+.daily-system-shell input.list-row,
+.daily-system-shell select.list-row,
+.daily-system-shell textarea.list-row {
+  min-height: 2.42rem;
+  background: rgb(255 255 255 / 78%);
+}
+
+.daily-system-shell .row-inline {
+  gap: 0.36rem;
+}
+
+.daily-system-status.panel {
+  padding-top: 0.78rem;
+  padding-bottom: 0.78rem;
+}
+
+@media (max-width: 760px) {
+  .daily-system-metrics.stack {
+    grid-template-columns: 1fr;
+  }
+
+  .daily-system-shell .list-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .mono-note {
   margin: 0.17rem 0 0;
   color: var(--muted);

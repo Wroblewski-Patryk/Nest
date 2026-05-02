@@ -24,6 +24,35 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-293 Core daily systems canonical shell alignment
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-292
+  - Done on: 2026-05-02
+  - Priority: P1
+  - Notes:
+    - Web-only V1 task to lift Habits, Routines, and Life Areas out of the
+      older CRUD shell treatment and into the current canonical workspace
+      material family. Mobile application work remains V2 scope.
+    - Moved all three routes onto the dashboard canonical shell tone, reused
+      approved painterly material assets for metric/panel surfaces, softened
+      route panel rhythm, added a narrow responsive safety rule, and corrected
+      the Life Areas subtitle language mismatch.
+    - Existing API-backed create/edit/delete behavior, tenancy boundaries, and
+      auth handling remain unchanged.
+    - Report:
+      `docs/ux/nest_293_core_daily_systems_canonical_shell_alignment_2026-05-02.md`.
+    - Evidence:
+      `docs/ux_canonical_artifacts/2026-05-02/nest-habits-web-beauty-preview-current.png`,
+      `docs/ux_canonical_artifacts/2026-05-02/nest-habits-web-beauty-preview-phaseA.png`,
+      `docs/ux_canonical_artifacts/2026-05-02/nest-routines-web-beauty-preview-current.png`,
+      `docs/ux_canonical_artifacts/2026-05-02/nest-routines-web-beauty-preview-phaseA.png`,
+      `docs/ux_canonical_artifacts/2026-05-02/nest-life-areas-web-beauty-preview-current.png`,
+      `docs/ux_canonical_artifacts/2026-05-02/nest-life-areas-web-beauty-preview-phaseA.png`.
+    - Validation:
+      web typecheck, lint, build, unit tests, Playwright desktop screenshot
+      smoke, Playwright 390px responsive smoke, and `git diff --check`.
+
 - [x] NEST-292 Assistant canonical shell alignment
   - Status: DONE
   - Owner: Execution Agent

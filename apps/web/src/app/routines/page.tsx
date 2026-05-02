@@ -231,159 +231,165 @@ export default function RoutinesPage() {
       title="Routines"
       subtitle="Create repeatable rituals with a practical first-step setup flow."
       module="routines"
+      shellTone="dashboard-canonical"
+      utilityDateLabel="Friday, May 23, 2025"
+      utilityWeatherLabel="18°C"
+      hideRailFooterActions
     >
-      <div className="stack">
-        <MetricCard label="Routines active" value={String(routines.length)} />
-        <MetricCard label="Avg steps" value={String(avgSteps)} />
-        <MetricCard
-          label="Total steps"
-          value={String(routines.reduce((sum, routine) => sum + routine.steps.length, 0))}
-        />
-      </div>
+      <div className="daily-system-shell">
+        <div className="stack daily-system-metrics">
+          <MetricCard label="Routines active" value={String(routines.length)} />
+          <MetricCard label="Avg steps" value={String(avgSteps)} />
+          <MetricCard
+            label="Total steps"
+            value={String(routines.reduce((sum, routine) => sum + routine.steps.length, 0))}
+          />
+        </div>
 
-      <Panel title="Add Routine">
-        <form className="form-grid" onSubmit={createRoutine}>
-          <label className="field">
-            <span>Title</span>
-            <input
-              className="list-row"
-              type="text"
-              value={newRoutineTitle}
-              onChange={(event) => setNewRoutineTitle(event.target.value)}
-              placeholder="Example: Morning reset"
-              disabled={isCreating}
-            />
-          </label>
-          <label className="field">
-            <span>First step</span>
-            <input
-              className="list-row"
-              type="text"
-              value={newRoutineStepTitle}
-              onChange={(event) => setNewRoutineStepTitle(event.target.value)}
-              placeholder="Example: Hydrate"
-              disabled={isCreating}
-            />
-          </label>
-          <label className="field">
-            <span>First step duration (min)</span>
-            <input
-              className="list-row"
-              type="number"
-              min={0}
-              value={newRoutineStepDuration}
-              onChange={(event) => setNewRoutineStepDuration(event.target.value)}
-              disabled={isCreating}
-            />
-          </label>
-          <button type="submit" className="btn-primary" disabled={isCreating}>
-            {isCreating ? "Adding..." : "Add routine"}
-          </button>
-        </form>
-      </Panel>
+        <Panel title="Add Routine" className="daily-system-panel daily-system-composer">
+          <form className="form-grid" onSubmit={createRoutine}>
+            <label className="field">
+              <span>Title</span>
+              <input
+                className="list-row"
+                type="text"
+                value={newRoutineTitle}
+                onChange={(event) => setNewRoutineTitle(event.target.value)}
+                placeholder="Example: Morning reset"
+                disabled={isCreating}
+              />
+            </label>
+            <label className="field">
+              <span>First step</span>
+              <input
+                className="list-row"
+                type="text"
+                value={newRoutineStepTitle}
+                onChange={(event) => setNewRoutineStepTitle(event.target.value)}
+                placeholder="Example: Hydrate"
+                disabled={isCreating}
+              />
+            </label>
+            <label className="field">
+              <span>First step duration (min)</span>
+              <input
+                className="list-row"
+                type="number"
+                min={0}
+                value={newRoutineStepDuration}
+                onChange={(event) => setNewRoutineStepDuration(event.target.value)}
+                disabled={isCreating}
+              />
+            </label>
+            <button type="submit" className="btn-primary" disabled={isCreating}>
+              {isCreating ? "Adding..." : "Add routine"}
+            </button>
+          </form>
+        </Panel>
 
-      <Panel title="Routine List">
-        <ul className="list">
-          {routines.length === 0 ? (
-            <li className="list-row">
-              <p>No routines yet. Add your first one above.</p>
-            </li>
-          ) : (
-            routines.map((routine) => (
-              <li className="list-row" key={routine.id}>
-                {editingRoutineId === routine.id ? (
-                  <div className="form-grid">
-                    <label className="field">
-                      <span>Title</span>
-                      <input
-                        className="list-row"
-                        type="text"
-                        value={editRoutineTitle}
-                        onChange={(event) => setEditRoutineTitle(event.target.value)}
-                        disabled={busyRoutineId === routine.id}
-                      />
-                    </label>
-                    <label className="field">
-                      <span>Active</span>
-                      <input
-                        type="checkbox"
-                        checked={editRoutineIsActive}
-                        onChange={(event) => setEditRoutineIsActive(event.target.checked)}
-                        disabled={busyRoutineId === routine.id}
-                      />
-                    </label>
-                    <div className="row-inline">
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => void saveRoutineEdit(routine.id)}
-                        disabled={busyRoutineId === routine.id}
-                      >
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => setEditingRoutineId(null)}
-                        disabled={busyRoutineId === routine.id}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div>
-                      <strong>{routine.title}</strong>
-                      <p>{routine.steps.length} steps configured</p>
-                    </div>
-                    <div className="row-inline">
-                      <span className={`pill ${routine.is_active ? "state-success" : ""}`}>
-                        {routine.is_active ? "active" : "inactive"}
-                      </span>
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => startRoutineEdit(routine)}
-                        disabled={busyRoutineId === routine.id}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => void toggleRoutineActive(routine)}
-                        disabled={busyRoutineId === routine.id}
-                      >
-                        {routine.is_active ? "Pause" : "Activate"}
-                      </button>
-                      <button
-                        type="button"
-                        className="pill-link"
-                        onClick={() => void deleteRoutine(routine.id)}
-                        disabled={busyRoutineId === routine.id}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </>
-                )}
+        <Panel title="Routine List" className="daily-system-panel daily-system-list-panel">
+          <ul className="list">
+            {routines.length === 0 ? (
+              <li className="list-row">
+                <p>No routines yet. Add your first one above.</p>
               </li>
-            ))
-          )}
-        </ul>
-      </Panel>
+            ) : (
+              routines.map((routine) => (
+                <li className="list-row" key={routine.id}>
+                  {editingRoutineId === routine.id ? (
+                    <div className="form-grid">
+                      <label className="field">
+                        <span>Title</span>
+                        <input
+                          className="list-row"
+                          type="text"
+                          value={editRoutineTitle}
+                          onChange={(event) => setEditRoutineTitle(event.target.value)}
+                          disabled={busyRoutineId === routine.id}
+                        />
+                      </label>
+                      <label className="field">
+                        <span>Active</span>
+                        <input
+                          type="checkbox"
+                          checked={editRoutineIsActive}
+                          onChange={(event) => setEditRoutineIsActive(event.target.checked)}
+                          disabled={busyRoutineId === routine.id}
+                        />
+                      </label>
+                      <div className="row-inline">
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void saveRoutineEdit(routine.id)}
+                          disabled={busyRoutineId === routine.id}
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => setEditingRoutineId(null)}
+                          disabled={busyRoutineId === routine.id}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <strong>{routine.title}</strong>
+                        <p>{routine.steps.length} steps configured</p>
+                      </div>
+                      <div className="row-inline">
+                        <span className={`pill ${routine.is_active ? "state-success" : ""}`}>
+                          {routine.is_active ? "active" : "inactive"}
+                        </span>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => startRoutineEdit(routine)}
+                          disabled={busyRoutineId === routine.id}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void toggleRoutineActive(routine)}
+                          disabled={busyRoutineId === routine.id}
+                        >
+                          {routine.is_active ? "Pause" : "Activate"}
+                        </button>
+                        <button
+                          type="button"
+                          className="pill-link"
+                          onClick={() => void deleteRoutine(routine.id)}
+                          disabled={busyRoutineId === routine.id}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </li>
+              ))
+            )}
+          </ul>
+        </Panel>
 
-      {feedback ? (
-        <Panel title="Status">
-          <p className="callout">{feedback}</p>
-        </Panel>
-      ) : null}
-      {errorMessage ? (
-        <Panel title="Error">
-          <p className="callout state-error">{errorMessage}</p>
-        </Panel>
-      ) : null}
+        {feedback ? (
+          <Panel title="Status" className="daily-system-panel daily-system-status">
+            <p className="callout">{feedback}</p>
+          </Panel>
+        ) : null}
+        {errorMessage ? (
+          <Panel title="Error" className="daily-system-panel daily-system-status">
+            <p className="callout state-error">{errorMessage}</p>
+          </Panel>
+        ) : null}
+      </div>
     </WorkspaceShell>
   );
 }
