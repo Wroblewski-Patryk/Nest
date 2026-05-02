@@ -20,6 +20,12 @@
 
 ## Dashboard Canonical Patterns (2026-04-26)
 
+- Five-pillar progressive disclosure:
+  Canonical Nest navigation should expose only `Dashboard`, `Planning`,
+  `Calendar`, `Journal`, and `Settings` as top-level rooms. Habits, routines,
+  goals, targets, lists, tasks, and life areas remain first-class domain
+  modules, but should appear inside those rooms as contextual surfaces rather
+  than equal nav peers.
 - Dashboard hero band:
   Use one editorial summary surface with progress, daily metrics, and calm
   emotional anchoring before secondary modules appear.
@@ -35,6 +41,10 @@
 - Quiet system context:
   Goals, life balance, and insights should appear as supporting context ribbons
   or compact summary cues, not equal-weight dashboard cards.
+- Dashboard success ladder:
+  Dashboard should include a low-noise connection cue from long-term direction
+  to daily execution and reflection, such as `Goal -> Time -> Routine ->
+  Reflection`, so today's effort visibly belongs to the larger LifeOS loop.
 
 ## Dashboard Parity Patterns (2026-04-26)
 

@@ -25,6 +25,22 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-294` Dashboard IA and success ladder canonical
+  update. The user-provided UX/UI architecture note is now captured as the
+  canonical five-pillar view rule: Dashboard, Planning, Calendar, Journal, and
+  Settings. Web shell core navigation no longer exposes Habits, Routines, and
+  Life Areas as equal top-level peers; those domain modules remain reachable
+  through contextual pillar surfaces and direct routes. Dashboard now includes
+  a compact success ladder connecting goal, time, rhythm, and reflection while
+  preserving existing API/data behavior. New canonical IA doc:
+  `docs/ux/nest_os_canonical_view_architecture_2026-05-02.md`. New generated
+  previews:
+  `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-canonical-ia-desktop-2026-05-02.png`
+  and
+  `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-canonical-ia-mobile-2026-05-02.png`.
+  Web typecheck, lint, build, unit tests, static IA review, and
+  `git diff --check` passed. Report:
+  `docs/ux/nest_294_dashboard_ia_success_ladder_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-293` Core daily systems canonical shell
   alignment. Web Habits, Routines, and Life Areas now use the dashboard
   canonical workspace shell tone, approved painterly material treatment for
@@ -2149,6 +2165,6 @@ Last updated: 2026-05-02
 ## Autonomous Iteration State
 - Current iteration:
 - Current operation mode:
-- Last completed iteration: 293
-- Last completed task: NEST-293 Core daily systems canonical shell alignment
-- Next required mode: ARCHITECT
+- Last completed iteration: 294
+- Last completed task: NEST-294 Dashboard IA and success ladder canonical update
+- Next required mode: BUILDER

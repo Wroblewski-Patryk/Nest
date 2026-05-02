@@ -50,11 +50,8 @@ const CORE_NAV_ITEMS: Array<{
 }> = [
   { href: "/dashboard", label: "Dashboard", key: "dashboard", icon: "dashboard" },
   { href: "/tasks", label: "Planning", key: "tasks", icon: "tasks" },
-  { href: "/habits", label: "Habits", key: "habits", icon: "habits" },
-  { href: "/routines", label: "Routines", key: "routines", icon: "routines" },
   { href: "/calendar", label: "Calendar", key: "calendar", icon: "calendar" },
   { href: "/journal", label: "Journal", key: "journal", icon: "journal" },
-  { href: "/life-areas", label: "Life Areas", key: "life_areas", icon: "life_areas" },
   { href: "/settings", label: "Settings", key: "settings", icon: "settings" },
 ];
 

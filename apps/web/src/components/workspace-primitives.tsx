@@ -103,6 +103,15 @@ type InsightStripProps = {
   cta: string;
 };
 
+type DashboardLadderStripProps = {
+  title: string;
+  summary: string;
+  nodes: Array<{
+    label: string;
+    value: string;
+  }>;
+};
+
 function CircularProgress({ value, label }: { value: number; label: string }) {
   const degrees = Math.max(0, Math.min(100, value)) * 3.6;
 
@@ -425,6 +434,26 @@ export function BalanceMiniCard({ items, href, className }: BalanceMiniCardProps
 
       <p className="dashboard-balance-caption">Monthly balance overview</p>
     </article>
+  );
+}
+
+export function DashboardLadderStrip({ title, summary, nodes }: DashboardLadderStripProps) {
+  return (
+    <section className="dashboard-ladder-strip" aria-label={title}>
+      <div className="dashboard-ladder-copy">
+        <h3>{title}</h3>
+        <p>{summary}</p>
+      </div>
+
+      <ol className="dashboard-ladder-chain">
+        {nodes.map((node) => (
+          <li key={node.label} className="dashboard-ladder-node">
+            <small>{node.label}</small>
+            <strong>{node.value}</strong>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
