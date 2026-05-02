@@ -3210,25 +3210,25 @@ export default function TasksPage() {
 
       {planningTab === "tasks" ? (
         <>
-      <Panel title="Setup (Optional)" className="planning-secondary-tools">
+      <Panel title={t("web.planning.panel.setup_optional", "Setup (Optional)")} className="planning-secondary-tools">
         <details className="collapsible-panel">
-          <summary>Create list</summary>
+          <summary>{t("web.planning.action.create_list", "Create list")}</summary>
         <form className="form-grid collapsible-content" onSubmit={createList}>
           <label className="field">
-            <span>Name</span>
+            <span>{t("web.planning.field.name", "Name")}</span>
             <input
               className="list-row"
               type="text"
               value={newListName}
               onChange={(event) => setNewListName(event.target.value)}
-              placeholder="Example: Weekly Focus"
+              placeholder={t("web.planning.placeholder.weekly_focus", "Example: Weekly Focus")}
               disabled={isCreatingList}
             />
           </label>
 
           <div className="row-inline">
             <label className="field">
-              <span>Color</span>
+              <span>{t("web.planning.field.color", "Color")}</span>
               <input
                 className="list-row"
                 type="color"
@@ -3238,7 +3238,7 @@ export default function TasksPage() {
               />
             </label>
             <label className="field">
-              <span>Parent type</span>
+              <span>{t("web.planning.field.parent_type", "Parent type")}</span>
               <select
                 className="list-row"
                 value={newListParentType}
@@ -3248,22 +3248,22 @@ export default function TasksPage() {
                 }}
                 disabled={isCreatingList}
               >
-                <option value="none">No parent</option>
-                <option value="goal">Goal</option>
-                <option value="target">Target</option>
-                <option value="life_area">Life area</option>
+                <option value="none">{t("web.planning.option.no_parent", "No parent")}</option>
+                <option value="goal">{t("web.planning.field.goal", "Goal")}</option>
+                <option value="target">{t("web.planning.field.target", "Target")}</option>
+                <option value="life_area">{t("web.journal.ladder.life_area", "Life area")}</option>
               </select>
             </label>
             {newListParentType !== "none" ? (
               <label className="field">
-                <span>Parent</span>
+                <span>{t("web.planning.field.parent", "Parent")}</span>
                 <select
                   className="list-row"
                   value={newListParentId}
                   onChange={(event) => setNewListParentId(event.target.value)}
                   disabled={isCreatingList}
                 >
-                  <option value="">Select parent</option>
+                  <option value="">{t("web.planning.option.select_parent", "Select parent")}</option>
                   {newListParentType === "goal"
                     ? goals.map((goal) => (
                         <option key={goal.id} value={goal.id}>
@@ -3291,53 +3291,53 @@ export default function TasksPage() {
           </div>
 
           <button type="submit" className="btn-primary" disabled={isCreatingList}>
-            {isCreatingList ? "Creating..." : "Create list"}
+            {isCreatingList ? t("web.common.action.saving", "Saving...") : t("web.planning.action.create_list", "Create list")}
           </button>
         </form>
         </details>
       </Panel>
 
-      <Panel title="Board Filters" className="planning-secondary-tools">
+      <Panel title={t("web.planning.panel.board_filters", "Board Filters")} className="planning-secondary-tools">
         <details className="collapsible-panel">
-          <summary>Show filters</summary>
+          <summary>{t("web.planning.filter.show_filters", "Show filters")}</summary>
         <div className="tasks-board-toolbar collapsible-content">
           <label className="field tasks-search">
-            <span>Search</span>
+            <span>{t("web.planning.field.search", "Search")}</span>
             <input
               className="list-row"
               type="text"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search list or task title"
+              placeholder={t("web.planning.placeholder.search", "Search list or task title")}
             />
           </label>
 
-          <div className="tasks-filter-group" role="group" aria-label="Status filter">
+          <div className="tasks-filter-group" role="group" aria-label={t("web.planning.field.status", "Status")}>
             <button
               type="button"
               className={`filter-chip ${statusFilter === "all" ? "is-active" : ""}`}
               onClick={() => setStatusFilter("all")}
             >
-              All
+              {t("web.planning.filter.all", "All")}
             </button>
             <button
               type="button"
               className={`filter-chip ${statusFilter === "open" ? "is-active" : ""}`}
               onClick={() => setStatusFilter("open")}
             >
-              Open
+              {t("web.planning.metric.open", "Open")}
             </button>
             <button
               type="button"
               className={`filter-chip ${statusFilter === "done" ? "is-active" : ""}`}
               onClick={() => setStatusFilter("done")}
             >
-              Done
+              {t("web.planning.task_status.done", "Done")}
             </button>
           </div>
 
           <label className="field">
-            <span>Context</span>
+            <span>{t("web.planning.field.context", "Context")}</span>
             <select
               className="list-row"
               value={listContextFilter}
@@ -3345,20 +3345,20 @@ export default function TasksPage() {
                 setListContextFilter(event.target.value as "all" | "with_context" | "without_context")
               }
             >
-              <option value="all">All lists</option>
-              <option value="with_context">Only contextualized</option>
-              <option value="without_context">Only without context</option>
+              <option value="all">{t("web.planning.filter.all_lists", "All lists")}</option>
+              <option value="with_context">{t("web.planning.filter.only_contextualized", "Only contextualized")}</option>
+              <option value="without_context">{t("web.planning.filter.only_without_context", "Only without context")}</option>
             </select>
           </label>
 
           <label className="field">
-            <span>Life area</span>
+            <span>{t("web.journal.ladder.life_area", "Life area")}</span>
             <select
               className="list-row"
               value={boardLifeAreaFilter}
               onChange={(event) => setBoardLifeAreaFilter(event.target.value)}
             >
-              <option value="">All areas</option>
+              <option value="">{t("web.planning.filter.all_areas", "All areas")}</option>
               {lifeAreas.map((lifeArea) => (
                 <option key={lifeArea.id} value={lifeArea.id}>
                   {lifeArea.name}
@@ -3373,7 +3373,7 @@ export default function TasksPage() {
               checked={hideEmptyColumns}
               onChange={(event) => setHideEmptyColumns(event.target.checked)}
             />
-            Hide empty columns
+            {t("web.planning.filter.hide_empty_columns", "Hide empty columns")}
           </label>
 
           <button
@@ -3387,7 +3387,7 @@ export default function TasksPage() {
               setHideEmptyColumns(true);
             }}
           >
-            Reset
+            {t("web.planning.action.reset", "Reset")}
           </button>
         </div>
         </details>
@@ -3395,7 +3395,7 @@ export default function TasksPage() {
 
       <section className={`panel planning-board-primary ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
         <div className="panel-header">
-          <h2>Kanban Board</h2>
+          <h2>{t("web.planning.panel.kanban_board", "Kanban Board")}</h2>
           <div className="panel-actions">
             <span className="pill">{visibleLists.length + (showUnassignedColumn ? 1 : 0)} columns</span>
             <button
@@ -3410,15 +3410,14 @@ export default function TasksPage() {
         </div>
 
         <div className="panel-content">
-          {isLoading ? <p className="callout state-loading">Loading board...</p> : null}
+          {isLoading ? <p className="callout state-loading">{t("web.planning.status.loading_board", "Loading board...")}</p> : null}
           {!isLoading && lists.length === 0 ? (
             <p className="callout state-empty">
-              No lists yet. Use <strong>+ Add list</strong> in the canonical workspace, or start immediately with
-              standalone tasks in <strong>No List</strong>.
+              {t("web.planning.empty.kanban_no_lists_prefix", "No lists yet. Use")} <strong>{`+ ${t("web.planning.action.add_list", "Add list")}`}</strong> {t("web.planning.empty.kanban_no_lists_middle", "in the canonical workspace, or start immediately with standalone tasks in")} <strong>{t("web.planning.option.no_list", "No List")}</strong>.
             </p>
           ) : null}
           {!isLoading && lists.length > 0 && visibleLists.length === 0 && !showUnassignedColumn ? (
-            <p className="callout state-empty">No columns match current filters.</p>
+            <p className="callout state-empty">{t("web.planning.empty.no_columns_match", "No columns match current filters.")}</p>
           ) : null}
 
           {!isLoading && (visibleLists.length > 0 || showUnassignedColumn) ? (
@@ -3427,7 +3426,7 @@ export default function TasksPage() {
                 <article className="kanban-column kanban-column-unassigned" key={UNASSIGNED_COLUMN_ID}>
                   <header className="kanban-column-head">
                     <div className="kanban-column-top">
-                      <h3 className="kanban-column-title">No List</h3>
+                      <h3 className="kanban-column-title">{t("web.planning.option.no_list", "No List")}</h3>
                     </div>
                     <div className="kanban-badges">
                       <span className="kanban-badge">
@@ -3438,7 +3437,7 @@ export default function TasksPage() {
 
                   <div className="panel-content">
                     {filteredUnassignedTasks.length === 0 ? (
-                      <p className="callout state-empty">No standalone tasks.</p>
+                      <p className="callout state-empty">{t("web.planning.empty.no_standalone_tasks", "No standalone tasks.")}</p>
                     ) : null}
 
                     {filteredUnassignedTasks.map((task) => renderTaskCard(task))}
@@ -3498,7 +3497,7 @@ export default function TasksPage() {
                     {editingListId === list.id ? (
                       <div className="form-grid">
                         <label className="field">
-                          <span>Name</span>
+                          <span>{t("web.planning.field.name", "Name")}</span>
                           <input
                             className="list-row"
                             type="text"
@@ -3510,7 +3509,7 @@ export default function TasksPage() {
 
                         <div className="row-inline">
                           <label className="field">
-                            <span>Color</span>
+                            <span>{t("web.planning.field.color", "Color")}</span>
                             <input
                               className="list-row"
                               type="color"
@@ -3520,7 +3519,7 @@ export default function TasksPage() {
                             />
                           </label>
                           <label className="field">
-                            <span>Parent type</span>
+                            <span>{t("web.planning.field.parent_type", "Parent type")}</span>
                             <select
                               className="list-row"
                               value={editListParentType}
@@ -3530,22 +3529,22 @@ export default function TasksPage() {
                               }}
                               disabled={busyListId === list.id}
                             >
-                              <option value="none">No parent</option>
-                              <option value="goal">Goal</option>
-                              <option value="target">Target</option>
-                              <option value="life_area">Life area</option>
+                              <option value="none">{t("web.planning.option.no_parent", "No parent")}</option>
+                              <option value="goal">{t("web.planning.field.goal", "Goal")}</option>
+                              <option value="target">{t("web.planning.field.target", "Target")}</option>
+                              <option value="life_area">{t("web.journal.ladder.life_area", "Life area")}</option>
                             </select>
                           </label>
                           {editListParentType !== "none" ? (
                             <label className="field">
-                              <span>Parent</span>
+                              <span>{t("web.planning.field.parent", "Parent")}</span>
                               <select
                                 className="list-row"
                                 value={editListParentId}
                                 onChange={(event) => setEditListParentId(event.target.value)}
                                 disabled={busyListId === list.id}
                               >
-                                <option value="">Select parent</option>
+                                <option value="">{t("web.planning.option.select_parent", "Select parent")}</option>
                                 {editListParentType === "goal"
                                   ? goals.map((goal) => (
                                       <option key={goal.id} value={goal.id}>
@@ -3603,7 +3602,7 @@ export default function TasksPage() {
 
                     <div className="panel-content">
                       {listTasks.length === 0 ? (
-                        <p className="callout state-empty">No cards in this list yet.</p>
+                        <p className="callout state-empty">{t("web.planning.empty.no_cards_in_list", "No cards in this list yet.")}</p>
                       ) : null}
 
                       {listTasks.map((task) => renderTaskCard(task))}

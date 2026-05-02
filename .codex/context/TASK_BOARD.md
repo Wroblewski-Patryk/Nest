@@ -99,6 +99,10 @@ Last updated: 2026-05-03
       feedback, delete confirmations, status/priority labels, canonical
       workspace columns, quick-add affordances, board tools, composer guidance,
       and the above-fold planning ladder/support rail.
+    - Extended the Planning task-tab fallback/legacy surface localization for
+      optional setup, board filters, kanban empty states, and inline list
+      editing controls so the creation path stays coherent below the canonical
+      workspace.
     - `pnpm lint` and `pnpm exec tsc --noEmit` passed for this first code
       slice, the Settings slice, the Journal slice, and the first Calendar
       slice, plus the first Planning task-composer slice and the expanded
