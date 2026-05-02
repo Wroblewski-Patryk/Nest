@@ -1,7 +1,9 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useConfirmDialog } from "@/components/confirm-dialog";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { clearAuthSession } from "@/lib/auth-session";
 import { apiRequest, nestApiClient } from "@/lib/api-client";
@@ -33,6 +35,7 @@ function getErrorMessage(error: unknown): string {
 
 export default function HabitsPage() {
   const router = useRouter();
+  const { confirm, confirmDialog } = useConfirmDialog();
   const [habits, setHabits] = useState<HabitItem[]>([]);
   const [newHabitTitle, setNewHabitTitle] = useState("");
   const [newHabitType, setNewHabitType] = useState<HabitItem["type"]>("boolean");
@@ -188,7 +191,14 @@ export default function HabitsPage() {
   }
 
   async function deleteHabit(habitId: string) {
-    if (!window.confirm("Delete this habit?")) {
+    if (
+      !(await confirm({
+        title: "Delete habit?",
+        description: "This removes the habit from your workspace. Existing progress connected to it may no longer be visible here.",
+        confirmLabel: "Delete habit",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -234,7 +244,18 @@ export default function HabitsPage() {
           <MetricCard label="Paused habits" value={String(habits.length - activeHabits)} />
         </div>
 
-        <Panel title="Add Habit" className="daily-system-panel daily-system-composer">
+        <Panel title="Where habits fit" className="daily-system-panel daily-system-context">
+          <p className="daily-system-context-copy">
+            Habits support the Dashboard rhythm and turn repeated Planning intentions into visible daily proof.
+          </p>
+          <div className="daily-system-context-links">
+            <Link href="/dashboard">Dashboard rhythm</Link>
+            <Link href="/tasks?action=create-task">Capture task</Link>
+            <Link href="/routines">Build routine</Link>
+          </div>
+        </Panel>
+
+        <Panel title="Create habit" className="daily-system-panel daily-system-composer">
           <form className="form-grid" onSubmit={createHabit}>
             <label className="field">
               <span>Title</span>
@@ -278,7 +299,7 @@ export default function HabitsPage() {
           </form>
         </Panel>
 
-        <Panel title="Habit List" className="daily-system-panel daily-system-list-panel">
+        <Panel title="Habit library" className="daily-system-panel daily-system-list-panel">
           <ul className="list">
             {habits.length === 0 ? (
               <li className="list-row">
@@ -410,6 +431,7 @@ export default function HabitsPage() {
           </Panel>
         ) : null}
       </div>
+      {confirmDialog}
     </WorkspaceShell>
   );
 }

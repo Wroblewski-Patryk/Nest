@@ -1,7 +1,9 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useConfirmDialog } from "@/components/confirm-dialog";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { clearAuthSession } from "@/lib/auth-session";
 import { apiRequest, nestApiClient } from "@/lib/api-client";
@@ -48,6 +50,7 @@ function getErrorMessage(error: unknown): string {
 
 export default function LifeAreasPage() {
   const router = useRouter();
+  const { confirm, confirmDialog } = useConfirmDialog();
   const [lifeAreas, setLifeAreas] = useState<LifeAreaItem[]>([]);
   const [balance, setBalance] = useState<LifeAreaBalanceResponse | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -177,7 +180,14 @@ export default function LifeAreasPage() {
   }
 
   async function deleteLifeArea(areaId: string) {
-    if (!window.confirm("Delete this life area?")) {
+    if (
+      !(await confirm({
+        title: "Delete life area?",
+        description: "This removes the life area from balance and planning context. Use this only when the area is no longer part of the workspace.",
+        confirmLabel: "Delete life area",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -232,7 +242,18 @@ export default function LifeAreasPage() {
           />
         </div>
 
-      <Panel title="Add Life Area" className="daily-system-panel daily-system-composer">
+        <Panel title="Where life areas fit" className="daily-system-panel daily-system-context">
+          <p className="daily-system-context-copy">
+            Life areas give Journal, Planning, and Dashboard balance cues a shared language without becoming a separate daily destination.
+          </p>
+          <div className="daily-system-context-links">
+            <Link href="/journal?action=create-entry">Reflect in Journal</Link>
+            <Link href="/tasks">Open Planning</Link>
+            <Link href="/dashboard">Return to Dashboard</Link>
+          </div>
+        </Panel>
+
+      <Panel title="Create life area" className="daily-system-panel daily-system-composer">
         <form className="form-grid" onSubmit={createLifeArea}>
           <label className="field">
             <span>Name</span>
@@ -275,7 +296,7 @@ export default function LifeAreasPage() {
         </form>
       </Panel>
 
-      <Panel title="Area List" className="daily-system-panel daily-system-list-panel">
+      <Panel title="Life area library" className="daily-system-panel daily-system-list-panel">
         <ul className="list">
           {lifeAreas.length === 0 ? (
             <li className="list-row">
@@ -391,6 +412,7 @@ export default function LifeAreasPage() {
           </Panel>
         ) : null}
       </div>
+      {confirmDialog}
     </WorkspaceShell>
   );
 }

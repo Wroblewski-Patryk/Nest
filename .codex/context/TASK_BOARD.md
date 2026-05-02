@@ -24,6 +24,144 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-310 Web UX/UI workflow audit and canonical improvement plan
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-309
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Audited all web pages for unfinished UX/UI issues, primary action
+      clarity, creation flows, canonical alignment, native confirms,
+      showcase/error behavior, and route-local workflow fragmentation.
+    - Main finding: task creation exists technically, but not as one coherent
+      cross-page journey. Dashboard links to Planning without opening the
+      composer; Planning has multiple competing create patterns; Calendar quick
+      add can point into hidden collapsed panels.
+    - Plan:
+      `docs/planning/nest_web_uxui_workflow_audit_and_canonical_improvement_plan_2026-05-02.md`.
+
+- [x] NEST-311 Unified create intent system
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-310
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Added URL/action intent handling so Dashboard and pillar quick actions
+      open the correct visible composer on Planning, Calendar, or Journal.
+    - Dashboard `Add task` and `New task` now route to
+      `/tasks?action=create-task`; Planning opens and focuses the task
+      composer, and the submit copy now says `Create task`.
+    - Dashboard `Time block` opens Calendar's event composer; Dashboard
+      journal actions open the Journal composer.
+    - Validation: web lint, typecheck, build, unit checks, and
+      `git diff --check` passed with CRLF warnings only.
+    - Plan:
+      `docs/planning/nest_web_uxui_workflow_audit_and_canonical_improvement_plan_2026-05-02.md`.
+
+- [x] NEST-312 Dashboard action clarity pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-311
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Promoted `Capture task` into the canonical Dashboard focus card as a
+      visible secondary action beside `Start focus session`.
+    - Updated the Dashboard task panel action copy to `Capture task` and kept
+      it routed through `/tasks?action=create-task`.
+    - Preserved the approved canonical Dashboard composition and mobile Quick
+      add order.
+    - Plan:
+      `docs/planning/nest_web_uxui_workflow_audit_and_canonical_improvement_plan_2026-05-02.md`.
+
+- [x] NEST-313 Planning workspace simplification
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-311
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Unified Planning task CTAs so the workspace action, Quick add Task, and
+      Today Focus action open and focus the same primary task composer.
+    - Replaced remaining task creation copy that referred to `cards` with
+      task-specific language.
+    - Kept list-specific task creation available, but renamed it as task
+      creation rather than card creation.
+    - Plan:
+      `docs/planning/nest_web_uxui_workflow_audit_and_canonical_improvement_plan_2026-05-02.md`.
+
+- [x] NEST-314 Calendar and Journal action repair
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-311
+  - Done on: 2026-05-02
+  - Priority: P1
+  - Notes:
+    - Calendar event/focus quick actions now open the event composer instead
+      of only pointing to an anchor inside a collapsed section.
+    - `/calendar?action=create-event` opens the event tools section and
+      focuses the title field.
+    - `/journal?action=create-entry` scrolls to and focuses the reflection
+      composer; Dashboard and Calendar note actions use that intent.
+    - Plan:
+      `docs/planning/nest_web_uxui_workflow_audit_and_canonical_improvement_plan_2026-05-02.md`.
+
+- [x] NEST-315 Shared confirmation and feedback pattern
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-311
+  - Done on: 2026-05-02
+  - Priority: P1
+  - Notes:
+    - Replaced native `window.confirm` flows with a reusable Nest-native
+      confirmation dialog hook.
+    - Applied the shared confirmation pattern to destructive/revocation flows
+      across Planning, Calendar, Journal, Habits, Routines, Life Areas, and
+      Settings.
+    - Static search found no remaining `window.confirm` usage in web app
+      sources.
+    - Plan:
+      `docs/planning/nest_web_uxui_workflow_audit_and_canonical_improvement_plan_2026-05-02.md`.
+
+- [x] NEST-316 Core module visual integration
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-312, NEST-313
+  - Done on: 2026-05-02
+  - Priority: P1
+  - Notes:
+    - Added contextual canonical panels to Habits, Routines, Life Areas,
+      Insights, Automations, and Billing so lower-level/advanced pages explain
+      how they support the five-pillar workspace.
+    - Updated Habits/Routines/Life Areas section titles from generic CRUD copy
+      toward `Create ...` and `... library` language.
+    - Applied canonical shell tone and reduced rail chrome to advanced
+      Insights, Automations, Billing, and Settings surfaces.
+    - Plan:
+      `docs/planning/nest_web_uxui_workflow_audit_and_canonical_improvement_plan_2026-05-02.md`.
+
+- [x] NEST-317 Canonical state and responsive QA pass
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-311, NEST-312, NEST-313, NEST-314, NEST-315, NEST-316
+  - Done on: 2026-05-02
+  - Priority: P1
+  - Notes:
+    - Ran production `next start` Playwright smoke with local mock API across
+      11 routes on desktop and mobile.
+    - Fixed a mobile Calendar intent regression where
+      `/calendar?action=create-event` opened state but CSS still hid the event
+      composer.
+    - Final smoke checked 22 route/viewport combinations with zero failures,
+      no protected-route auth redirects, visible primary selectors, no
+      horizontal overflow, and no Playwright page errors.
+    - Report:
+      `docs/ux/nest_317_canonical_state_responsive_qa_2026-05-02.md`.
+    - Plan:
+      `docs/planning/nest_web_uxui_workflow_audit_and_canonical_improvement_plan_2026-05-02.md`.
+
 - [x] NEST-301 Runtime deployment stack alignment
   - Status: DONE
   - Owner: Execution Agent

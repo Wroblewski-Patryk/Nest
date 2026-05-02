@@ -1,7 +1,9 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useConfirmDialog } from "@/components/confirm-dialog";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { clearAuthSession } from "@/lib/auth-session";
 import { apiRequest } from "@/lib/api-client";
@@ -38,6 +40,7 @@ function getErrorMessage(error: unknown): string {
 
 export default function RoutinesPage() {
   const router = useRouter();
+  const { confirm, confirmDialog } = useConfirmDialog();
   const [routines, setRoutines] = useState<RoutineItem[]>([]);
   const [newRoutineTitle, setNewRoutineTitle] = useState("");
   const [newRoutineStepTitle, setNewRoutineStepTitle] = useState("");
@@ -190,7 +193,14 @@ export default function RoutinesPage() {
   }
 
   async function deleteRoutine(routineId: string) {
-    if (!window.confirm("Delete this routine?")) {
+    if (
+      !(await confirm({
+        title: "Delete routine?",
+        description: "This removes the routine and its steps from your workspace.",
+        confirmLabel: "Delete routine",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -246,7 +256,18 @@ export default function RoutinesPage() {
           />
         </div>
 
-        <Panel title="Add Routine" className="daily-system-panel daily-system-composer">
+        <Panel title="Where routines fit" className="daily-system-panel daily-system-context">
+          <p className="daily-system-context-copy">
+            Routines connect habits with Calendar time blocks, so repeated work has a place instead of becoming background noise.
+          </p>
+          <div className="daily-system-context-links">
+            <Link href="/calendar?action=create-event">Schedule time</Link>
+            <Link href="/habits">Review habits</Link>
+            <Link href="/dashboard">Return to Dashboard</Link>
+          </div>
+        </Panel>
+
+        <Panel title="Create routine" className="daily-system-panel daily-system-composer">
           <form className="form-grid" onSubmit={createRoutine}>
             <label className="field">
               <span>Title</span>
@@ -287,7 +308,7 @@ export default function RoutinesPage() {
           </form>
         </Panel>
 
-        <Panel title="Routine List" className="daily-system-panel daily-system-list-panel">
+        <Panel title="Routine library" className="daily-system-panel daily-system-list-panel">
           <ul className="list">
             {routines.length === 0 ? (
               <li className="list-row">
@@ -390,6 +411,7 @@ export default function RoutinesPage() {
           </Panel>
         ) : null}
       </div>
+      {confirmDialog}
     </WorkspaceShell>
   );
 }

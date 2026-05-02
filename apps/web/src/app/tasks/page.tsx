@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirmDialog } from "@/components/confirm-dialog";
 import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import {
   DashboardFocusCard,
@@ -256,6 +257,7 @@ function PlanningGlyph({ name }: { name: "task" | "list" | "goal" | "target" | "
 
 export default function TasksPage() {
   const router = useRouter();
+  const { confirm, confirmDialog } = useConfirmDialog();
   const [planningTab, setPlanningTab] = useState<PlanningTab>("tasks");
 
   const [lists, setLists] = useState<ListItem[]>([]);
@@ -336,7 +338,14 @@ export default function TasksPage() {
       return;
     }
 
-    setPlanningTab(resolvePlanningTab(new URLSearchParams(window.location.search).get("tab")));
+    const params = new URLSearchParams(window.location.search);
+    const action = params.get("action");
+
+    setPlanningTab(action === "create-task" ? "tasks" : resolvePlanningTab(params.get("tab")));
+
+    if (action === "create-task") {
+      openTaskComposer();
+    }
   }, []);
 
   const loadAllTasks = useCallback(async (): Promise<TaskItem[]> => {
@@ -1029,7 +1038,14 @@ export default function TasksPage() {
   }
 
   async function deleteList(listId: string) {
-    if (!window.confirm("Delete this list?")) {
+    if (
+      !(await confirm({
+        title: "Delete list?",
+        description: "This removes the list from Planning. Tasks connected to it may lose that organizing context.",
+        confirmLabel: "Delete list",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -1172,7 +1188,14 @@ export default function TasksPage() {
   }
 
   async function deleteTask(taskId: string) {
-    if (!window.confirm("Delete this task?")) {
+    if (
+      !(await confirm({
+        title: "Delete task?",
+        description: "This removes the task from your plan.",
+        confirmLabel: "Delete task",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -1272,7 +1295,14 @@ export default function TasksPage() {
   }
 
   async function deleteGoal(goalId: string) {
-    if (!window.confirm("Delete this goal?")) {
+    if (
+      !(await confirm({
+        title: "Delete goal?",
+        description: "This removes the goal from Planning and may affect related targets, lists, or task context.",
+        confirmLabel: "Delete goal",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -1390,7 +1420,14 @@ export default function TasksPage() {
   }
 
   async function deleteTarget(targetId: string) {
-    if (!window.confirm("Delete this target?")) {
+    if (
+      !(await confirm({
+        title: "Delete target?",
+        description: "This removes the target from its goal and planning progress.",
+        confirmLabel: "Delete target",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -2124,7 +2161,7 @@ export default function TasksPage() {
 
     if (planningTab === "tasks") {
       return taskComposerListId === UNASSIGNED_COLUMN_ID ? (
-        <div className="planning-canonical-composer">
+        <div id="planning-create-task" className="planning-canonical-composer">
           {composerIntro}
           {renderTaskComposer(UNASSIGNED_COLUMN_ID, "Add task to weekly plan")}
           {composerFoot}
@@ -2722,6 +2759,7 @@ export default function TasksPage() {
           <span>{label}</span>
           <input
             id={columnId === UNASSIGNED_COLUMN_ID ? "unassigned-capture" : undefined}
+            data-planning-task-autofocus={columnId === UNASSIGNED_COLUMN_ID ? "true" : undefined}
             className="list-row"
             type="text"
             value={draft.title}
@@ -2774,7 +2812,7 @@ export default function TasksPage() {
         </div>
         <div className="row-inline">
           <button type="submit" className="btn-primary" disabled={isBusy}>
-            {isBusy ? "Adding..." : "Save card"}
+            {isBusy ? "Adding..." : "Create task"}
           </button>
           <button type="button" className="btn-secondary" onClick={() => setTaskComposerListId(null)} disabled={isBusy}>
             Cancel
@@ -2789,10 +2827,21 @@ export default function TasksPage() {
     router.replace(tab === "tasks" ? "/tasks" : `/tasks?tab=${tab}`);
   }
 
+  function openTaskComposer() {
+    setTaskComposerListId(UNASSIGNED_COLUMN_ID);
+    window.setTimeout(() => {
+      document.getElementById("planning-create-task")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      document.querySelector<HTMLElement>("[data-planning-task-autofocus='true']")?.focus();
+    }, 0);
+  }
+
   function focusPlanningComposer(tab: PlanningTab) {
     if (tab === "tasks") {
       openPlanningTab("tasks");
-      setTaskComposerListId(UNASSIGNED_COLUMN_ID);
+      openTaskComposer();
       return;
     }
 
@@ -2807,7 +2856,7 @@ export default function TasksPage() {
 
   const planningActionLabel =
     planningTab === "tasks"
-      ? "+ Add task"
+      ? "+ Create task"
       : planningTab === "lists"
         ? "+ Add list"
         : planningTab === "goals"
@@ -2929,7 +2978,7 @@ export default function TasksPage() {
             </div>
             <div className="dashboard-quick-add-grid">
               {[
-                { label: "Task", icon: "task" as const, action: () => setTaskComposerListId(UNASSIGNED_COLUMN_ID) },
+                { label: "Task", icon: "task" as const, action: () => focusPlanningComposer("tasks") },
                 { label: "List", icon: "list" as const, action: () => focusPlanningComposer("lists") },
                 { label: "Goal", icon: "goal" as const, action: () => focusPlanningComposer("goals") },
                 { label: "Target", icon: "target" as const, action: () => focusPlanningComposer("targets") },
@@ -3095,9 +3144,9 @@ export default function TasksPage() {
             <button
               type="button"
               className="btn-primary"
-              onClick={() => setTaskComposerListId(UNASSIGNED_COLUMN_ID)}
+              onClick={() => focusPlanningComposer("tasks")}
             >
-              Add task now
+              Create task
             </button>
             <button
               type="button"
@@ -3372,7 +3421,7 @@ export default function TasksPage() {
                           )
                         }
                       >
-                        {taskComposerListId === UNASSIGNED_COLUMN_ID ? "Close add form" : "Add card"}
+                        {taskComposerListId === UNASSIGNED_COLUMN_ID ? "Close task form" : "Add task"}
                       </button>
                     </div>
                     {taskComposerListId === UNASSIGNED_COLUMN_ID
@@ -3533,10 +3582,10 @@ export default function TasksPage() {
                           className="btn-secondary"
                           onClick={() => setTaskComposerListId((current) => (current === list.id ? null : list.id))}
                         >
-                          {taskComposerListId === list.id ? "Close add form" : "Add card"}
+                          {taskComposerListId === list.id ? "Close task form" : "Add task"}
                         </button>
                       </div>
-                      {taskComposerListId === list.id ? renderTaskComposer(list.id, `Add card to ${list.name}`) : null}
+                      {taskComposerListId === list.id ? renderTaskComposer(list.id, `Add task to ${list.name}`) : null}
                     </footer>
                   </article>
                 );
@@ -4176,6 +4225,7 @@ export default function TasksPage() {
         </>
       ) : null}
 
+      {confirmDialog}
     </WorkspaceShell>
   );
 }

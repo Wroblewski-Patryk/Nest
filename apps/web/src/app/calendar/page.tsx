@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirmDialog } from "@/components/confirm-dialog";
 import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import {
   DashboardContextRibbon,
@@ -337,6 +338,7 @@ function createShowcaseCalendarTasks(referenceDate: Date): TaskCalendarItem[] {
 
 export default function CalendarPage() {
   const router = useRouter();
+  const { confirm, confirmDialog } = useConfirmDialog();
   const [events, setEvents] = useState<CalendarEventItem[]>([]);
   const [tasks, setTasks] = useState<TaskCalendarItem[]>([]);
   const [viewMode, setViewMode] = useState<CalendarViewMode>("day");
@@ -355,6 +357,7 @@ export default function CalendarPage() {
   const [busyEventId, setBusyEventId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("Create your first time block.");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isEventComposerOpen, setIsEventComposerOpen] = useState(false);
 
   const handleUnauthorized = useCallback(() => {
     clearAuthSession();
@@ -399,6 +402,28 @@ export default function CalendarPage() {
       mounted = false;
     };
   }, [handleUnauthorized, loadData]);
+
+  const openEventComposer = useCallback(() => {
+    setIsEventComposerOpen(true);
+    window.setTimeout(() => {
+      document.getElementById("calendar-add-event")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      document.querySelector<HTMLElement>("[data-calendar-event-autofocus='true']")?.focus();
+    }, 0);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("action") === "create-event") {
+      openEventComposer();
+    }
+  }, [openEventComposer]);
 
   const showcaseReferenceDate = useMemo(() => startOfDay(new Date(CALENDAR_SHOWCASE_REFERENCE)), []);
   const showcaseEvents = useMemo(
@@ -927,7 +952,14 @@ export default function CalendarPage() {
   }
 
   async function deleteEvent(eventId: string) {
-    if (!window.confirm("Delete this calendar event?")) {
+    if (
+      !(await confirm({
+        title: "Delete calendar event?",
+        description: "This removes the event from your visible schedule. Linked planning items stay untouched.",
+        confirmLabel: "Delete event",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -1413,7 +1445,11 @@ export default function CalendarPage() {
               ) : null}
             </section>
 
-            <details className="collapsible-panel">
+            <details
+              className={`collapsible-panel ${isEventComposerOpen ? "is-intent-open" : ""}`}
+              open={isEventComposerOpen}
+              onToggle={(event) => setIsEventComposerOpen(event.currentTarget.open)}
+            >
               <summary>{useCalendarShowcase ? "Calendar tools" : "Add event"}</summary>
               <div className="collapsible-content">
                 <Panel id="calendar-add-event" title="Add event" className="calendar-management-panel">
@@ -1422,6 +1458,7 @@ export default function CalendarPage() {
                       <span>Title</span>
                       <input
                         className="list-row"
+                        data-calendar-event-autofocus="true"
                         type="text"
                         value={newEventTitle}
                         onChange={(event) => setNewEventTitle(event.target.value)}
@@ -1603,9 +1640,19 @@ export default function CalendarPage() {
                   { label: "Event", href: "#calendar-add-event", icon: <TimelineGlyph name="event" /> },
                   { label: useCalendarShowcase ? "Focus block" : "Focus", href: "#calendar-add-event", icon: <TimelineGlyph name="focus" /> },
                   { label: "Routine", href: "/routines", icon: <TimelineGlyph name="routine" /> },
-                  { label: "Note", href: "/journal", icon: <TimelineGlyph name="note" /> },
+                  { label: "Note", href: "/journal?action=create-entry", icon: <TimelineGlyph name="note" /> },
                 ].map((item) => (
-                  <a key={item.label} href={item.href} className="dashboard-quick-add-tile">
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="dashboard-quick-add-tile"
+                    onClick={(event) => {
+                      if (item.href === "#calendar-add-event") {
+                        event.preventDefault();
+                        openEventComposer();
+                      }
+                    }}
+                  >
                     <span className="dashboard-quick-add-icon" aria-hidden="true">
                       {item.icon}
                     </span>
@@ -1680,6 +1727,7 @@ export default function CalendarPage() {
           </aside>
         </div>
       </div>
+      {confirmDialog}
     </WorkspaceShell>
   );
 }

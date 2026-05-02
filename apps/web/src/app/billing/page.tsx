@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import type {
   BillingAuditReconciliationItem,
   BillingDunningAttemptItem,
@@ -154,12 +155,24 @@ export default function BillingPage() {
       title={t("billing.title", "Billing")}
       subtitle={t("billing.subtitle", "Run self-serve checkout and portal flows while monitoring automated recovery.")}
       module="billing"
+      shellTone="dashboard-canonical"
+      hideRailFooterActions
     >
       <div className="stack">
         {metrics.map((metric) => (
           <MetricCard key={metric.label} label={metric.label} value={metric.value} />
         ))}
       </div>
+
+      <Panel title={t("billing.panel.context", "Where billing fits")} className="daily-system-panel daily-system-context">
+        <p className="daily-system-context-copy">
+          {t("billing.context.copy", "Billing is an advanced account surface. Keep money actions explicit, auditable, and visually separate from daily planning work.")}
+        </p>
+        <div className="daily-system-context-links">
+          <Link href="/settings">{t("billing.context.settings", "Account settings")}</Link>
+          <Link href="/dashboard">{t("billing.context.dashboard", "Return to Dashboard")}</Link>
+        </div>
+      </Panel>
 
       <Panel title={t("billing.panel.self_serve", "Self-serve actions")}>
         <div className="panel-content">

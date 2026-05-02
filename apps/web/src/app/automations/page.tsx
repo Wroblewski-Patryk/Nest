@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import type { AutomationRuleItem, AutomationRunItem, UiAsyncState } from "@nest/shared-types";
 import { formatLocalizedDateTime, resolveLanguage, translate } from "@nest/shared-types";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
@@ -185,12 +186,25 @@ export default function AutomationsPage() {
       title={t("automations.title", "Automations")}
       subtitle={t("automations.subtitle", "Create trigger-based workflows and control active or paused execution.")}
       module="automations"
+      shellTone="dashboard-canonical"
+      hideRailFooterActions
     >
       <div className="stack">
         {metrics.map((metric) => (
           <MetricCard key={metric.label} label={metric.label} value={metric.value} />
         ))}
       </div>
+
+      <Panel title={t("automations.panel.context", "Where automations fit")} className="daily-system-panel daily-system-context">
+        <p className="daily-system-context-copy">
+          {t("automations.context.copy", "Automations are an advanced Settings-adjacent surface: keep them deliberate, observable, and connected to Planning or Journal outcomes.")}
+        </p>
+        <div className="daily-system-context-links">
+          <Link href="/settings">{t("automations.context.settings", "Open Settings")}</Link>
+          <Link href="/tasks">{t("automations.context.planning", "Review Planning")}</Link>
+          <Link href="/journal?action=create-entry">{t("automations.context.journal", "Write reflection")}</Link>
+        </div>
+      </Panel>
 
       <Panel title={t("automations.panel.builder", "Builder")}>
         <div className="panel-content">

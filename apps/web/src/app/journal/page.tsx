@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirmDialog } from "@/components/confirm-dialog";
 import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import {
   DashboardContextRibbon,
@@ -298,6 +299,7 @@ function createShowcaseBalance(lifeAreas: LifeAreaItem[]): LifeAreaBalanceRespon
 
 export default function JournalPage() {
   const router = useRouter();
+  const { confirm, confirmDialog } = useConfirmDialog();
   const [entries, setEntries] = useState<JournalEntryItem[]>([]);
   const [lifeAreas, setLifeAreas] = useState<LifeAreaItem[]>([]);
   const [balance, setBalance] = useState<LifeAreaBalanceResponse | null>(null);
@@ -375,6 +377,23 @@ export default function JournalPage() {
       mounted = false;
     };
   }, [handleUnauthorized, loadData]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("action") === "create-entry") {
+      window.setTimeout(() => {
+        document.getElementById("journal-composer")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        document.querySelector<HTMLElement>("[data-journal-entry-autofocus='true']")?.focus();
+      }, 0);
+    }
+  }, []);
 
   const showcaseReferenceDate = useMemo(() => new Date(JOURNAL_SHOWCASE_REFERENCE), []);
   const showcaseLifeAreas = useMemo(() => createShowcaseLifeAreas(), []);
@@ -527,7 +546,14 @@ export default function JournalPage() {
   }
 
   async function deleteEntry(entryId: string) {
-    if (!window.confirm("Delete this journal entry?")) {
+    if (
+      !(await confirm({
+        title: "Delete journal entry?",
+        description: "This removes the reflection from your journal timeline.",
+        confirmLabel: "Delete entry",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -594,7 +620,14 @@ export default function JournalPage() {
   }
 
   async function deleteLifeArea(areaId: string) {
-    if (!window.confirm("Delete this life area?")) {
+    if (
+      !(await confirm({
+        title: "Delete life area?",
+        description: "This removes the life area from balance and journal context.",
+        confirmLabel: "Delete life area",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -866,6 +899,7 @@ export default function JournalPage() {
                     <span>Title</span>
                     <input
                       className="list-row"
+                      data-journal-entry-autofocus="true"
                       type="text"
                       value={entryTitle}
                       onChange={(event) => setEntryTitle(event.target.value)}
@@ -1474,6 +1508,7 @@ export default function JournalPage() {
 
         {useJournalShowcase ? null : <DashboardContextRibbon title="Journal context" items={contextItems} />}
       </div>
+      {confirmDialog}
     </WorkspaceShell>
   );
 }

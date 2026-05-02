@@ -129,7 +129,41 @@ function CircularProgress({ value, label }: { value: number; label: string }) {
         <strong>{value}%</strong>
         <span>{label}</span>
       </div>
-      <div className="dashboard-progress-ring-leaf" aria-hidden="true" />
+      <svg
+        className="dashboard-progress-ring-leaf"
+        viewBox="0 0 72 54"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          className="dashboard-progress-ring-leaf-stem"
+          d="M14 44c12.7-15.4 28.2-25 47-30"
+        />
+        <path
+          className="dashboard-progress-ring-leaf-blade blade-main"
+          d="M38.8 24.3c-4.7-9.9 3.3-20.2 18.9-21.7 4.8 14.5-4.2 23.9-18.9 21.7Z"
+        />
+        <path
+          className="dashboard-progress-ring-leaf-vein"
+          d="M42.5 22.3c4.8-5.7 9.5-10.4 14.7-15.4"
+        />
+        <path
+          className="dashboard-progress-ring-leaf-blade blade-left"
+          d="M26.2 33.8c-6.5-5.6-3.8-15.3 6.9-20.9 8.3 8.5 4.4 17.9-6.9 20.9Z"
+        />
+        <path
+          className="dashboard-progress-ring-leaf-vein"
+          d="M28.4 30.8c1.3-5.2 3-9.7 5.2-14.1"
+        />
+        <path
+          className="dashboard-progress-ring-leaf-blade blade-small"
+          d="M15.2 42.8c-5.5-3.2-5.1-10.2 1.3-15.1 7.5 4.8 6.4 12.3-1.3 15.1Z"
+        />
+        <path
+          className="dashboard-progress-ring-leaf-vein"
+          d="M16.5 39.6c0.4-3.3 1.1-6.1 2.2-8.8"
+        />
+      </svg>
     </div>
   );
 }

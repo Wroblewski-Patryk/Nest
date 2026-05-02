@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import type {
   AiBriefingItem,
   AnalyticsLoopDecisionDashboardResponse,
@@ -162,6 +163,8 @@ export default function InsightsPage() {
       title={t("insights.title", "Insights")}
       subtitle={t("insights.subtitle", "Track life-area balance and weekly behavioral trends across core modules.")}
       module="insights"
+      shellTone="dashboard-canonical"
+      hideRailFooterActions
     >
       <div className="stack">
         <MetricCard label={t("insights.metric.balance_score", "Balance score")} value={`${activeBalance.meta.global_balance_score.toFixed(1)} / 100`} />
@@ -175,6 +178,17 @@ export default function InsightsPage() {
           value={growthLoops ? `${growthLoops.retention.retention_rate_percent.toFixed(1)}%` : "n/a"}
         />
       </div>
+
+      <Panel title={t("insights.panel.context", "Where insights fit")} className="daily-system-panel daily-system-context">
+        <p className="daily-system-context-copy">
+          {t("insights.context.copy", "Insights should explain the system, not become another daily workspace. Use them to decide what Planning, Journal, or Life Areas should change next.")}
+        </p>
+        <div className="daily-system-context-links">
+          <Link href="/tasks">{t("insights.context.planning", "Open Planning")}</Link>
+          <Link href="/journal?action=create-entry">{t("insights.context.journal", "Reflect")}</Link>
+          <Link href="/life-areas">{t("insights.context.life_areas", "Tune Life Areas")}</Link>
+        </div>
+      </Panel>
 
       <Panel title={t("insights.panel.status", "API status")}>
         <div className="panel-content">

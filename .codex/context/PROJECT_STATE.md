@@ -25,6 +25,65 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-317` canonical state and responsive QA pass.
+  Production `next start` Playwright smoke ran with a local mock API across
+  11 routes on desktop and mobile. The first pass caught a mobile Calendar
+  intent bug where `/calendar?action=create-event` opened state but CSS still
+  hid the event composer; the fix added an intent-open class and mobile CSS
+  override. Final smoke checked 22 route/viewport combinations with zero
+  failures, no protected-route auth redirects, visible primary selectors, no
+  horizontal overflow, and no Playwright page errors. Report:
+  `docs/ux/nest_317_canonical_state_responsive_qa_2026-05-02.md`.
+- 2026-05-02: Completed `NEST-316` core module visual integration. Habits,
+  Routines, Life Areas, Insights, Automations, and Billing now include
+  contextual canonical panels that explain how each lower-level or advanced
+  module supports the five-pillar workspace. Habits/Routines/Life Areas use
+  clearer `Create ...` and `... library` section language. Insights,
+  Automations, Billing, and Settings now use the canonical shell tone with
+  reduced rail chrome.
+- 2026-05-02: Completed `NEST-315` shared confirmation and feedback pattern.
+  Added a reusable Nest-native confirmation dialog hook and replaced native
+  `window.confirm` in destructive/revocation flows across Planning, Calendar,
+  Journal, Habits, Routines, Life Areas, and Settings. Static search found no
+  remaining `window.confirm` usage in web app sources.
+- 2026-05-02: Completed `NEST-314` Calendar and Journal action repair. Calendar
+  event/focus quick actions now open the visible event composer instead of only
+  linking into a collapsed section. `/calendar?action=create-event` opens the
+  section and focuses the event title. `/journal?action=create-entry` scrolls
+  to and focuses the Journal composer, and Dashboard/Calendar note actions use
+  that route intent.
+- 2026-05-02: Completed `NEST-313` Planning workspace simplification. Planning
+  task actions now converge on one focused primary composer: the workspace
+  action, Quick add Task, URL intent, and Today Focus action all open/focus the
+  same create-task surface. Remaining task-creation labels that used `card`
+  language were renamed to task-specific copy while preserving list-specific
+  task creation.
+- 2026-05-02: Completed `NEST-312` Dashboard action clarity pass. The
+  canonical Dashboard focus card now exposes a visible `Capture task`
+  secondary action beside `Start focus session`, routed to
+  `/tasks?action=create-task`. The task panel action uses the same capture
+  language while preserving the approved Dashboard composition and mobile Quick
+  add order. Validation is recorded in the UX/UI plan.
+- 2026-05-02: Completed `NEST-311` unified create intent system. Dashboard
+  task, time-block, and journal quick actions now carry explicit URL intents
+  into Planning, Calendar, and Journal. Planning opens and focuses the task
+  composer for `/tasks?action=create-task`, Calendar opens its collapsed event
+  composer for `/calendar?action=create-event`, and Journal scrolls/focuses the
+  reflection composer for `/journal?action=create-entry`. Ambiguous Planning
+  task submit copy changed from `Save card` to `Create task`. Validation
+  passed: web lint, typecheck, build, unit checks, and `git diff --check` with
+  CRLF warnings only. Plan:
+  `docs/planning/nest_web_uxui_workflow_audit_and_canonical_improvement_plan_2026-05-02.md`.
+- 2026-05-02: Completed `NEST-310` web UX/UI workflow audit and canonical
+  improvement plan. The audit scanned all web pages and found the biggest
+  remaining issue is functional clarity, especially task creation: Dashboard
+  links to Planning without opening a composer, Planning has multiple competing
+  create paths, and some quick actions point into hidden/collapsed UI. New
+  implementation queue `NEST-311` through `NEST-317` now prioritizes a unified
+  create-intent system, Dashboard action clarity, Planning simplification,
+  Calendar/Journal action repair, shared confirmation/feedback, core module
+  visual integration, and responsive/state QA. Plan:
+  `docs/planning/nest_web_uxui_workflow_audit_and_canonical_improvement_plan_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-301` through `NEST-309` deployment improvement
   implementation. Runtime config now targets the approved PHP 8.4, Node 24,
   PostgreSQL 17, and Redis 7 baseline; production cache/session/queue use Redis;

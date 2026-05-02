@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirmDialog } from "@/components/confirm-dialog";
 import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { apiRequest, nestApiClient } from "@/lib/api-client";
 import { clearAuthSession } from "@/lib/auth-session";
@@ -133,6 +134,7 @@ function formatDateTime(value: string | null): string {
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { confirm, confirmDialog } = useConfirmDialog();
 
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
   const [isBootstrapping, setIsBootstrapping] = useState(true);
@@ -375,7 +377,14 @@ export default function SettingsPage() {
   }
 
   async function revokeDelegatedCredential(credentialId: string) {
-    if (!window.confirm("Revoke this delegated credential now?")) {
+    if (
+      !(await confirm({
+        title: "Revoke delegated credential?",
+        description: "This immediately disables the credential for external access. Existing integrations using it will stop working.",
+        confirmLabel: "Revoke credential",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -455,7 +464,14 @@ export default function SettingsPage() {
   }
 
   async function revokeAiAgentCredential(agentId: string, credentialId: string) {
-    if (!window.confirm("Revoke this AI agent credential?")) {
+    if (
+      !(await confirm({
+        title: "Revoke AI agent credential?",
+        description: "This immediately disables the selected AI agent credential.",
+        confirmLabel: "Revoke credential",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -476,7 +492,14 @@ export default function SettingsPage() {
   }
 
   async function deactivateAiAgent(agent: AiAgent) {
-    if (!window.confirm(`Deactivate AI agent "${agent.name}" and revoke all its credentials?`)) {
+    if (
+      !(await confirm({
+        title: `Deactivate ${agent.name}?`,
+        description: "This deactivates the AI agent and revokes all credentials connected to it.",
+        confirmLabel: "Deactivate agent",
+        tone: "danger",
+      }))
+    ) {
       return;
     }
 
@@ -502,6 +525,8 @@ export default function SettingsPage() {
       subtitle="Personal preferences for your account, plus advanced AI and delegated access control."
       navKey="settings"
       module="insights"
+      shellTone="dashboard-canonical"
+      hideRailFooterActions
     >
       <Panel title="Settings Tabs">
         <div className="settings-tabs">
@@ -920,6 +945,7 @@ export default function SettingsPage() {
           <p className="callout state-error">{errorMessage}</p>
         </Panel>
       ) : null}
+      {confirmDialog}
     </WorkspaceShell>
   );
 }

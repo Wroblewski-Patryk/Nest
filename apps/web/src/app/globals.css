@@ -1070,6 +1070,41 @@ input[type="color"].list-row {
   padding-bottom: 0.78rem;
 }
 
+.daily-system-context.panel {
+  background:
+    radial-gradient(circle at 8% 18%, rgb(139 149 105 / 10%) 0%, transparent 24%),
+    linear-gradient(135deg, rgb(255 252 244 / 82%), rgb(245 240 228 / 72%));
+}
+
+.daily-system-context-copy {
+  margin: 0;
+  color: #6f675c;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.daily-system-context-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+}
+
+.daily-system-context-links a {
+  border: 1px solid rgb(213 204 188 / 72%);
+  border-radius: 999px;
+  padding: 0.34rem 0.62rem;
+  color: #5e563f;
+  background: rgb(255 255 255 / 66%);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.daily-system-context-links a:hover {
+  border-color: rgb(139 149 105 / 46%);
+  color: #4f5c39;
+}
+
 @media (max-width: 760px) {
   .daily-system-metrics.stack {
     grid-template-columns: 1fr;
@@ -1129,6 +1164,78 @@ input[type="color"].list-row {
 .btn-secondary:disabled {
   opacity: 0.58;
   cursor: not-allowed;
+}
+
+.confirm-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at 50% 20%, rgb(246 241 227 / 18%) 0%, transparent 34%),
+    rgb(38 34 28 / 42%);
+  backdrop-filter: blur(10px);
+}
+
+.confirm-dialog {
+  width: min(25rem, 100%);
+  border: 1px solid rgb(212 202 184 / 68%);
+  border-radius: 1rem;
+  background:
+    linear-gradient(145deg, rgb(255 252 244 / 96%), rgb(244 238 224 / 94%));
+  box-shadow: 0 24px 70px -34px rgb(54 43 31 / 42%);
+  color: #40382d;
+  padding: 1rem;
+  display: grid;
+  gap: 0.86rem;
+}
+
+.confirm-dialog-mark {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 45%, rgb(255 255 255 / 82%) 0 26%, transparent 27%),
+    linear-gradient(145deg, #8b9569, #596a43);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 38%);
+}
+
+.confirm-dialog.is-danger .confirm-dialog-mark {
+  background:
+    radial-gradient(circle at 50% 45%, rgb(255 255 255 / 82%) 0 26%, transparent 27%),
+    linear-gradient(145deg, #c87b49, #8f4f34);
+}
+
+.confirm-dialog-copy {
+  display: grid;
+  gap: 0.34rem;
+}
+
+.confirm-dialog h2 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.confirm-dialog p {
+  margin: 0;
+  color: #756b5e;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.confirm-dialog.is-danger .confirm-dialog-actions .btn-primary {
+  background: #9c593a;
+  border-color: #9c593a;
 }
 
 :where(a, button, input, select, textarea, summary, [role="button"], [role="tab"]):focus-visible {
@@ -4278,32 +4385,51 @@ input[type="color"].list-row {
 
 .dashboard-progress-ring-leaf {
   position: absolute;
-  right: -0.2rem;
-  bottom: -0.1rem;
-  width: 3.3rem;
-  height: 2.2rem;
-  opacity: 0.82;
+  right: -0.72rem;
+  bottom: -0.38rem;
+  width: 4.8rem;
+  height: 3.6rem;
+  overflow: visible;
+  color: #7f9261;
+  filter:
+    drop-shadow(0 0.45rem 0.7rem rgb(91 104 65 / 16%))
+    drop-shadow(0 0.08rem 0 rgb(255 255 255 / 70%));
+  opacity: 0.96;
+  transform: rotate(-5deg);
+  transform-origin: 18% 82%;
+  pointer-events: none;
 }
 
-.dashboard-progress-ring-leaf::before,
-.dashboard-progress-ring-leaf::after {
-  content: "";
-  position: absolute;
-  width: 1.25rem;
-  height: 2.2rem;
-  border-radius: 999px 999px 0.1rem 999px;
-  background: linear-gradient(180deg, rgb(201 207 171 / 86%), rgb(173 187 130 / 84%));
-  border: 1px solid rgb(162 173 121 / 58%);
+.dashboard-progress-ring-leaf-stem {
+  stroke: rgb(126 143 92 / 76%);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.dashboard-progress-ring-leaf::before {
-  left: 0.45rem;
-  transform: rotate(30deg);
+.dashboard-progress-ring-leaf-blade {
+  stroke: rgb(111 128 78 / 46%);
+  stroke-width: 1.05;
+  stroke-linejoin: round;
 }
 
-.dashboard-progress-ring-leaf::after {
-  right: 0.45rem;
-  transform: rotate(-22deg);
+.dashboard-progress-ring-leaf-vein {
+  stroke: rgb(255 255 255 / 58%);
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dashboard-progress-ring-leaf .blade-main {
+  fill: color-mix(in srgb, #b9c28d 82%, white);
+}
+
+.dashboard-progress-ring-leaf .blade-left {
+  fill: color-mix(in srgb, #96aa72 82%, white);
+}
+
+.dashboard-progress-ring-leaf .blade-small {
+  fill: color-mix(in srgb, #d0c777 78%, white);
 }
 
 .dashboard-hero-story {
@@ -4779,6 +4905,22 @@ input[type="color"].list-row {
   background: rgb(255 255 255 / 10%);
   color: #f5f0df;
   border-color: rgb(246 240 223 / 28%);
+}
+
+.is-canonical-dashboard .dashboard-focus-card .dashboard-capture-task-action {
+  min-width: 7.8rem;
+  width: 100%;
+  max-width: 13.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(255 255 255 / 13%);
+  border-color: rgb(246 240 223 / 34%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 12%);
+}
+
+.is-canonical-dashboard .dashboard-focus-card .dashboard-capture-task-action:hover {
+  background: rgb(255 255 255 / 18%);
 }
 
 .dashboard-rationale-link {
@@ -6469,6 +6611,15 @@ input[type="color"].list-row {
   #calendar-add-event,
   .calendar-canonical-main > details {
     display: none;
+  }
+
+  .calendar-canonical-main > details.is-intent-open {
+    display: block;
+    order: 7;
+  }
+
+  .calendar-canonical-main > details.is-intent-open #calendar-add-event {
+    display: grid;
   }
 
   .journal-prompts-card {

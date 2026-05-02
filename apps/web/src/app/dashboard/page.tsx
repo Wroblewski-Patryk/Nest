@@ -408,6 +408,11 @@ export default function DashboardPage() {
                 }
                 href={nextAction.href}
                 cta={t("dashboard.focus.cta", "Start focus session")}
+                secondaryAction={
+                  <Link href="/tasks?action=create-task" className="btn-secondary dashboard-capture-task-action">
+                    {t("dashboard.focus.capture_task", "Capture task")}
+                  </Link>
+                }
                 rationaleHref="/tasks"
                 rationaleLabel={t("dashboard.focus.why", "Why this?")}
                 meta={[
@@ -446,8 +451,8 @@ export default function DashboardPage() {
                   ))}
                 </ul>
 
-                <Link href="/tasks" className="dashboard-inline-action dashboard-add-line">
-                  + {t("dashboard.panel.add_task", "Add task")}
+                <Link href="/tasks?action=create-task" className="dashboard-inline-action dashboard-add-line">
+                  + {t("dashboard.panel.add_task", "Capture task")}
                 </Link>
               </Panel>
 
@@ -486,7 +491,7 @@ export default function DashboardPage() {
                 items={[
               {
                 label: t("dashboard.quick_add.new_task", "New task"),
-                href: "/tasks",
+                href: "/tasks?action=create-task",
                 icon: (
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -496,7 +501,7 @@ export default function DashboardPage() {
               },
               {
                 label: t("dashboard.quick_add.time_block", "Time block"),
-                href: "/calendar",
+                href: "/calendar?action=create-event",
                 icon: (
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="1.7" />
@@ -506,7 +511,7 @@ export default function DashboardPage() {
               },
               {
                 label: t("dashboard.quick_add.journal_entry", "Journal entry"),
-                href: "/journal",
+                href: "/journal?action=create-entry",
                 icon: (
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M6 5.5A2.5 2.5 0 0 1 8.5 3H19v18H8.5A2.5 2.5 0 0 0 6 23V5.5Z" stroke="currentColor" strokeWidth="1.7" />
@@ -516,7 +521,7 @@ export default function DashboardPage() {
               },
               {
                 label: t("dashboard.quick_add.note", "Note"),
-                href: "/journal",
+                href: "/journal?action=create-entry",
                 icon: (
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M7 5h10a2 2 0 0 1 2 2v10l-4-2-4 2-4-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
@@ -550,7 +555,7 @@ export default function DashboardPage() {
                 title={journalPreviewTitle}
                 excerpt={journalPreviewBody}
                 prompt={t("dashboard.reflection.new_entry", "New entry")}
-                href="/journal"
+                href="/journal?action=create-entry"
                 className="dashboard-mobile-journal-card"
               />
 
@@ -575,7 +580,7 @@ export default function DashboardPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/calendar" className="dashboard-dayflow-footer">
+                <Link href="/calendar?action=create-event" className="dashboard-dayflow-footer">
                   {t("dashboard.panel.view_full_day", "View full day")}
                 </Link>
               </Panel>

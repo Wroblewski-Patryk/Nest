@@ -1,0 +1,292 @@
+{
+  "desktop": [
+    {
+      "route": "/dashboard",
+      "url": "http://127.0.0.1:9013/dashboard",
+      "selector": ".dashboard-shell",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/tasks?action=create-task",
+      "url": "http://127.0.0.1:9013/tasks?action=create-task",
+      "selector": "#planning-create-task",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": "true",
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/calendar?action=create-event",
+      "url": "http://127.0.0.1:9013/calendar?action=create-event",
+      "selector": "#calendar-add-event",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": "true",
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/journal?action=create-entry",
+      "url": "http://127.0.0.1:9013/journal?action=create-entry",
+      "selector": "#journal-composer",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": "true"
+      },
+      "errors": []
+    },
+    {
+      "route": "/habits",
+      "url": "http://127.0.0.1:9013/habits",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/routines",
+      "url": "http://127.0.0.1:9013/routines",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/life-areas",
+      "url": "http://127.0.0.1:9013/life-areas",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/insights",
+      "url": "http://127.0.0.1:9013/insights",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/automations",
+      "url": "http://127.0.0.1:9013/automations",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/billing",
+      "url": "http://127.0.0.1:9013/billing",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/settings",
+      "url": "http://127.0.0.1:9013/settings",
+      "selector": "main",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    }
+  ],
+  "mobile": [
+    {
+      "route": "/dashboard",
+      "url": "http://127.0.0.1:9013/dashboard",
+      "selector": ".dashboard-shell",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/tasks?action=create-task",
+      "url": "http://127.0.0.1:9013/tasks?action=create-task",
+      "selector": "#planning-create-task",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": "true",
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/calendar?action=create-event",
+      "url": "http://127.0.0.1:9013/calendar?action=create-event",
+      "selector": "#calendar-add-event",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": "true",
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/journal?action=create-entry",
+      "url": "http://127.0.0.1:9013/journal?action=create-entry",
+      "selector": "#journal-composer",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": "true"
+      },
+      "errors": []
+    },
+    {
+      "route": "/habits",
+      "url": "http://127.0.0.1:9013/habits",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/routines",
+      "url": "http://127.0.0.1:9013/routines",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/life-areas",
+      "url": "http://127.0.0.1:9013/life-areas",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/insights",
+      "url": "http://127.0.0.1:9013/insights",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/automations",
+      "url": "http://127.0.0.1:9013/automations",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/billing",
+      "url": "http://127.0.0.1:9013/billing",
+      "selector": ".daily-system-context",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    },
+    {
+      "route": "/settings",
+      "url": "http://127.0.0.1:9013/settings",
+      "selector": "main",
+      "visible": true,
+      "horizontalOverflow": false,
+      "activeIntent": {
+        "task": null,
+        "calendar": null,
+        "journal": null
+      },
+      "errors": []
+    }
+  ]
+}
