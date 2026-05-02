@@ -95,9 +95,14 @@ Last updated: 2026-05-03
     - Started Planning localization coverage for route title/subtitle, the
       create-task composer, task validation/feedback, and task delete
       confirmation.
+    - Expanded Planning localization over list/goal/target validation,
+      feedback, delete confirmations, status/priority labels, canonical
+      workspace columns, quick-add affordances, board tools, composer guidance,
+      and the above-fold planning ladder/support rail.
     - `pnpm lint` and `pnpm exec tsc --noEmit` passed for this first code
       slice, the Settings slice, the Journal slice, and the first Calendar
-      slice, plus the first Planning task-composer slice.
+      slice, plus the first Planning task-composer slice and the expanded
+      Planning workspace slice.
     - Add shared EN/PL dictionary keys for Planning, Calendar, Journal,
       Settings, and shared dashboard primitives.
     - Replace route-local labels, panel titles, placeholders, empty states,
