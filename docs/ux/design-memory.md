@@ -551,6 +551,11 @@
   column with Quick add, Life Areas, and Success ladder. The selected mobile
   direction remains the single-column phone flow for future web/mobile
   breakpoint implementation.
+- Dashboard desktop header art was refined again on 2026-05-02: keep the same
+  layout, but render the top material strip as pale watercolor and paper
+  collage rather than a sharp photograph. Leaves, coffee, notebook, and pen
+  details should feel low-contrast, hand-painted, and blended into the warm
+  page surface.
 
 ## Finish Propagation Rules (2026-04-26)
 

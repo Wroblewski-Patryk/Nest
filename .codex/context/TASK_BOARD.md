@@ -24,6 +24,23 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-298 Dashboard desktop header watercolor refinement
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-297
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Regenerated only the Dashboard desktop canonical preview to keep the
+      approved layout while making the top header/material strip softer and
+      more watercolor-like.
+    - Preserved `Nest` branding, five-pillar IA, and the selected mobile
+      single-column preview.
+    - Report:
+      `docs/ux/nest_298_dashboard_desktop_header_watercolor_refinement_2026-05-02.md`.
+    - Validation:
+      visual desktop preview inspection and `git diff --check`.
+
 - [x] NEST-297 Dashboard desktop reference layout correction
   - Status: DONE
   - Owner: Execution Agent

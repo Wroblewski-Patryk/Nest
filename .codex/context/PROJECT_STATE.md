@@ -25,6 +25,14 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-298` Dashboard desktop header watercolor
+  refinement. The Dashboard desktop canonical preview was regenerated again to
+  preserve the approved reference layout while making the top material strip
+  more delicate, watercolor-like, low-contrast, and blended into the warm paper
+  surface. The selected mobile single-column preview remains unchanged.
+  Validation: visual desktop preview inspection and `git diff --check`.
+  Report:
+  `docs/ux/nest_298_dashboard_desktop_header_watercolor_refinement_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-297` Dashboard desktop reference layout
   correction. The Dashboard desktop canonical preview was regenerated to stay
   much closer to the supplied desktop reference while keeping the softer Nest
@@ -2202,6 +2210,6 @@ Last updated: 2026-05-02
 ## Autonomous Iteration State
 - Current iteration:
 - Current operation mode:
-- Last completed iteration: 297
-- Last completed task: NEST-297 Dashboard desktop reference layout correction
+- Last completed iteration: 298
+- Last completed task: NEST-298 Dashboard desktop header watercolor refinement
 - Next required mode: BUILDER
