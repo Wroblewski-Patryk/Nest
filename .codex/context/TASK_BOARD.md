@@ -24,6 +24,26 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-297 Dashboard desktop reference layout correction
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-296
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Regenerated only the Dashboard desktop canonical preview so it stays much
+      closer to the user's supplied desktop reference: top material strip, left
+      rail, one large workspace, focus card, time map, tasks/habits, journal,
+      up next, and right support rail.
+    - Preserved `Nest` branding and five-pillar IA.
+    - Kept the selected mobile single-column preview unchanged and recorded it
+      as the preferred mobile breakpoint direction for future web/mobile v2
+      implementation.
+    - Report:
+      `docs/ux/nest_297_dashboard_desktop_reference_layout_correction_2026-05-02.md`.
+    - Validation:
+      visual desktop preview inspection and `git diff --check`.
+
 - [x] NEST-296 Dashboard background softening
   - Status: DONE
   - Owner: Execution Agent

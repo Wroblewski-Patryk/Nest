@@ -25,6 +25,15 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-297` Dashboard desktop reference layout
+  correction. The Dashboard desktop canonical preview was regenerated to stay
+  much closer to the supplied desktop reference while keeping the softer Nest
+  paper-watercolor style, five-pillar IA, and `Nest` branding. The selected
+  mobile single-column preview remains unchanged and is now recorded as the
+  preferred mobile breakpoint direction for future web/mobile v2
+  implementation. Validation: visual desktop preview inspection and
+  `git diff --check`. Report:
+  `docs/ux/nest_297_dashboard_desktop_reference_layout_correction_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-296` Dashboard background softening. The
   Dashboard canonical desktop and mobile preview artifacts were refreshed to
   preserve the approved five-pillar IA while adopting the softer paper,
@@ -2193,6 +2202,6 @@ Last updated: 2026-05-02
 ## Autonomous Iteration State
 - Current iteration:
 - Current operation mode:
-- Last completed iteration: 296
-- Last completed task: NEST-296 Dashboard background softening
-- Next required mode: ARCHITECT
+- Last completed iteration: 297
+- Last completed task: NEST-297 Dashboard desktop reference layout correction
+- Next required mode: BUILDER

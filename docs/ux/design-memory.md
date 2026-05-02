@@ -542,6 +542,15 @@
   high-emotion sections such as `Today at a glance`, Journal, focus panels, and
   sidebar accents. Keep the structure from the canonical IA, but avoid heavier
   scenic art that competes with scanability.
+- Dashboard desktop layout correction landed on 2026-05-02 after user review:
+  desktop should preserve the attached notebook-dashboard composition rather
+  than using a top progress-summary hero. The canonical desktop Dashboard
+  should use a top material strip, left rail, one large rounded workspace, a
+  left `Now focus` card, a central time map, compact `Tasks` and `Habits`
+  lists, a bottom Journal reflection card, `Up next`, and a right support
+  column with Quick add, Life Areas, and Success ladder. The selected mobile
+  direction remains the single-column phone flow for future web/mobile
+  breakpoint implementation.
 
 ## Finish Propagation Rules (2026-04-26)
 
