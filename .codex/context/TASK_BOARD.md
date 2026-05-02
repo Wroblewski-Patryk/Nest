@@ -58,16 +58,38 @@ Last updated: 2026-05-03
     - Report:
       `docs/ux/nest_319_final_web_accessibility_contrast_smoke_2026-05-03.md`.
 
-- [ ] NEST-320 Web localization completeness review and release sign-off plan
-  - Status: READY
+- [x] NEST-320 Web localization completeness review and release sign-off plan
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-319
+  - Done on: 2026-05-03
   - Priority: P0
   - Notes:
-    - Review remaining route-local user-facing copy for EN/PL localization
-      completeness on the web-first V1 path.
-    - Update readiness matrix and founder-ready checklist with release
-      sign-off status.
+    - TESTER iteration reviewed remaining route-local web copy and release
+      sign-off status after the accessibility/contrast gate.
+    - Found the release claim is still a candidate, not final sign-off:
+      Planning, Calendar, Journal, Settings, and shared dashboard primitives
+      still contain visible route-local English copy outside the shared EN/PL
+      dictionary.
+    - Updated readiness matrix and founder checklist to keep localization
+      completeness `PARTIAL` until the core route closure lands.
+    - Report:
+      `docs/planning/nest_320_web_localization_release_signoff_review_2026-05-03.md`.
+
+- [ ] NEST-321 Web core localization closure for founder-critical routes
+  - Status: READY
+  - Owner: Execution Agent
+  - Depends on: NEST-320
+  - Priority: P0
+  - Notes:
+    - Add shared EN/PL dictionary keys for Planning, Calendar, Journal,
+      Settings, and shared dashboard primitives.
+    - Replace route-local labels, panel titles, placeholders, empty states,
+      primary action copy, and core aria labels on the founder-critical web
+      path.
+    - Use locale-aware date/time formatting for visible dates on those routes.
+    - Preserve route-intent behavior and action UX from `NEST-311` through
+      `NEST-314`.
 
 - [x] NEST-310 Web UX/UI workflow audit and canonical improvement plan
   - Status: DONE

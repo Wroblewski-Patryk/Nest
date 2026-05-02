@@ -22,7 +22,7 @@ release evidence are no longer V1 blockers.
 
 ## Summary
 
-Current recommendation after `NEST-318`:
+Current recommendation after `NEST-320`:
 
 `WEB-FIRST FOUNDER-READY CANDIDATE - scoped V1 has current backend, web UX,
 route-intent, production web smoke, keyboard, and deterministic primary/action
@@ -61,6 +61,10 @@ release risks:
 - `NEST-319` checked deterministic primary/action contrast and keyboard focus
   movement; it darkened the shared action accent to `#63794c` after the first
   contrast pass found white-on-green action text below threshold.
+- `NEST-320` reviewed web localization completeness and found the final release
+  claim should not be signed off yet: founder-critical Planning, Calendar,
+  Journal, Settings, and shared dashboard primitives still contain visible
+  route-local English UI copy outside the shared EN/PL dictionary.
 
 ## Repository Truth
 
@@ -88,8 +92,8 @@ release risks:
 | Onboarding policy matches guard logic and user-visible flow | PASS | Prior onboarding/guard repair reports; no new drift found in this wave | Reconfirm during final gate |
 | Dashboard and Planning support practical daily-use loop | PASS | `NEST-217` fixed Dashboard live-data trust; `NEST-310` through `NEST-313` closed dashboard/planning creation intent and action clarity gaps | Keep in final smoke |
 | Each core web module supports create/edit/review/delete where applicable | PASS | Core routes are API-backed; `NEST-310` through `NEST-317` verified practical create/action entrypoints and contextual module UX for Dashboard, Planning, Calendar, Journal, Habits, Routines, Life Areas, Insights, Automations, Billing, and Settings | Keep final smoke focused on critical paths |
-| Key user-facing text avoids mojibake, accidental mixed language, raw technical wording | PARTIAL | `NEST-209` through `NEST-213` improved core paths; `NEST-234` localized lower web route chrome/status copy | Continue web route/view localization closure |
-| `en` and `pl` localization visibly affect core v1 path | PARTIAL | Web shell/dashboard and lower web route chrome use shared localization | Continue web core route localization review |
+| Key user-facing text avoids mojibake, accidental mixed language, raw technical wording | PARTIAL | `NEST-209` through `NEST-213` improved core paths; `NEST-234` localized lower web route chrome/status copy; `NEST-320` found remaining route-local English copy concentrated in Planning, Calendar, Journal, Settings, and shared dashboard primitives | Execute `NEST-321` core route localization closure |
+| `en` and `pl` localization visibly affect core v1 path | PARTIAL | Web shell/dashboard and lower web route chrome use shared localization; `NEST-320` confirmed founder-critical route body copy is not yet complete | Execute `NEST-321` and verify visible EN/PL switching |
 
 ## Mobile Scope
 
@@ -106,7 +110,7 @@ release risks:
 | Shared client contracts match backend reality for critical v1 flows | PASS | `NEST-214` shared CRUD contract audit and validations | Monitor route-local cast cleanup |
 | Web maps backend errors into user-safe recovery guidance | PASS | `NEST-209`, `NEST-215`, `NEST-216` | Verify user-facing recovery in final web smoke |
 | Offline/manual sync feels intentional and understandable for founder-critical path | PASS | `NEST-216` retryability handling; `NEST-219` support map exposes sync recovery | Keep in release smoke if sync is part of release claim |
-| Core localization and formatting behavior consistent across the web V1 path | PARTIAL | `NEST-211` to `NEST-213` covered shell/dashboard; `NEST-234` added lower web route coverage | Continue founder-critical web route copy closure |
+| Core localization and formatting behavior consistent across the web V1 path | PARTIAL | `NEST-211` to `NEST-213` covered shell/dashboard; `NEST-234` added lower web route coverage; `NEST-320` identified remaining founder-critical route and shared primitive gaps | Execute `NEST-321` |
 
 ## Daily-Use Quality
 
@@ -142,8 +146,18 @@ release risks:
      `NEST-227` completed API Integration, Unit, Feature, and security-control
      validation.
 
+5. `PARTIAL`: web localization completeness.
+   - Current state:
+     `NEST-320` found that Planning, Calendar, Journal, Settings, and shared
+     dashboard primitives still have visible route-local English copy.
+   - Required resolution:
+     complete `NEST-321`, then verify visible EN/PL switching before final
+     release sign-off.
+
 ## Next Tasks
 
-1. Complete web localization completeness review and release sign-off plan.
-2. Keep provider connect outside V1 unless future production OAuth is
+1. Complete `NEST-321` web core localization closure for founder-critical
+   routes.
+2. Run `NEST-322` final web-first V1 release sign-off gate.
+3. Keep provider connect outside V1 unless future production OAuth is
    implemented and verified.

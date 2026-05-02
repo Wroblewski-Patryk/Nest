@@ -25,6 +25,16 @@ Last updated: 2026-05-03
 
 ## Recent Execution Updates
 
+- 2026-05-03: Completed `NEST-320` web localization completeness review and
+  release sign-off plan as a TESTER iteration. Static web source inspection
+  found the V1 release should remain a `WEB-FIRST FOUNDER-READY CANDIDATE`,
+  not final signed-off yet: Planning, Calendar, Journal, Settings, and shared
+  dashboard primitives still contain visible route-local English copy outside
+  the shared EN/PL dictionary. Readiness docs now keep localization
+  completeness `PARTIAL` and queue the next implementation slice:
+  `NEST-321 Web core localization closure for founder-critical routes`.
+  Report:
+  `docs/planning/nest_320_web_localization_release_signoff_review_2026-05-03.md`.
 - 2026-05-03: Completed `NEST-319` final web accessibility and contrast founder
   smoke as a TESTER iteration. The first contrast pass found white text on the
   global action green at about `3.4:1`; the shared accent token was darkened to

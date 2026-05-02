@@ -60,9 +60,9 @@ API smoke, and mobile release evidence are no longer V1 founder-ready blockers.
 - `PASS` dashboard and planning support a practical daily-use loop.
 - `PASS` each core web module supports create, edit, review, and delete through
   GUI where applicable.
-- `PASS` key user-facing text avoids mojibake, mixed accidental language, and
+- `PARTIAL` key user-facing text avoids mojibake, mixed accidental language, and
   raw technical wording.
-- `PASS` `en` and `pl` localization visibly affect the core `v1` path.
+- `PARTIAL` `en` and `pl` localization visibly affect the core `v1` path.
 
 ## 4. Mobile Scope
 
@@ -84,9 +84,9 @@ API smoke, and mobile release evidence are no longer V1 founder-ready blockers.
 
 ## 6. Daily-Use Quality
 
-- `OPEN` repeated daily flows feel calm rather than admin-like.
-- `OPEN` accessibility basics are verified on web interactions.
-- `OPEN` the product can be used without relying on hidden setup knowledge from
+- `PASS` repeated daily flows feel calm rather than admin-like.
+- `PASS` accessibility basics are verified on web interactions.
+- `PASS` the product can be used without relying on hidden setup knowledge from
   the repository author.
 
 ## Current Status Snapshot (2026-05-03)
@@ -98,9 +98,10 @@ API smoke, and mobile release evidence are no longer V1 founder-ready blockers.
   baselines covered by recent slices have current evidence.
 - `PASS` API validation freshness was refreshed by `NEST-227`.
 - `PASS` route-local request cast cleanup is now covered by `NEST-233`.
-- `PARTIAL` localization completeness, repeated-flow quality, and final web
-  release evidence still need confirmation before the gate can close.
-  `NEST-234` improved lower web routes.
+- `PARTIAL` localization completeness still needs implementation before the
+  final gate can close. `NEST-234` improved lower web routes, and `NEST-320`
+  found the remaining visible gaps are concentrated in Planning, Calendar,
+  Journal, Settings, and shared dashboard primitives.
 - `PASS` repeated-flow quality and practical web core-module operation were
   materially refreshed by `NEST-310` through `NEST-317`: Dashboard capture,
   Planning create-task intent, Calendar create-event intent, Journal
@@ -128,9 +129,8 @@ API smoke, and mobile release evidence are no longer V1 founder-ready blockers.
   were refreshed by `NEST-319`; the shared action accent was darkened to
   `#63794c` after the first contrast pass found white-on-green action text
   below threshold.
-- `NEXT` final V1 gate work should focus on remaining web localization
-  completeness and release sign-off rather than broad new product
-  implementation.
+- `NEXT` final V1 gate work should execute `NEST-321` web core localization
+  closure, then `NEST-322` final release sign-off.
 
 ## Previous Status Snapshot (2026-04-26)
 
