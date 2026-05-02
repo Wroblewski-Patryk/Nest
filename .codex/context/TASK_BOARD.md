@@ -90,8 +90,11 @@ Last updated: 2026-05-03
     - Added Journal localization coverage for the primary reflection composer,
       entry edit/delete flow, filters, sidebar prompts, life-area management,
       and reflection ladder.
+    - Started Calendar localization coverage for page/status copy, hero
+      metrics, event validation/feedback, and add/edit/delete event forms.
     - `pnpm lint` and `pnpm exec tsc --noEmit` passed for this first code
-      slice, the Settings slice, and the Journal slice.
+      slice, the Settings slice, the Journal slice, and the first Calendar
+      slice.
     - Add shared EN/PL dictionary keys for Planning, Calendar, Journal,
       Settings, and shared dashboard primitives.
     - Replace route-local labels, panel titles, placeholders, empty states,

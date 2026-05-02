@@ -11,6 +11,7 @@ import {
 } from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
 import { apiRequest, nestApiClient } from "@/lib/api-client";
+import { useTranslator } from "@/lib/ui-language";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type CalendarEventItem = {
@@ -338,6 +339,7 @@ function createShowcaseCalendarTasks(referenceDate: Date): TaskCalendarItem[] {
 
 export default function CalendarPage() {
   const router = useRouter();
+  const t = useTranslator();
   const { confirm, confirmDialog } = useConfirmDialog();
   const [events, setEvents] = useState<CalendarEventItem[]>([]);
   const [tasks, setTasks] = useState<TaskCalendarItem[]>([]);
@@ -355,7 +357,7 @@ export default function CalendarPage() {
   const [editEventStartAt, setEditEventStartAt] = useState("");
   const [editEventEndAt, setEditEventEndAt] = useState("");
   const [busyEventId, setBusyEventId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState("Create your first time block.");
+  const [feedback, setFeedback] = useState(() => t("web.calendar.feedback.initial", "Create your first time block."));
   const [errorMessage, setErrorMessage] = useState("");
   const [isEventComposerOpen, setIsEventComposerOpen] = useState(false);
 
@@ -380,7 +382,7 @@ export default function CalendarPage() {
         if (!mounted) {
           return;
         }
-        setFeedback("Calendar loaded.");
+        setFeedback(t("web.calendar.feedback.loaded", "Calendar loaded."));
       })
       .catch((error) => {
         if (!mounted) {
@@ -401,7 +403,7 @@ export default function CalendarPage() {
     return () => {
       mounted = false;
     };
-  }, [handleUnauthorized, loadData]);
+  }, [handleUnauthorized, loadData, t]);
 
   const openEventComposer = useCallback(() => {
     setIsEventComposerOpen(true);
@@ -863,14 +865,14 @@ export default function CalendarPage() {
   async function createEvent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!newEventTitle.trim()) {
-      setErrorMessage("Event title is required.");
+      setErrorMessage(t("web.calendar.validation.title_required", "Event title is required."));
       return;
     }
 
     const startAt = toIso(newEventStartAt);
     const endAt = toIso(newEventEndAt);
     if (!startAt || !endAt) {
-      setErrorMessage("Start and end date-time are required.");
+      setErrorMessage(t("web.calendar.validation.datetime_required", "Start and end date-time are required."));
       return;
     }
 
@@ -892,7 +894,7 @@ export default function CalendarPage() {
       setNewEventStartAt("");
       setNewEventEndAt("");
       await loadData();
-      setFeedback("Calendar event created.");
+      setFeedback(t("web.calendar.feedback.created", "Calendar event created."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -913,14 +915,14 @@ export default function CalendarPage() {
 
   async function saveEventEdit(eventId: string) {
     if (!editEventTitle.trim()) {
-      setErrorMessage("Event title is required.");
+      setErrorMessage(t("web.calendar.validation.title_required", "Event title is required."));
       return;
     }
 
     const startAt = toIso(editEventStartAt);
     const endAt = toIso(editEventEndAt);
     if (!startAt || !endAt) {
-      setErrorMessage("Start and end date-time are required.");
+      setErrorMessage(t("web.calendar.validation.datetime_required", "Start and end date-time are required."));
       return;
     }
 
@@ -939,7 +941,7 @@ export default function CalendarPage() {
       });
       setEditingEventId(null);
       await loadData();
-      setFeedback("Calendar event updated.");
+      setFeedback(t("web.calendar.feedback.updated", "Calendar event updated."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -954,9 +956,9 @@ export default function CalendarPage() {
   async function deleteEvent(eventId: string) {
     if (
       !(await confirm({
-        title: "Delete calendar event?",
-        description: "This removes the event from your visible schedule. Linked planning items stay untouched.",
-        confirmLabel: "Delete event",
+        title: t("web.calendar.confirm.delete_title", "Delete calendar event?"),
+        description: t("web.calendar.confirm.delete_body", "This removes the event from your visible schedule. Linked planning items stay untouched."),
+        confirmLabel: t("web.calendar.action.delete_event", "Delete event"),
         tone: "danger",
       }))
     ) {
@@ -974,7 +976,7 @@ export default function CalendarPage() {
         setEditingEventId(null);
       }
       await loadData();
-      setFeedback("Calendar event deleted.");
+      setFeedback(t("web.calendar.feedback.deleted", "Calendar event deleted."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -996,13 +998,13 @@ export default function CalendarPage() {
   const statusMessage = errorMessage
     ? errorMessage
     : isLoading
-      ? "Loading the time map and event details."
-      : feedback || "Calendar is live.";
+      ? t("web.calendar.status.loading", "Loading the time map and event details.")
+      : feedback || t("web.calendar.status.live", "Calendar is live.");
 
   return (
     <WorkspaceShell
-      title="Calendar"
-      subtitle="See the shape of the day before it turns noisy."
+      title={t("web.calendar.title", "Calendar")}
+      subtitle={t("web.calendar.subtitle", "See the shape of the day before it turns noisy.")}
       module="calendar"
       shellTone="dashboard-canonical"
       utilityDateLabel="Friday, May 23, 2025"
@@ -1014,12 +1016,12 @@ export default function CalendarPage() {
         {showCalendarStatusStrip ? (
           <section className={`calendar-status-strip ${errorMessage ? "is-error" : "is-success"}`} aria-live="polite">
             <div className="calendar-status-copy">
-              <small>{errorMessage ? "Calendar status" : isLoading ? "Loading state" : "Live view"}</small>
+              <small>{errorMessage ? t("web.calendar.status.error_label", "Calendar status") : isLoading ? t("web.calendar.status.loading_label", "Loading state") : t("web.calendar.status.live_view", "Live view")}</small>
               <strong>{statusMessage}</strong>
             </div>
             <div className="planning-status-actions">
               <button type="button" className="pill-link" onClick={() => void loadData()} disabled={isLoading}>
-                {isLoading ? "Refreshing..." : "Refresh"}
+                {isLoading ? t("web.common.action.refreshing", "Refreshing...") : t("web.common.action.refresh", "Refresh")}
               </button>
             </div>
           </section>
@@ -1030,28 +1032,28 @@ export default function CalendarPage() {
             <DashboardHeroBand
               dateLabel={dayStart.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
               weatherLabel={`${useCalendarShowcase ? 7 : todayEventsCount} events today`}
-              title="Today's time map"
-              summary={useCalendarShowcase ? "A balanced day with protected focus." : "Protect the few blocks that make the rest of the day easier."}
-              progressLabel="Day load"
+              title={t("web.calendar.hero.title", "Today's time map")}
+              summary={useCalendarShowcase ? t("web.calendar.hero.summary.showcase", "A balanced day with protected focus.") : t("web.calendar.hero.summary.live", "Protect the few blocks that make the rest of the day easier.")}
+              progressLabel={t("web.calendar.hero.progress", "Day load")}
               progressPercent={dayLoadPercent}
               metrics={[
                 {
-                  label: "Events today",
+                  label: t("web.calendar.metric.events_today", "Events today"),
                   value: `${useCalendarShowcase ? 7 : todayEventsCount}`,
                   icon: <TimelineGlyph name="event" />,
                 },
                 {
-                  label: "Deep work",
+                  label: t("web.calendar.metric.deep_work", "Deep work"),
                   value: `${useCalendarShowcase ? "4h" : focusBlocksCount}`,
                   icon: <TimelineGlyph name="focus" />,
                 },
                 {
-                  label: "Protected blocks",
+                  label: t("web.calendar.metric.protected_blocks", "Protected blocks"),
                   value: `${useCalendarShowcase ? 2 : protectedBlocksCount}`,
                   icon: <TimelineGlyph name="task" />,
                 },
                 {
-                  label: "Sync issues",
+                  label: t("web.calendar.metric.sync_issues", "Sync issues"),
                   value: `${useCalendarShowcase ? 1 : syncIssuesCount}`,
                   icon: <TimelineGlyph name="sync" />,
                 },
@@ -1450,24 +1452,24 @@ export default function CalendarPage() {
               open={isEventComposerOpen}
               onToggle={(event) => setIsEventComposerOpen(event.currentTarget.open)}
             >
-              <summary>{useCalendarShowcase ? "Calendar tools" : "Add event"}</summary>
+              <summary>{useCalendarShowcase ? t("web.calendar.panel.tools", "Calendar tools") : t("web.calendar.panel.add_event", "Add event")}</summary>
               <div className="collapsible-content">
-                <Panel id="calendar-add-event" title="Add event" className="calendar-management-panel">
+                <Panel id="calendar-add-event" title={t("web.calendar.panel.add_event", "Add event")} className="calendar-management-panel">
                   <form className="form-grid" onSubmit={createEvent}>
                     <label className="field">
-                      <span>Title</span>
+                      <span>{t("web.common.field.title", "Title")}</span>
                       <input
                         className="list-row"
                         data-calendar-event-autofocus="true"
                         type="text"
                         value={newEventTitle}
                         onChange={(event) => setNewEventTitle(event.target.value)}
-                        placeholder="Example: Weekly life planning"
+                        placeholder={t("web.calendar.placeholder.title", "Example: Weekly life planning")}
                         disabled={isCreating}
                       />
                     </label>
                     <label className="field">
-                      <span>Start</span>
+                      <span>{t("web.calendar.field.start", "Start")}</span>
                       <input
                         className="list-row"
                         type="datetime-local"
@@ -1477,7 +1479,7 @@ export default function CalendarPage() {
                       />
                     </label>
                     <label className="field">
-                      <span>End</span>
+                      <span>{t("web.calendar.field.end", "End")}</span>
                       <input
                         className="list-row"
                         type="datetime-local"
@@ -1487,16 +1489,16 @@ export default function CalendarPage() {
                       />
                     </label>
                     <button type="submit" className="btn-primary" disabled={isCreating}>
-                      {isCreating ? "Adding..." : "Add event"}
+                      {isCreating ? t("web.common.action.adding", "Adding...") : t("web.calendar.action.add_event", "Add event")}
                     </button>
                   </form>
                 </Panel>
 
-                <Panel title="All events" className="calendar-management-panel">
+                <Panel title={t("web.calendar.panel.all_events", "All events")} className="calendar-management-panel">
                   <ul className="list">
                     {events.length === 0 ? (
                       <li className="list-row">
-                        <p>No events yet. Add your first time block above.</p>
+                        <p>{t("web.calendar.empty.no_events", "No events yet. Add your first time block above.")}</p>
                       </li>
                     ) : (
                       events.map((entry) => (
@@ -1504,7 +1506,7 @@ export default function CalendarPage() {
                           {editingEventId === entry.id ? (
                             <div className="form-grid">
                               <label className="field">
-                                <span>Title</span>
+                                <span>{t("web.common.field.title", "Title")}</span>
                                 <input
                                   className="list-row"
                                   type="text"
@@ -1515,7 +1517,7 @@ export default function CalendarPage() {
                               </label>
                               <div className="row-inline">
                                 <label className="field">
-                                  <span>Start</span>
+                                  <span>{t("web.calendar.field.start", "Start")}</span>
                                   <input
                                     className="list-row"
                                     type="datetime-local"
@@ -1525,7 +1527,7 @@ export default function CalendarPage() {
                                   />
                                 </label>
                                 <label className="field">
-                                  <span>End</span>
+                                  <span>{t("web.calendar.field.end", "End")}</span>
                                   <input
                                     className="list-row"
                                     type="datetime-local"
@@ -1542,7 +1544,7 @@ export default function CalendarPage() {
                                   onClick={() => void saveEventEdit(entry.id)}
                                   disabled={busyEventId === entry.id}
                                 >
-                                  Save
+                                  {t("web.common.action.save", "Save")}
                                 </button>
                                 <button
                                   type="button"
@@ -1550,7 +1552,7 @@ export default function CalendarPage() {
                                   onClick={() => setEditingEventId(null)}
                                   disabled={busyEventId === entry.id}
                                 >
-                                  Cancel
+                                  {t("web.common.action.cancel", "Cancel")}
                                 </button>
                               </div>
                             </div>
@@ -1570,7 +1572,7 @@ export default function CalendarPage() {
                                   onClick={() => startEventEdit(entry)}
                                   disabled={busyEventId === entry.id}
                                 >
-                                  Edit
+                                  {t("web.common.action.edit", "Edit")}
                                 </button>
                                 <button
                                   type="button"
@@ -1578,7 +1580,7 @@ export default function CalendarPage() {
                                   onClick={() => void deleteEvent(entry.id)}
                                   disabled={busyEventId === entry.id}
                                 >
-                                  Delete
+                                  {t("web.common.action.delete", "Delete")}
                                 </button>
                               </div>
                             </>
