@@ -24,6 +24,29 @@ Last updated: 2026-05-03
 
 ## Backlog
 
+- [x] NEST-322 Engineering documentation system map bootstrap
+  - Status: DONE
+  - Owner: Documentation Agent
+  - Done on: 2026-05-03
+  - Priority: P0
+  - Current Stage: verification
+  - Operation Mode: BUILDER
+  - Notes:
+    - Built the first technical system-map layer requested by the user without
+      rewriting existing documentation blindly.
+    - Added `docs/index.md` as the engineering entrypoint,
+      `docs/analysis/documentation-inventory.md`,
+      `docs/architecture/codebase-map.md`,
+      `docs/architecture/traceability-matrix.md`,
+      `docs/pipelines/index.md`, `docs/modules/index.md`,
+      `docs/analysis/documentation-drift.md`, and
+      `docs/CONTRIBUTING-DOCS.md`.
+    - Updated `docs/README.md` and `docs/modules/README.md` to point future
+      agents at the new registries.
+    - Remaining gaps are explicit in the drift report: endpoint inventory,
+      model-to-migration mapping, per-pipeline files, and deeper test mapping.
+    - Validation: documentation path spot checks and `git diff --check`.
+
 - [x] NEST-318 V1 readiness matrix refresh
   - Status: DONE
   - Owner: Execution Agent

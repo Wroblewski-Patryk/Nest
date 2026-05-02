@@ -1,5 +1,9 @@
 # Docs Index
 
+For the engineering system map, start with `docs/index.md`. That entrypoint
+links architecture, modules, pipelines, codebase map, traceability, drift, and
+documentation maintenance rules.
+
 This is the canonical index for repository documentation.
 
 ## Product (`docs/product/`)
