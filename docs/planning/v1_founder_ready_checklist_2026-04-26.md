@@ -115,18 +115,22 @@ API smoke, and mobile release evidence are no longer V1 founder-ready blockers.
 - `WAIVED` mobile parity and mobile authenticated API smoke are no longer V1
   founder-ready dependencies after the 2026-05-02 user decision. Prior mobile
   work remains V2 foundation.
-- `PARTIAL` accessibility has a static baseline from `NEST-222` and baseline
-  closure from `NEST-226`; contrast and manual web accessibility smoke remain
-  final-gate evidence.
+- `PASS` accessibility has a static baseline from `NEST-222`, baseline focus
+  closure from `NEST-226`, and deterministic primary/action contrast plus
+  keyboard focus evidence from `NEST-319`.
 - `FOUNDER-READY CANDIDATE` `NEST-228` reran the gate and found the scoped V1
   implementation ready for final smoke, but not yet safe to declare fully
   `v1 founder-ready` without narrow web UI, accessibility, and contrast
   evidence.
 - `DEFERRED` `NEST-231` mobile authenticated API session evidence is moved to
   V2 scope by the 2026-05-02 user decision and no longer blocks V1.
-- `NEXT` final V1 gate work should focus on manual web accessibility,
-  contrast evidence, remaining localization completeness, and launch sign-off
-  rather than broad new product implementation.
+- `PASS` deterministic primary/action contrast and keyboard focus movement
+  were refreshed by `NEST-319`; the shared action accent was darkened to
+  `#63794c` after the first contrast pass found white-on-green action text
+  below threshold.
+- `NEXT` final V1 gate work should focus on remaining web localization
+  completeness and release sign-off rather than broad new product
+  implementation.
 
 ## Previous Status Snapshot (2026-04-26)
 

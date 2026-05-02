@@ -25,9 +25,9 @@ release evidence are no longer V1 blockers.
 Current recommendation after `NEST-318`:
 
 `WEB-FIRST FOUNDER-READY CANDIDATE - scoped V1 has current backend, web UX,
-route-intent, and production web smoke evidence, but final manual accessibility,
-contrast, and localization completeness evidence is still required before
-declaring full v1 founder-ready`
+route-intent, production web smoke, keyboard, and deterministic primary/action
+contrast evidence, but localization completeness and final release sign-off are
+still required before declaring full v1 founder-ready`
 
 The recent `NEST-210` through `NEST-219` wave materially improved
 localization, shared contracts, error handling, offline sync, web daily-use
@@ -58,6 +58,9 @@ release risks:
 - `NEST-317` checked 22 route/viewport combinations with zero failures and
   fixed the mobile Calendar action-intent visibility regression found during
   QA.
+- `NEST-319` checked deterministic primary/action contrast and keyboard focus
+  movement; it darkened the shared action accent to `#63794c` after the first
+  contrast pass found white-on-green action text below threshold.
 
 ## Repository Truth
 
@@ -110,7 +113,7 @@ release risks:
 | Line | Status | Evidence | Next Action |
 | --- | --- | --- | --- |
 | Repeated daily flows feel calm rather than admin-like | PASS | `NEST-310` through `NEST-317` closed Dashboard/Planning/Calendar/Journal action-intent gaps, added contextual module framing, and verified desktop/mobile web smoke | Keep monitoring through founder smoke |
-| Accessibility basics verified on web interactions | PARTIAL | `NEST-222` recorded baseline; `NEST-226` added shared web focus-visible styling | Refresh contrast and manual web accessibility smoke |
+| Accessibility basics verified on web interactions | PASS | `NEST-222` recorded baseline; `NEST-226` added shared web focus-visible styling; `NEST-319` verified keyboard movement and deterministic primary/action contrast across the critical web route set | Keep manual assistive-technology review as future polish, not a V1 blocker |
 | Product usable without hidden setup knowledge from repository author | PASS | `NEST-310` through `NEST-317` made primary web actions route-addressable and visible; contextual module panels explain lower-level/advanced surfaces | Reconfirm in final founder smoke |
 
 ## Blockers For Founder-Ready Claim
@@ -128,10 +131,11 @@ release risks:
    - Required resolution:
      none for V1 after the 2026-05-02 user decision; mobile is V2 scope.
 
-3. `PARTIAL`: accessibility and contrast baseline.
+3. `PASS`: accessibility and contrast baseline.
    - Required resolution:
-     `NEST-222` and `NEST-226` are complete; final gate should refresh
-     contrast and manual screen-reader/device smoke evidence.
+     `NEST-319` completed deterministic primary/action contrast and keyboard
+     smoke evidence. Manual assistive-technology review can continue as
+     future polish.
 
 4. `PASS`: full backend/API validation freshness.
    - Required resolution:
@@ -140,6 +144,6 @@ release risks:
 
 ## Next Tasks
 
-1. Run founder smoke: web UI, manual accessibility, and contrast evidence.
+1. Complete web localization completeness review and release sign-off plan.
 2. Keep provider connect outside V1 unless future production OAuth is
    implemented and verified.

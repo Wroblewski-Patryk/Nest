@@ -42,17 +42,32 @@ Last updated: 2026-05-03
     - Report:
       `docs/planning/nest_318_v1_readiness_matrix_refresh_2026-05-03.md`.
 
-- [ ] NEST-319 Final web accessibility and contrast founder smoke
-  - Status: READY
+- [x] NEST-319 Final web accessibility and contrast founder smoke
+  - Status: DONE
   - Owner: Execution Agent
   - Depends on: NEST-318
+  - Done on: 2026-05-03
   - Priority: P0
   - Notes:
-    - Run the final web-first founder smoke focused on manual accessibility,
-      keyboard reachability, contrast risk, and critical primary-action paths.
-    - Use the existing canonical web smoke route set from `NEST-317` and add
-      accessibility/contrast evidence without widening product scope.
-    - Update founder-ready checklist and readiness matrix with evidence.
+    - TESTER iteration ran final web-first founder smoke for primary/action
+      contrast and keyboard focus movement.
+    - First pass found the global action green too light for white text
+      (`~3.4:1`); darkened the shared accent token to `#63794c`.
+    - Final smoke checked 22 route/viewport combinations with zero visibility,
+      overflow, deterministic primary/action contrast, or keyboard failures.
+    - Report:
+      `docs/ux/nest_319_final_web_accessibility_contrast_smoke_2026-05-03.md`.
+
+- [ ] NEST-320 Web localization completeness review and release sign-off plan
+  - Status: READY
+  - Owner: Execution Agent
+  - Depends on: NEST-319
+  - Priority: P0
+  - Notes:
+    - Review remaining route-local user-facing copy for EN/PL localization
+      completeness on the web-first V1 path.
+    - Update readiness matrix and founder-ready checklist with release
+      sign-off status.
 
 - [x] NEST-310 Web UX/UI workflow audit and canonical improvement plan
   - Status: DONE

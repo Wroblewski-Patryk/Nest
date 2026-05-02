@@ -1,0 +1,618 @@
+{
+  "desktop": [
+    {
+      "route": "/dashboard",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 27,
+      "strictContrast": []
+    },
+    {
+      "route": "/tasks?action=create-task",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 72,
+      "strictContrast": []
+    },
+    {
+      "route": "/calendar?action=create-event",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 40,
+      "strictContrast": []
+    },
+    {
+      "route": "/journal?action=create-entry",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 39,
+      "strictContrast": []
+    },
+    {
+      "route": "/habits",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 19,
+      "strictContrast": []
+    },
+    {
+      "route": "/routines",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 19,
+      "strictContrast": []
+    },
+    {
+      "route": "/life-areas",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 19,
+      "strictContrast": []
+    },
+    {
+      "route": "/insights",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 17,
+      "strictContrast": []
+    },
+    {
+      "route": "/automations",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 19,
+      "strictContrast": []
+    },
+    {
+      "route": "/billing",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 21,
+      "strictContrast": []
+    },
+    {
+      "route": "/settings",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 18,
+      "strictContrast": []
+    }
+  ],
+  "mobile": [
+    {
+      "route": "/dashboard",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 27,
+      "strictContrast": []
+    },
+    {
+      "route": "/tasks?action=create-task",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 72,
+      "strictContrast": []
+    },
+    {
+      "route": "/calendar?action=create-event",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 40,
+      "strictContrast": []
+    },
+    {
+      "route": "/journal?action=create-entry",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 39,
+      "strictContrast": []
+    },
+    {
+      "route": "/habits",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 19,
+      "strictContrast": []
+    },
+    {
+      "route": "/routines",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 19,
+      "strictContrast": []
+    },
+    {
+      "route": "/life-areas",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 19,
+      "strictContrast": []
+    },
+    {
+      "route": "/insights",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 17,
+      "strictContrast": []
+    },
+    {
+      "route": "/automations",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 19,
+      "strictContrast": []
+    },
+    {
+      "route": "/billing",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 21,
+      "strictContrast": []
+    },
+    {
+      "route": "/settings",
+      "visible": true,
+      "horizontalOverflow": false,
+      "focusableCount": 18,
+      "strictContrast": []
+    }
+  ],
+  "keyboard": [
+    {
+      "route": "/dashboard",
+      "focusMoved": true,
+      "seen": [
+        {
+          "tag": "A",
+          "text": "Dashboard",
+          "id": null,
+          "className": "workspace-rail-link is-active"
+        },
+        {
+          "tag": "A",
+          "text": "Planning",
+          "id": null,
+          "className": "workspace-rail-link "
+        },
+        {
+          "tag": "A",
+          "text": "Calendar",
+          "id": null,
+          "className": "workspace-rail-link "
+        },
+        {
+          "tag": "A",
+          "text": "Journal",
+          "id": null,
+          "className": "workspace-rail-link "
+        },
+        {
+          "tag": "A",
+          "text": "Settings",
+          "id": null,
+          "className": "workspace-rail-link "
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "id": null,
+          "className": "workspace-utility-button"
+        },
+        {
+          "tag": "A",
+          "text": "3",
+          "id": null,
+          "className": "workspace-utility-button"
+        },
+        {
+          "tag": "A",
+          "text": "Start focus session",
+          "id": null,
+          "className": "btn-primary"
+        },
+        {
+          "tag": "A",
+          "text": "Capture task",
+          "id": null,
+          "className": "btn-secondary dashboard-capture-task-action"
+        },
+        {
+          "tag": "A",
+          "text": "Why this?",
+          "id": null,
+          "className": "dashboard-rationale-link"
+        },
+        {
+          "tag": "A",
+          "text": "View full calendar",
+          "id": null,
+          "className": "dashboard-dayflow-footer"
+        },
+        {
+          "tag": "A",
+          "text": "View all",
+          "id": null,
+          "className": "dashboard-inline-link"
+        },
+        {
+          "tag": "A",
+          "text": "+ Add task",
+          "id": null,
+          "className": "dashboard-inline-action dashboard-add-line"
+        },
+        {
+          "tag": "A",
+          "text": "View all",
+          "id": null,
+          "className": "dashboard-inline-link"
+        },
+        {
+          "tag": "A",
+          "text": "+ Add habit",
+          "id": null,
+          "className": "dashboard-inline-action dashboard-add-line"
+        },
+        {
+          "tag": "A",
+          "text": "New task+",
+          "id": null,
+          "className": "dashboard-quick-add-tile"
+        },
+        {
+          "tag": "A",
+          "text": "Time block+",
+          "id": null,
+          "className": "dashboard-quick-add-tile"
+        },
+        {
+          "tag": "A",
+          "text": "Journal entry+",
+          "id": null,
+          "className": "dashboard-quick-add-tile"
+        }
+      ]
+    },
+    {
+      "route": "/tasks?action=create-task",
+      "focusMoved": true,
+      "seen": [
+        {
+          "tag": "SELECT",
+          "text": "LowMediumHighUrgent",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "SELECT",
+          "text": "No life area",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Create task",
+          "id": null,
+          "className": "btn-primary"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Cancel",
+          "id": null,
+          "className": "btn-secondary"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "View all tasks",
+          "id": null,
+          "className": "pill-link"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "+ Create task",
+          "id": null,
+          "className": "pill-link"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Refresh",
+          "id": null,
+          "className": "pill-link"
+        },
+        {
+          "tag": "BODY",
+          "text": "NestDashboardPlanningCalendarJournalSettings“A life well liv",
+          "id": null,
+          "className": "__variable_f367f3 __variable_67a1af app-root"
+        },
+        {
+          "tag": "A",
+          "text": "Dashboard",
+          "id": null,
+          "className": "workspace-rail-link "
+        },
+        {
+          "tag": "A",
+          "text": "Planning",
+          "id": null,
+          "className": "workspace-rail-link is-active"
+        },
+        {
+          "tag": "A",
+          "text": "Calendar",
+          "id": null,
+          "className": "workspace-rail-link "
+        },
+        {
+          "tag": "A",
+          "text": "Journal",
+          "id": null,
+          "className": "workspace-rail-link "
+        },
+        {
+          "tag": "A",
+          "text": "Settings",
+          "id": null,
+          "className": "workspace-rail-link "
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "id": null,
+          "className": "workspace-utility-button"
+        }
+      ]
+    },
+    {
+      "route": "/calendar?action=create-event",
+      "focusMoved": true,
+      "seen": [
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Add event",
+          "id": null,
+          "className": "btn-primary"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "id": null,
+          "className": "dashboard-floating-action"
+        },
+        {
+          "tag": "A",
+          "text": "Event",
+          "id": null,
+          "className": "dashboard-quick-add-tile"
+        },
+        {
+          "tag": "A",
+          "text": "Focus",
+          "id": null,
+          "className": "dashboard-quick-add-tile"
+        },
+        {
+          "tag": "A",
+          "text": "Routine",
+          "id": null,
+          "className": "dashboard-quick-add-tile"
+        },
+        {
+          "tag": "A",
+          "text": "Note",
+          "id": null,
+          "className": "dashboard-quick-add-tile"
+        }
+      ]
+    },
+    {
+      "route": "/journal?action=create-entry",
+      "focusMoved": true,
+      "seen": [
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "id": null,
+          "className": "list-row"
+        },
+        {
+          "tag": "TEXTAREA",
+          "text": "",
+          "id": null,
+          "className": "list-row journal-canonical-textarea"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Low",
+          "id": null,
+          "className": "journal-mood-chip "
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Neutral",
+          "id": null,
+          "className": "journal-mood-chip "
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Good",
+          "id": null,
+          "className": "journal-mood-chip is-active"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Great",
+          "id": null,
+          "className": "journal-mood-chip "
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Save entry",
+          "id": null,
+          "className": "btn-primary"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "All",
+          "id": null,
+          "className": "filter-chip is-active"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Good",
+          "id": null,
+          "className": "filter-chip "
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Heavy",
+          "id": null,
+          "className": "filter-chip "
+        },
+        {
+          "tag": "BUTTON",
+          "text": "This week",
+          "id": null,
+          "className": "filter-chip "
+        },
+        {
+          "tag": "A",
+          "text": "Life areas",
+          "id": null,
+          "className": "filter-chip"
+        },
+        {
+          "tag": "SUMMARY",
+          "text": "Manage life areas",
+          "id": null,
+          "className": ""
+        },
+        {
+          "tag": "BUTTON",
+          "text": "What am I grateful for today?>",
+          "id": null,
+          "className": "journal-prompt-item"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "What challenged me today?>",
+          "id": null,
+          "className": "journal-prompt-item"
+        }
+      ]
+    }
+  ]
+}
