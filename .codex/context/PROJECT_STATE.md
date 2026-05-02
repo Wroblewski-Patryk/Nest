@@ -25,6 +25,17 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-296` Dashboard background softening. The
+  Dashboard canonical desktop and mobile preview artifacts were refreshed to
+  preserve the approved five-pillar IA while adopting the softer paper,
+  watercolor landscape, and botanical section-background mood from the user's
+  supplied Dashboard and Planning references. The mobile preview was
+  regenerated as a true phone-first single-column flow focused on quick
+  capture, check-ins, next focus, and today's map. UX memory now records this
+  background rule for future Dashboard and Planning work. Validation: visual
+  desktop preview inspection, visual mobile preview inspection, and
+  `git diff --check`. Report:
+  `docs/ux/nest_296_dashboard_background_softening_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-295` Brand naming correction to Nest. The user
   clarified that the product name is simply `Nest`; stale old-suffix branding
   was removed from visible copy, agent guidance, shared localization, and
@@ -2182,6 +2193,6 @@ Last updated: 2026-05-02
 ## Autonomous Iteration State
 - Current iteration:
 - Current operation mode:
-- Last completed iteration: 295
-- Last completed task: NEST-295 Brand naming correction to Nest
-- Next required mode: BUILDER
+- Last completed iteration: 296
+- Last completed task: NEST-296 Dashboard background softening
+- Next required mode: ARCHITECT

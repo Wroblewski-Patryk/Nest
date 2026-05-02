@@ -24,6 +24,28 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-296 Dashboard background softening
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-295
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Refreshed the Dashboard canonical desktop and mobile previews to use the
+      softer paper-watercolor and botanical background mood from the user's
+      supplied Dashboard and Planning references.
+    - Preserved the canonical five-pillar IA, Dashboard content architecture,
+      and `Nest` branding.
+    - Regenerated mobile as a true phone-first, single-column flow focused on
+      quick actions, check-ins, next focus, and today's map.
+    - Updated UX memory with the rule that high-emotion Dashboard/Planning
+      sections should use delicate, low-opacity paper-watercolor backgrounds.
+    - Report:
+      `docs/ux/nest_296_dashboard_background_softening_2026-05-02.md`.
+    - Validation:
+      visual desktop preview inspection, visual mobile preview inspection, and
+      `git diff --check`.
+
 - [x] NEST-295 Brand naming correction to Nest
   - Status: DONE
   - Owner: Execution Agent

@@ -532,6 +532,16 @@
     ladder or summary block, flatten only the mobile ordering layer needed to
     preserve that reading sequence; do not let desktop column structure dictate
     narrow-screen hierarchy.
+- Dashboard canonical background softening landed on 2026-05-02 with refreshed
+  desktop and mobile reference images:
+  `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-canonical-ia-desktop-2026-05-02.png`
+  and
+  `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-canonical-ia-mobile-2026-05-02.png`.
+  Future Dashboard and Planning backgrounds should favor delicate paper grain,
+  low-opacity watercolor landscape washes, and faint botanical line work in
+  high-emotion sections such as `Today at a glance`, Journal, focus panels, and
+  sidebar accents. Keep the structure from the canonical IA, but avoid heavier
+  scenic art that competes with scanability.
 
 ## Finish Propagation Rules (2026-04-26)
 
