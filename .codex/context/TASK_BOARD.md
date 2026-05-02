@@ -115,6 +115,11 @@ Last updated: 2026-05-03
       and reflection ladder.
     - Started Calendar localization coverage for page/status copy, hero
       metrics, event validation/feedback, and add/edit/delete event forms.
+    - Expanded Calendar localization across the canonical focus card,
+      view-mode controls, week strip, live/showcase timeboards, event
+      intelligence, time ladder, quick-add rail, pressure rail, and sync health;
+      the static hardcoded-copy scan for `calendar/page.tsx` now returns only
+      non-copy comparison/code lines.
     - Started Planning localization coverage for route title/subtitle, the
       create-task composer, task validation/feedback, and task delete
       confirmation.

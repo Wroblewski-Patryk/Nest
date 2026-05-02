@@ -33,6 +33,7 @@ type TaskCalendarItem = {
 
 type CalendarViewMode = "day" | "week" | "month";
 type EventTone = "focus" | "meeting" | "personal" | "review";
+type TranslateFn = (key: string, fallback?: string) => string;
 
 const CALENDAR_SHOWCASE_REFERENCE = new Date("2025-05-23T12:00:00");
 const CALENDAR_SHOWCASE_PRIMARY_EVENT_ID = "showcase-event-4";
@@ -224,17 +225,17 @@ function resolveEventTone(entry: CalendarEventItem): EventTone {
   return "meeting";
 }
 
-function toneLabel(tone: EventTone): string {
+function toneLabel(tone: EventTone, t?: TranslateFn): string {
   if (tone === "focus") {
-    return "Focus";
+    return t?.("web.calendar.tone.focus", "Focus") ?? "Focus";
   }
   if (tone === "personal") {
-    return "Personal";
+    return t?.("web.calendar.tone.personal", "Personal") ?? "Personal";
   }
   if (tone === "review") {
-    return "Review";
+    return t?.("web.calendar.tone.review", "Review") ?? "Review";
   }
-  return "Meeting";
+  return t?.("web.calendar.tone.meeting", "Meeting") ?? "Meeting";
 }
 
 function eventTimingLabel(entry: CalendarEventItem): string {
@@ -1062,59 +1063,59 @@ export default function CalendarPage() {
 
             <div className="calendar-canonical-flow-row">
               {useCalendarShowcase ? (
-                <section className="calendar-showcase-focus" aria-label="Now on deck">
+                <section className="calendar-showcase-focus" aria-label={t("web.calendar.focus.now_on_deck", "Now on deck")}>
                   <div className="calendar-showcase-focus-copy">
                     <p className="calendar-showcase-focus-kicker">
                       <span className="calendar-showcase-focus-kicker-icon" aria-hidden="true">
                         <TimelineGlyph name="focus" />
                       </span>
-                      <span>Now on deck</span>
+                      <span>{t("web.calendar.focus.now_on_deck", "Now on deck")}</span>
                     </p>
-                    <h2>{nextDeckEvent?.title ?? "Protect a meaningful block"}</h2>
+                    <h2>{nextDeckEvent?.title ?? t("web.calendar.focus.protect_block", "Protect a meaningful block")}</h2>
                     <p className="calendar-showcase-focus-time">
                       {nextDeckEvent
                         ? `${eventTimingLabel(nextDeckEvent)} | ${formatDurationLabel(durationMinutes(nextDeckEvent))}`
-                        : "The next meaningful block appears here."}
+                        : t("web.calendar.focus.next_block_empty", "The next meaningful block appears here.")}
                     </p>
                     <div className="calendar-showcase-focus-chips">
-                      <span className="calendar-showcase-focus-chip">{nextDeckEvent ? toneLabel(resolveEventTone(nextDeckEvent)) : "Calm"}</span>
-                      <span className="calendar-showcase-focus-chip">Goal: Launch product</span>
+                      <span className="calendar-showcase-focus-chip">{nextDeckEvent ? toneLabel(resolveEventTone(nextDeckEvent), t) : t("web.calendar.tone.calm", "Calm")}</span>
+                      <span className="calendar-showcase-focus-chip">{t("web.planning.field.goal", "Goal")}: {t("web.calendar.showcase.launch_product", "Launch product")}</span>
                     </div>
-                    <p className="calendar-showcase-focus-detail">Define positioning, milestones and launch plan.</p>
+                    <p className="calendar-showcase-focus-detail">{t("web.calendar.focus.detail_showcase", "Define positioning, milestones and launch plan.")}</p>
                   </div>
                   <div className="calendar-showcase-focus-actions">
                     <a href="#calendar-event-intelligence" className="btn-primary">
-                      Open event brief
+                      {t("web.calendar.action.open_event_brief", "Open event brief")}
                     </a>
                     <a href="#calendar-time-ladder" className="calendar-showcase-focus-link">
-                      View event details
+                      {t("web.calendar.action.view_event_details", "View event details")}
                     </a>
                   </div>
                 </section>
               ) : (
                 <DashboardFocusCard
-                  kicker="Now on deck"
+                  kicker={t("web.calendar.focus.now_on_deck", "Now on deck")}
                   kickerIcon={<TimelineGlyph name="focus" />}
-                  title={nextDeckEvent?.title ?? "Protect a meaningful block"}
+                  title={nextDeckEvent?.title ?? t("web.calendar.focus.protect_block", "Protect a meaningful block")}
                   detail={
                     nextDeckEvent
                       ? `${eventTimingLabel(nextDeckEvent)} | ${formatDurationLabel(durationMinutes(nextDeckEvent))}`
-                      : "Your next event will become the dominant action card as soon as the day has one."
+                      : t("web.calendar.focus.empty_detail", "Your next event will become the dominant action card as soon as the day has one.")
                   }
-                  supportingLabel="Linked context"
-                  supportingValue={linkedTask?.title ?? "Calendar event"}
+                  supportingLabel={t("web.calendar.focus.linked_context", "Linked context")}
+                  supportingValue={linkedTask?.title ?? t("web.calendar.field.event", "Calendar event")}
                   meta={[
-                    { label: "Energy", value: nextDeckEvent ? toneLabel(resolveEventTone(nextDeckEvent)) : "Calm" },
-                    { label: "Window", value: nextDeckEvent ? formatMonthDayLabel(new Date(nextDeckEvent.start_at)) : "Today" },
+                    { label: t("web.calendar.focus.energy", "Energy"), value: nextDeckEvent ? toneLabel(resolveEventTone(nextDeckEvent), t) : t("web.calendar.tone.calm", "Calm") },
+                    { label: t("web.calendar.focus.window", "Window"), value: nextDeckEvent ? formatMonthDayLabel(new Date(nextDeckEvent.start_at)) : t("web.planning.metric.today", "Today") },
                   ]}
                   href="#calendar-event-intelligence"
-                  cta="Open event brief"
+                  cta={t("web.calendar.action.open_event_brief", "Open event brief")}
                   rationaleHref="#calendar-time-ladder"
-                  rationaleLabel="Why this?"
+                  rationaleLabel={t("web.journal.action.why_this", "Why this?")}
                 />
               )}
 
-              <section className="calendar-flow-panel" aria-label="Daily time flow">
+              <section className="calendar-flow-panel" aria-label={t("web.calendar.flow.aria", "Daily time flow")}>
                 <div className={`calendar-flow-toolbar ${useCalendarShowcase ? "is-showcase" : ""}`}>
                   <div className="calendar-view-switch">
                     {(["day", "week", "month"] as CalendarViewMode[]).map((mode) => (
@@ -1124,7 +1125,13 @@ export default function CalendarPage() {
                         className={`calendar-view-button ${viewMode === mode ? "is-active" : ""}`}
                         onClick={() => setViewMode(mode)}
                       >
-                        {mode === "day" ? "Day" : mode === "week" ? "Week" : useCalendarShowcase ? "Agenda" : "Month"}
+                        {mode === "day"
+                          ? t("web.calendar.view.day", "Day")
+                          : mode === "week"
+                            ? t("web.calendar.view.week", "Week")
+                            : useCalendarShowcase
+                              ? t("web.calendar.view.agenda", "Agenda")
+                              : t("web.calendar.view.month", "Month")}
                       </button>
                     ))}
                   </div>
@@ -1132,14 +1139,14 @@ export default function CalendarPage() {
                   <div className={`calendar-flow-nav ${useCalendarShowcase ? "is-showcase" : ""}`}>
                     {useCalendarShowcase ? (
                       <>
-                        <div className="calendar-flow-stepper" aria-label="Move visible week">
-                          <button type="button" className="calendar-step-button" onClick={() => moveWindow(-1)} aria-label="Previous week">
+                        <div className="calendar-flow-stepper" aria-label={t("web.calendar.flow.move_week", "Move visible week")}>
+                          <button type="button" className="calendar-step-button" onClick={() => moveWindow(-1)} aria-label={t("web.calendar.action.previous_week", "Previous week")}>
                             {"<"}
                           </button>
                           <button type="button" className="calendar-step-today" onClick={goToday}>
-                            Today
+                            {t("web.planning.metric.today", "Today")}
                           </button>
-                          <button type="button" className="calendar-step-button" onClick={() => moveWindow(1)} aria-label="Next week">
+                          <button type="button" className="calendar-step-button" onClick={() => moveWindow(1)} aria-label={t("web.calendar.action.next_week", "Next week")}>
                             {">"}
                           </button>
                         </div>
@@ -1148,16 +1155,16 @@ export default function CalendarPage() {
                     ) : (
                       <>
                         <button type="button" className="btn-secondary" onClick={() => moveWindow(-1)}>
-                          Prev
+                          {t("web.calendar.action.prev", "Prev")}
                         </button>
                         <button type="button" className="btn-secondary" onClick={goToday}>
-                          Today
+                          {t("web.planning.metric.today", "Today")}
                         </button>
                         <button type="button" className="btn-secondary" onClick={() => moveWindow(1)}>
-                          Next
+                          {t("web.calendar.action.next", "Next")}
                         </button>
                         <label className="field calendar-anchor-field">
-                          <span>Anchor</span>
+                          <span>{t("web.calendar.field.anchor", "Anchor")}</span>
                           <input
                             className="list-row"
                             type="date"
@@ -1171,11 +1178,15 @@ export default function CalendarPage() {
                 </div>
 
                 <div className="calendar-window-caption">
-                  <strong>{useCalendarShowcase ? "Week at a glance" : windowLabel}</strong>
-                  <span>{useCalendarShowcase ? `${visibleDayEvents.length} events on the focus day` : `${openTasksInView} open due tasks in view`}</span>
+                  <strong>{useCalendarShowcase ? t("web.calendar.flow.week_at_glance", "Week at a glance") : windowLabel}</strong>
+                  <span>
+                    {useCalendarShowcase
+                      ? `${visibleDayEvents.length} ${t("web.calendar.flow.events_focus_day", "events on the focus day")}`
+                      : `${openTasksInView} ${t("web.calendar.flow.open_due_tasks", "open due tasks in view")}`}
+                  </span>
                 </div>
 
-                <div className="calendar-week-strip" role="tablist" aria-label="Week strip">
+                <div className="calendar-week-strip" role="tablist" aria-label={t("web.calendar.flow.week_strip", "Week strip")}>
                   {weekStripDays.map((day, index) => {
                     const dayKey = toDateInputValue(day);
                     const density = dayDensity[index];
@@ -1195,14 +1206,14 @@ export default function CalendarPage() {
                           <strong>{formatDayNumber(day)}</strong>
                         </div>
                         <span className={`calendar-week-pill-marker ${density > 0 ? "has-density" : ""}`} aria-hidden="true" />
-                        <span className="calendar-week-pill-density">{density} block{density === 1 ? "" : "s"}</span>
+                        <span className="calendar-week-pill-density">{density} {density === 1 ? t("web.calendar.unit.block", "block") : t("web.calendar.unit.blocks", "blocks")}</span>
                       </button>
                     );
                   })}
                 </div>
 
                 {useCalendarShowcase ? (
-                  <section className="calendar-showcase-timeboard" aria-label="Showcase day timeline">
+                  <section className="calendar-showcase-timeboard" aria-label={t("web.calendar.timeboard.aria", "Showcase day timeline")}>
                     <div className="calendar-showcase-timeboard-head">
                       <span />
                       {showcaseTimeboardLanes.map((lane) => (
@@ -1220,7 +1231,7 @@ export default function CalendarPage() {
                       {showcaseTimeboardLanes.map((lane) => (
                         <div key={lane.key} className={`calendar-showcase-lane ${lane.key === "now" ? "is-now" : ""}`}>
                           {lane.items.length === 0 ? (
-                            <p className="calendar-showcase-empty">Open space</p>
+                            <p className="calendar-showcase-empty">{t("web.calendar.empty.open_space", "Open space")}</p>
                           ) : (
                             lane.items.map((entry) => (
                               <button
@@ -1231,7 +1242,7 @@ export default function CalendarPage() {
                               >
                                 <small>{eventTimingLabel(entry)}</small>
                                 <strong>{entry.title}</strong>
-                                <span>{toneLabel(resolveEventTone(entry))}</span>
+                                <span>{toneLabel(resolveEventTone(entry), t)}</span>
                               </button>
                             ))
                           )}
@@ -1243,11 +1254,11 @@ export default function CalendarPage() {
                   <div className="calendar-day-grid">
                     <section className="calendar-time-column">
                       <header>
-                        <span>Morning</span>
+                        <span>{t("web.calendar.daypart.morning", "Morning")}</span>
                       </header>
                       <div className="calendar-time-stack">
                         {morningEvents.length === 0 ? (
-                          <p className="calendar-time-empty">Nothing anchored yet.</p>
+                          <p className="calendar-time-empty">{t("web.calendar.empty.nothing_anchored", "Nothing anchored yet.")}</p>
                         ) : (
                           morningEvents.map((entry) => (
                             <button
@@ -1258,7 +1269,7 @@ export default function CalendarPage() {
                             >
                               <small>{eventTimingLabel(entry)}</small>
                               <strong>{entry.title}</strong>
-                              <span>{toneLabel(resolveEventTone(entry))}</span>
+                              <span>{toneLabel(resolveEventTone(entry), t)}</span>
                             </button>
                           ))
                         )}
@@ -1267,26 +1278,26 @@ export default function CalendarPage() {
 
                     <section className="calendar-now-column">
                       <header>
-                        <span>Now</span>
+                        <span>{t("web.calendar.daypart.now", "Now")}</span>
                       </header>
                       <article className="calendar-now-card">
-                        <small>{nowTimelineEvent ? eventTimingLabel(nowTimelineEvent) : "Open time"}</small>
-                        <strong>{nowTimelineEvent?.title ?? "The day still has room."}</strong>
+                        <small>{nowTimelineEvent ? eventTimingLabel(nowTimelineEvent) : t("web.calendar.empty.open_time", "Open time")}</small>
+                        <strong>{nowTimelineEvent?.title ?? t("web.calendar.empty.day_has_room", "The day still has room.")}</strong>
                         <p>
                           {nowTimelineEvent
-                            ? `${toneLabel(resolveEventTone(nowTimelineEvent))} block with ${formatDurationLabel(durationMinutes(nowTimelineEvent))} of protected time.`
-                            : "Keep this pocket clear for the next meaningful action or a deliberate pause."}
+                            ? `${toneLabel(resolveEventTone(nowTimelineEvent), t)} ${t("web.calendar.unit.block_with", "block with")} ${formatDurationLabel(durationMinutes(nowTimelineEvent))} ${t("web.calendar.unit.protected_time", "of protected time.")}`
+                            : t("web.calendar.empty.keep_pocket_clear", "Keep this pocket clear for the next meaningful action or a deliberate pause.")}
                         </p>
                       </article>
                     </section>
 
                     <section className="calendar-time-column">
                       <header>
-                        <span>Afternoon</span>
+                        <span>{t("web.calendar.daypart.afternoon", "Afternoon")}</span>
                       </header>
                       <div className="calendar-time-stack">
                         {afternoonEvents.length === 0 ? (
-                          <p className="calendar-time-empty">Afternoon is still light.</p>
+                          <p className="calendar-time-empty">{t("web.calendar.empty.afternoon_light", "Afternoon is still light.")}</p>
                         ) : (
                           afternoonEvents.map((entry) => (
                             <button
@@ -1297,7 +1308,7 @@ export default function CalendarPage() {
                             >
                               <small>{eventTimingLabel(entry)}</small>
                               <strong>{entry.title}</strong>
-                              <span>{toneLabel(resolveEventTone(entry))}</span>
+                              <span>{toneLabel(resolveEventTone(entry), t)}</span>
                             </button>
                           ))
                         )}
@@ -1306,11 +1317,11 @@ export default function CalendarPage() {
 
                     <section className="calendar-time-column">
                       <header>
-                        <span>Evening</span>
+                        <span>{t("web.calendar.daypart.evening", "Evening")}</span>
                       </header>
                       <div className="calendar-time-stack">
                         {eveningEvents.length === 0 ? (
-                          <p className="calendar-time-empty">Evening is still open.</p>
+                          <p className="calendar-time-empty">{t("web.calendar.empty.evening_open", "Evening is still open.")}</p>
                         ) : (
                           eveningEvents.map((entry) => (
                             <button
@@ -1321,7 +1332,7 @@ export default function CalendarPage() {
                             >
                               <small>{eventTimingLabel(entry)}</small>
                               <strong>{entry.title}</strong>
-                              <span>{toneLabel(resolveEventTone(entry))}</span>
+                              <span>{toneLabel(resolveEventTone(entry), t)}</span>
                             </button>
                           ))
                         )}
@@ -1331,20 +1342,20 @@ export default function CalendarPage() {
                 )}
 
                 <div className="calendar-flow-footer">
-                  <span>Shift from overview to action without leaving the time map.</span>
+                  <span>{t("web.calendar.flow.footer", "Shift from overview to action without leaving the time map.")}</span>
                   <button type="button" className="dashboard-inline-action" onClick={goToday}>
-                    Recenter on today
+                    {t("web.calendar.action.recenter_today", "Recenter on today")}
                   </button>
                 </div>
               </section>
             </div>
 
             {useCalendarShowcase ? (
-              <section id="calendar-event-intelligence" className="calendar-showcase-story" aria-label="Event timeline">
+              <section id="calendar-event-intelligence" className="calendar-showcase-story" aria-label={t("web.calendar.panel.event_timeline", "Event timeline")}>
                 <div className="calendar-showcase-story-main">
                   <div className="calendar-showcase-story-head">
-                    <h3>Event timeline</h3>
-                    <span>{selectedEvent ? `${toneLabel(selectedEventTone ?? "meeting")} | ${selectedEventDuration}` : "No event selected"}</span>
+                    <h3>{t("web.calendar.panel.event_timeline", "Event timeline")}</h3>
+                    <span>{selectedEvent ? `${toneLabel(selectedEventTone ?? "meeting", t)} | ${selectedEventDuration}` : t("web.calendar.empty.no_event_selected", "No event selected")}</span>
                   </div>
                   <div className="calendar-showcase-story-chain">
                     {showcaseStoryItems.map((item, index) => (
@@ -1361,7 +1372,7 @@ export default function CalendarPage() {
                   </div>
                 </div>
                 <div className="calendar-showcase-ownership">
-                  <h4>Ownership and source</h4>
+                  <h4>{t("web.calendar.panel.ownership_source", "Ownership and source")}</h4>
                   <div className="calendar-showcase-ownership-chips">
                     {showcaseOwnershipChips.map((chip) => (
                       <span key={chip} className="calendar-showcase-ownership-chip">
@@ -1373,21 +1384,21 @@ export default function CalendarPage() {
               </section>
             ) : (
               <>
-                <DashboardContextRibbon title="Event intelligence" items={eventIntelligence} />
+                <DashboardContextRibbon title={t("web.calendar.panel.event_intelligence", "Event intelligence")} items={eventIntelligence} />
 
                 <Panel
                   id="calendar-event-intelligence"
-                  title="Event timeline"
+                  title={t("web.calendar.panel.event_timeline", "Event timeline")}
                   className="dashboard-dayflow-panel calendar-management-panel calendar-event-timeline-panel"
                   actions={
                     <span className="dashboard-inline-link">
-                      {selectedEvent ? `${toneLabel(selectedEventTone ?? "meeting")} | ${selectedEventDuration}` : "No event selected"}
+                      {selectedEvent ? `${toneLabel(selectedEventTone ?? "meeting", t)} | ${selectedEventDuration}` : t("web.calendar.empty.no_event_selected", "No event selected")}
                     </span>
                   }
                 >
                   <ul className="calendar-event-ledger">
                     {planningFeed.length === 0 ? (
-                      <li className="calendar-event-ledger-empty">No tasks or events in the selected window yet.</li>
+                      <li className="calendar-event-ledger-empty">{t("web.calendar.empty.no_tasks_or_events_window", "No tasks or events in the selected window yet.")}</li>
                     ) : (
                       planningFeed.map((entry) => (
                         <li key={entry.key} className="calendar-event-ledger-item">
@@ -1407,42 +1418,42 @@ export default function CalendarPage() {
             <section
               id="calendar-time-ladder"
               className={`planning-ladder calendar-time-ladder ${useCalendarShowcase ? "is-showcase" : ""}`}
-              aria-label="Time ladder"
+              aria-label={t("web.calendar.ladder.aria", "Time ladder")}
             >
               <div className="planning-ladder-copy">
-                <h3>Time ladder</h3>
-                <p>{useCalendarShowcase ? "From intention to impact." : "See how calendar time connects planning to reflection."}</p>
+                <h3>{t("web.calendar.ladder.title", "Time ladder")}</h3>
+                <p>{useCalendarShowcase ? t("web.calendar.ladder.copy_showcase", "From intention to impact.") : t("web.calendar.ladder.copy_live", "See how calendar time connects planning to reflection.")}</p>
               </div>
               <div className="planning-ladder-chain">
                 <article className="planning-ladder-node">
-                  <small>Goal</small>
-                  <strong>{useCalendarShowcase ? "Launch product" : linkedTask ? "Support planned work" : "Protect meaningful time"}</strong>
+                  <small>{t("web.planning.field.goal", "Goal")}</small>
+                  <strong>{useCalendarShowcase ? t("web.calendar.showcase.launch_product", "Launch product") : linkedTask ? t("web.calendar.ladder.support_planned_work", "Support planned work") : t("web.calendar.ladder.protect_meaningful_time", "Protect meaningful time")}</strong>
                   <div className="planning-ladder-progress" style={{ "--progress-value": `${Math.max(28, focusBlocksCount * 18)}%` } as CSSProperties}>
                     <span />
                   </div>
-                  {useCalendarShowcase ? <span>Launch product</span> : null}
+                  {useCalendarShowcase ? <span>{t("web.calendar.showcase.launch_product", "Launch product")}</span> : null}
                 </article>
                 <article className="planning-ladder-node">
-                  <small>{useCalendarShowcase ? "Task / List" : "Task or list"}</small>
-                  <strong>{useCalendarShowcase ? "Define positioning" : linkedTask?.title ?? "Weekly planning list"}</strong>
-                  <span>{useCalendarShowcase ? "(Product roadmap)" : linkedTask ? `${linkedTask.priority} priority` : "Route work into an event block"}</span>
+                  <small>{useCalendarShowcase ? t("web.calendar.ladder.task_list", "Task / List") : t("web.calendar.ladder.task_or_list", "Task or list")}</small>
+                  <strong>{useCalendarShowcase ? t("web.calendar.showcase.define_positioning", "Define positioning") : linkedTask?.title ?? t("web.calendar.ladder.weekly_planning_list", "Weekly planning list")}</strong>
+                  <span>{useCalendarShowcase ? t("web.calendar.showcase.product_roadmap", "(Product roadmap)") : linkedTask ? `${linkedTask.priority} ${t("web.planning.field.priority", "priority").toLowerCase()}` : t("web.calendar.ladder.route_work", "Route work into an event block")}</span>
                 </article>
                 <article className="planning-ladder-node">
-                  <small>Calendar event</small>
-                  <strong>{useCalendarShowcase ? "Product strategy workshop" : selectedEvent?.title ?? "Protected focus block"}</strong>
-                  <span>{useCalendarShowcase ? "Today, 10:15 - 11:00" : selectedEvent ? eventTimingLabel(selectedEvent) : "Give the work a real place in the day"}</span>
+                  <small>{t("web.calendar.field.event", "Calendar event")}</small>
+                  <strong>{useCalendarShowcase ? t("web.calendar.showcase.strategy_workshop", "Product strategy workshop") : selectedEvent?.title ?? t("web.calendar.ladder.protected_focus_block", "Protected focus block")}</strong>
+                  <span>{useCalendarShowcase ? t("web.calendar.showcase.today_time", "Today, 10:15 - 11:00") : selectedEvent ? eventTimingLabel(selectedEvent) : t("web.calendar.ladder.give_real_place", "Give the work a real place in the day")}</span>
                 </article>
                 <article className="planning-ladder-node">
-                  <small>Reflection</small>
-                  <strong>{useCalendarShowcase ? "Capture insights and decisions" : "Capture what the day taught you"}</strong>
-                  <span>{useCalendarShowcase ? "Close the loop while the signal is still fresh." : "Close the loop in Journal while the signal is fresh."}</span>
+                  <small>{t("web.journal.title", "Journal")}</small>
+                  <strong>{useCalendarShowcase ? t("web.calendar.ladder.capture_insights", "Capture insights and decisions") : t("web.calendar.ladder.capture_day", "Capture what the day taught you")}</strong>
+                  <span>{useCalendarShowcase ? t("web.calendar.ladder.close_loop", "Close the loop while the signal is still fresh.") : t("web.calendar.ladder.close_loop_journal", "Close the loop in Journal while the signal is fresh.")}</span>
                 </article>
               </div>
               {useCalendarShowcase ? (
                 <div className="calendar-ladder-links">
-                  <small>View related</small>
-                  <a href="/goals">Open goal</a>
-                  <a href="/tasks">Related tasks</a>
+                  <small>{t("web.calendar.ladder.view_related", "View related")}</small>
+                  <a href="/goals">{t("web.calendar.action.open_goal", "Open goal")}</a>
+                  <a href="/tasks">{t("web.calendar.action.related_tasks", "Related tasks")}</a>
                 </div>
               ) : null}
             </section>
@@ -1599,29 +1610,29 @@ export default function CalendarPage() {
               <div className="dashboard-sidebar-card-head">
                 <h3>
                   <TimelineGlyph name="note" />
-                  <span>Time with clarity</span>
+                  <span>{t("web.calendar.rail.clarity_title", "Time with clarity")}</span>
                 </h3>
                 <span>...</span>
               </div>
               <p className="dashboard-sidebar-card-script">
                 {useCalendarShowcase
-                  ? "Protect your focus. Honor your energy. Design your day."
-                  : "Protect the few blocks that keep the day coherent. Everything else becomes easier to place."}
+                  ? t("web.calendar.rail.clarity_showcase", "Protect your focus. Honor your energy. Design your day.")
+                  : t("web.calendar.rail.clarity_live", "Protect the few blocks that keep the day coherent. Everything else becomes easier to place.")}
               </p>
               <div className="calendar-guidance-notes">
                 <p>
-                  <strong>Today:</strong> {useCalendarShowcase ? "deep work workshop" : "keep one block for depth."}
+                  <strong>{t("web.planning.metric.today", "Today")}:</strong> {useCalendarShowcase ? t("web.calendar.rail.today_showcase", "deep work workshop") : t("web.calendar.rail.today_live", "keep one block for depth.")}
                 </p>
                 <p>
-                  <strong>Later:</strong> {useCalendarShowcase ? "family time" : "batch shallow coordination."}
+                  <strong>{t("web.planning.support.later", "Later")}:</strong> {useCalendarShowcase ? t("web.calendar.rail.later_showcase", "family time") : t("web.calendar.rail.later_live", "batch shallow coordination.")}
                 </p>
               </div>
               <div className="dashboard-sidebar-card-footer">
-                <span>{useCalendarShowcase ? "Open the focus block" : selectedEvent ? eventTimingLabel(selectedEvent) : "Choose the next event"}</span>
+                <span>{useCalendarShowcase ? t("web.calendar.rail.open_focus_block", "Open the focus block") : selectedEvent ? eventTimingLabel(selectedEvent) : t("web.calendar.rail.choose_next_event", "Choose the next event")}</span>
                 <button
                   type="button"
                   className="dashboard-floating-action"
-                  aria-label={useCalendarShowcase ? "Open calendar note" : "Open selected event"}
+                  aria-label={useCalendarShowcase ? t("web.calendar.rail.open_calendar_note", "Open calendar note") : t("web.calendar.rail.open_selected_event", "Open selected event")}
                   onClick={() => {
                     if (selectedEvent) {
                       setSelectedEventId(selectedEvent.id);
@@ -1635,14 +1646,14 @@ export default function CalendarPage() {
 
             <article className="dashboard-sidebar-card calendar-quick-add-card">
               <div className="dashboard-sidebar-card-head">
-                <h3>Quick add</h3>
+                <h3>{t("web.planning.quick_add.title", "Quick add")}</h3>
               </div>
               <div className="dashboard-quick-add-grid">
                 {[
-                  { label: "Event", href: "#calendar-add-event", icon: <TimelineGlyph name="event" /> },
-                  { label: useCalendarShowcase ? "Focus block" : "Focus", href: "#calendar-add-event", icon: <TimelineGlyph name="focus" /> },
-                  { label: "Routine", href: "/routines", icon: <TimelineGlyph name="routine" /> },
-                  { label: "Note", href: "/journal?action=create-entry", icon: <TimelineGlyph name="note" /> },
+                  { label: t("web.calendar.field.event_short", "Event"), href: "#calendar-add-event", icon: <TimelineGlyph name="event" /> },
+                  { label: useCalendarShowcase ? t("web.calendar.quick.focus_block", "Focus block") : t("web.calendar.tone.focus", "Focus"), href: "#calendar-add-event", icon: <TimelineGlyph name="focus" /> },
+                  { label: t("web.routines.title", "Routines"), href: "/routines", icon: <TimelineGlyph name="routine" /> },
+                  { label: t("web.calendar.quick.note", "Note"), href: "/journal?action=create-entry", icon: <TimelineGlyph name="note" /> },
                 ].map((item) => (
                   <a
                     key={item.label}
@@ -1666,8 +1677,8 @@ export default function CalendarPage() {
 
             <article className="dashboard-sidebar-card calendar-pressure-card">
               <div className="dashboard-sidebar-card-head">
-                <h3>Calendar pressure</h3>
-                <span>View all</span>
+                <h3>{t("web.calendar.rail.pressure_title", "Calendar pressure")}</h3>
+                <span>{t("web.planning.action.view_all_plain", "View all")}</span>
               </div>
               <div className="dashboard-balance-grid">
                 <div className="dashboard-balance-donut" style={{ background: `conic-gradient(${pressureGradient})` }}>
@@ -1683,12 +1694,12 @@ export default function CalendarPage() {
                   ))}
                 </ul>
               </div>
-              <p className="dashboard-balance-caption">Balance across the visible time window.</p>
+              <p className="dashboard-balance-caption">{t("web.calendar.rail.balance_caption", "Balance across the visible time window.")}</p>
             </article>
 
             <article className="dashboard-sidebar-card calendar-sync-card">
               <div className="dashboard-sidebar-card-head">
-                <h3>Sync health</h3>
+                <h3>{t("web.calendar.rail.sync_health", "Sync health")}</h3>
               </div>
               <div className="calendar-sync-health">
                 {useCalendarShowcase ? (
@@ -1696,31 +1707,31 @@ export default function CalendarPage() {
                     <div className="calendar-sync-row">
                       <span className="calendar-sync-dot is-good" aria-hidden="true" />
                       <div>
-                        <strong>All good</strong>
-                        <p>Google Calendar</p>
+                        <strong>{t("web.calendar.sync.all_good", "All good")}</strong>
+                        <p>{t("web.calendar.sync.google_calendar", "Google Calendar")}</p>
                       </div>
                     </div>
                     <div className="calendar-sync-row">
                       <span className="calendar-sync-dot" aria-hidden="true" />
                       <div>
-                        <strong>Last synced 2 min ago</strong>
-                        <p>Quiet handoff from calendar to planning.</p>
+                        <strong>{t("web.calendar.sync.last_synced", "Last synced 2 min ago")}</strong>
+                        <p>{t("web.calendar.sync.quiet_handoff", "Quiet handoff from calendar to planning.")}</p>
                       </div>
                     </div>
                   </>
                 ) : (
                   <>
                     <div>
-                      <strong>{syncIssuesCount === 0 ? "Quiet and aligned" : `${syncIssuesCount} conflict cue${syncIssuesCount === 1 ? "" : "s"}`}</strong>
+                      <strong>{syncIssuesCount === 0 ? t("web.calendar.sync.quiet_aligned", "Quiet and aligned") : `${syncIssuesCount} ${syncIssuesCount === 1 ? t("web.calendar.sync.conflict_cue", "conflict cue") : t("web.calendar.sync.conflict_cues", "conflict cues")}`}</strong>
                       <p>
                         {syncIssuesCount === 0
-                          ? "The visible day is readable and no obvious overlap drift is showing."
-                          : "Review the selected day to resolve overlap before it compounds."}
+                          ? t("web.calendar.sync.readable_day", "The visible day is readable and no obvious overlap drift is showing.")
+                          : t("web.calendar.sync.resolve_overlap", "Review the selected day to resolve overlap before it compounds.")}
                       </p>
                     </div>
                     <div>
                       <strong>{openTasksInView}</strong>
-                      <p>Open due tasks still need calendar placement.</p>
+                      <p>{t("web.calendar.sync.open_tasks_need_placement", "Open due tasks still need calendar placement.")}</p>
                     </div>
                   </>
                 )}
