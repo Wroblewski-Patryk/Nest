@@ -7,6 +7,7 @@ import { useConfirmDialog } from "@/components/confirm-dialog";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { clearAuthSession } from "@/lib/auth-session";
 import { apiRequest, nestApiClient } from "@/lib/api-client";
+import { useTranslator } from "@/lib/ui-language";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type LifeAreaItem = {
@@ -50,6 +51,7 @@ function getErrorMessage(error: unknown): string {
 
 export default function LifeAreasPage() {
   const router = useRouter();
+  const t = useTranslator();
   const { confirm, confirmDialog } = useConfirmDialog();
   const [lifeAreas, setLifeAreas] = useState<LifeAreaItem[]>([]);
   const [balance, setBalance] = useState<LifeAreaBalanceResponse | null>(null);
@@ -64,7 +66,7 @@ export default function LifeAreasPage() {
   const [newAreaColor, setNewAreaColor] = useState("#789262");
   const [newAreaWeight, setNewAreaWeight] = useState("50");
 
-  const [feedback, setFeedback] = useState("Manage life areas here and keep an eye on your current balance.");
+  const [feedback, setFeedback] = useState(() => t("web.life_areas.feedback.initial", "Manage life areas here and keep an eye on your current balance."));
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleUnauthorized = useCallback(() => {
@@ -89,7 +91,7 @@ export default function LifeAreasPage() {
         if (!mounted) {
           return;
         }
-        setFeedback("Life areas loaded.");
+        setFeedback(t("web.life_areas.feedback.loaded", "Life areas loaded."));
       })
       .catch((error) => {
         if (!mounted) {
@@ -104,12 +106,12 @@ export default function LifeAreasPage() {
     return () => {
       mounted = false;
     };
-  }, [handleUnauthorized, loadData]);
+  }, [handleUnauthorized, loadData, t]);
 
   async function createLifeArea(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!newAreaName.trim()) {
-      setErrorMessage("Life area name is required.");
+      setErrorMessage(t("web.life_areas.validation.name_required", "Life area name is required."));
       return;
     }
 
@@ -128,7 +130,7 @@ export default function LifeAreasPage() {
       setNewAreaName("");
       setNewAreaWeight("50");
       await loadData();
-      setFeedback("Life area created.");
+      setFeedback(t("web.life_areas.feedback.created", "Life area created."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -149,7 +151,7 @@ export default function LifeAreasPage() {
 
   async function saveLifeAreaEdit(areaId: string) {
     if (!editAreaName.trim()) {
-      setErrorMessage("Life area name is required.");
+      setErrorMessage(t("web.life_areas.validation.name_required", "Life area name is required."));
       return;
     }
 
@@ -167,7 +169,7 @@ export default function LifeAreasPage() {
       });
       setEditingAreaId(null);
       await loadData();
-      setFeedback("Life area updated.");
+      setFeedback(t("web.life_areas.feedback.updated", "Life area updated."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -182,9 +184,9 @@ export default function LifeAreasPage() {
   async function deleteLifeArea(areaId: string) {
     if (
       !(await confirm({
-        title: "Delete life area?",
-        description: "This removes the life area from balance and planning context. Use this only when the area is no longer part of the workspace.",
-        confirmLabel: "Delete life area",
+        title: t("web.life_areas.confirm.delete_title", "Delete life area?"),
+        description: t("web.life_areas.confirm.delete_body", "This removes the life area from balance and planning context. Use this only when the area is no longer part of the workspace."),
+        confirmLabel: t("web.life_areas.action.delete_area", "Delete life area"),
         tone: "danger",
       }))
     ) {
@@ -202,7 +204,7 @@ export default function LifeAreasPage() {
         setEditingAreaId(null);
       }
       await loadData();
-      setFeedback("Life area deleted.");
+      setFeedback(t("web.life_areas.feedback.deleted", "Life area deleted."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -221,8 +223,8 @@ export default function LifeAreasPage() {
 
   return (
     <WorkspaceShell
-      title="Life Areas"
-      subtitle="Set life priorities and see whether daily actions stay aligned."
+      title={t("web.life_areas.title", "Life Areas")}
+      subtitle={t("web.life_areas.subtitle", "Set life priorities and see whether daily actions stay aligned.")}
       module="life_areas"
       shellTone="dashboard-canonical"
       utilityDateLabel="Friday, May 23, 2025"
@@ -231,44 +233,44 @@ export default function LifeAreasPage() {
     >
       <div className="daily-system-shell">
         <div className="stack daily-system-metrics">
-          <MetricCard label="Areas" value={String(lifeAreas.length)} />
+          <MetricCard label={t("web.life_areas.metric.areas", "Areas")} value={String(lifeAreas.length)} />
           <MetricCard
-            label="Global balance"
+            label={t("web.life_areas.metric.global_balance", "Global balance")}
             value={balance ? balance.meta.global_balance_score.toFixed(1) : "n/a"}
           />
           <MetricCard
-            label="Top weight"
+            label={t("web.life_areas.metric.top_weight", "Top weight")}
             value={lifeAreas.length > 0 ? `${Math.max(...lifeAreas.map((item) => item.weight))}%` : "n/a"}
           />
         </div>
 
-        <Panel title="Where life areas fit" className="daily-system-panel daily-system-context">
+        <Panel title={t("web.life_areas.context.title", "Where life areas fit")} className="daily-system-panel daily-system-context">
           <p className="daily-system-context-copy">
-            Life areas give Journal, Planning, and Dashboard balance cues a shared language without becoming a separate daily destination.
+            {t("web.life_areas.context.copy", "Life areas give Journal, Planning, and Dashboard balance cues a shared language without becoming a separate daily destination.")}
           </p>
           <div className="daily-system-context-links">
-            <Link href="/journal?action=create-entry">Reflect in Journal</Link>
-            <Link href="/tasks">Open Planning</Link>
-            <Link href="/dashboard">Return to Dashboard</Link>
+            <Link href="/journal?action=create-entry">{t("web.life_areas.context.reflect", "Reflect in Journal")}</Link>
+            <Link href="/tasks">{t("web.life_areas.context.open_planning", "Open Planning")}</Link>
+            <Link href="/dashboard">{t("web.common.link.dashboard", "Return to Dashboard")}</Link>
           </div>
         </Panel>
 
-      <Panel title="Create life area" className="daily-system-panel daily-system-composer">
+      <Panel title={t("web.life_areas.panel.create", "Create life area")} className="daily-system-panel daily-system-composer">
         <form className="form-grid" onSubmit={createLifeArea}>
           <label className="field">
-            <span>Name</span>
+            <span>{t("web.life_areas.field.name", "Name")}</span>
             <input
               className="list-row"
               type="text"
               value={newAreaName}
               onChange={(event) => setNewAreaName(event.target.value)}
-              placeholder="Example: Relationships"
+              placeholder={t("web.life_areas.placeholder.name", "Example: Relationships")}
               disabled={isCreating}
             />
           </label>
           <div className="row-inline">
             <label className="field">
-              <span>Color</span>
+              <span>{t("web.life_areas.field.color", "Color")}</span>
               <input
                 className="list-row"
                 type="color"
@@ -278,7 +280,7 @@ export default function LifeAreasPage() {
               />
             </label>
             <label className="field">
-              <span>Weight</span>
+              <span>{t("web.life_areas.field.weight", "Weight")}</span>
               <input
                 className="list-row"
                 type="number"
@@ -290,17 +292,17 @@ export default function LifeAreasPage() {
               />
             </label>
             <button type="submit" className="btn-primary" disabled={isCreating}>
-              {isCreating ? "Adding..." : "Add area"}
+              {isCreating ? t("web.common.action.adding", "Adding...") : t("web.life_areas.action.add", "Add area")}
             </button>
           </div>
         </form>
       </Panel>
 
-      <Panel title="Life area library" className="daily-system-panel daily-system-list-panel">
+      <Panel title={t("web.life_areas.panel.library", "Life area library")} className="daily-system-panel daily-system-list-panel">
         <ul className="list">
           {lifeAreas.length === 0 ? (
             <li className="list-row">
-              <p>No life areas yet. Add your first one above.</p>
+              <p>{t("web.life_areas.empty", "No life areas yet. Add your first one above.")}</p>
             </li>
           ) : (
             lifeAreas.map((area) => {
@@ -310,7 +312,7 @@ export default function LifeAreasPage() {
                   {editingAreaId === area.id ? (
                     <div className="form-grid">
                       <label className="field">
-                        <span>Name</span>
+                        <span>{t("web.life_areas.field.name", "Name")}</span>
                         <input
                           className="list-row"
                           type="text"
@@ -321,7 +323,7 @@ export default function LifeAreasPage() {
                       </label>
                       <div className="row-inline">
                         <label className="field">
-                          <span>Color</span>
+                          <span>{t("web.life_areas.field.color", "Color")}</span>
                           <input
                             className="list-row"
                             type="color"
@@ -331,7 +333,7 @@ export default function LifeAreasPage() {
                           />
                         </label>
                         <label className="field">
-                          <span>Weight</span>
+                          <span>{t("web.life_areas.field.weight", "Weight")}</span>
                           <input
                             className="list-row"
                             type="number"
@@ -350,7 +352,7 @@ export default function LifeAreasPage() {
                           onClick={() => void saveLifeAreaEdit(area.id)}
                           disabled={busyAreaId === area.id}
                         >
-                          Save
+                          {t("web.common.action.save", "Save")}
                         </button>
                         <button
                           type="button"
@@ -358,7 +360,7 @@ export default function LifeAreasPage() {
                           onClick={() => setEditingAreaId(null)}
                           disabled={busyAreaId === area.id}
                         >
-                          Cancel
+                          {t("web.common.action.cancel", "Cancel")}
                         </button>
                       </div>
                     </div>
@@ -370,7 +372,7 @@ export default function LifeAreasPage() {
                           <strong>{area.name}</strong>
                         </div>
                         <p>
-                          target {area.weight}%{score ? ` | actual ${Math.round(score.actual_share * 100)}%` : ""}
+                          {t("web.life_areas.target_share", "target")} {area.weight}%{score ? ` | ${t("web.life_areas.actual_share", "actual")} ${Math.round(score.actual_share * 100)}%` : ""}
                         </p>
                       </div>
                       <div className="row-inline">
@@ -381,7 +383,7 @@ export default function LifeAreasPage() {
                           onClick={() => startLifeAreaEdit(area)}
                           disabled={busyAreaId === area.id}
                         >
-                          Edit
+                          {t("web.common.action.edit", "Edit")}
                         </button>
                         <button
                           type="button"
@@ -389,7 +391,7 @@ export default function LifeAreasPage() {
                           onClick={() => void deleteLifeArea(area.id)}
                           disabled={busyAreaId === area.id}
                         >
-                          Delete
+                          {t("web.common.action.delete", "Delete")}
                         </button>
                       </div>
                     </>
@@ -402,12 +404,12 @@ export default function LifeAreasPage() {
       </Panel>
 
         {feedback ? (
-          <Panel title="Status" className="daily-system-panel daily-system-status">
+          <Panel title={t("web.common.panel.status", "Status")} className="daily-system-panel daily-system-status">
             <p className="callout">{feedback}</p>
           </Panel>
         ) : null}
         {errorMessage ? (
-          <Panel title="Error" className="daily-system-panel daily-system-status">
+          <Panel title={t("web.common.panel.error", "Error")} className="daily-system-panel daily-system-status">
             <p className="callout state-error">{errorMessage}</p>
           </Panel>
         ) : null}

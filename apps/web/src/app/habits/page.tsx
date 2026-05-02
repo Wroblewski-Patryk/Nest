@@ -7,6 +7,7 @@ import { useConfirmDialog } from "@/components/confirm-dialog";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { clearAuthSession } from "@/lib/auth-session";
 import { apiRequest, nestApiClient } from "@/lib/api-client";
+import { useTranslator } from "@/lib/ui-language";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type HabitItem = {
@@ -35,6 +36,7 @@ function getErrorMessage(error: unknown): string {
 
 export default function HabitsPage() {
   const router = useRouter();
+  const t = useTranslator();
   const { confirm, confirmDialog } = useConfirmDialog();
   const [habits, setHabits] = useState<HabitItem[]>([]);
   const [newHabitTitle, setNewHabitTitle] = useState("");
@@ -47,7 +49,7 @@ export default function HabitsPage() {
   const [editHabitCadence, setEditHabitCadence] = useState<"daily" | "weekly">("daily");
   const [editHabitIsActive, setEditHabitIsActive] = useState(true);
   const [busyHabitId, setBusyHabitId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState("Add your first habit to start consistency tracking.");
+  const [feedback, setFeedback] = useState(() => t("web.habits.feedback.initial", "Add your first habit to start consistency tracking."));
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleUnauthorized = useCallback(() => {
@@ -67,7 +69,7 @@ export default function HabitsPage() {
         if (!mounted) {
           return;
         }
-        setFeedback("Habits loaded.");
+        setFeedback(t("web.habits.feedback.loaded", "Habits loaded."));
       })
       .catch((error) => {
         if (!mounted) {
@@ -82,12 +84,12 @@ export default function HabitsPage() {
     return () => {
       mounted = false;
     };
-  }, [handleUnauthorized, loadData]);
+  }, [handleUnauthorized, loadData, t]);
 
   async function createHabit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!newHabitTitle.trim()) {
-      setErrorMessage("Habit title is required.");
+      setErrorMessage(t("web.habits.validation.title_required", "Habit title is required."));
       return;
     }
 
@@ -108,7 +110,7 @@ export default function HabitsPage() {
       });
       setNewHabitTitle("");
       await loadData();
-      setFeedback("Habit created.");
+      setFeedback(t("web.habits.feedback.created", "Habit created."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -137,7 +139,7 @@ export default function HabitsPage() {
 
   async function saveHabitEdit(habitId: string) {
     if (!editHabitTitle.trim()) {
-      setErrorMessage("Habit title is required.");
+      setErrorMessage(t("web.habits.validation.title_required", "Habit title is required."));
       return;
     }
 
@@ -156,7 +158,7 @@ export default function HabitsPage() {
       });
       setEditingHabitId(null);
       await loadData();
-      setFeedback("Habit updated.");
+      setFeedback(t("web.habits.feedback.updated", "Habit updated."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -178,7 +180,7 @@ export default function HabitsPage() {
         body: { is_active: !habit.is_active },
       });
       await loadData();
-      setFeedback(habit.is_active ? "Habit paused." : "Habit reactivated.");
+      setFeedback(habit.is_active ? t("web.habits.feedback.paused", "Habit paused.") : t("web.habits.feedback.reactivated", "Habit reactivated."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -193,9 +195,9 @@ export default function HabitsPage() {
   async function deleteHabit(habitId: string) {
     if (
       !(await confirm({
-        title: "Delete habit?",
-        description: "This removes the habit from your workspace. Existing progress connected to it may no longer be visible here.",
-        confirmLabel: "Delete habit",
+        title: t("web.habits.confirm.delete_title", "Delete habit?"),
+        description: t("web.habits.confirm.delete_body", "This removes the habit from your workspace. Existing progress connected to it may no longer be visible here."),
+        confirmLabel: t("web.habits.action.delete_habit", "Delete habit"),
         tone: "danger",
       }))
     ) {
@@ -213,7 +215,7 @@ export default function HabitsPage() {
         setEditingHabitId(null);
       }
       await loadData();
-      setFeedback("Habit deleted.");
+      setFeedback(t("web.habits.feedback.deleted", "Habit deleted."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -229,8 +231,8 @@ export default function HabitsPage() {
 
   return (
     <WorkspaceShell
-      title="Habits"
-      subtitle="Track recurring actions with clear, low-friction creation flow."
+      title={t("web.habits.title", "Habits")}
+      subtitle={t("web.habits.subtitle", "Track recurring actions with clear, low-friction creation flow.")}
       module="habits"
       shellTone="dashboard-canonical"
       utilityDateLabel="Friday, May 23, 2025"
@@ -239,71 +241,71 @@ export default function HabitsPage() {
     >
       <div className="daily-system-shell">
         <div className="stack daily-system-metrics">
-          <MetricCard label="Habits tracked" value={String(habits.length)} />
-          <MetricCard label="Active habits" value={String(activeHabits)} />
-          <MetricCard label="Paused habits" value={String(habits.length - activeHabits)} />
+          <MetricCard label={t("web.habits.metric.tracked", "Habits tracked")} value={String(habits.length)} />
+          <MetricCard label={t("web.habits.metric.active", "Active habits")} value={String(activeHabits)} />
+          <MetricCard label={t("web.habits.metric.paused", "Paused habits")} value={String(habits.length - activeHabits)} />
         </div>
 
-        <Panel title="Where habits fit" className="daily-system-panel daily-system-context">
+        <Panel title={t("web.habits.context.title", "Where habits fit")} className="daily-system-panel daily-system-context">
           <p className="daily-system-context-copy">
-            Habits support the Dashboard rhythm and turn repeated Planning intentions into visible daily proof.
+            {t("web.habits.context.copy", "Habits support the Dashboard rhythm and turn repeated Planning intentions into visible daily proof.")}
           </p>
           <div className="daily-system-context-links">
-            <Link href="/dashboard">Dashboard rhythm</Link>
-            <Link href="/tasks?action=create-task">Capture task</Link>
-            <Link href="/routines">Build routine</Link>
+            <Link href="/dashboard">{t("web.habits.context.dashboard", "Dashboard rhythm")}</Link>
+            <Link href="/tasks?action=create-task">{t("web.habits.context.capture_task", "Capture task")}</Link>
+            <Link href="/routines">{t("web.habits.context.build_routine", "Build routine")}</Link>
           </div>
         </Panel>
 
-        <Panel title="Create habit" className="daily-system-panel daily-system-composer">
+        <Panel title={t("web.habits.panel.create", "Create habit")} className="daily-system-panel daily-system-composer">
           <form className="form-grid" onSubmit={createHabit}>
             <label className="field">
-              <span>Title</span>
+              <span>{t("web.common.field.title", "Title")}</span>
               <input
                 className="list-row"
                 type="text"
                 value={newHabitTitle}
                 onChange={(event) => setNewHabitTitle(event.target.value)}
-                placeholder="Example: 20 min reading"
+                placeholder={t("web.habits.placeholder.title", "Example: 20 min reading")}
                 disabled={isCreating}
               />
             </label>
             <label className="field">
-              <span>Type</span>
+              <span>{t("web.habits.field.type", "Type")}</span>
               <select
                 className="list-row"
                 value={newHabitType}
                 onChange={(event) => setNewHabitType(event.target.value as HabitItem["type"])}
                 disabled={isCreating}
               >
-                <option value="boolean">Boolean</option>
-                <option value="numeric">Numeric</option>
-                <option value="duration">Duration</option>
+                <option value="boolean">{t("web.habits.type.boolean", "Boolean")}</option>
+                <option value="numeric">{t("web.habits.type.numeric", "Numeric")}</option>
+                <option value="duration">{t("web.habits.type.duration", "Duration")}</option>
               </select>
             </label>
             <label className="field">
-              <span>Cadence</span>
+              <span>{t("web.habits.field.cadence", "Cadence")}</span>
               <select
                 className="list-row"
                 value={newHabitCadence}
                 onChange={(event) => setNewHabitCadence(event.target.value as "daily" | "weekly")}
                 disabled={isCreating}
               >
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
+                <option value="daily">{t("web.habits.cadence.daily", "Daily")}</option>
+                <option value="weekly">{t("web.habits.cadence.weekly", "Weekly")}</option>
               </select>
             </label>
             <button type="submit" className="btn-primary" disabled={isCreating}>
-              {isCreating ? "Adding..." : "Add habit"}
+              {isCreating ? t("web.common.action.adding", "Adding...") : t("web.habits.action.add", "Add habit")}
             </button>
           </form>
         </Panel>
 
-        <Panel title="Habit library" className="daily-system-panel daily-system-list-panel">
+        <Panel title={t("web.habits.panel.library", "Habit library")} className="daily-system-panel daily-system-list-panel">
           <ul className="list">
             {habits.length === 0 ? (
               <li className="list-row">
-                <p>No habits yet. Add your first one above.</p>
+                <p>{t("web.habits.empty", "No habits yet. Add your first one above.")}</p>
               </li>
             ) : (
               habits.map((habit) => (
@@ -311,7 +313,7 @@ export default function HabitsPage() {
                   {editingHabitId === habit.id ? (
                     <div className="form-grid">
                       <label className="field">
-                        <span>Title</span>
+                        <span>{t("web.common.field.title", "Title")}</span>
                         <input
                           className="list-row"
                           type="text"
@@ -322,33 +324,33 @@ export default function HabitsPage() {
                       </label>
                       <div className="row-inline">
                         <label className="field">
-                          <span>Type</span>
+                          <span>{t("web.habits.field.type", "Type")}</span>
                           <select
                             className="list-row"
                             value={editHabitType}
                             onChange={(event) => setEditHabitType(event.target.value as HabitItem["type"])}
                             disabled={busyHabitId === habit.id}
                           >
-                            <option value="boolean">Boolean</option>
-                            <option value="numeric">Numeric</option>
-                            <option value="duration">Duration</option>
+                            <option value="boolean">{t("web.habits.type.boolean", "Boolean")}</option>
+                            <option value="numeric">{t("web.habits.type.numeric", "Numeric")}</option>
+                            <option value="duration">{t("web.habits.type.duration", "Duration")}</option>
                           </select>
                         </label>
                         <label className="field">
-                          <span>Cadence</span>
+                          <span>{t("web.habits.field.cadence", "Cadence")}</span>
                           <select
                             className="list-row"
                             value={editHabitCadence}
                             onChange={(event) => setEditHabitCadence(event.target.value as "daily" | "weekly")}
                             disabled={busyHabitId === habit.id}
                           >
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
+                            <option value="daily">{t("web.habits.cadence.daily", "Daily")}</option>
+                            <option value="weekly">{t("web.habits.cadence.weekly", "Weekly")}</option>
                           </select>
                         </label>
                       </div>
                       <label className="field">
-                        <span>Active</span>
+                        <span>{t("web.common.status.active", "Active")}</span>
                         <input
                           type="checkbox"
                           checked={editHabitIsActive}
@@ -363,7 +365,7 @@ export default function HabitsPage() {
                           onClick={() => void saveHabitEdit(habit.id)}
                           disabled={busyHabitId === habit.id}
                         >
-                          Save
+                          {t("web.common.action.save", "Save")}
                         </button>
                         <button
                           type="button"
@@ -371,7 +373,7 @@ export default function HabitsPage() {
                           onClick={() => setEditingHabitId(null)}
                           disabled={busyHabitId === habit.id}
                         >
-                          Cancel
+                          {t("web.common.action.cancel", "Cancel")}
                         </button>
                       </div>
                     </div>
@@ -380,12 +382,12 @@ export default function HabitsPage() {
                       <div>
                         <strong>{habit.title}</strong>
                         <p>
-                          {habit.type} | cadence: {String(habit.cadence?.type ?? "custom")}
+                          {t(`web.habits.type.${habit.type}`, habit.type)} | {t("web.habits.field.cadence_lower", "cadence")}: {t(`web.habits.cadence.${String(habit.cadence?.type ?? "custom")}`, String(habit.cadence?.type ?? "custom"))}
                         </p>
                       </div>
                       <div className="row-inline">
                         <span className={`pill ${habit.is_active ? "state-success" : ""}`}>
-                          {habit.is_active ? "active" : "inactive"}
+                          {habit.is_active ? t("web.common.status.active_lower", "active") : t("web.common.status.inactive_lower", "inactive")}
                         </span>
                         <button
                           type="button"
@@ -393,7 +395,7 @@ export default function HabitsPage() {
                           onClick={() => startHabitEdit(habit)}
                           disabled={busyHabitId === habit.id}
                         >
-                          Edit
+                          {t("web.common.action.edit", "Edit")}
                         </button>
                         <button
                           type="button"
@@ -401,7 +403,7 @@ export default function HabitsPage() {
                           onClick={() => void toggleHabitActive(habit)}
                           disabled={busyHabitId === habit.id}
                         >
-                          {habit.is_active ? "Pause" : "Activate"}
+                          {habit.is_active ? t("web.common.action.pause", "Pause") : t("web.common.action.activate", "Activate")}
                         </button>
                         <button
                           type="button"
@@ -409,7 +411,7 @@ export default function HabitsPage() {
                           onClick={() => void deleteHabit(habit.id)}
                           disabled={busyHabitId === habit.id}
                         >
-                          Delete
+                          {t("web.common.action.delete", "Delete")}
                         </button>
                       </div>
                     </>
@@ -421,12 +423,12 @@ export default function HabitsPage() {
         </Panel>
 
         {feedback ? (
-          <Panel title="Status" className="daily-system-panel daily-system-status">
+          <Panel title={t("web.common.panel.status", "Status")} className="daily-system-panel daily-system-status">
             <p className="callout">{feedback}</p>
           </Panel>
         ) : null}
         {errorMessage ? (
-          <Panel title="Error" className="daily-system-panel daily-system-status">
+          <Panel title={t("web.common.panel.error", "Error")} className="daily-system-panel daily-system-status">
             <p className="callout state-error">{errorMessage}</p>
           </Panel>
         ) : null}

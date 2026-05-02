@@ -1,7 +1,7 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { resolveLanguage } from "@nest/shared-types";
+import { useCallback, useSyncExternalStore } from "react";
+import { resolveLanguage, translate } from "@nest/shared-types";
 
 const UI_LANGUAGE_STORAGE_KEY = "nest.ui.language";
 const UI_LANGUAGE_COOKIE_KEY = "nest.ui.language";
@@ -60,4 +60,9 @@ export function setStoredUiLanguage(language: string): "en" | "pl" {
 
 export function useUiLanguage(): "en" | "pl" {
   return useSyncExternalStore(subscribeToUiLanguage, getUiLanguageSnapshot, getDefaultUiLanguage);
+}
+
+export function useTranslator(): (key: string, fallback?: string) => string {
+  const language = useUiLanguage();
+  return useCallback((key, fallback = key) => translate(key, language, fallback), [language]);
 }

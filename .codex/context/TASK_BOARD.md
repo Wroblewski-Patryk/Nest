@@ -77,11 +77,15 @@ Last updated: 2026-05-03
       `docs/planning/nest_320_web_localization_release_signoff_review_2026-05-03.md`.
 
 - [ ] NEST-321 Web core localization closure for founder-critical routes
-  - Status: READY
+  - Status: IN_PROGRESS
   - Owner: Execution Agent
   - Depends on: NEST-320
   - Priority: P0
   - Notes:
+    - Started with a reusable web translator hook and shared EN/PL keys for
+      Habits, Routines, and Life Areas.
+    - `pnpm lint` and `pnpm exec tsc --noEmit` passed for this first code
+      slice.
     - Add shared EN/PL dictionary keys for Planning, Calendar, Journal,
       Settings, and shared dashboard primitives.
     - Replace route-local labels, panel titles, placeholders, empty states,

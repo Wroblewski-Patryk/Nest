@@ -7,6 +7,7 @@ import { useConfirmDialog } from "@/components/confirm-dialog";
 import { MetricCard, Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { clearAuthSession } from "@/lib/auth-session";
 import { apiRequest } from "@/lib/api-client";
+import { useTranslator } from "@/lib/ui-language";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type RoutineStep = {
@@ -40,6 +41,7 @@ function getErrorMessage(error: unknown): string {
 
 export default function RoutinesPage() {
   const router = useRouter();
+  const t = useTranslator();
   const { confirm, confirmDialog } = useConfirmDialog();
   const [routines, setRoutines] = useState<RoutineItem[]>([]);
   const [newRoutineTitle, setNewRoutineTitle] = useState("");
@@ -50,7 +52,7 @@ export default function RoutinesPage() {
   const [editRoutineTitle, setEditRoutineTitle] = useState("");
   const [editRoutineIsActive, setEditRoutineIsActive] = useState(true);
   const [busyRoutineId, setBusyRoutineId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState("Add first routine with one step and expand later.");
+  const [feedback, setFeedback] = useState(() => t("web.routines.feedback.initial", "Add first routine with one step and expand later."));
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleUnauthorized = useCallback(() => {
@@ -72,7 +74,7 @@ export default function RoutinesPage() {
         if (!mounted) {
           return;
         }
-        setFeedback("Routines loaded.");
+        setFeedback(t("web.routines.feedback.loaded", "Routines loaded."));
       })
       .catch((error) => {
         if (!mounted) {
@@ -87,16 +89,16 @@ export default function RoutinesPage() {
     return () => {
       mounted = false;
     };
-  }, [handleUnauthorized, loadData]);
+  }, [handleUnauthorized, loadData, t]);
 
   async function createRoutine(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!newRoutineTitle.trim()) {
-      setErrorMessage("Routine title is required.");
+      setErrorMessage(t("web.routines.validation.title_required", "Routine title is required."));
       return;
     }
     if (!newRoutineStepTitle.trim()) {
-      setErrorMessage("At least one step title is required.");
+      setErrorMessage(t("web.routines.validation.step_required", "At least one step title is required."));
       return;
     }
 
@@ -121,7 +123,7 @@ export default function RoutinesPage() {
       setNewRoutineStepTitle("");
       setNewRoutineStepDuration("15");
       await loadData();
-      setFeedback("Routine created.");
+      setFeedback(t("web.routines.feedback.created", "Routine created."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -141,7 +143,7 @@ export default function RoutinesPage() {
 
   async function saveRoutineEdit(routineId: string) {
     if (!editRoutineTitle.trim()) {
-      setErrorMessage("Routine title is required.");
+      setErrorMessage(t("web.routines.validation.title_required", "Routine title is required."));
       return;
     }
 
@@ -158,7 +160,7 @@ export default function RoutinesPage() {
       });
       setEditingRoutineId(null);
       await loadData();
-      setFeedback("Routine updated.");
+      setFeedback(t("web.routines.feedback.updated", "Routine updated."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -180,7 +182,7 @@ export default function RoutinesPage() {
         body: { is_active: !routine.is_active },
       });
       await loadData();
-      setFeedback(routine.is_active ? "Routine paused." : "Routine reactivated.");
+      setFeedback(routine.is_active ? t("web.routines.feedback.paused", "Routine paused.") : t("web.routines.feedback.reactivated", "Routine reactivated."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -195,9 +197,9 @@ export default function RoutinesPage() {
   async function deleteRoutine(routineId: string) {
     if (
       !(await confirm({
-        title: "Delete routine?",
-        description: "This removes the routine and its steps from your workspace.",
-        confirmLabel: "Delete routine",
+        title: t("web.routines.confirm.delete_title", "Delete routine?"),
+        description: t("web.routines.confirm.delete_body", "This removes the routine and its steps from your workspace."),
+        confirmLabel: t("web.routines.action.delete_routine", "Delete routine"),
         tone: "danger",
       }))
     ) {
@@ -215,7 +217,7 @@ export default function RoutinesPage() {
         setEditingRoutineId(null);
       }
       await loadData();
-      setFeedback("Routine deleted.");
+      setFeedback(t("web.routines.feedback.deleted", "Routine deleted."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -238,8 +240,8 @@ export default function RoutinesPage() {
 
   return (
     <WorkspaceShell
-      title="Routines"
-      subtitle="Create repeatable rituals with a practical first-step setup flow."
+      title={t("web.routines.title", "Routines")}
+      subtitle={t("web.routines.subtitle", "Create repeatable rituals with a practical first-step setup flow.")}
       module="routines"
       shellTone="dashboard-canonical"
       utilityDateLabel="Friday, May 23, 2025"
@@ -248,51 +250,51 @@ export default function RoutinesPage() {
     >
       <div className="daily-system-shell">
         <div className="stack daily-system-metrics">
-          <MetricCard label="Routines active" value={String(routines.length)} />
-          <MetricCard label="Avg steps" value={String(avgSteps)} />
+          <MetricCard label={t("web.routines.metric.active", "Routines active")} value={String(routines.length)} />
+          <MetricCard label={t("web.routines.metric.avg_steps", "Avg steps")} value={String(avgSteps)} />
           <MetricCard
-            label="Total steps"
+            label={t("web.routines.metric.total_steps", "Total steps")}
             value={String(routines.reduce((sum, routine) => sum + routine.steps.length, 0))}
           />
         </div>
 
-        <Panel title="Where routines fit" className="daily-system-panel daily-system-context">
+        <Panel title={t("web.routines.context.title", "Where routines fit")} className="daily-system-panel daily-system-context">
           <p className="daily-system-context-copy">
-            Routines connect habits with Calendar time blocks, so repeated work has a place instead of becoming background noise.
+            {t("web.routines.context.copy", "Routines connect habits with Calendar time blocks, so repeated work has a place instead of becoming background noise.")}
           </p>
           <div className="daily-system-context-links">
-            <Link href="/calendar?action=create-event">Schedule time</Link>
-            <Link href="/habits">Review habits</Link>
-            <Link href="/dashboard">Return to Dashboard</Link>
+            <Link href="/calendar?action=create-event">{t("web.routines.context.schedule_time", "Schedule time")}</Link>
+            <Link href="/habits">{t("web.routines.context.review_habits", "Review habits")}</Link>
+            <Link href="/dashboard">{t("web.common.link.dashboard", "Return to Dashboard")}</Link>
           </div>
         </Panel>
 
-        <Panel title="Create routine" className="daily-system-panel daily-system-composer">
+        <Panel title={t("web.routines.panel.create", "Create routine")} className="daily-system-panel daily-system-composer">
           <form className="form-grid" onSubmit={createRoutine}>
             <label className="field">
-              <span>Title</span>
+              <span>{t("web.common.field.title", "Title")}</span>
               <input
                 className="list-row"
                 type="text"
                 value={newRoutineTitle}
                 onChange={(event) => setNewRoutineTitle(event.target.value)}
-                placeholder="Example: Morning reset"
+                placeholder={t("web.routines.placeholder.title", "Example: Morning reset")}
                 disabled={isCreating}
               />
             </label>
             <label className="field">
-              <span>First step</span>
+              <span>{t("web.routines.field.first_step", "First step")}</span>
               <input
                 className="list-row"
                 type="text"
                 value={newRoutineStepTitle}
                 onChange={(event) => setNewRoutineStepTitle(event.target.value)}
-                placeholder="Example: Hydrate"
+                placeholder={t("web.routines.placeholder.first_step", "Example: Hydrate")}
                 disabled={isCreating}
               />
             </label>
             <label className="field">
-              <span>First step duration (min)</span>
+              <span>{t("web.routines.field.first_step_duration", "First step duration (min)")}</span>
               <input
                 className="list-row"
                 type="number"
@@ -303,16 +305,16 @@ export default function RoutinesPage() {
               />
             </label>
             <button type="submit" className="btn-primary" disabled={isCreating}>
-              {isCreating ? "Adding..." : "Add routine"}
+              {isCreating ? t("web.common.action.adding", "Adding...") : t("web.routines.action.add", "Add routine")}
             </button>
           </form>
         </Panel>
 
-        <Panel title="Routine library" className="daily-system-panel daily-system-list-panel">
+        <Panel title={t("web.routines.panel.library", "Routine library")} className="daily-system-panel daily-system-list-panel">
           <ul className="list">
             {routines.length === 0 ? (
               <li className="list-row">
-                <p>No routines yet. Add your first one above.</p>
+                <p>{t("web.routines.empty", "No routines yet. Add your first one above.")}</p>
               </li>
             ) : (
               routines.map((routine) => (
@@ -320,7 +322,7 @@ export default function RoutinesPage() {
                   {editingRoutineId === routine.id ? (
                     <div className="form-grid">
                       <label className="field">
-                        <span>Title</span>
+                        <span>{t("web.common.field.title", "Title")}</span>
                         <input
                           className="list-row"
                           type="text"
@@ -330,7 +332,7 @@ export default function RoutinesPage() {
                         />
                       </label>
                       <label className="field">
-                        <span>Active</span>
+                        <span>{t("web.common.status.active", "Active")}</span>
                         <input
                           type="checkbox"
                           checked={editRoutineIsActive}
@@ -345,7 +347,7 @@ export default function RoutinesPage() {
                           onClick={() => void saveRoutineEdit(routine.id)}
                           disabled={busyRoutineId === routine.id}
                         >
-                          Save
+                          {t("web.common.action.save", "Save")}
                         </button>
                         <button
                           type="button"
@@ -353,7 +355,7 @@ export default function RoutinesPage() {
                           onClick={() => setEditingRoutineId(null)}
                           disabled={busyRoutineId === routine.id}
                         >
-                          Cancel
+                          {t("web.common.action.cancel", "Cancel")}
                         </button>
                       </div>
                     </div>
@@ -361,11 +363,11 @@ export default function RoutinesPage() {
                     <>
                       <div>
                         <strong>{routine.title}</strong>
-                        <p>{routine.steps.length} steps configured</p>
+                        <p>{t("web.routines.steps_configured", "{count} steps configured").replace("{count}", String(routine.steps.length))}</p>
                       </div>
                       <div className="row-inline">
                         <span className={`pill ${routine.is_active ? "state-success" : ""}`}>
-                          {routine.is_active ? "active" : "inactive"}
+                          {routine.is_active ? t("web.common.status.active_lower", "active") : t("web.common.status.inactive_lower", "inactive")}
                         </span>
                         <button
                           type="button"
@@ -373,7 +375,7 @@ export default function RoutinesPage() {
                           onClick={() => startRoutineEdit(routine)}
                           disabled={busyRoutineId === routine.id}
                         >
-                          Edit
+                          {t("web.common.action.edit", "Edit")}
                         </button>
                         <button
                           type="button"
@@ -381,7 +383,7 @@ export default function RoutinesPage() {
                           onClick={() => void toggleRoutineActive(routine)}
                           disabled={busyRoutineId === routine.id}
                         >
-                          {routine.is_active ? "Pause" : "Activate"}
+                          {routine.is_active ? t("web.common.action.pause", "Pause") : t("web.common.action.activate", "Activate")}
                         </button>
                         <button
                           type="button"
@@ -389,7 +391,7 @@ export default function RoutinesPage() {
                           onClick={() => void deleteRoutine(routine.id)}
                           disabled={busyRoutineId === routine.id}
                         >
-                          Delete
+                          {t("web.common.action.delete", "Delete")}
                         </button>
                       </div>
                     </>
@@ -401,12 +403,12 @@ export default function RoutinesPage() {
         </Panel>
 
         {feedback ? (
-          <Panel title="Status" className="daily-system-panel daily-system-status">
+          <Panel title={t("web.common.panel.status", "Status")} className="daily-system-panel daily-system-status">
             <p className="callout">{feedback}</p>
           </Panel>
         ) : null}
         {errorMessage ? (
-          <Panel title="Error" className="daily-system-panel daily-system-status">
+          <Panel title={t("web.common.panel.error", "Error")} className="daily-system-panel daily-system-status">
             <p className="callout state-error">{errorMessage}</p>
           </Panel>
         ) : null}
