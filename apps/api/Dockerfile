@@ -1,7 +1,10 @@
-FROM php:8.3-cli-alpine AS build
+FROM php:8.4-cli-alpine AS build
 
 RUN apk add --no-cache \
+    autoconf \
+    g++ \
     git \
+    make \
     unzip \
     libpq-dev \
     icu-dev \
@@ -13,7 +16,9 @@ RUN apk add --no-cache \
     intl \
     pcntl \
     pdo_pgsql \
-    zip >/tmp/php-ext-install.log
+    zip >/tmp/php-ext-install.log \
+ && pecl install redis >/tmp/pecl-redis.log \
+ && docker-php-ext-enable redis >/tmp/php-redis-enable.log
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -27,7 +32,7 @@ COPY apps/api ./
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative --quiet
 RUN php artisan package:discover --ansi >/tmp/package-discover.log
 
-FROM php:8.3-cli-alpine AS runtime
+FROM php:8.4-cli-alpine AS runtime
 
 RUN apk add --no-cache \
     bash \

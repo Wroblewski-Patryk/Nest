@@ -422,7 +422,7 @@ export default function CalendarPage() {
   );
   const hasMeaningfulLiveCalendar =
     liveEventsOnAnchorDay.length >= 2 || (liveEventsOnAnchorDay.length >= 1 && tasks.length >= 1);
-  const useCalendarShowcase = !isLoading && (Boolean(errorMessage) || !hasMeaningfulLiveCalendar);
+  const useCalendarShowcase = !isLoading && !errorMessage && !hasMeaningfulLiveCalendar;
   const eventSource = useCalendarShowcase ? showcaseEvents : events;
   const taskSource = useCalendarShowcase ? showcaseTasks : tasks;
 

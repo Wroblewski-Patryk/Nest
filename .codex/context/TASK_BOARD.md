@@ -24,6 +24,194 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-301 Runtime deployment stack alignment
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-300
+  - Priority: P0
+  - Notes:
+    - Align API/web/deployment runtime configuration with the approved
+      architecture baseline or capture an explicit architecture decision if
+      hosting constraints require a different stack.
+    - Scope includes PHP/Node/PostgreSQL/Redis deployment config and replacing
+      hard-coded database queue dispatch in integration sync with
+      config-driven queue dispatch.
+    - Plan:
+      `docs/planning/nest_deployment_improvement_plan_2026-05-02.md`.
+    - Result:
+      `docs/planning/nest_301_309_deployment_improvement_implementation_report_2026-05-02.md`.
+
+- [x] NEST-302 Web session and route-guard production hardening
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-301
+  - Priority: P0
+  - Notes:
+    - Decide and implement the production web session model, reducing
+      browser-token exposure where possible.
+    - Decide whether protected route guards fail closed or intentionally fail
+      open during `/auth/me` outages.
+    - Add/extend route-guard regression coverage and run web/API auth
+      validations.
+    - Plan:
+      `docs/planning/nest_deployment_improvement_plan_2026-05-02.md`.
+    - Result:
+      `docs/planning/nest_301_309_deployment_improvement_implementation_report_2026-05-02.md`.
+
+- [x] NEST-303 OpenAPI strict contract cleanup
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-301
+  - Priority: P0
+  - Notes:
+    - Resolve release-relevant Redocly warnings across the five OpenAPI
+      contract files, especially missing operation IDs, 4XX responses, and tag
+      descriptions.
+    - Preserve existing backend behavior and error-envelope model.
+    - Plan:
+      `docs/planning/nest_deployment_improvement_plan_2026-05-02.md`.
+    - Result:
+      `docs/planning/nest_301_309_deployment_improvement_implementation_report_2026-05-02.md`.
+
+- [x] NEST-304 Production operations checklist and smoke path
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-301, NEST-302, NEST-303
+  - Priority: P0
+  - Notes:
+    - Capture deploy/run/check/rollback path for a web-first release:
+      environment variables, migrations, worker, scheduler, health checks,
+      smoke checks, observability, and rollback/disable paths.
+    - Plan:
+      `docs/planning/nest_deployment_improvement_plan_2026-05-02.md`.
+    - Result:
+      `docs/planning/nest_301_309_deployment_improvement_implementation_report_2026-05-02.md`.
+
+- [x] NEST-305 Policy coverage ledger and sensitive action gap fixes
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-304
+  - Priority: P1
+  - Notes:
+    - Inventory controller actions by tenant/user scoping and explicit policy
+      coverage, then fix only real sensitive-action gaps.
+    - Plan:
+      `docs/planning/nest_deployment_improvement_plan_2026-05-02.md`.
+    - Result:
+      `docs/planning/nest_301_309_deployment_improvement_implementation_report_2026-05-02.md`.
+
+- [x] NEST-306 Controller workflow thin-slice refactor
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-305
+  - Priority: P1
+  - Notes:
+    - Move one high-complexity controller workflow into existing domain-service
+      style while preserving API behavior and tests.
+    - Plan:
+      `docs/planning/nest_deployment_improvement_plan_2026-05-02.md`.
+    - Result:
+      `docs/planning/nest_301_309_deployment_improvement_implementation_report_2026-05-02.md`.
+
+- [x] NEST-307 Locale-aware web routing plan and first slice
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-302
+  - Priority: P1
+  - Notes:
+    - Resolve the current gap between client-side language storage and
+      architecture-required locale-aware routing behavior.
+    - Plan:
+      `docs/planning/nest_deployment_improvement_plan_2026-05-02.md`.
+    - Result:
+      `docs/planning/nest_301_309_deployment_improvement_implementation_report_2026-05-02.md`.
+
+- [x] NEST-308 Production showcase and error-state rule
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-302
+  - Priority: P1
+  - Notes:
+    - Ensure canonical showcase/empty states never hide real API failures in
+      production.
+    - Plan:
+      `docs/planning/nest_deployment_improvement_plan_2026-05-02.md`.
+    - Result:
+      `docs/planning/nest_301_309_deployment_improvement_implementation_report_2026-05-02.md`.
+
+- [x] NEST-309 Mobile scope decision and IA alignment
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-304
+  - Priority: P2
+  - Notes:
+    - Decide whether mobile is part of the next deployment promise. If yes,
+      align tabs to Dashboard, Planning, Calendar, Journal, Settings and review
+      native token storage.
+    - Plan:
+      `docs/planning/nest_deployment_improvement_plan_2026-05-02.md`.
+    - Result:
+      `docs/planning/nest_301_309_deployment_improvement_implementation_report_2026-05-02.md`.
+
+- [x] NEST-300 Backend/frontend deployment readiness audit
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-299
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Audited backend, web, mobile, contracts, security controls,
+      deployment/runtime configuration, and architecture alignment after the
+      canonical dashboard implementation.
+    - Main conclusion: backend is structurally strong and well-covered, but
+      deployment planning should first resolve runtime stack drift
+      (PHP/Node/PostgreSQL/Redis), hard-coded database queue usage, web token
+      storage, fail-open route guard behavior, OpenAPI warning cleanup, and
+      mobile IA parity scope.
+    - Recommended next slices: runtime stack alignment, web session/route
+      guard hardening, and OpenAPI strict contract cleanup.
+    - Report:
+      `docs/planning/nest_300_backend_frontend_deployment_readiness_audit_2026-05-02.md`.
+    - Validation:
+      API unit, feature, integration, security-controls verification; web lint,
+      typecheck, build, unit; mobile typecheck, unit, Expo web export; OpenAPI
+      lint passed validity with warnings.
+
+- [x] NEST-299 Dashboard runtime slim canonical implementation
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-298
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Implemented the latest slim Dashboard canonical artifact in the web
+      runtime: five-pillar rail, watercolor top material strip, notebook board,
+      focus/time/tasks/habits body, right support rail, journal reflection, and
+      Up next.
+    - Canonical shell tone now suppresses optional surfaces in the sidebar, and
+      mobile navigation labels the integrated route as `Planning`.
+    - Existing API-backed data loading, auth handling, localization baseline,
+      and route destinations were preserved.
+    - Follow-up fidelity pass tightened the rail spacing, native screenshot
+      proportions, script-like focus title, fixed dashboard panel heights,
+      header material art, EN/PL copy keys, visible Tasks heading, Life Areas
+      capitalization, journal notebook detail, topbar date placement,
+      canonical showcase rows, visible Add task, habit streak values, and Up
+      next row structure. Final fidelity tuning moved the right support rail
+      to the canonical open-column treatment with the vertical divider and
+      upper Quick add alignment while preserving the mobile card flow. The
+      97%-target pass further aligned the right rail's vertical start and
+      enlarged the sidebar plant/quote/account grouping.
+    - Report:
+      `docs/ux/nest_299_dashboard_runtime_slim_canonical_implementation_2026-05-02.md`.
+    - Evidence:
+      `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-web-parity-preview-phaseAQ.png`,
+      `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-web-parity-preview-phaseAQ-mobile.png`.
+    - Validation:
+      web typecheck, lint, build, unit tests, Playwright desktop screenshot
+      smoke, Playwright mobile screenshot smoke, visual comparison, and
+      `git diff --check`.
+
 - [x] NEST-298 Dashboard desktop header watercolor refinement
   - Status: DONE
   - Owner: Execution Agent

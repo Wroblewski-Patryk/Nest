@@ -58,3 +58,50 @@
 - Owner: Founder + Planning Agent
 - Due date: 2026-04-27
 - Status: OPEN
+
+## Decision Item
+- ID: OD-2026-05-02-01
+- Context: `NEST-300` found drift between the approved runtime architecture
+  (PHP 8.4, Node 24, PostgreSQL 17, Redis-backed cache/session/queue) and the
+  current deploy configuration (PHP 8.3 images, PHP `^8.2`, Node 22 images,
+  Postgres 16, database-backed cache/session/queue).
+- Options:
+  - Align implementation/deployment to the approved architecture runtime.
+  - Revise architecture docs to declare the current Coolify stack as the MVP
+    deployment baseline and treat Redis/runtime upgrades as later hardening.
+- Recommendation: align implementation/deployment to the approved architecture
+  unless hosting constraints block it.
+- Owner: Founder + Execution Agent
+- Due date: 2026-05-03
+- Status: DECIDED
+
+## Decision Item
+- ID: OD-2026-05-02-02
+- Context: web currently stores bearer tokens in browser-readable storage and
+  middleware treats `/auth/me` outages as authenticated to preserve navigation.
+- Options:
+  - Move web to httpOnly Secure server-set cookies or a BFF-style session
+    boundary and fail closed on protected-route auth-check outages.
+  - Keep browser bearer-token storage for MVP with explicit risk acceptance,
+    shorter token TTL, stricter cookie flags where possible, CSP/XSS review,
+    and documented fail-open behavior.
+- Recommendation: prefer httpOnly Secure session handling and fail-closed
+  protected routes before public production.
+- Owner: Founder + Execution Agent
+- Due date: 2026-05-04
+- Status: DECIDED
+
+## Decision Item
+- ID: OD-2026-05-02-03
+- Context: web is now closest to the canonical product shell, while mobile still
+  exposes the older Tasks/Habits/Goals/Journal/Calendar tab model.
+- Options:
+  - Ship web-first and explicitly keep native mobile outside the next release
+    claim.
+  - Include mobile in the release and first align mobile IA to Dashboard,
+    Planning, Calendar, Journal, Settings plus native token-storage review.
+- Recommendation: ship web-first if the goal is the fastest reliable
+  deployment; align mobile as a follow-up wave.
+- Owner: Founder + Planning Agent
+- Due date: 2026-05-04
+- Status: DECIDED

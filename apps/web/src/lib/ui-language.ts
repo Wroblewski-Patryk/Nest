@@ -4,7 +4,9 @@ import { useSyncExternalStore } from "react";
 import { resolveLanguage } from "@nest/shared-types";
 
 const UI_LANGUAGE_STORAGE_KEY = "nest.ui.language";
+const UI_LANGUAGE_COOKIE_KEY = "nest.ui.language";
 const UI_LANGUAGE_EVENT = "nest:ui-language-change";
+const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
 
 function getDefaultUiLanguage(): "en" | "pl" {
   return resolveLanguage(process.env.NEXT_PUBLIC_NEST_DEFAULT_LANGUAGE ?? "en");
@@ -48,6 +50,8 @@ export function setStoredUiLanguage(language: string): "en" | "pl" {
 
   if (typeof window !== "undefined") {
     window.localStorage.setItem(UI_LANGUAGE_STORAGE_KEY, resolved);
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `${UI_LANGUAGE_COOKIE_KEY}=${resolved}; Path=/; Max-Age=${COOKIE_MAX_AGE_SECONDS}; SameSite=Lax${secure}`;
     window.dispatchEvent(new CustomEvent(UI_LANGUAGE_EVENT, { detail: resolved }));
   }
 

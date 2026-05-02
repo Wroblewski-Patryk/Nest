@@ -26,7 +26,8 @@ function writeCookie(key: string, value: string, maxAgeSeconds = COOKIE_MAX_AGE_
     return;
   }
 
-  document.cookie = `${key}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax`;
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${key}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAgeSeconds}; SameSite=Lax${secure}`;
 }
 
 function clearCookie(key: string): void {
@@ -38,25 +39,15 @@ function clearCookie(key: string): void {
 }
 
 export function getAuthToken(): string | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  const token = window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
-  if (token && token.trim().length > 0) {
-    return token;
-  }
-
   return readCookie(AUTH_TOKEN_COOKIE_KEY);
 }
 
-export function setAuthToken(token: string): void {
+export function setAuthToken(): void {
   if (typeof window === "undefined") {
     return;
   }
 
-  window.localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
-  writeCookie(AUTH_TOKEN_COOKIE_KEY, token);
+  window.localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
 }
 
 export function clearAuthToken(): void {
@@ -87,8 +78,8 @@ export function clearOnboardingRequired(): void {
   clearCookie(ONBOARDING_REQUIRED_COOKIE_KEY);
 }
 
-export function setAuthSession(token: string, onboardingRequired: boolean): void {
-  setAuthToken(token);
+export function setAuthSession(onboardingRequired: boolean): void {
+  setAuthToken();
   setOnboardingRequired(onboardingRequired);
 }
 

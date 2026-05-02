@@ -25,6 +25,70 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-301` through `NEST-309` deployment improvement
+  implementation. Runtime config now targets the approved PHP 8.4, Node 24,
+  PostgreSQL 17, and Redis 7 baseline; production cache/session/queue use Redis;
+  integration queue dispatch and worker startup are config-driven. Web auth now
+  defaults to a same-origin `/api/nest` proxy that stores the Laravel bearer
+  token in `HttpOnly` cookies and fails closed when `/auth/me` cannot be
+  checked. OpenAPI contract warnings were resolved. Added the web-first release
+  runbook, updated deployment/integration gates, added a policy coverage ledger,
+  added `HabitPolicy`, refactored repeated habit scoping, made UI language
+  server-visible for root `html lang`, prevented Dashboard/Calendar/Journal
+  showcase states from hiding API failures, and recorded the next release as
+  web-first with native mobile remaining V2 scope. Validation passed:
+  composer validate; API unit, feature, integration, security controls; web
+  lint, typecheck, build, unit; mobile typecheck, unit, Expo web export;
+  Redocly lint with no warnings; `git diff --check` with CRLF warnings only.
+  Report:
+  `docs/planning/nest_301_309_deployment_improvement_implementation_report_2026-05-02.md`.
+- 2026-05-02: Planned the post-audit deployment improvement wave. The new
+  plan converts `NEST-300` findings into ordered tasks `NEST-301` through
+  `NEST-309`, with `NEST-301 Runtime deployment stack alignment` marked
+  `READY` as the first P0 slice. The sequence prioritizes runtime consistency,
+  web session/route-guard hardening, OpenAPI strict contract cleanup,
+  production operations evidence, policy coverage, locale routing, production
+  showcase/error-state behavior, controller maintainability, and mobile scope
+  alignment. Plan:
+  `docs/planning/nest_deployment_improvement_plan_2026-05-02.md`.
+- 2026-05-02: Completed `NEST-300` backend/frontend deployment readiness
+  audit. The analysis found that the Laravel backend is broadly aligned with
+  Nest architecture and has strong evidence across tenant isolation, actor
+  boundaries, AI safety, integrations, error envelopes, security controls, and
+  observability tests. Deployment planning should still resolve runtime stack
+  drift against `docs/architecture/tech-stack.md` (PHP/Node/PostgreSQL/Redis),
+  remove hard-coded database queue usage, decide the web session model and
+  route-guard outage behavior, clean OpenAPI release warnings, and either keep
+  mobile as V2 scope or align mobile IA to the five-pillar canonical shell.
+  Validation passed for API unit/feature/integration/security controls, web
+  lint/typecheck/build/unit, mobile typecheck/unit/Expo web export, and OpenAPI
+  validity with warnings. Report:
+  `docs/planning/nest_300_backend_frontend_deployment_readiness_audit_2026-05-02.md`.
+- 2026-05-02: Completed `NEST-299` Dashboard runtime slim canonical
+  implementation. Web Dashboard now renders the latest slim canonical
+  notebook composition from the approved desktop artifact: five-pillar rail,
+  watercolor top material strip, focus/time/tasks/habits board, right support
+  rail, journal reflection, up-next list, and mobile single-column order with
+  Quick Add elevated after focus. A follow-up fidelity pass tightened rail
+  spacing, native screenshot proportions, script-like focus title, panel
+  heights, header material art, EN/PL copy keys, visible Tasks heading, Life
+  Areas capitalization, journal notebook detail, topbar date placement,
+  canonical showcase rows, visible Add task, habit streak values, and Up next
+  row structure. Final fidelity tuning moved the right support rail to the
+  canonical open-column treatment with the vertical divider and upper Quick
+  add alignment while preserving the mobile card flow. The 97%-target pass
+  further aligned the right rail's vertical start and enlarged the sidebar
+  plant/quote/account grouping. Canonical shell tone now suppresses optional
+  sidebar surfaces and mobile nav labels the integrated planning pillar as
+  `Planning`. Existing API-backed data loading, auth handling, localization
+  baseline, and route destinations were preserved. Fresh evidence:
+  `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-web-parity-preview-phaseAQ.png`
+  and
+  `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-web-parity-preview-phaseAQ-mobile.png`.
+  Web typecheck, lint, build, unit tests, Playwright desktop screenshot smoke,
+  Playwright mobile screenshot smoke, visual comparison, and `git diff --check`
+  passed. Report:
+  `docs/ux/nest_299_dashboard_runtime_slim_canonical_implementation_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-298` Dashboard desktop header watercolor
   refinement. The Dashboard desktop canonical preview was regenerated again to
   preserve the approved reference layout while making the top material strip
@@ -2210,6 +2274,6 @@ Last updated: 2026-05-02
 ## Autonomous Iteration State
 - Current iteration:
 - Current operation mode:
-- Last completed iteration: 298
-- Last completed task: NEST-298 Dashboard desktop header watercolor refinement
+- Last completed iteration: 299
+- Last completed task: NEST-299 Dashboard runtime slim canonical implementation
 - Next required mode: BUILDER

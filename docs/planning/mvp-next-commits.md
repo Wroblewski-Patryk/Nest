@@ -11,10 +11,15 @@ Primary planning source:
 
 ## NOW (execute in order)
 
-- [ ] Decision required: `NEST-231` mobile authenticated API session path
+- [x] `NEST-301` Runtime deployment stack alignment
+- [x] `NEST-302` Web session and route-guard production hardening
+- [x] `NEST-303` OpenAPI strict contract cleanup
 
 ## NEXT
 
+- [x] `NEST-304` Production operations checklist and smoke path
+- [x] `NEST-305` Policy coverage ledger and sensitive action gap fixes
+- [x] Decision required: `NEST-309` mobile scope and IA alignment
 - [x] Route-local cast cleanup
 - [x] Localization lower-route copy pass
 - [ ] Future provider OAuth/auth implementation only if provider connect enters

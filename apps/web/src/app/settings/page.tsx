@@ -4,7 +4,7 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { apiRequest, nestApiClient } from "@/lib/api-client";
-import { clearAuthSession, getAuthToken } from "@/lib/auth-session";
+import { clearAuthSession } from "@/lib/auth-session";
 import { setStoredUiLanguage } from "@/lib/ui-language";
 
 type SettingsTab = "profile" | "application" | "access" | "subscription";
@@ -250,13 +250,6 @@ export default function SettingsPage() {
   }, [ensureAgentDrafts, handleUnauthorized]);
 
   const bootstrapSession = useCallback(async () => {
-    const token = getAuthToken();
-    if (!token) {
-      handleUnauthorized();
-      setIsBootstrapping(false);
-      return;
-    }
-
     try {
       const meResponse = await apiRequest<{ data: AuthUser }>("/auth/me");
       const me = meResponse.data;

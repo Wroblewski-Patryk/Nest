@@ -20,7 +20,7 @@ if [ "${APP_SEED_ON_BOOT:-false}" = "true" ]; then
 fi
 
 if [ "${RUN_QUEUE_WORKER:-false}" = "true" ]; then
-  exec php artisan queue:work database --tries=1 --timeout="${QUEUE_WORKER_TIMEOUT:-90}" --verbose
+  exec php artisan queue:work "${QUEUE_CONNECTION:-redis}" --queue="${QUEUE_WORKER_QUEUE:-integrations,default}" --tries=1 --timeout="${QUEUE_WORKER_TIMEOUT:-90}" --verbose
 fi
 
 if [ "${PORT:-9000}" != "9000" ]; then

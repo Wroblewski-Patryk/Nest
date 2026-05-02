@@ -6,7 +6,7 @@ import { resolveLanguage, translate } from "@nest/shared-types";
 import { PublicShell } from "@/components/public-shell";
 import { PreAuthLanguageSelector } from "@/components/pre-auth-language-selector";
 import { apiRequest } from "@/lib/api-client";
-import { clearAuthSession, getAuthToken, setAuthSession } from "@/lib/auth-session";
+import { clearAuthSession, setAuthSession } from "@/lib/auth-session";
 import { getStoredUiLanguage } from "@/lib/ui-language";
 
 type AuthUser = {
@@ -18,7 +18,7 @@ type AuthUser = {
 
 type AuthResponse = {
   data: {
-    token: string;
+    token?: string;
     user: AuthUser;
   };
 };
@@ -62,11 +62,6 @@ export default function AuthPage() {
   }, []);
 
   useEffect(() => {
-    const token = getAuthToken();
-    if (!token) {
-      return;
-    }
-
     let mounted = true;
     void apiRequest<{ data: AuthUser }>("/auth/me")
       .then((response) => {
@@ -74,7 +69,7 @@ export default function AuthPage() {
           return;
         }
 
-        setAuthSession(token, response.data.onboarding_required);
+        setAuthSession(response.data.onboarding_required);
         router.replace(resolvePostAuthPath(response.data.onboarding_required));
       })
       .catch(() => {
@@ -105,7 +100,7 @@ export default function AuthPage() {
         },
       });
 
-      setAuthSession(response.data.token, response.data.user.onboarding_required);
+      setAuthSession(response.data.user.onboarding_required);
       setFeedback(translate("auth.feedback.signed_in", language));
       router.replace(resolvePostAuthPath(response.data.user.onboarding_required));
     } catch (error) {
@@ -149,7 +144,7 @@ export default function AuthPage() {
         },
       });
 
-      setAuthSession(response.data.token, response.data.user.onboarding_required);
+      setAuthSession(response.data.user.onboarding_required);
       setFeedback(translate("auth.feedback.created", language));
       router.replace(resolvePostAuthPath(response.data.user.onboarding_required));
     } catch {

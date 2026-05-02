@@ -18,11 +18,18 @@ services:
       DB_DATABASE: nest
       DB_USERNAME: nest
       DB_PASSWORD: ${POSTGRES_PASSWORD}
-      CACHE_STORE: database
-      SESSION_DRIVER: database
+      CACHE_STORE: redis
+      SESSION_DRIVER: redis
       SESSION_LIFETIME: 120
       SESSION_DOMAIN: ${SESSION_DOMAIN:-}
-      QUEUE_CONNECTION: database
+      QUEUE_CONNECTION: redis
+      REDIS_CLIENT: phpredis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      REDIS_DB: 0
+      REDIS_CACHE_DB: 1
+      REDIS_QUEUE: integrations
       SANCTUM_STATEFUL_DOMAINS: ${SANCTUM_STATEFUL_DOMAINS:-}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-}
       AI_SURFACE_ENABLED: ${AI_SURFACE_ENABLED:-false}
@@ -30,6 +37,8 @@ services:
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5.4-mini}
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "php -r \"exit(@file_get_contents('http://127.0.0.1:9000/health') === false ? 1 : 0);\""]
@@ -57,9 +66,16 @@ services:
       DB_DATABASE: nest
       DB_USERNAME: nest
       DB_PASSWORD: ${POSTGRES_PASSWORD}
-      CACHE_STORE: database
-      SESSION_DRIVER: database
-      QUEUE_CONNECTION: database
+      CACHE_STORE: redis
+      SESSION_DRIVER: redis
+      QUEUE_CONNECTION: redis
+      REDIS_CLIENT: phpredis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      REDIS_DB: 0
+      REDIS_CACHE_DB: 1
+      REDIS_QUEUE: integrations
       SANCTUM_STATEFUL_DOMAINS: ${SANCTUM_STATEFUL_DOMAINS:-}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-}
       AI_SURFACE_ENABLED: ${AI_SURFACE_ENABLED:-false}
@@ -67,6 +83,8 @@ services:
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5.4-mini}
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     restart: unless-stopped
 
@@ -87,7 +105,7 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     environment:
       POSTGRES_DB: nest
       POSTGRES_USER: nest
@@ -101,5 +119,23 @@ services:
       retries: 10
     restart: unless-stopped
 
+  redis:
+    image: redis:7-alpine
+    command: >
+      sh -c 'if [ -n "$${REDIS_PASSWORD}" ]; then
+      redis-server --appendonly yes --requirepass "$${REDIS_PASSWORD}";
+      else redis-server --appendonly yes; fi'
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    volumes:
+      - nest_redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "if [ -n \"$${REDIS_PASSWORD}\" ]; then redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep PONG; else redis-cli ping | grep PONG; fi"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
 volumes:
   nest_postgres_data:
+  nest_redis_data:

@@ -394,7 +394,7 @@ export default function JournalPage() {
     !isLoading &&
     !isCreatingEntry &&
     !isCreatingArea &&
-    (Boolean(errorMessage) || !hasMeaningfulLiveJournal);
+    !errorMessage && !hasMeaningfulLiveJournal;
   const displayEntries = useJournalShowcase ? showcaseEntries : entries;
   const displayLifeAreas = useJournalShowcase ? showcaseLifeAreas : lifeAreas;
   const displayBalance = useJournalShowcase ? showcaseBalance : balance;

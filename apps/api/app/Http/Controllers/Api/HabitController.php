@@ -17,6 +17,7 @@ class HabitController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $this->authorize('viewAny', Habit::class);
 
         $request->validate([
             'page' => ['sometimes', 'integer', 'min:1'],
@@ -28,9 +29,7 @@ class HabitController extends Controller
         $perPage = min((int) $request->integer('per_page', 20), 100);
         $page = max((int) $request->integer('page', 1), 1);
 
-        $habits = Habit::query()
-            ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
+        $habits = $this->accessibleHabitQuery($user)
             ->when($request->has('is_active'), function (Builder $query) use ($request): void {
                 $query->where('is_active', $request->boolean('is_active'));
             })
@@ -54,6 +53,7 @@ class HabitController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
+        $this->authorize('create', Habit::class);
 
         $payload = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -81,10 +81,8 @@ class HabitController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $habit = Habit::query()
-            ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
-            ->findOrFail($habitId);
+        $habit = $this->accessibleHabitQuery($user)->findOrFail($habitId);
+        $this->authorize('view', $habit);
 
         return response()->json(['data' => $habit]);
     }
@@ -102,10 +100,8 @@ class HabitController extends Controller
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        $habit = Habit::query()
-            ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
-            ->findOrFail($habitId);
+        $habit = $this->accessibleHabitQuery($user)->findOrFail($habitId);
+        $this->authorize('update', $habit);
 
         $habit->fill($payload);
         $habit->save();
@@ -118,10 +114,8 @@ class HabitController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $habit = Habit::query()
-            ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
-            ->findOrFail($habitId);
+        $habit = $this->accessibleHabitQuery($user)->findOrFail($habitId);
+        $this->authorize('delete', $habit);
 
         $habit->is_active = false;
         $habit->save();
@@ -142,10 +136,8 @@ class HabitController extends Controller
             'note' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $habit = Habit::query()
-            ->where('tenant_id', $user->tenant_id)
-            ->where('user_id', $user->id)
-            ->findOrFail($habitId);
+        $habit = $this->accessibleHabitQuery($user)->findOrFail($habitId);
+        $this->authorize('log', $habit);
 
         $log = HabitLog::query()->updateOrCreate(
             [
@@ -162,5 +154,15 @@ class HabitController extends Controller
         );
 
         return response()->json(['data' => $log], 201);
+    }
+
+    /**
+     * @return Builder<Habit>
+     */
+    private function accessibleHabitQuery(User $user): Builder
+    {
+        return Habit::query()
+            ->where('tenant_id', $user->tenant_id)
+            ->where('user_id', $user->id);
     }
 }

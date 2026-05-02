@@ -1,4 +1,4 @@
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 
 RUN apk add --no-cache libc6-compat
 RUN corepack enable
@@ -18,7 +18,7 @@ WORKDIR /app/apps/web
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm build >/tmp/next-build.log
 
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
 
 RUN apk add --no-cache libc6-compat
 

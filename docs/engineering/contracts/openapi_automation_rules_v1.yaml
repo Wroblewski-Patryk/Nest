@@ -16,6 +16,7 @@ paths:
   /automations/rules:
     get:
       summary: List automation rules
+      operationId: getAutomationsRules
       tags: [Automations]
       responses:
         '200':
@@ -24,8 +25,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AutomationRuleCollectionResponse'
+        '401':
+          description: Authentication required
     post:
       summary: Create automation rule
+      operationId: postAutomationsRules
       tags: [Automations]
       requestBody:
         required: true
@@ -40,9 +44,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AutomationRuleSingleResponse'
+        '401':
+          description: Authentication required
   /automations/rules/{ruleId}:
     get:
       summary: Get automation rule details
+      operationId: getAutomationsRulesRuleId
       tags: [Automations]
       parameters:
         - $ref: '#/components/parameters/RuleId'
@@ -57,6 +64,7 @@ paths:
           description: Not found
     patch:
       summary: Update automation rule
+      operationId: patchAutomationsRulesRuleId
       tags: [Automations]
       parameters:
         - $ref: '#/components/parameters/RuleId'
@@ -73,17 +81,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AutomationRuleSingleResponse'
+        '401':
+          description: Authentication required
     delete:
       summary: Delete automation rule
+      operationId: deleteAutomationsRulesRuleId
       tags: [Automations]
       parameters:
         - $ref: '#/components/parameters/RuleId'
       responses:
         '204':
           description: Deleted
+        '401':
+          description: Authentication required
   /automations/rules/{ruleId}/execute:
     post:
       summary: Execute automation rule manually
+      operationId: postAutomationsRulesRuleIdExecute
       tags: [Automations]
       parameters:
         - $ref: '#/components/parameters/RuleId'
@@ -104,9 +118,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AutomationRunSingleResponse'
+        '401':
+          description: Authentication required
   /automations/runs:
     get:
       summary: List automation execution runs
+      operationId: getAutomationsRuns
       tags: [Automations]
       responses:
         '200':
@@ -115,9 +132,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AutomationRunCollectionResponse'
+        '401':
+          description: Authentication required
   /automations/runs/{runId}:
     get:
       summary: Get automation run details
+      operationId: getAutomationsRunsRunId
       tags: [Automations]
       parameters:
         - name: runId
@@ -133,9 +153,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AutomationRunSingleResponse'
+        '401':
+          description: Authentication required
   /automations/runs/{runId}/replay:
     post:
       summary: Replay automation run using original trigger payload
+      operationId: postAutomationsRunsRunIdReplay
       tags: [Automations]
       parameters:
         - name: runId
@@ -151,6 +174,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AutomationRunSingleResponse'
+        '401':
+          description: Authentication required
 components:
   securitySchemes:
     bearerAuth:

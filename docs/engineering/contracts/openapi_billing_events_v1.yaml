@@ -17,6 +17,7 @@ paths:
   /billing/subscription:
     get:
       summary: Get current tenant subscription snapshot
+      operationId: getBillingSubscription
       tags: [Billing]
       responses:
         '200':
@@ -28,9 +29,12 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/TenantSubscription'
+        '401':
+          description: Authentication required
   /billing/events:
     get:
       summary: List normalized tenant billing events
+      operationId: getBillingEvents
       tags: [Billing]
       parameters:
         - in: query
@@ -60,6 +64,8 @@ paths:
                       page: { type: integer }
                       per_page: { type: integer }
                       total: { type: integer }
+        '401':
+          description: Authentication required
 components:
   schemas:
     TenantSubscription:

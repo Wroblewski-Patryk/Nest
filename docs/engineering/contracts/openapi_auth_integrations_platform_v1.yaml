@@ -16,14 +16,23 @@ security:
   - bearerAuth: []
 tags:
   - name: Auth
+    description: Authentication, user profile, delegated credentials, and access audit endpoints.
   - name: Billing
+    description: Subscription, entitlement, webhook, dunning, and billing audit endpoints.
   - name: Analytics
+    description: Product analytics ingestion and decision dashboard endpoints.
   - name: AI
+    description: Guarded AI planning, context, proposal, briefing, and feedback endpoints.
   - name: Insights
+    description: Cross-module insight and trend endpoints.
   - name: Organizations
+    description: Organization, workspace, SSO, RBAC, and audit endpoints.
   - name: Collaboration
+    description: Collaboration space membership, invite, and share endpoints.
   - name: Integrations
+    description: Provider connection, sync, conflict, failure, and marketplace endpoints.
   - name: Notifications
+    description: Mobile push, in-app notification, preference, and delivery endpoints.
 paths:
   /v1/auth/register:
     post:
@@ -78,6 +87,8 @@ paths:
         '204':
           description: Logged out
 
+        '401':
+          description: Authentication required
   /v1/auth/me:
     get:
       tags: [Auth]
@@ -91,6 +102,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/auth/settings:
     patch:
       tags: [Auth]
@@ -472,6 +485,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
 
+        '401':
+          description: Authentication required
   /v1/billing/checkout/session:
     post:
       tags: [Billing]
@@ -550,6 +565,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BillingDunningAttemptCollectionResponse'
 
+        '401':
+          description: Authentication required
   /v1/billing/audit/reconciliation:
     get:
       tags: [Billing]
@@ -563,6 +580,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/BillingAuditReconciliationResponse'
 
+        '401':
+          description: Authentication required
   /v1/analytics/events:
     post:
       tags: [Analytics]
@@ -656,6 +675,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/ai/context-graph:
     get:
       tags: [AI]
@@ -691,6 +712,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/AiContextGraphResponse'
 
+        '401':
+          description: Authentication required
   /v1/ai/copilot/conversation:
     post:
       tags: [AI]
@@ -738,6 +761,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AiActionProposalCollectionResponse'
+        '401':
+          description: Authentication required
     post:
       tags: [AI]
       summary: Propose AI write action requiring approval
@@ -815,6 +840,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AiBriefingPreferenceResponse'
+        '401':
+          description: Authentication required
     patch:
       tags: [AI]
       summary: Update AI briefing preferences
@@ -862,6 +889,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/AiBriefingCollectionResponse'
 
+        '401':
+          description: Authentication required
   /v1/ai/briefings/generate:
     post:
       tags: [AI]
@@ -898,6 +927,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/AiBriefingResponse'
 
+        '401':
+          description: Authentication required
   /v1/ai/feedback:
     post:
       tags: [AI]
@@ -940,6 +971,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/insights/trends/tasks:
     get:
       tags: [Insights]
@@ -953,6 +986,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/insights/trends/habits:
     get:
       tags: [Insights]
@@ -966,6 +1001,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/insights/trends/goals:
     get:
       tags: [Insights]
@@ -979,6 +1016,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/orgs:
     get:
       tags: [Organizations]
@@ -991,6 +1030,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntityCollectionResponse'
+        '401':
+          description: Authentication required
     post:
       tags: [Organizations]
       summary: Create organization
@@ -1010,6 +1051,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/orgs/{organizationId}/members:
     post:
       tags: [Organizations]
@@ -1032,6 +1075,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/orgs/{organizationId}/members/{memberUserId}:
     patch:
       tags: [Organizations]
@@ -1055,6 +1100,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/orgs/{organizationId}/sso/providers:
     get:
       tags: [Organizations]
@@ -1069,6 +1116,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntityCollectionResponse'
+        '401':
+          description: Authentication required
     post:
       tags: [Organizations]
       summary: Create organization SSO provider
@@ -1090,6 +1139,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/orgs/{organizationId}/sso/providers/{providerId}:
     patch:
       tags: [Organizations]
@@ -1113,6 +1164,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/orgs/{organizationId}/audit-exports:
     get:
       tags: [Organizations]
@@ -1136,6 +1189,8 @@ paths:
               schema:
                 type: string
 
+        '401':
+          description: Authentication required
   /v1/workspaces:
     get:
       tags: [Organizations]
@@ -1148,6 +1203,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntityCollectionResponse'
+        '401':
+          description: Authentication required
     post:
       tags: [Organizations]
       summary: Create workspace
@@ -1167,6 +1224,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/collaboration/spaces:
     get:
       tags: [Collaboration]
@@ -1179,6 +1238,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntityCollectionResponse'
+        '401':
+          description: Authentication required
     post:
       tags: [Collaboration]
       summary: Create collaboration space
@@ -1198,6 +1259,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/collaboration/spaces/{spaceId}/invites:
     post:
       tags: [Collaboration]
@@ -1227,6 +1290,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/collaboration/spaces/{spaceId}/members:
     get:
       tags: [Collaboration]
@@ -1242,6 +1307,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityCollectionResponse'
 
+        '401':
+          description: Authentication required
   /v1/collaboration/spaces/{spaceId}/members/{memberUserId}:
     patch:
       tags: [Collaboration]
@@ -1281,6 +1348,8 @@ paths:
         '204':
           description: Member removed
 
+        '401':
+          description: Authentication required
   /v1/collaboration/invites/{token}/accept:
     post:
       tags: [Collaboration]
@@ -1296,6 +1365,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/collaboration/spaces/{spaceId}/share/lists/{listId}:
     post:
       tags: [Collaboration]
@@ -1312,6 +1383,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/collaboration/spaces/{spaceId}/share/goals/{goalId}:
     post:
       tags: [Collaboration]
@@ -1328,6 +1401,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/integrations/list-task-sync:
     post:
       tags: [Integrations]
@@ -1606,6 +1681,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityCollectionResponse'
 
+        '401':
+          description: Authentication required
   /v1/integrations/connections/{provider}:
     put:
       tags: [Integrations]
@@ -1627,6 +1704,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
+        '401':
+          description: Authentication required
     delete:
       tags: [Integrations]
       summary: Revoke provider connection
@@ -1637,6 +1716,8 @@ paths:
         '204':
           description: Connection revoked
 
+        '401':
+          description: Authentication required
   /v1/integrations/conflicts:
     get:
       tags: [Integrations]
@@ -1650,6 +1731,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityCollectionResponse'
 
+        '401':
+          description: Authentication required
   /v1/integrations/conflicts/{conflictId}/resolve:
     post:
       tags: [Integrations]
@@ -1679,6 +1762,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/integrations/failures:
     get:
       tags: [Integrations]
@@ -1692,6 +1777,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityCollectionResponse'
 
+        '401':
+          description: Authentication required
   /v1/integrations/failures/{failureId}/replay:
     post:
       tags: [Integrations]
@@ -1707,6 +1794,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
 
+        '401':
+          description: Authentication required
   /v1/notifications/mobile/devices:
     get:
       tags: [Notifications]
@@ -1719,6 +1808,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntityCollectionResponse'
+        '401':
+          description: Authentication required
     post:
       tags: [Notifications]
       summary: Register mobile push device
@@ -1738,6 +1829,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntityResponse'
 
+        '401':
+          description: Authentication required
   /v1/notifications/mobile/devices/{deviceId}:
     delete:
       tags: [Notifications]
@@ -1749,6 +1842,8 @@ paths:
         '204':
           description: Device revoked
 
+        '401':
+          description: Authentication required
   /v1/notifications/in-app:
     get:
       tags: [Notifications]
@@ -1786,6 +1881,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InAppNotificationCollectionResponse'
 
+        '401':
+          description: Authentication required
   /v1/notifications/in-app/{notificationId}/read:
     post:
       tags: [Notifications]
@@ -1801,6 +1898,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InAppNotificationResponse'
 
+        '401':
+          description: Authentication required
   /v1/notifications/in-app/{notificationId}/unread:
     post:
       tags: [Notifications]
@@ -1816,6 +1915,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/InAppNotificationResponse'
 
+        '401':
+          description: Authentication required
   /v1/notifications/in-app/{notificationId}/snooze:
     post:
       tags: [Notifications]
@@ -1856,6 +1957,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotificationPreferencesResponse'
+        '401':
+          description: Authentication required
     patch:
       tags: [Notifications]
       summary: Update notification channel preferences
@@ -1915,6 +2018,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationChannelDeliveryCollectionResponse'
 
+        '401':
+          description: Authentication required
 components:
   securitySchemes:
     bearerAuth:
@@ -2062,7 +2167,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationErrorResponse'
-
   schemas:
     RegisterRequest:
       type: object

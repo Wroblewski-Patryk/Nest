@@ -33,6 +33,21 @@ Before deployment, record:
 - rollback procedure
 - feature flag, staged rollout, or disable path when applicable
 - known residual risks
+- completed web-first runbook checklist:
+  `docs/operations/nest_web_first_release_runbook_2026-05-02.md`
+
+## Web-First Runtime Baseline
+
+The current approved web-first deployment baseline is:
+
+- API: PHP 8.4 / Laravel 12
+- Web: Node 24 / Next.js 16
+- Database: PostgreSQL 17
+- Cache/session/queue: Redis 7
+- Worker: Laravel `queue:work` against the configured Redis queue
+
+Any deployment using a lower runtime or database version must be captured as an
+explicit architecture decision before release.
 
 ## Release Rule
 

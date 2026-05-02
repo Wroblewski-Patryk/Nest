@@ -185,7 +185,7 @@ class ListTaskIntegrationSyncService
      */
     private function enqueueSync(array $payload): mixed
     {
-        return Queue::connection('database')->pushOn(
+        return Queue::connection(config('queue.default'))->pushOn(
             'integrations',
             new ProcessIntegrationSyncJob($payload)
         );

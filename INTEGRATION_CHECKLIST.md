@@ -20,6 +20,11 @@ Use this checklist before marking any integrated feature complete.
 - [ ] Feature works after refresh, restart, or reload.
 - [ ] No regression is introduced in adjacent flows.
 - [ ] Logs and errors do not leak secrets or private data.
+- [ ] If the feature runs asynchronously, queue backend, worker command, retry
+  behavior, failed-job path, and smoke evidence are recorded.
+- [ ] If the feature depends on browser auth, session cookies are server-owned
+  and protected routes fail closed unless an explicit product decision says
+  otherwise.
 
 ## Vertical Slice Rule
 

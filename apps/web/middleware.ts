@@ -42,9 +42,8 @@ async function resolveSessionFromApi(token: string): Promise<{
           : null,
     };
   } catch {
-    // Preserve current request behavior if API is temporarily unavailable.
     return {
-      authenticated: true,
+      authenticated: false,
       onboardingRequired: null,
     };
   }
