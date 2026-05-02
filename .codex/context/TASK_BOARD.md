@@ -92,9 +92,12 @@ Last updated: 2026-05-03
       and reflection ladder.
     - Started Calendar localization coverage for page/status copy, hero
       metrics, event validation/feedback, and add/edit/delete event forms.
+    - Started Planning localization coverage for route title/subtitle, the
+      create-task composer, task validation/feedback, and task delete
+      confirmation.
     - `pnpm lint` and `pnpm exec tsc --noEmit` passed for this first code
       slice, the Settings slice, the Journal slice, and the first Calendar
-      slice.
+      slice, plus the first Planning task-composer slice.
     - Add shared EN/PL dictionary keys for Planning, Calendar, Journal,
       Settings, and shared dashboard primitives.
     - Replace route-local labels, panel titles, placeholders, empty states,

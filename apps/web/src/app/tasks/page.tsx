@@ -10,6 +10,7 @@ import {
 } from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
 import { apiRequest, nestApiClient } from "@/lib/api-client";
+import { useTranslator } from "@/lib/ui-language";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type TaskStatus = "todo" | "in_progress" | "done" | "canceled";
@@ -257,6 +258,7 @@ function PlanningGlyph({ name }: { name: "task" | "list" | "goal" | "target" | "
 
 export default function TasksPage() {
   const router = useRouter();
+  const t = useTranslator();
   const { confirm, confirmDialog } = useConfirmDialog();
   const [planningTab, setPlanningTab] = useState<PlanningTab>("tasks");
 
@@ -1078,7 +1080,7 @@ export default function TasksPage() {
 
     const draft = taskDrafts[columnId] ?? createEmptyTaskDraft();
     if (!draft.title.trim()) {
-      setErrorMessage("Task title is required.");
+      setErrorMessage(t("web.planning.validation.task_title_required", "Task title is required."));
       return;
     }
 
@@ -1102,7 +1104,7 @@ export default function TasksPage() {
       setTaskDraft(columnId, createEmptyTaskDraft());
       setTaskComposerListId(null);
       await loadWorkspace();
-      setFeedback("Task created.");
+      setFeedback(t("web.planning.feedback.task_created", "Task created."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -1126,7 +1128,7 @@ export default function TasksPage() {
 
   async function saveTaskEdit(taskId: string) {
     if (!editTaskTitle.trim()) {
-      setErrorMessage("Task title is required.");
+      setErrorMessage(t("web.planning.validation.task_title_required", "Task title is required."));
       return;
     }
 
@@ -1149,7 +1151,7 @@ export default function TasksPage() {
 
       setEditingTaskId(null);
       await loadWorkspace();
-      setFeedback("Task updated.");
+      setFeedback(t("web.planning.feedback.task_updated", "Task updated."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -1175,7 +1177,7 @@ export default function TasksPage() {
       });
 
       await loadWorkspace();
-      setFeedback(task.status === "done" ? "Task reopened." : "Task marked as done.");
+      setFeedback(task.status === "done" ? t("web.planning.feedback.task_reopened", "Task reopened.") : t("web.planning.feedback.task_done", "Task marked as done."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -1190,9 +1192,9 @@ export default function TasksPage() {
   async function deleteTask(taskId: string) {
     if (
       !(await confirm({
-        title: "Delete task?",
-        description: "This removes the task from your plan.",
-        confirmLabel: "Delete task",
+        title: t("web.planning.confirm.delete_task_title", "Delete task?"),
+        description: t("web.planning.confirm.delete_task_body", "This removes the task from your plan."),
+        confirmLabel: t("web.planning.action.delete_task", "Delete task"),
         tone: "danger",
       }))
     ) {
@@ -1209,7 +1211,7 @@ export default function TasksPage() {
         setEditingTaskId(null);
       }
       await loadWorkspace();
-      setFeedback("Task deleted.");
+      setFeedback(t("web.planning.feedback.task_deleted", "Task deleted."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -2163,7 +2165,7 @@ export default function TasksPage() {
       return taskComposerListId === UNASSIGNED_COLUMN_ID ? (
         <div id="planning-create-task" className="planning-canonical-composer">
           {composerIntro}
-          {renderTaskComposer(UNASSIGNED_COLUMN_ID, "Add task to weekly plan")}
+          {renderTaskComposer(UNASSIGNED_COLUMN_ID, t("web.planning.composer.add_task_weekly", "Add task to weekly plan"))}
           {composerFoot}
         </div>
       ) : null;
@@ -2764,27 +2766,27 @@ export default function TasksPage() {
             type="text"
             value={draft.title}
             onChange={(event) => setTaskDraft(columnId, { title: event.target.value })}
-            placeholder="Task title"
+            placeholder={t("web.planning.placeholder.task_title", "Task title")}
             disabled={isBusy}
           />
         </label>
         <div className="row-inline">
           <label className="field">
-            <span>Priority</span>
+            <span>{t("web.planning.field.priority", "Priority")}</span>
             <select
               className="list-row"
               value={draft.priority}
               onChange={(event) => setTaskDraft(columnId, { priority: event.target.value as TaskPriority })}
               disabled={isBusy}
             >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-              <option value="urgent">Urgent</option>
+              <option value="low">{t("web.planning.priority.low", "Low")}</option>
+              <option value="medium">{t("web.planning.priority.medium", "Medium")}</option>
+              <option value="high">{t("web.planning.priority.high", "High")}</option>
+              <option value="urgent">{t("web.planning.priority.urgent", "Urgent")}</option>
             </select>
           </label>
           <label className="field">
-            <span>Due date</span>
+            <span>{t("web.planning.field.due_date", "Due date")}</span>
             <input
               className="list-row"
               type="date"
@@ -2794,14 +2796,14 @@ export default function TasksPage() {
             />
           </label>
           <label className="field">
-            <span>Life area</span>
+            <span>{t("web.journal.metric.life_areas", "Life areas")}</span>
             <select
               className="list-row"
               value={draft.lifeAreaId}
               onChange={(event) => setTaskDraft(columnId, { lifeAreaId: event.target.value })}
               disabled={isBusy}
             >
-              <option value="">No life area</option>
+              <option value="">{t("web.planning.option.no_life_area", "No life area")}</option>
               {lifeAreas.map((lifeArea) => (
                 <option key={lifeArea.id} value={lifeArea.id}>
                   {lifeArea.name}
@@ -2812,10 +2814,10 @@ export default function TasksPage() {
         </div>
         <div className="row-inline">
           <button type="submit" className="btn-primary" disabled={isBusy}>
-            {isBusy ? "Adding..." : "Create task"}
+            {isBusy ? t("web.common.action.adding", "Adding...") : t("web.planning.action.create_task", "Create task")}
           </button>
           <button type="button" className="btn-secondary" onClick={() => setTaskComposerListId(null)} disabled={isBusy}>
-            Cancel
+            {t("web.common.action.cancel", "Cancel")}
           </button>
         </div>
       </form>
@@ -2865,8 +2867,8 @@ export default function TasksPage() {
 
   return (
     <WorkspaceShell
-      title="Planning"
-      subtitle="Shape the week around what matters."
+      title={t("web.planning.title", "Planning")}
+      subtitle={t("web.planning.subtitle", "Shape the week around what matters.")}
       module="tasks"
       contentLayout="single"
       shellTone="dashboard-canonical"
