@@ -1864,6 +1864,11 @@ input[type="color"].list-row {
   font-weight: 700;
 }
 
+.planning-relational-panel.is-showcase .planning-canonical-summary,
+.planning-relational-panel.is-showcase .planning-canonical-tools {
+  display: none;
+}
+
 .planning-canonical-filter-grid {
   display: grid;
   grid-template-columns: minmax(180px, 1.2fr) auto minmax(140px, 0.8fr) minmax(140px, 0.8fr) auto auto;

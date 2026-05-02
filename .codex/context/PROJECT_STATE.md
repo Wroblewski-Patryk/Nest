@@ -25,6 +25,19 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-291` Planning canonical rail and tail finish.
+  Web Planning now labels the integrated core route as `Planning` in the
+  shared workspace rail, carries an explicit showcase state, and suppresses
+  the noncanonical operational tail and board tools in showcase mode so the
+  first viewport resolves on the Planning ladder like the approved reference.
+  Non-showcase task/list/goal/target runtime behavior remains intact. Fresh
+  evidence:
+  `docs/ux_canonical_artifacts/2026-05-02/nest-planning-web-parity-preview-current.png`
+  and
+  `docs/ux_canonical_artifacts/2026-05-02/nest-planning-web-parity-preview-phaseN.png`.
+  Web typecheck, lint, build, unit tests, Playwright screenshot smoke, and
+  `git diff --check` passed. Report:
+  `docs/ux/nest_291_planning_canonical_rail_tail_finish_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-290` Journal canonical material finish. Web
   Journal now carries an explicit showcase shell state, reuses the approved
   dashboard/Journal painterly material for the reflection hero, and tightens

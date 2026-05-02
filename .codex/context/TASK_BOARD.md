@@ -24,6 +24,28 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-291 Planning canonical rail and tail finish
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-261
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - Web-only V1 task to tighten Planning against the approved canonical
+      desktop reference after the Journal finish.
+    - Updated the shared workspace rail to label the integrated route as
+      `Planning`, added an explicit Planning showcase class, and removed the
+      noncanonical operational tail and board tools from the showcase first
+      viewport while preserving non-showcase runtime behavior.
+    - Report:
+      `docs/ux/nest_291_planning_canonical_rail_tail_finish_2026-05-02.md`.
+    - Evidence:
+      `docs/ux_canonical_artifacts/2026-05-02/nest-planning-web-parity-preview-current.png`,
+      `docs/ux_canonical_artifacts/2026-05-02/nest-planning-web-parity-preview-phaseN.png`.
+    - Validation:
+      web typecheck, lint, build, unit tests, Playwright screenshot smoke, and
+      `git diff --check`.
+
 - [x] NEST-290 Journal canonical material finish
   - Status: DONE
   - Owner: Execution Agent

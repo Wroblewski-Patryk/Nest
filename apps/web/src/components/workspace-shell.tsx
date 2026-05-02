@@ -287,7 +287,9 @@ export function WorkspaceShell({
             {CORE_NAV_ITEMS.map((item) => {
               const isActive = activeNavKey === item.key;
               const isPlanning = item.key === "tasks";
-              const itemLabel = translate(`app.nav.${item.key}`, uiLanguage, item.label);
+              const itemLabel = isPlanning
+                ? translate("app.nav.planning", uiLanguage, item.label)
+                : translate(`app.nav.${item.key}`, uiLanguage, item.label);
 
               if (!isPlanning || !planningSubnav) {
                 return (

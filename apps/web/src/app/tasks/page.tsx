@@ -2826,7 +2826,11 @@ export default function TasksPage() {
       hideAssistantNav
       hideRailFooterActions
     >
-      <section className={`planning-canonical-shell is-canonical-dashboard ${isLoading ? "is-loading" : ""}`}>
+      <section
+        className={`planning-canonical-shell is-canonical-dashboard ${showPlanningShowcase ? "is-showcase" : ""} ${
+          isLoading ? "is-loading" : ""
+        }`}
+      >
         <div className="planning-canonical-main">
           <DashboardHeroBand
             title="This week's direction"
@@ -2973,7 +2977,10 @@ export default function TasksPage() {
         </aside>
       </section>
 
-      <Panel title="Planning workspace" className="planning-view-panel planning-relational-panel">
+      <Panel
+        title="Planning workspace"
+        className={`planning-view-panel planning-relational-panel ${showPlanningShowcase ? "is-showcase" : ""}`}
+      >
         <div className="planning-workspace-head">
           <div className="tasks-filter-group" role="tablist" aria-label="Planning module views">
           <button
@@ -3075,7 +3082,7 @@ export default function TasksPage() {
         </div>
       </section>
 
-      {renderCanonicalDeepPanel()}
+      {showPlanningShowcase ? null : renderCanonicalDeepPanel()}
 
       {renderPlanningStatusStrip()}
 
