@@ -1,6 +1,6 @@
 # PROJECT_STATE
 
-Last updated: 2026-05-02
+Last updated: 2026-05-03
 
 ## Agent Workflow Snapshot
 
@@ -25,6 +25,15 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-03: Completed `NEST-318` V1 readiness matrix refresh as an
+  ARCHITECT iteration. The web-first readiness matrix now reflects the
+  `NEST-310` through `NEST-317` canonical web UX/action-flow wave and
+  production web smoke evidence. Web daily-use quality and practical core web
+  module operation are no longer broad unknowns. Remaining founder-ready risks
+  are narrowed to manual accessibility, contrast evidence, remaining
+  localization completeness, and final release sign-off. Next READY task:
+  `NEST-319 Final web accessibility and contrast founder smoke`. Report:
+  `docs/planning/nest_318_v1_readiness_matrix_refresh_2026-05-03.md`.
 - 2026-05-02: Completed `NEST-317` canonical state and responsive QA pass.
   Production `next start` Playwright smoke ran with a local mock API across
   11 routes on desktop and mobile. The first pass caught a mobile Calendar

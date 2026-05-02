@@ -1,6 +1,6 @@
 # V1 Founder-Ready Checklist
 
-Last updated: 2026-05-02
+Last updated: 2026-05-03
 
 ## Purpose
 
@@ -89,10 +89,10 @@ API smoke, and mobile release evidence are no longer V1 founder-ready blockers.
 - `OPEN` the product can be used without relying on hidden setup knowledge from
   the repository author.
 
-## Current Status Snapshot (2026-05-02)
+## Current Status Snapshot (2026-05-03)
 
-- `PARTIAL` refreshed readiness evidence now lives in
-  `docs/planning/v1_readiness_matrix_2026-05-01.md`.
+- `WEB-FIRST FOUNDER-READY CANDIDATE` refreshed readiness evidence now lives
+  in `docs/planning/v1_readiness_matrix_2026-05-01.md`.
 - `PASS` repository startup truth, current task/context truth, shared error
   envelope handling, offline/manual sync retryability, and the web validation
   baselines covered by recent slices have current evidence.
@@ -101,6 +101,11 @@ API smoke, and mobile release evidence are no longer V1 founder-ready blockers.
 - `PARTIAL` localization completeness, repeated-flow quality, and final web
   release evidence still need confirmation before the gate can close.
   `NEST-234` improved lower web routes.
+- `PASS` repeated-flow quality and practical web core-module operation were
+  materially refreshed by `NEST-310` through `NEST-317`: Dashboard capture,
+  Planning create-task intent, Calendar create-event intent, Journal
+  create-entry intent, Nest-native confirmations, contextual module framing,
+  and production web smoke evidence.
 - `PASS WITH SCOPE BOUNDARY` navigation now matches the V1/V2 split after
   `NEST-235`: Insights and Assistant remain reachable as optional surfaces
   without presenting as core V1 modules.
@@ -119,6 +124,9 @@ API smoke, and mobile release evidence are no longer V1 founder-ready blockers.
   evidence.
 - `DEFERRED` `NEST-231` mobile authenticated API session evidence is moved to
   V2 scope by the 2026-05-02 user decision and no longer blocks V1.
+- `NEXT` final V1 gate work should focus on manual web accessibility,
+  contrast evidence, remaining localization completeness, and launch sign-off
+  rather than broad new product implementation.
 
 ## Previous Status Snapshot (2026-04-26)
 

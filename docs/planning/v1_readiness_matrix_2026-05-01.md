@@ -1,6 +1,6 @@
 # V1 Readiness Matrix
 
-Date: 2026-05-02
+Date: 2026-05-03
 
 Status vocabulary:
 
@@ -22,10 +22,11 @@ release evidence are no longer V1 blockers.
 
 ## Summary
 
-Current recommendation after `NEST-228`:
+Current recommendation after `NEST-318`:
 
-`WEB-FIRST FOUNDER-READY CANDIDATE - scoped V1 is implementation-ready, but
-final web smoke, accessibility, and contrast evidence is still required before
+`WEB-FIRST FOUNDER-READY CANDIDATE - scoped V1 has current backend, web UX,
+route-intent, and production web smoke evidence, but final manual accessibility,
+contrast, and localization completeness evidence is still required before
 declaring full v1 founder-ready`
 
 The recent `NEST-210` through `NEST-219` wave materially improved
@@ -50,6 +51,13 @@ release risks:
   stay primary, while Insights and Assistant are optional surfaces.
 - `NEST-231` is deferred to V2 after the 2026-05-02 user decision to pause
   mobile app work and implement current V1 views in the web layer.
+- `NEST-310` through `NEST-317` closed the main web UX action-flow gaps:
+  Dashboard task capture, Planning create-task intent, Calendar event intent,
+  Journal entry intent, Nest-native confirmation dialogs, contextual module
+  integration, and desktop/mobile production web smoke evidence.
+- `NEST-317` checked 22 route/viewport combinations with zero failures and
+  fixed the mobile Calendar action-intent visibility regression found during
+  QA.
 
 ## Repository Truth
 
@@ -57,7 +65,7 @@ release risks:
 | --- | --- | --- | --- |
 | Startup docs match real workspace layout and local run sequence | PASS | Earlier v1 recovery reports and current queue alignment in `mvp-next-commits.md` | Reconfirm during `NEST-223` |
 | API and web entry commands are documented without broken root commands | PASS | `v1_founder_ready_checklist_2026-04-26.md`; recent commands ran directly in app folders | Reconfirm during final gate |
-| Current execution truth reflected in task board and project state | PASS | `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md` updated through `NEST-219` | Continue updating per task |
+| Current execution truth reflected in task board and project state | PASS | `.codex/context/TASK_BOARD.md`, `.codex/context/PROJECT_STATE.md` updated through `NEST-318` | Continue updating per task |
 | No known contract drift remains undocumented for critical paths | PASS | `NEST-214`, `NEST-215`, `NEST-216` hardened shared contracts; `NEST-233` removed repeated web route-local request casts | Keep monitoring during final gate |
 
 ## Backend Reliability
@@ -65,7 +73,7 @@ release risks:
 | Line | Status | Evidence | Next Action |
 | --- | --- | --- | --- |
 | API feature, integration, and unit suites are green or triaged | PASS | `NEST-227`: Integration 11/75, Unit 20/60, Feature 215/1259 all passed | Keep as final gate evidence |
-| Sync endpoints, controller responses, tests, and docs describe one contract | PARTIAL | `NEST-214`/`NEST-216` aligned shared client and sync retry semantics | Confirm endpoint behavior in parity/readiness review |
+| Sync endpoints, controller responses, tests, and docs describe one contract | PASS | `NEST-214`/`NEST-216` aligned shared client and sync retry semantics; deployment hardening refreshed queue/runtime behavior in `NEST-301` through `NEST-309` | Keep in final release validation |
 | Tenant isolation remains covered for critical module and integration behavior | PASS | `NEST-227` refreshed integration and feature suites including tenant isolation coverage | Keep as final gate evidence |
 | Machine-readable API error envelopes stay intact for programmatic clients | PASS | `NEST-215` hardened shared error helpers and request error metadata | Keep contract checks in final gate |
 
@@ -75,8 +83,8 @@ release risks:
 | --- | --- | --- | --- |
 | Authenticated entry behavior deterministic across public/protected routes | PASS | Prior route guard work plus web validations in recent tasks | Include route smoke in final gate |
 | Onboarding policy matches guard logic and user-visible flow | PASS | Prior onboarding/guard repair reports; no new drift found in this wave | Reconfirm during final gate |
-| Dashboard and Planning support practical daily-use loop | PASS | `NEST-217` fixed Dashboard live-data trust and audited Planning | Include in `NEST-221` parity audit |
-| Each core web module supports create/edit/review/delete where applicable | PARTIAL | Core routes are API-backed; broad route-local casts and legacy lower panels remain | Confirm outcome-by-outcome in `NEST-221` |
+| Dashboard and Planning support practical daily-use loop | PASS | `NEST-217` fixed Dashboard live-data trust; `NEST-310` through `NEST-313` closed dashboard/planning creation intent and action clarity gaps | Keep in final smoke |
+| Each core web module supports create/edit/review/delete where applicable | PASS | Core routes are API-backed; `NEST-310` through `NEST-317` verified practical create/action entrypoints and contextual module UX for Dashboard, Planning, Calendar, Journal, Habits, Routines, Life Areas, Insights, Automations, Billing, and Settings | Keep final smoke focused on critical paths |
 | Key user-facing text avoids mojibake, accidental mixed language, raw technical wording | PARTIAL | `NEST-209` through `NEST-213` improved core paths; `NEST-234` localized lower web route chrome/status copy | Continue web route/view localization closure |
 | `en` and `pl` localization visibly affect core v1 path | PARTIAL | Web shell/dashboard and lower web route chrome use shared localization | Continue web core route localization review |
 
@@ -94,16 +102,16 @@ release risks:
 | --- | --- | --- | --- |
 | Shared client contracts match backend reality for critical v1 flows | PASS | `NEST-214` shared CRUD contract audit and validations | Monitor route-local cast cleanup |
 | Web maps backend errors into user-safe recovery guidance | PASS | `NEST-209`, `NEST-215`, `NEST-216` | Verify user-facing recovery in final web smoke |
-| Offline/manual sync feels intentional and understandable for founder-critical path | PASS | `NEST-216` retryability handling; `NEST-219` support map exposes sync recovery | Include manual sync path in parity audit |
+| Offline/manual sync feels intentional and understandable for founder-critical path | PASS | `NEST-216` retryability handling; `NEST-219` support map exposes sync recovery | Keep in release smoke if sync is part of release claim |
 | Core localization and formatting behavior consistent across the web V1 path | PARTIAL | `NEST-211` to `NEST-213` covered shell/dashboard; `NEST-234` added lower web route coverage | Continue founder-critical web route copy closure |
 
 ## Daily-Use Quality
 
 | Line | Status | Evidence | Next Action |
 | --- | --- | --- | --- |
-| Repeated daily flows feel calm rather than admin-like | PARTIAL | Web Dashboard/Planning audited in `NEST-217` | Audit remaining web daily loops |
+| Repeated daily flows feel calm rather than admin-like | PASS | `NEST-310` through `NEST-317` closed Dashboard/Planning/Calendar/Journal action-intent gaps, added contextual module framing, and verified desktop/mobile web smoke | Keep monitoring through founder smoke |
 | Accessibility basics verified on web interactions | PARTIAL | `NEST-222` recorded baseline; `NEST-226` added shared web focus-visible styling | Refresh contrast and manual web accessibility smoke |
-| Product usable without hidden setup knowledge from repository author | PARTIAL | Settings support map and docs improved; `NEST-225` removed provider connect from the V1 founder-ready claim | Confirm remaining setup assumptions in `NEST-228` |
+| Product usable without hidden setup knowledge from repository author | PASS | `NEST-310` through `NEST-317` made primary web actions route-addressable and visible; contextual module panels explain lower-level/advanced surfaces | Reconfirm in final founder smoke |
 
 ## Blockers For Founder-Ready Claim
 
@@ -120,7 +128,7 @@ release risks:
    - Required resolution:
      none for V1 after the 2026-05-02 user decision; mobile is V2 scope.
 
-3. `PARTIAL`: accessibility baseline.
+3. `PARTIAL`: accessibility and contrast baseline.
    - Required resolution:
      `NEST-222` and `NEST-226` are complete; final gate should refresh
      contrast and manual screen-reader/device smoke evidence.
@@ -132,6 +140,6 @@ release risks:
 
 ## Next Tasks
 
-1. Run founder smoke: web UI, accessibility, and contrast evidence.
+1. Run founder smoke: web UI, manual accessibility, and contrast evidence.
 2. Keep provider connect outside V1 unless future production OAuth is
    implemented and verified.

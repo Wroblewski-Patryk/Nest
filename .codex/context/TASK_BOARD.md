@@ -1,6 +1,6 @@
 # TASK_BOARD
 
-Last updated: 2026-05-02
+Last updated: 2026-05-03
 
 ## Agent Workflow Refresh (2026-04-16)
 
@@ -23,6 +23,36 @@ Last updated: 2026-05-02
   - Contracts: OpenAPI lint when docs or API contracts change
 
 ## Backlog
+
+- [x] NEST-318 V1 readiness matrix refresh
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-317
+  - Done on: 2026-05-03
+  - Priority: P0
+  - Notes:
+    - ARCHITECT iteration refreshed the web-first V1 readiness matrix after
+      `NEST-310` through `NEST-317`.
+    - Reclassified web daily-use quality and practical core web module
+      operation based on the canonical action-flow wave and production web
+      smoke evidence.
+    - Kept final founder-ready risks explicit: manual accessibility, contrast
+      evidence, remaining localization completeness, and final release
+      sign-off.
+    - Report:
+      `docs/planning/nest_318_v1_readiness_matrix_refresh_2026-05-03.md`.
+
+- [ ] NEST-319 Final web accessibility and contrast founder smoke
+  - Status: READY
+  - Owner: Execution Agent
+  - Depends on: NEST-318
+  - Priority: P0
+  - Notes:
+    - Run the final web-first founder smoke focused on manual accessibility,
+      keyboard reachability, contrast risk, and critical primary-action paths.
+    - Use the existing canonical web smoke route set from `NEST-317` and add
+      accessibility/contrast evidence without widening product scope.
+    - Update founder-ready checklist and readiness matrix with evidence.
 
 - [x] NEST-310 Web UX/UI workflow audit and canonical improvement plan
   - Status: DONE
