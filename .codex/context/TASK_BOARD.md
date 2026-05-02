@@ -123,6 +123,8 @@ Last updated: 2026-05-03
     - Localized shared dashboard workspace primitives for default metric aria
       labels, focus metadata, dayflow empty copy, context ribbons, quick-add
       heading, journal shortcut aria, and balance mini-card copy.
+    - Localized the AI Copilot web card idle guidance, composer placeholder,
+      request feedback, response metadata, provider status, and source labels.
     - Started Planning localization coverage for route title/subtitle, the
       create-task composer, task validation/feedback, and task delete
       confirmation.
