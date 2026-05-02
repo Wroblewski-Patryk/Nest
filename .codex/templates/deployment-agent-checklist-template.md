@@ -1,7 +1,7 @@
-﻿# Deployment Agent Checklist Template
+# Deployment Agent Checklist Template
 
 ## Mission
-Deploy `Nest (LifeOS)` to `<ENV>` using SHA `<SHA>` and return only after API,
+Deploy `Nest` to `<ENV>` using SHA `<SHA>` and return only after API,
 web, mobile-web, and contract validation is complete.
 
 ## Inputs

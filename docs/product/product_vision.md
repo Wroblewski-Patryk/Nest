@@ -33,7 +33,7 @@ After solo-first launch, Nest expands to invite-based collaboration:
 
 ## Long-Term Vision
 
-Nest becomes a Life Operating System that:
+Nest becomes a personal life workspace that:
 
 - manages tasks
 - coordinates calendars

@@ -2,7 +2,7 @@
 
 ## What Nest Is
 
-Nest is a Life Operating System (LifeOS):
+Nest is a personal life workspace:
 
 - one structured source of truth for life management,
 - one orchestration layer for external tools,

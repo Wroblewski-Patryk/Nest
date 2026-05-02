@@ -20,7 +20,7 @@ export function PublicShell({ title, subtitle, children, copy }: PublicShellProp
     <div className="public-shell">
       <header className="public-header">
         <Link href="/" className="public-brand">
-          {copy?.brand ?? "Nest LifeOS"}
+          {copy?.brand ?? "Nest"}
         </Link>
         <nav className="public-nav" aria-label="Public navigation">
           <Link href="/" className="public-link">

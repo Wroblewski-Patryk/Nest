@@ -1,6 +1,6 @@
-﻿# Repository Documentation
+# Repository Documentation
 
-Nest is a LifeOS application: one structured source of truth for tasks,
+Nest is a Nest application: one structured source of truth for tasks,
 goals, habits, routines, calendar, and reflections.
 
 Primary documentation index: `docs/README.md`.

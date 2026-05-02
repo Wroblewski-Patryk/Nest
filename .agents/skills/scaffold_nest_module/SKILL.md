@@ -1,6 +1,6 @@
-﻿---
-name: scaffold_lifeos_module
-description: Scaffold a new Nest domain module in Laravel (entity, migration, service, controller, request validation, policy, routes, and docs links). Use when adding a new LifeOS bounded feature such as habits, routines, reflections, or goals.
+---
+name: scaffold_Nest_module
+description: Scaffold a new Nest domain module in Laravel (entity, migration, service, controller, request validation, policy, routes, and docs links). Use when adding a new Nest bounded feature such as habits, routines, reflections, or goals.
 ---
 
 # Procedure

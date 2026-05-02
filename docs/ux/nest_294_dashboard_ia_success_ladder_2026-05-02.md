@@ -22,14 +22,14 @@
 - [x] The task is aligned with repository source-of-truth documents.
 
 ## Context
-The user provided a new UX/UI architecture note for Nest OS. The note clarifies
+The user provided a new UX/UI architecture note for Nest. The note clarifies
 that Nest should not expose all domain modules as a flat navigation list and
 should use progressive disclosure through five pillars: Dashboard, Planning,
 Calendar, Journal, and Settings.
 
 ## Goal
 Update the Dashboard and canonical UX documentation so future UI generation and
-implementation preserve the five-pillar Nest OS architecture and make the
+implementation preserve the five-pillar Nest architecture and make the
 connection between daily action and long-term success visible.
 
 ## Scope
@@ -38,7 +38,7 @@ connection between daily action and long-term success visible.
 - `apps/web/src/app/dashboard/page.tsx`
 - `apps/web/src/app/globals.css`
 - `packages/shared-types/src/localization.js`
-- `docs/ux/nest_os_canonical_view_architecture_2026-05-02.md`
+- `docs/ux/nest_canonical_view_architecture_2026-05-02.md`
 - `docs/ux/design-memory.md`
 - `.codex/context/TASK_BOARD.md`
 - `.codex/context/PROJECT_STATE.md`
@@ -46,7 +46,7 @@ connection between daily action and long-term success visible.
 
 ## Success Signal
 - User or operator problem: Nest can feel like a flat list of productivity
-  modules instead of a calm life operating system.
+  modules instead of a calm personal life workspace.
 - Expected product or reliability outcome: Dashboard and shell navigation
   reinforce five top-level rooms while nested modules remain reachable through
   context.
@@ -132,7 +132,7 @@ desktop and mobile preview images.
 - Decision required from user: no
 - Approval reference if architecture changed: user request on 2026-05-02
 - Follow-up architecture doc updates:
-  `docs/ux/nest_os_canonical_view_architecture_2026-05-02.md`
+  `docs/ux/nest_canonical_view_architecture_2026-05-02.md`
 
 ## UX/UI Evidence
 
@@ -233,7 +233,7 @@ desktop and mobile preview images.
 
 ## Result Report
 
-- Task summary: Updated web shell core navigation to the five Nest OS pillars,
+- Task summary: Updated web shell core navigation to the five Nest pillars,
   added a Dashboard success ladder, documented canonical IA rules, and generated
   new desktop/mobile canonical Dashboard previews.
 - Files changed:
@@ -242,7 +242,7 @@ desktop and mobile preview images.
   - `apps/web/src/app/dashboard/page.tsx`
   - `apps/web/src/app/globals.css`
   - `packages/shared-types/src/localization.js`
-  - `docs/ux/nest_os_canonical_view_architecture_2026-05-02.md`
+  - `docs/ux/nest_canonical_view_architecture_2026-05-02.md`
   - `docs/ux/design-memory.md`
   - `.codex/context/TASK_BOARD.md`
   - `.codex/context/PROJECT_STATE.md`

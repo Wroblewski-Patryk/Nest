@@ -598,7 +598,7 @@ export default function DashboardPage() {
           title={t("dashboard.ladder.title", "Today's success ladder")}
           summary={t("dashboard.ladder.summary", "A quiet line from long-term direction to the next useful action.")}
           nodes={[
-            { label: t("dashboard.ladder.goal", "Goal"), value: t("dashboard.ladder.goal_value", "Shape a calmer operating system") },
+            { label: t("dashboard.ladder.goal", "Goal"), value: t("dashboard.ladder.goal_value", "Shape a calmer Nest workspace") },
             { label: t("dashboard.ladder.time", "Time"), value: t("dashboard.timeline.product_workshop", "Prepare for product strategy workshop") },
             { label: t("dashboard.ladder.rhythm", "Rhythm"), value: t("dashboard.timeline.morning_routine", "Morning routine") },
             { label: t("dashboard.ladder.reflection", "Reflection"), value: t("dashboard.reflection.fallback_title", "Evening reflection") },

@@ -9,14 +9,14 @@ cycle, including screen IDs, ownership intent, and update scope.
 
 - Stitch project: `projects/11122321523690086751`
 - Stitch URL: `https://stitch.withgoogle.com/projects/11122321523690086751`
-- Project title: `Nest LifeOS Unified UX Mix Ideal v2`
+- Project title: `Nest Unified UX Mix Ideal v2`
 - Baseline style source:
-  `docs/ux/nest_os_design_system_mix_ideal_v1.md`
+  `docs/ux/nest_design_system_mix_ideal_v1.md`
 
 ## Screen Inventory
 
 - `projects/11122321523690086751/screens/1c9ea10850b64bdbbb2f9a1ae3967efc`
-  - Title: `Nest OS Foundation Board`
+  - Title: `Nest Foundation Board`
   - Purpose: cross-module foundation and visual rule board
 - `projects/11122321523690086751/screens/3b773ae837ed44488d15cdee78a6e532`
   - Title: `Nest Design System Board`

@@ -7,7 +7,7 @@ const DEFAULT_LOCALES = {
 
 const DICTIONARY = {
   en: {
-    "app.kicker": "Nest LifeOS MVP",
+    "app.kicker": "Nest MVP",
     "app.nav.core_modules": "Core modules",
     "app.nav.mobile_modules": "Mobile modules",
     "app.nav.dashboard": "Dashboard",
@@ -440,7 +440,7 @@ const DICTIONARY = {
     "dashboard.ladder.title": "Today's success ladder",
     "dashboard.ladder.summary": "A quiet line from long-term direction to the next useful action.",
     "dashboard.ladder.goal": "Goal",
-    "dashboard.ladder.goal_value": "Shape a calmer operating system",
+    "dashboard.ladder.goal_value": "Shape a calmer Nest workspace",
     "dashboard.ladder.time": "Time",
     "dashboard.ladder.rhythm": "Rhythm",
     "dashboard.ladder.reflection": "Reflection",
@@ -565,7 +565,7 @@ const DICTIONARY = {
     "insights.briefing.empty": "No briefing is ready yet. Once one is generated, it will appear here.",
   },
   pl: {
-    "app.kicker": "Nest LifeOS MVP",
+    "app.kicker": "Nest MVP",
     "app.nav.core_modules": "Glowne moduly",
     "app.nav.mobile_modules": "Moduly mobilne",
     "app.nav.dashboard": "Dashboard",
@@ -998,7 +998,7 @@ const DICTIONARY = {
     "dashboard.ladder.title": "Dzisiejsza drabina sukcesu",
     "dashboard.ladder.summary": "Spokojna linia od dlugofalowego kierunku do nastepnej uzytecznej akcji.",
     "dashboard.ladder.goal": "Cel",
-    "dashboard.ladder.goal_value": "Zbudowac spokojniejszy system operacyjny",
+    "dashboard.ladder.goal_value": "Zbudowac spokojniejsza przestrzen Nest",
     "dashboard.ladder.time": "Czas",
     "dashboard.ladder.rhythm": "Rytm",
     "dashboard.ladder.reflection": "Refleksja",

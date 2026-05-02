@@ -4,7 +4,7 @@
 - Brand feeling: calm utility with editorial precision
 - Trust posture: grounded, capable, never chaotic
 - Energy level: focused and warm, not playful noise
-- Keywords: life operating system, clarity, momentum, reflection
+- Keywords: personal life workspace, clarity, momentum, reflection
 
 ## Visual Thesis
 - Nest should feel like a premium personal command center for real life, not a

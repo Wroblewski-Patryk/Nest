@@ -46,7 +46,7 @@ export default function WelcomePage() {
           <li className="list-row">
             <div>
               <strong>Founder-first product focus</strong>
-              <p>Start with a dependable daily operating system, then grow into advanced capabilities later.</p>
+              <p>Start with a dependable daily system, then grow into advanced capabilities later.</p>
             </div>
           </li>
         </ul>

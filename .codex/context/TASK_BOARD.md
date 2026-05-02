@@ -1,4 +1,4 @@
-﻿# TASK_BOARD
+# TASK_BOARD
 
 Last updated: 2026-05-02
 
@@ -24,6 +24,34 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-295 Brand naming correction to Nest
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-294
+  - Done on: 2026-05-02
+  - Priority: P0
+  - Notes:
+    - User clarified that the product name is simply `Nest`; removed stale
+      old-suffix branding from visible copy, agent guidance, shared
+      localization, and UX/product/architecture docs.
+    - Regenerated the two Dashboard canonical IA previews so the images use
+      `Nest` branding only:
+      `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-canonical-ia-desktop-2026-05-02.png`
+      and
+      `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-canonical-ia-mobile-2026-05-02.png`.
+    - Renamed stale UX doc and local skill paths:
+      `docs/ux/nest_canonical_view_architecture_2026-05-02.md`,
+      `docs/ux/nest_design_system_mix_ideal_v1.md`,
+      `.agents/skills/scaffold_nest_module/SKILL.md`.
+    - Static search found no remaining textual stale product-branding matches
+      outside binary image artifacts.
+    - Report:
+      `docs/ux/nest_295_brand_naming_correction_2026-05-02.md`.
+    - Validation:
+      web typecheck, lint, build, unit tests, mobile typecheck, mobile unit
+      tests, static branding search, visual preview inspection, and
+      `git diff --check`.
+
 - [x] NEST-294 Dashboard IA and success ladder canonical update
   - Status: DONE
   - Owner: Execution Agent
@@ -40,7 +68,7 @@ Last updated: 2026-05-02
       time, rhythm, and reflection without changing data loading or API
       behavior.
     - Added canonical IA documentation:
-      `docs/ux/nest_os_canonical_view_architecture_2026-05-02.md`.
+      `docs/ux/nest_canonical_view_architecture_2026-05-02.md`.
     - Generated new canonical previews:
       `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-canonical-ia-desktop-2026-05-02.png`
       and
@@ -2103,7 +2131,7 @@ Last updated: 2026-05-02
   - Done on: 2026-03-21
   - Notes:
     - Added canonical style spec in
-      `docs/ux/nest_os_design_system_mix_ideal_v1.md`.
+      `docs/ux/nest_design_system_mix_ideal_v1.md`.
     - Linked the style baseline from
       `docs/ux/ux_ui_stitch_unified_spec_v1.md`.
     - Added cross-references in

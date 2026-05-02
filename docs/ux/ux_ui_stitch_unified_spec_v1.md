@@ -11,7 +11,7 @@ in web/mobile code.
 - One approved Stitch project as source of truth for this cycle.
 - After approval: implementation tasks split per module.
 - Visual and UX language must follow:
-  `docs/ux/nest_os_design_system_mix_ideal_v1.md`.
+  `docs/ux/nest_design_system_mix_ideal_v1.md`.
 
 ## Source of Truth (This Cycle)
 
@@ -20,7 +20,7 @@ in web/mobile code.
 - Baseline status: unified v2 approval package in active iteration, generated on
   `2026-03-21`
 - Style system baseline add-on approved on `2026-03-21`:
-  `docs/ux/nest_os_design_system_mix_ideal_v1.md`
+  `docs/ux/nest_design_system_mix_ideal_v1.md`
 
 ## Evidence (Stitch)
 
@@ -91,7 +91,7 @@ in web/mobile code.
 - One style language across all screens (no mixed themes).
 - Shared navigation and reusable component patterns visible.
 - All core modules have at least one desktop and one mobile-ready treatment.
-- Full compliance with `docs/ux/nest_os_design_system_mix_ideal_v1.md`.
+- Full compliance with `docs/ux/nest_design_system_mix_ideal_v1.md`.
 - Critical states included:
   - empty
   - error/failure

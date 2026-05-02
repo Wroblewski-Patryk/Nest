@@ -1,4 +1,4 @@
-﻿# Tech Stack (Decision)
+# Tech Stack (Decision)
 
 As of March 15, 2026.
 
@@ -27,7 +27,7 @@ As of March 15, 2026.
 ## Why This Stack
 
 - Laravel + PostgreSQL: fast delivery, mature ecosystem, excellent relational
-  modeling for LifeOS entities and sync metadata.
+  modeling for Nest entities and sync metadata.
 - Next.js + React Native (Expo): two product editions with near-identical
   business logic and highly consistent UX.
 - Redis queues: reliable async integrations and AI/integration job processing.

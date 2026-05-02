@@ -1,4 +1,4 @@
-# Nest OS Design System and UI (Mix Ideal PL)
+# Nest Design System and UI (Mix Ideal PL)
 
 Version: 1.0
 Status: Approved for implementation

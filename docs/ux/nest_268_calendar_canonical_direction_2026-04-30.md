@@ -117,7 +117,7 @@ The canonical Calendar screen is composed from seven layers.
 
 - Bottom strip demonstrates the product model:
   `Goal -> Task/List -> Calendar event -> Reflection`.
-- This turns calendar events from isolated blocks into part of the LifeOS loop.
+- This turns calendar events from isolated blocks into part of the Nest loop.
 
 ## Mobile Direction
 

@@ -186,7 +186,7 @@ export function ModuleScreen({
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <View style={styles.hero}>
-          <Text style={styles.brand}>{t('app.kicker', 'Nest LifeOS MVP')}</Text>
+          <Text style={styles.brand}>{t('app.kicker', 'Nest MVP')}</Text>
           <Text style={styles.dateLabel}>{dateLabel}</Text>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>{subtitle}</Text>

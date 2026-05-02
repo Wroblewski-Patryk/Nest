@@ -96,7 +96,7 @@ These panels support the hero and `Now Focus` rather than competing with them.
 ### 6. Quiet System Context
 
 - Goals, life balance, and insights appear as smaller supporting cues.
-- They should remind the user that Nest is a whole-life operating system, not
+- They should remind the user that Nest is a whole-personal life workspace, not
   a task app.
 
 ## Visual Direction

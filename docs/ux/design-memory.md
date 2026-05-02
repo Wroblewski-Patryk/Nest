@@ -44,7 +44,7 @@
 - Dashboard success ladder:
   Dashboard should include a low-noise connection cue from long-term direction
   to daily execution and reflection, such as `Goal -> Time -> Routine ->
-  Reflection`, so today's effort visibly belongs to the larger LifeOS loop.
+  Reflection`, so today's effort visibly belongs to the larger Nest loop.
 
 ## Dashboard Parity Patterns (2026-04-26)
 
@@ -157,7 +157,7 @@
   goal/task/list context, and assignment timeline when available.
 - Time ladder:
   Calendar should make the loop visible as `Goal -> Task/List -> Calendar event
-  -> Reflection`, so scheduled time reads as part of LifeOS rather than an
+  -> Reflection`, so scheduled time reads as part of Nest rather than an
   isolated block.
 - Mobile calendar parity:
   Mobile should stack the same model: time map, now card, week strip, timeline,

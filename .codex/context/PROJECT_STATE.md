@@ -25,6 +25,23 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-295` Brand naming correction to Nest. The user
+  clarified that the product name is simply `Nest`; stale old-suffix branding
+  was removed from visible copy, agent guidance, shared localization, and
+  UX/product/architecture docs. The two Dashboard canonical IA preview images
+  were regenerated so the images use `Nest` branding only:
+  `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-canonical-ia-desktop-2026-05-02.png`
+  and
+  `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-canonical-ia-mobile-2026-05-02.png`.
+  Stale UX doc and local skill paths were renamed to:
+  `docs/ux/nest_canonical_view_architecture_2026-05-02.md`,
+  `docs/ux/nest_design_system_mix_ideal_v1.md`, and
+  `.agents/skills/scaffold_nest_module/SKILL.md`. Static search found no
+  remaining textual stale product-branding matches outside binary image
+  artifacts. Web typecheck, lint, build, unit tests, mobile typecheck, mobile
+  unit tests, static branding search, visual preview inspection, and
+  `git diff --check` passed. Report:
+  `docs/ux/nest_295_brand_naming_correction_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-294` Dashboard IA and success ladder canonical
   update. The user-provided UX/UI architecture note is now captured as the
   canonical five-pillar view rule: Dashboard, Planning, Calendar, Journal, and
@@ -33,7 +50,7 @@ Last updated: 2026-05-02
   through contextual pillar surfaces and direct routes. Dashboard now includes
   a compact success ladder connecting goal, time, rhythm, and reflection while
   preserving existing API/data behavior. New canonical IA doc:
-  `docs/ux/nest_os_canonical_view_architecture_2026-05-02.md`. New generated
+  `docs/ux/nest_canonical_view_architecture_2026-05-02.md`. New generated
   previews:
   `docs/ux_canonical_artifacts/2026-05-02/nest-dashboard-canonical-ia-desktop-2026-05-02.png`
   and
@@ -661,7 +678,7 @@ Last updated: 2026-05-02
 
 ## Product
 
-- Name: Nest (LifeOS)
+- Name: Nest
 - Goal: unified life orchestration platform with AI support
 - Commercial intent: SaaS
 - Current strategic priority: maximize practical day-to-day usefulness for the
@@ -1069,7 +1086,7 @@ Last updated: 2026-05-02
   (`docs/ux/ux_ui_stitch_unified_spec_v1.md`)
 - `NEST-107` completed: approved "Mix Ideal" Nest design system baseline
   captured as canonical documentation and linked into Stitch/playbook/frontend
-  strategy (`docs/ux/nest_os_design_system_mix_ideal_v1.md`)
+  strategy (`docs/ux/nest_design_system_mix_ideal_v1.md`)
 - `NEST-108` completed: Stitch unified screen workflow operationalized for active
   Mix Ideal v2 cycle, including screen registry, playbook execution contract,
   and unified spec source/evidence update to project
@@ -2165,6 +2182,6 @@ Last updated: 2026-05-02
 ## Autonomous Iteration State
 - Current iteration:
 - Current operation mode:
-- Last completed iteration: 294
-- Last completed task: NEST-294 Dashboard IA and success ladder canonical update
+- Last completed iteration: 295
+- Last completed task: NEST-295 Brand naming correction to Nest
 - Next required mode: BUILDER

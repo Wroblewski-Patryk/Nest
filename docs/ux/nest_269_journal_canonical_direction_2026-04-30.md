@@ -4,7 +4,7 @@
 
 Define the canonical desktop and mobile direction for the Nest `Journal`
 module so future implementation work can turn reflection capture into a warm,
-context-rich LifeOS surface.
+context-rich Nest surface.
 
 The module name is `Journal`. Reflection remains the core behavior, but the UI
 must not label the module as `Journal + Reflection` or `Reflections`.

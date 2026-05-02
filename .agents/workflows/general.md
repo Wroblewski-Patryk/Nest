@@ -1,5 +1,5 @@
 ---
-description: Workspace rules for Nest (LifeOS)
+description: Workspace rules for Nest
 ---
 
 # General Workspace Rules

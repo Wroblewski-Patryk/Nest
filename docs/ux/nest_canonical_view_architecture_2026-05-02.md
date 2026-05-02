@@ -1,9 +1,9 @@
-# Nest OS Canonical View Architecture (2026-05-02)
+# Nest Canonical View Architecture (2026-05-02)
 
 ## Purpose
 
-This document records the current Nest OS information architecture rule for
-future UI generation and implementation. Nest is a calm life operating system,
+This document records the current Nest information architecture rule for
+future UI generation and implementation. Nest is a calm personal life workspace,
 not a flat productivity tracker, so powerful domain modules must be revealed
 through a small number of stable rooms.
 

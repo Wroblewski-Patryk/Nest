@@ -35,7 +35,7 @@ delivery scope or to later target expansion.
 
 ## V1 Delivery Scope
 
-`v1` is the practical LifeOS product. It includes:
+`v1` is the practical Nest product. It includes:
 
 - backend API as the single source of truth,
 - web app as the primary operating surface,

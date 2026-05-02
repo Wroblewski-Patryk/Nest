@@ -1,4 +1,4 @@
-﻿# Stitch MCP Playbook
+# Stitch MCP Playbook
 
 ## Purpose
 Use Stitch MCP as a structured UX co-designer workflow for Nest:
@@ -23,12 +23,12 @@ Every Stitch-assisted task must include one of:
 
 For Nest unified baseline work, use:
 
-- `docs/ux/nest_os_design_system_mix_ideal_v1.md`
+- `docs/ux/nest_design_system_mix_ideal_v1.md`
 
 ## Active Stitch Baseline (Current Cycle)
 - Project: `projects/11122321523690086751`
 - Unified spec: `docs/ux/ux_ui_stitch_unified_spec_v1.md`
-- Style source: `docs/ux/nest_os_design_system_mix_ideal_v1.md`
+- Style source: `docs/ux/nest_design_system_mix_ideal_v1.md`
 - Screen registry: `docs/ux/stitch_screen_registry_2026-03-21.md`
 
 ## Execution Checklist

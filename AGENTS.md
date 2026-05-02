@@ -1,4 +1,4 @@
-# AGENTS.md - Nest (LifeOS)
+# AGENTS.md - Nest
 
 ## Purpose
 
