@@ -9,9 +9,7 @@ import {
   BalanceMiniCard,
   DashboardDayFlow,
   DashboardFocusCard,
-  DashboardHeroBand,
   DashboardLadderStrip,
-  InsightStrip,
   QuickAddCard,
   ReflectionSidebarCard,
 } from "@/components/workspace-primitives";
@@ -183,11 +181,6 @@ export default function DashboardPage() {
     [todayTasks]
   );
 
-  const todayDoneTasksCount = useMemo(
-    () => todayTasks.filter((task) => task.status === "done").length,
-    [todayTasks]
-  );
-
   const todayEvents = useMemo(
     () =>
       events
@@ -200,15 +193,6 @@ export default function DashboardPage() {
     () => habits.filter((habit) => habit.is_active),
     [habits]
   );
-
-  const progressPercent = useMemo(() => {
-    const total = todayTasks.length + activeHabits.length;
-    if (total === 0) {
-      return 0;
-    }
-
-    return Math.min(100, Math.round((todayDoneTasksCount / total) * 100));
-  }, [activeHabits.length, todayDoneTasksCount, todayTasks.length]);
 
   const morningItems = useMemo<TimelineItem[]>(
     () =>
@@ -291,39 +275,38 @@ export default function DashboardPage() {
     todayEvents.length >= 2 ||
     (todayOpenTasks.length >= 1 && activeHabits.length >= 1) ||
     (goals.length > 0 && todayOpenTasks.length >= 1);
-  const useShowcaseFallback = !isLoading && (Boolean(errorMessage) || !hasMeaningfulLiveDashboard);
+  const useShowcaseFallback = !isLoading && !errorMessage && !hasMeaningfulLiveDashboard;
 
   const displayMorningItems = useShowcaseFallback
     ? [
-        { id: "morning-1", label: t("dashboard.timeline.morning_routine", "Morning routine"), detail: t("dashboard.timeline.type.routine", "Routine"), timeLabel: "6:30" },
-        { id: "morning-2", label: t("dashboard.timeline.workout", "Workout"), detail: t("dashboard.timeline.type.habit", "Habit"), timeLabel: "7:30" },
-        { id: "morning-3", label: t("dashboard.timeline.deep_work", "Deep work block"), detail: t("dashboard.timeline.type.focus_block", "Focus block"), timeLabel: "9:00" },
-        { id: "morning-4", label: t("dashboard.timeline.team_sync", "Team sync"), detail: t("dashboard.timeline.type.event", "Event"), timeLabel: "11:30" },
+        { id: "morning-1", label: t("dashboard.timeline.morning_routine", "Morning routine"), detail: t("dashboard.timeline.type.routine", "Routine"), timeLabel: "6:30 AM" },
+        { id: "morning-2", label: "Deep Work", detail: "Design Presentation", timeLabel: "8:00 AM" },
       ]
     : morningItems.map((item) => ({ ...item, detail: t("dashboard.timeline.type.event", "Event") }));
   const displayNowItem = useShowcaseFallback
     ? {
         id: "now-1",
-        label: t("dashboard.timeline.product_workshop", "Prepare for product strategy workshop"),
-        detail: t("dashboard.focus.meta.showcase_duration", "45 min"),
-        timeLabel: "10:15",
+        label: "Client call",
+        detail: "",
+        timeLabel: "10:15 AM",
       }
     : nowItems[0] ?? null;
   const displayEveningItems = useShowcaseFallback
     ? [
-        { id: "evening-1", label: t("dashboard.timeline.family_time", "Family time"), detail: t("dashboard.timeline.type.life_area", "Life area"), timeLabel: "17:30" },
-        { id: "evening-2", label: t("dashboard.timeline.dinner_unwind", "Dinner & unwind"), detail: t("dashboard.timeline.type.routine", "Routine"), timeLabel: "19:00" },
-        { id: "evening-3", label: t("dashboard.timeline.reflect_plan", "Reflect & plan"), detail: t("app.nav.journal", "Journal"), timeLabel: "20:30" },
-        { id: "evening-4", label: t("dashboard.timeline.sleep", "Sleep"), detail: t("dashboard.timeline.type.recovery", "Recovery"), timeLabel: "22:00" },
+        { id: "evening-1", label: "Planning", detail: "Q3 roadmap", timeLabel: "11:30 AM" },
+        { id: "evening-2", label: "Lunch & reset", detail: t("dashboard.timeline.type.recovery", "Recovery"), timeLabel: "1:00 PM" },
+        { id: "evening-3", label: "Focus block", detail: "Content strategy", timeLabel: "2:00 PM" },
+        { id: "evening-4", label: "Admin & email", detail: t("dashboard.timeline.type.event", "Event"), timeLabel: "4:00 PM" },
+        { id: "evening-5", label: "Evening routine", detail: t("dashboard.timeline.type.routine", "Routine"), timeLabel: "5:30 PM" },
       ]
     : eveningItems.map((item) => ({ ...item, detail: t("dashboard.timeline.type.event", "Event") }));
   const displayTaskItems = useShowcaseFallback
     ? [
-        { id: "task-1", title: t("dashboard.timeline.product_workshop", "Prepare for product strategy workshop"), note: t("dashboard.list.note.high_impact", "High impact"), badge: t("dashboard.badge.today", "Today") },
-        { id: "task-2", title: "Reply to design feedback", note: t("dashboard.list.note.work", "Work"), badge: t("dashboard.badge.today", "Today") },
-        { id: "task-3", title: "Review quarterly budget", note: t("dashboard.list.note.finance", "Finance"), badge: t("dashboard.badge.today", "Today") },
-        { id: "task-4", title: "Call with mom", note: t("dashboard.list.note.personal", "Personal"), badge: t("dashboard.badge.tomorrow", "Tomorrow") },
-        { id: "task-5", title: "Book weekend getaway", note: t("dashboard.list.note.personal", "Personal"), badge: "May 25" },
+        { id: "task-1", title: "Design presentation outline", note: t("dashboard.list.note.high_impact", "High impact"), badge: t("dashboard.badge.today", "Today") },
+        { id: "task-2", title: "Review Q3 roadmap", note: t("dashboard.list.note.work", "Work"), badge: t("dashboard.badge.today", "Today") },
+        { id: "task-3", title: "Reply to client feedback", note: t("dashboard.list.note.work", "Work"), badge: t("dashboard.badge.today", "Today") },
+        { id: "task-4", title: "Prepare team update", note: t("dashboard.list.note.work", "Work"), badge: t("dashboard.badge.tomorrow", "Tomorrow") },
+        { id: "task-5", title: "Book travel for offsite", note: t("dashboard.list.note.personal", "Personal"), badge: t("dashboard.badge.tomorrow", "Tomorrow") },
       ]
     : todayOpenTasks.slice(0, 5).map((task) => ({
         id: task.id,
@@ -333,10 +316,10 @@ export default function DashboardPage() {
       }));
   const displayHabitItems = useShowcaseFallback
     ? [
-        { id: "habit-1", title: "Morning meditation", streak: fillTemplate(t("dashboard.habit.streak_days", "{count} days"), { count: 12 }) },
-        { id: "habit-2", title: t("dashboard.timeline.workout", "Workout"), streak: fillTemplate(t("dashboard.habit.streak_days", "{count} days"), { count: 8 }) },
-        { id: "habit-3", title: "Read", streak: fillTemplate(t("dashboard.habit.streak_days", "{count} days"), { count: 5 }) },
-        { id: "habit-4", title: "No screens before bed", streak: fillTemplate(t("dashboard.habit.streak_days", "{count} days"), { count: 7 }) },
+        { id: "habit-1", title: "Move my body", streak: "6/7" },
+        { id: "habit-2", title: "Read daily", streak: "5/7" },
+        { id: "habit-3", title: "Meditate", streak: "4/7" },
+        { id: "habit-4", title: "No phone after 9pm", streak: "6/7" },
         { id: "habit-5", title: "Gratitude journal", streak: fillTemplate(t("dashboard.habit.streak_days", "{count} days"), { count: 10 }) },
       ]
     : activeHabits.slice(0, 5).map((habit) => ({
@@ -357,104 +340,152 @@ export default function DashboardPage() {
         value: item.balance_score,
         color: ["#b9bc89", "#7f9261", "#d2ab67", "#c47a48", "#aeb4ca"][index % 5],
       }));
-
-  const heroMetrics = [
-    {
-      label: t("dashboard.metric.tasks_completed", "Tasks completed"),
-      value: useShowcaseFallback ? "6 / 8" : `${todayDoneTasksCount} / ${Math.max(todayTasks.length, todayDoneTasksCount)}`,
-      emphasis: "accent" as const,
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
-          <path d="m8.5 12.3 2.3 2.3 4.7-5.1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ),
-    },
-    {
-      label: t("dashboard.metric.habits_active", "Active habits"),
-      value: useShowcaseFallback ? "3" : `${activeHabits.length}`,
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 20c4.2 0 7-2.8 7-7 0-5-3.5-8-7-9-3.5 1-7 4-7 9 0 4.2 2.8 7 7 7Z" stroke="currentColor" strokeWidth="1.8" />
-        </svg>
-      ),
-    },
-    {
-      label: t("dashboard.metric.mindful_time", "Mindful time"),
-      value: useShowcaseFallback ? "20 min" : `${Math.max(10, todayEvents.length * 10)} min`,
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 4c2.5 2.3 4.6 5 4.6 8.1A4.6 4.6 0 1 1 7.4 12C7.4 8.9 9.5 6.3 12 4Z" stroke="currentColor" strokeWidth="1.8" />
-        </svg>
-      ),
-    },
-    {
-      label: t("dashboard.metric.focus_score", "Focus score"),
-      value: useShowcaseFallback ? "7 / 10" : `${Math.max(6, Math.min(10, todayDoneTasksCount + 4))} / 10`,
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.3 7.2 19l.9-5.4L4.2 9.7l5.4-.8L12 4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-        </svg>
-      ),
-    },
-  ];
-
-  const reflectionText =
-    entries[0]?.body ??
-    t(
-      "dashboard.reflection.fallback_body",
-      "Today felt productive and meaningful. I made progress on what matters most and showed up for myself and others. Grateful for the small wins and the clarity that's coming."
-    );
+  const journalPreviewTitle =
+    entries[0]?.title && entries[0].title.trim().length >= 8
+      ? entries[0].title
+      : t("dashboard.reflection.title", "Journal reflection");
+  const journalPreviewBody =
+    entries[0]?.body && entries[0].body.trim().length >= 36
+      ? entries[0].body
+      : "A focused morning, a good conversation, and progress on something that matters.";
+  const displayUpNextItems = useShowcaseFallback
+    ? [
+        { id: "up-next-1", label: "Planning", detail: "Q3 roadmap", timeLabel: "11:30 AM", meta: "in 1h 15m", icon: "calendar" },
+        { id: "up-next-2", label: "Focus block", detail: "Content strategy", timeLabel: "2:00 PM", meta: "in 3h 45m", icon: "target" },
+        { id: "up-next-3", label: "Admin & email", detail: "", timeLabel: "4:00 PM", meta: "in 5h 45m", icon: "mail" },
+      ]
+    : [...displayMorningItems.slice(-1), ...displayEveningItems.slice(0, 2)].map((item, index) => ({
+        id: item.id,
+        label: item.label,
+        detail: item.detail,
+        timeLabel: item.timeLabel,
+        meta: item.detail,
+        icon: index === 0 ? "calendar" : index === 1 ? "target" : "mail",
+      }));
 
   return (
     <WorkspaceShell
-      title={t("dashboard.title", "Dashboard")}
-      subtitle={`${useShowcaseFallback ? t("dashboard.greeting.morning", "Good morning") : greeting}, Alexandra. ${t("dashboard.subtitle", "You've got this.")}`}
+      title={`${useShowcaseFallback ? t("dashboard.greeting.morning", "Good morning") : greeting}, ${useShowcaseFallback ? "Alex" : "Alexandra"}.`}
+      subtitle=""
       language={language}
       navKey="dashboard"
       module="tasks"
       contentLayout="single"
-      shellTone={useShowcaseFallback ? "dashboard-canonical" : "default"}
+      shellTone="dashboard-canonical"
       utilityDateLabel={useShowcaseFallback ? "Friday, May 23, 2025" : undefined}
       utilityWeatherLabel={useShowcaseFallback ? "18\u00B0C" : undefined}
-      hideAssistantNav={useShowcaseFallback}
-      hideRailFooterActions={useShowcaseFallback}
+      hideAssistantNav
+      hideRailFooterActions
     >
-      <section className={`dashboard-shell ${isLoading ? "is-loading" : ""} ${useShowcaseFallback ? "is-canonical-dashboard" : ""}`}>
-        <DashboardHeroBand
-          title={t("dashboard.hero.title", "Today at a glance")}
-          summary={t("dashboard.hero.summary", "You're making steady progress.")}
-          progressLabel={
-            useShowcaseFallback
-              ? t("dashboard.hero.progress.showcase", "You're making steady progress.")
-              : fillTemplate(
-                  t(
-                    "dashboard.hero.progress.live",
-                    "{tasks} completed tasks and {habits} active habits are already supporting the day."
-                  ),
-                  {
-                    tasks: todayDoneTasksCount,
-                    habits: activeHabits.length,
-                  }
-                )
-          }
-          progressPercent={useShowcaseFallback ? 78 : progressPercent}
-          metrics={heroMetrics}
-        />
+      <section className={`dashboard-shell is-canonical-dashboard ${isLoading ? "is-loading" : ""}`}>
+        <div className="dashboard-canonical-board">
+          <div className="dashboard-canonical-board-title">
+            <span aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M5 15.5c1.2-4.4 4.3-7.4 9.1-8.9 1.4 2 2.1 4.1 1.9 6-.3 3.3-2.6 5.7-6.1 5.7-2.9 0-4.9-1.2-4.9-2.8Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                <path d="M8.6 14.6c1.9-.4 3.4-1.3 4.6-2.8" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+              </svg>
+            </span>
+            <h2>{t("dashboard.hero.title", "Today at a glance")}</h2>
+          </div>
 
-        <div className="dashboard-support-rail">
-          <ReflectionSidebarCard
-            title={entries[0]?.title ?? t("dashboard.reflection.fallback_title", "Evening reflection")}
-            excerpt={reflectionText}
-            prompt={t("dashboard.reflection.prompt", "How was your day?")}
-            href="/journal"
-            className="dashboard-mobile-journal-card"
-          />
-          <QuickAddCard
-            className="dashboard-mobile-quick-add-card"
-            items={[
+          <div className="dashboard-canonical-board-grid">
+            <div className="dashboard-canonical-primary">
+              <DashboardFocusCard
+                kicker={t("dashboard.focus.kicker", "Now focus")}
+                kickerIcon={
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="7.6" stroke="currentColor" strokeWidth="1.65" />
+                    <circle cx="12" cy="12" r="2.1" stroke="currentColor" strokeWidth="1.65" />
+                    <path d="M12 4.9v2.2M19.1 12h-2.2M12 19.1v-2.2M4.9 12h2.2" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
+                  </svg>
+                }
+                title={useShowcaseFallback ? "Design the presentation outline" : nextAction.title}
+                detail={
+                  useShowcaseFallback
+                    ? "Define the key points and structure to create a clear, compelling outline."
+                    : t("dashboard.focus.live_detail", "This move is already alive in the day. Giving it clean attention now will create momentum for everything after it.")
+                }
+                href={nextAction.href}
+                cta={t("dashboard.focus.cta", "Start focus session")}
+                rationaleHref="/tasks"
+                rationaleLabel={t("dashboard.focus.why", "Why this?")}
+                meta={[
+                  { label: t("dashboard.focus.meta.duration", "Duration"), value: useShowcaseFallback ? "75 min" : t("dashboard.focus.meta.live_duration", "35 min") },
+                  { label: t("dashboard.focus.meta.impact", "Impact"), value: t("dashboard.focus.meta.high_impact", "Deep Work") },
+                ]}
+              />
+
+              <Panel
+                title={t("dashboard.panel.time_map", "Today's time map")}
+                className="dashboard-panel dashboard-dayflow-panel"
+              >
+                <DashboardDayFlow
+                  morningItems={displayMorningItems}
+                  nowItem={displayNowItem}
+                  eveningItems={displayEveningItems}
+                  footerHref="/calendar"
+                  footerLabel={t("dashboard.panel.view_full_calendar", "View full calendar")}
+                />
+              </Panel>
+
+              <Panel
+                title={t("dashboard.panel.tasks", "Tasks")}
+                className="dashboard-panel dashboard-list-panel"
+                actions={<Link href="/tasks" className="dashboard-inline-link">{t("dashboard.panel.view_all", "View all")}</Link>}
+              >
+                <ul className="dashboard-focus-list dashboard-focus-list-ornate">
+                  {displayTaskItems.map((task) => (
+                    <li key={task.id} className="dashboard-focus-item">
+                      <span className="dashboard-task-circle" aria-hidden="true" />
+                      <div>
+                        <strong>{task.title}</strong>
+                      </div>
+                      <small>{task.badge}</small>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link href="/tasks" className="dashboard-inline-action dashboard-add-line">
+                  + {t("dashboard.panel.add_task", "Add task")}
+                </Link>
+              </Panel>
+
+              <Panel
+                title={t("dashboard.panel.habits", "Habits")}
+                className="dashboard-panel dashboard-habits-panel"
+                actions={<Link href="/habits" className="dashboard-inline-link">{t("dashboard.panel.view_all", "View all")}</Link>}
+              >
+                <ul className="dashboard-focus-list dashboard-focus-list-ornate">
+                  {displayHabitItems.slice(0, 4).map((habit, index) => (
+                    <li key={habit.id} className="dashboard-focus-item">
+                      <span className="dashboard-habit-icon" aria-hidden="true" />
+                      <div>
+                        <strong>{habit.title}</strong>
+                      </div>
+                      <span className="dashboard-habit-dots" aria-label={habit.streak}>
+                        {Array.from({ length: 6 }).map((_, dotIndex) => (
+                          <i key={`${habit.id}-${dotIndex}`} className={dotIndex < 4 + (index % 2) ? "is-filled" : ""} />
+                        ))}
+                      </span>
+                      <small className="dashboard-habit-streak">{habit.streak}</small>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link href="/habits" className="dashboard-inline-action dashboard-add-line">
+                  + {t("dashboard.panel.add_habit", "Add habit")}
+                </Link>
+              </Panel>
+            </div>
+
+            <aside className="dashboard-canonical-rail">
+              <QuickAddCard
+                variant="list"
+                className="dashboard-mobile-quick-add-card"
+                items={[
               {
-                label: t("dashboard.quick_add.task", "Task"),
+                label: t("dashboard.quick_add.new_task", "New task"),
                 href: "/tasks",
                 icon: (
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -464,21 +495,22 @@ export default function DashboardPage() {
                 ),
               },
               {
-                label: t("dashboard.quick_add.habit", "Habit"),
-                href: "/habits",
-                icon: (
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M12 20c4.2 0 7-2.8 7-7 0-5-3.5-8-7-9-3.5 1-7 4-7 9 0 4.2 2.8 7 7 7Z" stroke="currentColor" strokeWidth="1.8" />
-                  </svg>
-                ),
-              },
-              {
-                label: t("dashboard.quick_add.event", "Event"),
+                label: t("dashboard.quick_add.time_block", "Time block"),
                 href: "/calendar",
                 icon: (
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <rect x="4" y="5" width="16" height="15" rx="3" stroke="currentColor" strokeWidth="1.7" />
                     <path d="M8 3v4M16 3v4M4 9h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                  </svg>
+                ),
+              },
+              {
+                label: t("dashboard.quick_add.journal_entry", "Journal entry"),
+                href: "/journal",
+                icon: (
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M6 5.5A2.5 2.5 0 0 1 8.5 3H19v18H8.5A2.5 2.5 0 0 0 6 23V5.5Z" stroke="currentColor" strokeWidth="1.7" />
+                    <path d="M9.5 8.5H16M9.5 12H16M9.5 15.5H14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                   </svg>
                 ),
               },
@@ -491,126 +523,67 @@ export default function DashboardPage() {
                   </svg>
                 ),
               },
-            ]}
-          />
-          <BalanceMiniCard
-            value={useShowcaseFallback ? 7.3 : balance?.meta.global_balance_score ?? 0}
-            items={displayBalanceItems}
-            href="/life-areas"
-            className="dashboard-mobile-balance-card"
-          />
+                ]}
+              />
+
+              <BalanceMiniCard
+                value={useShowcaseFallback ? 7.3 : balance?.meta.global_balance_score ?? 0}
+                items={displayBalanceItems}
+                href="/life-areas"
+                className="dashboard-mobile-balance-card"
+              />
+
+              <DashboardLadderStrip
+                title={t("dashboard.ladder.title", "Success ladder")}
+                summary=""
+                nodes={[
+                  { label: t("dashboard.ladder.goal", "Goal"), value: t("dashboard.ladder.goal_value", "Define what matters") },
+                  { label: t("dashboard.ladder.time", "Time block"), value: t("dashboard.ladder.time_value", "Protect time for it") },
+                  { label: t("dashboard.ladder.rhythm", "Routine"), value: t("dashboard.ladder.rhythm_value", "Make it repeatable") },
+                  { label: t("dashboard.ladder.reflection", "Reflection"), value: t("dashboard.ladder.reflection_value", "Learn and adjust") },
+                ]}
+              />
+            </aside>
+
+            <div className="dashboard-canonical-footer">
+              <ReflectionSidebarCard
+                title={journalPreviewTitle}
+                excerpt={journalPreviewBody}
+                prompt={t("dashboard.reflection.new_entry", "New entry")}
+                href="/journal"
+                className="dashboard-mobile-journal-card"
+              />
+
+              <Panel
+                title={t("dashboard.panel.up_next", "Up next")}
+                className="dashboard-panel dashboard-up-next-panel"
+              >
+                <ul className="dashboard-up-next-list">
+                  {displayUpNextItems.map((item) => (
+                    <li key={`up-next-${item.id}`}>
+                      <span className="dashboard-up-next-bell" aria-hidden="true" />
+                      <small>
+                        <span>{item.timeLabel}</span>
+                        <span>{item.meta}</span>
+                      </small>
+                      <span className={`dashboard-up-next-icon is-${item.icon}`} aria-hidden="true" />
+                      <strong>
+                        <span>{item.label}</span>
+                        {item.detail ? <small>{item.detail}</small> : null}
+                      </strong>
+                      <span className="dashboard-up-next-chevron" aria-hidden="true">›</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/calendar" className="dashboard-dayflow-footer">
+                  {t("dashboard.panel.view_full_day", "View full day")}
+                </Link>
+              </Panel>
+            </div>
+          </div>
         </div>
 
         {!useShowcaseFallback && errorMessage ? <p className="callout state-error">{errorMessage}</p> : null}
-
-        <div className="dashboard-main-grid">
-          <DashboardFocusCard
-            kicker={t("dashboard.focus.kicker", "Now focus")}
-            kickerIcon={
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="7.6" stroke="currentColor" strokeWidth="1.65" />
-                <circle cx="12" cy="12" r="2.1" stroke="currentColor" strokeWidth="1.65" />
-                <path d="M12 4.9v2.2M19.1 12h-2.2M12 19.1v-2.2M4.9 12h2.2" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" />
-              </svg>
-            }
-            title={useShowcaseFallback ? t("dashboard.focus.default_title", "Prepare for product strategy workshop") : nextAction.title}
-            detail={
-              useShowcaseFallback
-                ? t("dashboard.focus.showcase_detail", "This moves your project forward and aligns the team. A focused block now creates momentum for the week.")
-                : t("dashboard.focus.live_detail", "This move is already alive in the day. Giving it clean attention now will create momentum for everything after it.")
-            }
-            href={nextAction.href}
-            cta={t("dashboard.focus.cta", "Start focus session")}
-            rationaleHref="/tasks"
-            rationaleLabel={t("dashboard.focus.why", "Why this?")}
-            meta={[
-              { label: t("dashboard.focus.meta.impact", "Impact"), value: t("dashboard.focus.meta.high_impact", "High impact") },
-              { label: t("dashboard.focus.meta.duration", "Duration"), value: useShowcaseFallback ? t("dashboard.focus.meta.showcase_duration", "45 min") : t("dashboard.focus.meta.live_duration", "35 min") },
-            ]}
-          />
-
-          <Panel
-            title={t("dashboard.panel.now", "Now")}
-            className="dashboard-panel dashboard-dayflow-panel"
-            actions={useShowcaseFallback ? undefined : <span className="dashboard-panel-kicker">{t("dashboard.panel.dayflow", "Morning / Now / Evening")}</span>}
-          >
-            <DashboardDayFlow
-              morningItems={displayMorningItems}
-              nowItem={displayNowItem}
-              eveningItems={displayEveningItems}
-              footerHref="/calendar"
-              footerLabel={t("dashboard.panel.view_full_calendar", "View full calendar")}
-            />
-          </Panel>
-
-          <Panel
-            title={t("dashboard.panel.tasks", "Tasks")}
-            className="dashboard-panel dashboard-list-panel"
-            actions={
-              <div className="dashboard-ledger-tabs" aria-label={t("dashboard.panel.tasks", "Tasks")}>
-                <span className="is-active">{t("dashboard.panel.tasks", "Tasks")}</span>
-                <span>{t("dashboard.panel.habits", "Habits")}</span>
-              </div>
-            }
-          >
-            <ul className="dashboard-focus-list dashboard-focus-list-ornate">
-              {displayTaskItems.map((task) => (
-                <li key={task.id} className="dashboard-focus-item">
-                  <div>
-                    <strong>{task.title}</strong>
-                    <small>{task.note}</small>
-                  </div>
-                  <span className="pill">{task.badge}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="row-inline dashboard-list-footer">
-              <Link href="/tasks" className="dashboard-inline-link">
-                {t("dashboard.panel.view_all_tasks", "View all tasks")}
-              </Link>
-              <Link href="/tasks" className="dashboard-inline-action">
-                {t("dashboard.panel.add_task", "Add task")}
-              </Link>
-            </div>
-          </Panel>
-
-          <Panel
-            title={t("dashboard.panel.habits", "Habits")}
-            className="dashboard-panel dashboard-habits-panel"
-            actions={<Link href="/habits" className="dashboard-inline-link">{t("dashboard.panel.view_all", "View all")}</Link>}
-          >
-            <ul className="dashboard-focus-list dashboard-focus-list-ornate">
-              {displayHabitItems.map((habit) => (
-                <li key={habit.id} className="dashboard-focus-item">
-                  <div>
-                    <strong>{habit.title}</strong>
-                    <small>{habit.streak}</small>
-                  </div>
-                  <span className="dashboard-habit-check" aria-hidden="true" />
-                </li>
-              ))}
-            </ul>
-          </Panel>
-        </div>
-
-        <DashboardLadderStrip
-          title={t("dashboard.ladder.title", "Today's success ladder")}
-          summary={t("dashboard.ladder.summary", "A quiet line from long-term direction to the next useful action.")}
-          nodes={[
-            { label: t("dashboard.ladder.goal", "Goal"), value: t("dashboard.ladder.goal_value", "Shape a calmer Nest workspace") },
-            { label: t("dashboard.ladder.time", "Time"), value: t("dashboard.timeline.product_workshop", "Prepare for product strategy workshop") },
-            { label: t("dashboard.ladder.rhythm", "Rhythm"), value: t("dashboard.timeline.morning_routine", "Morning routine") },
-            { label: t("dashboard.ladder.reflection", "Reflection"), value: t("dashboard.reflection.fallback_title", "Evening reflection") },
-          ]}
-        />
-
-        <InsightStrip
-          title={t("dashboard.insight.title", "Insight of the day")}
-          quote={t("dashboard.insight.quote", "Clarity comes from slowing down long enough to hear what matters.")}
-          href="/insights"
-          cta={t("dashboard.insight.cta", "Explore insights")}
-        />
       </section>
     </WorkspaceShell>
   );

@@ -83,6 +83,7 @@ type QuickAddItem = {
 type QuickAddCardProps = {
   items: QuickAddItem[];
   className?: string;
+  variant?: "grid" | "list";
 };
 
 type BalanceMiniCardProps = {
@@ -380,19 +381,20 @@ export function ReflectionSidebarCard({ title, excerpt, prompt, href, className 
   );
 }
 
-export function QuickAddCard({ items, className }: QuickAddCardProps) {
+export function QuickAddCard({ items, className, variant = "grid" }: QuickAddCardProps) {
   return (
-    <article className={`dashboard-sidebar-card${className ? ` ${className}` : ""}`}>
+    <article className={`dashboard-sidebar-card dashboard-quick-add-card is-${variant}${className ? ` ${className}` : ""}`}>
       <div className="dashboard-sidebar-card-head">
         <h3>Quick add</h3>
       </div>
-      <div className="dashboard-quick-add-grid">
+      <div className={variant === "list" ? "dashboard-quick-add-list" : "dashboard-quick-add-grid"}>
         {items.map((item) => (
           <Link key={item.label} href={item.href} className="dashboard-quick-add-tile">
             <span className="dashboard-quick-add-icon" aria-hidden="true">
               {item.icon}
             </span>
             <small>{item.label}</small>
+            {variant === "list" ? <span className="dashboard-quick-add-plus" aria-hidden="true">+</span> : null}
           </Link>
         ))}
       </div>
@@ -412,7 +414,7 @@ export function BalanceMiniCard({ items, href, className }: BalanceMiniCardProps
   return (
     <article className={`dashboard-sidebar-card${className ? ` ${className}` : ""}`}>
       <div className="dashboard-sidebar-card-head">
-        <h3>Life areas</h3>
+        <h3>Life Areas</h3>
         <Link href={href}>View all</Link>
       </div>
 

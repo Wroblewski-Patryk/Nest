@@ -257,9 +257,11 @@ export function WorkspaceShell({
     year: "numeric",
   });
   const resolvedUtilityWeatherLabel = utilityWeatherLabel ?? "18 C";
-  const optionalNavItems = hideAssistantNav
-    ? OPTIONAL_NAV_ITEMS.filter((item) => item.key !== "assistant")
-    : OPTIONAL_NAV_ITEMS;
+  const optionalNavItems = shellTone === "dashboard-canonical"
+    ? []
+    : hideAssistantNav
+      ? OPTIONAL_NAV_ITEMS.filter((item) => item.key !== "assistant")
+      : OPTIONAL_NAV_ITEMS;
 
   return (
     <div className={`workspace-bg aura-${auraVariant} ${shellTone === "dashboard-canonical" ? "shell-dashboard-canonical" : ""}`}>
@@ -436,7 +438,7 @@ export function WorkspaceShell({
                   className={`workspace-mobile-link ${activeNavKey === item.key ? "is-active" : ""}`}
                 >
                   <MenuIcon name={item.icon} />
-                  <span>{translate(`app.nav.${item.key}`, uiLanguage, item.label)}</span>
+                  <span>{translate(item.key === "tasks" ? "app.nav.planning" : `app.nav.${item.key}`, uiLanguage, item.label)}</span>
                 </Link>
               ))}
             </nav>
