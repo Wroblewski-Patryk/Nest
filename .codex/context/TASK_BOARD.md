@@ -120,6 +120,9 @@ Last updated: 2026-05-03
       intelligence, time ladder, quick-add rail, pressure rail, and sync health;
       the static hardcoded-copy scan for `calendar/page.tsx` now returns only
       non-copy comparison/code lines.
+    - Localized shared dashboard workspace primitives for default metric aria
+      labels, focus metadata, dayflow empty copy, context ribbons, quick-add
+      heading, journal shortcut aria, and balance mini-card copy.
     - Started Planning localization coverage for route title/subtitle, the
       create-task composer, task validation/feedback, and task delete
       confirmation.

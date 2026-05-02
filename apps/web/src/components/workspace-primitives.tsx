@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { useTranslator } from "@/lib/ui-language";
 
 type HeroMetric = {
   label: string;
@@ -178,6 +181,7 @@ export function DashboardHeroBand({
   progressPercent,
   metrics,
 }: HeroBandProps) {
+  const t = useTranslator();
   const showHeroHeader = Boolean(brand || dateLabel || weatherLabel);
   const showProgressLabel = Boolean(progressLabel) && progressLabel !== summary;
 
@@ -202,7 +206,7 @@ export function DashboardHeroBand({
           {showProgressLabel ? <small>{progressLabel}</small> : null}
         </div>
 
-        <ul className="dashboard-hero-stat-row" aria-label="Daily dashboard metrics">
+        <ul className="dashboard-hero-stat-row" aria-label={t("web.workspace.metrics.daily_dashboard", "Daily dashboard metrics")}>
           {metrics.map((metric) => (
             <li key={metric.label} className={`dashboard-hero-stat ${metric.emphasis === "accent" ? "is-accent" : ""}`}>
               <span className="dashboard-hero-stat-icon" aria-hidden="true">
@@ -241,6 +245,7 @@ export function DashboardFocusCard({
   meta,
   secondaryAction,
 }: FocusCardProps) {
+  const t = useTranslator();
   return (
     <article className="dashboard-focus-card">
       <div className="dashboard-focus-copy">
@@ -253,7 +258,7 @@ export function DashboardFocusCard({
       </div>
 
       {meta?.length ? (
-        <div className="dashboard-focus-meta" aria-label="Focus metadata">
+        <div className="dashboard-focus-meta" aria-label={t("web.workspace.focus.metadata", "Focus metadata")}>
           {meta.map((item) => (
             <div key={item.label} className="dashboard-focus-meta-item">
               <small>{item.label}</small>
@@ -287,8 +292,10 @@ export function DashboardFocusCard({
 }
 
 function TimelineList({ items }: { items: DayFlowItem[] }) {
+  const t = useTranslator();
+
   if (items.length === 0) {
-    return <p className="dashboard-dayflow-empty">Nothing anchored here yet.</p>;
+    return <p className="dashboard-dayflow-empty">{t("web.workspace.dayflow.empty", "Nothing anchored here yet.")}</p>;
   }
 
   return (
@@ -308,12 +315,14 @@ function TimelineList({ items }: { items: DayFlowItem[] }) {
 }
 
 export function DashboardDayFlow({ morningItems, nowItem, eveningItems, footerHref, footerLabel }: DayFlowProps) {
+  const t = useTranslator();
+
   return (
     <section className="dashboard-dayflow">
       <div className="dashboard-dayflow-head">
-        <span>Morning</span>
-        <strong>Now</strong>
-        <span>Evening</span>
+        <span>{t("web.calendar.daypart.morning", "Morning")}</span>
+        <strong>{t("web.calendar.daypart.now", "Now")}</strong>
+        <span>{t("web.calendar.daypart.evening", "Evening")}</span>
       </div>
 
       <div className="dashboard-dayflow-grid">
@@ -331,9 +340,9 @@ export function DashboardDayFlow({ morningItems, nowItem, eveningItems, footerHr
             </article>
           ) : (
             <article className="dashboard-dayflow-now-card is-empty">
-              <small>Now</small>
-              <strong>Space is still open.</strong>
-              <p>Protect this slot for the next meaningful action.</p>
+              <small>{t("web.calendar.daypart.now", "Now")}</small>
+              <strong>{t("web.workspace.dayflow.space_open", "Space is still open.")}</strong>
+              <p>{t("web.workspace.dayflow.protect_slot", "Protect this slot for the next meaningful action.")}</p>
             </article>
           )}
         </div>
@@ -351,11 +360,13 @@ export function DashboardDayFlow({ morningItems, nowItem, eveningItems, footerHr
 }
 
 export function DashboardContextRibbon({ title, items }: ContextRibbonProps) {
+  const t = useTranslator();
+
   return (
     <section className="dashboard-context-ribbon" aria-label={title}>
       <div className="dashboard-context-title">
         <p>{title}</p>
-        <span>Quiet system context</span>
+        <span>{t("web.workspace.context.quiet_system", "Quiet system context")}</span>
       </div>
 
       <div className="dashboard-context-grid">
@@ -388,6 +399,8 @@ export function DashboardContextRibbon({ title, items }: ContextRibbonProps) {
 }
 
 export function ReflectionSidebarCard({ title, excerpt, prompt, href, className }: ReflectionSidebarCardProps) {
+  const t = useTranslator();
+
   return (
     <article className={`dashboard-sidebar-card dashboard-sidebar-card-journal${className ? ` ${className}` : ""}`}>
       <div className="dashboard-sidebar-card-head">
@@ -396,7 +409,7 @@ export function ReflectionSidebarCard({ title, excerpt, prompt, href, className 
             <path d="M6 5.5A2.5 2.5 0 0 1 8.5 3H19v18H8.5A2.5 2.5 0 0 0 6 23V5.5Z" stroke="currentColor" strokeWidth="1.7" />
             <path d="M9.5 8.5H16M9.5 12H16M9.5 15.5H14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </svg>
-          <span>Journal</span>
+          <span>{t("web.journal.title", "Journal")}</span>
         </h3>
         <span>...</span>
       </div>
@@ -404,7 +417,7 @@ export function ReflectionSidebarCard({ title, excerpt, prompt, href, className 
       <p className="dashboard-sidebar-card-script">{excerpt}</p>
       <div className="dashboard-sidebar-card-footer">
         <span>{prompt}</span>
-        <Link href={href} className="dashboard-floating-action" aria-label="Open journal">
+        <Link href={href} className="dashboard-floating-action" aria-label={t("web.workspace.action.open_journal", "Open journal")}>
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M6 18h3.2l8.5-8.5a1.7 1.7 0 0 0 0-2.4l-.8-.8a1.7 1.7 0 0 0-2.4 0L6 14.8V18Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
             <path d="m13.2 7.8 3 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
@@ -416,10 +429,12 @@ export function ReflectionSidebarCard({ title, excerpt, prompt, href, className 
 }
 
 export function QuickAddCard({ items, className, variant = "grid" }: QuickAddCardProps) {
+  const t = useTranslator();
+
   return (
     <article className={`dashboard-sidebar-card dashboard-quick-add-card is-${variant}${className ? ` ${className}` : ""}`}>
       <div className="dashboard-sidebar-card-head">
-        <h3>Quick add</h3>
+        <h3>{t("web.planning.quick_add.title", "Quick add")}</h3>
       </div>
       <div className={variant === "list" ? "dashboard-quick-add-list" : "dashboard-quick-add-grid"}>
         {items.map((item) => (
@@ -437,6 +452,7 @@ export function QuickAddCard({ items, className, variant = "grid" }: QuickAddCar
 }
 
 export function BalanceMiniCard({ items, href, className }: BalanceMiniCardProps) {
+  const t = useTranslator();
   const gradient = items
     .map((item, index) => {
       const start = (index / Math.max(items.length, 1)) * 360;
@@ -448,8 +464,8 @@ export function BalanceMiniCard({ items, href, className }: BalanceMiniCardProps
   return (
     <article className={`dashboard-sidebar-card${className ? ` ${className}` : ""}`}>
       <div className="dashboard-sidebar-card-head">
-        <h3>Life Areas</h3>
-        <Link href={href}>View all</Link>
+        <h3>{t("web.life_areas.title", "Life Areas")}</h3>
+        <Link href={href}>{t("web.planning.action.view_all_plain", "View all")}</Link>
       </div>
 
       <div className="dashboard-balance-grid">
@@ -468,7 +484,7 @@ export function BalanceMiniCard({ items, href, className }: BalanceMiniCardProps
         </ul>
       </div>
 
-      <p className="dashboard-balance-caption">Monthly balance overview</p>
+      <p className="dashboard-balance-caption">{t("web.workspace.balance.monthly_overview", "Monthly balance overview")}</p>
     </article>
   );
 }
