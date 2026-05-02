@@ -11,6 +11,7 @@ import {
 } from "@/components/workspace-primitives";
 import { clearAuthSession } from "@/lib/auth-session";
 import { apiRequest, nestApiClient } from "@/lib/api-client";
+import { useTranslator } from "@/lib/ui-language";
 import { getUserSafeErrorMessage } from "@/lib/ux-contract";
 
 type LifeAreaItem = {
@@ -82,6 +83,10 @@ function formatMood(mood: JournalEntryMood): string {
     return "Low";
   }
   return "None";
+}
+
+function formatMoodLabel(mood: JournalEntryMood, translateLabel: (key: string, fallback?: string) => string): string {
+  return translateLabel(`web.journal.mood.${mood ?? "none"}`, formatMood(mood));
 }
 
 function moodNumericValue(mood: JournalEntryMood): number {
@@ -207,11 +212,11 @@ function JournalGlyph({ name }: { name: "journal" | "spark" | "mood" | "balance"
 }
 
 function MoodChip({
-  label,
+  labelText,
   active,
   onClick,
 }: {
-  label: "low" | "neutral" | "good" | "great";
+  labelText: string;
   active: boolean;
   onClick: () => void;
 }) {
@@ -220,7 +225,7 @@ function MoodChip({
       <span className="journal-mood-chip-icon" aria-hidden="true">
         <JournalGlyph name="mood" />
       </span>
-      <span>{formatMood(label)}</span>
+      <span>{labelText}</span>
     </button>
   );
 }
@@ -299,6 +304,7 @@ function createShowcaseBalance(lifeAreas: LifeAreaItem[]): LifeAreaBalanceRespon
 
 export default function JournalPage() {
   const router = useRouter();
+  const t = useTranslator();
   const { confirm, confirmDialog } = useConfirmDialog();
   const [entries, setEntries] = useState<JournalEntryItem[]>([]);
   const [lifeAreas, setLifeAreas] = useState<LifeAreaItem[]>([]);
@@ -317,7 +323,7 @@ export default function JournalPage() {
   const [editAreaColor, setEditAreaColor] = useState("#789262");
   const [editAreaWeight, setEditAreaWeight] = useState("50");
   const [busyAreaId, setBusyAreaId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState("Capture one honest note and let the pattern emerge over time.");
+  const [feedback, setFeedback] = useState(() => t("web.journal.feedback.initial", "Capture one honest note and let the pattern emerge over time."));
   const [errorMessage, setErrorMessage] = useState("");
   const [entryFilter, setEntryFilter] = useState<JournalFilter>("all");
   const [isLoading, setIsLoading] = useState(true);
@@ -356,7 +362,7 @@ export default function JournalPage() {
         if (!mounted) {
           return;
         }
-        setFeedback("Journal and life areas loaded.");
+        setFeedback(t("web.journal.feedback.loaded", "Journal and life areas loaded."));
       })
       .catch((error) => {
         if (!mounted) {
@@ -376,7 +382,7 @@ export default function JournalPage() {
     return () => {
       mounted = false;
     };
-  }, [handleUnauthorized, loadData]);
+  }, [handleUnauthorized, loadData, t]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -421,11 +427,11 @@ export default function JournalPage() {
   async function createJournalEntry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!entryTitle.trim()) {
-      setErrorMessage("Entry title is required.");
+      setErrorMessage(t("web.journal.validation.title_required", "Entry title is required."));
       return;
     }
     if (!entryBody.trim()) {
-      setErrorMessage("Reflection body is required.");
+      setErrorMessage(t("web.journal.validation.body_required", "Reflection body is required."));
       return;
     }
 
@@ -450,7 +456,7 @@ export default function JournalPage() {
       setEntryDate("");
       setEntryLifeAreaIds([]);
       await loadData();
-      setFeedback("Journal entry created.");
+      setFeedback(t("web.journal.feedback.created", "Journal entry created."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -465,7 +471,7 @@ export default function JournalPage() {
   async function createLifeArea(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!newAreaName.trim()) {
-      setErrorMessage("Life area name is required.");
+      setErrorMessage(t("web.life_areas.validation.name_required", "Life area name is required."));
       return;
     }
 
@@ -485,7 +491,7 @@ export default function JournalPage() {
       setNewAreaName("");
       setNewAreaWeight("50");
       await loadData();
-      setFeedback("Life area created.");
+      setFeedback(t("web.life_areas.feedback.created", "Life area created."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -509,11 +515,11 @@ export default function JournalPage() {
 
   async function saveEntryEdit(entryId: string) {
     if (!editEntryTitle.trim()) {
-      setErrorMessage("Entry title is required.");
+      setErrorMessage(t("web.journal.validation.title_required", "Entry title is required."));
       return;
     }
     if (!editEntryBody.trim()) {
-      setErrorMessage("Reflection body is required.");
+      setErrorMessage(t("web.journal.validation.body_required", "Reflection body is required."));
       return;
     }
 
@@ -533,7 +539,7 @@ export default function JournalPage() {
       });
       setEditingEntryId(null);
       await loadData();
-      setFeedback("Journal entry updated.");
+      setFeedback(t("web.journal.feedback.updated", "Journal entry updated."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -548,9 +554,9 @@ export default function JournalPage() {
   async function deleteEntry(entryId: string) {
     if (
       !(await confirm({
-        title: "Delete journal entry?",
-        description: "This removes the reflection from your journal timeline.",
-        confirmLabel: "Delete entry",
+        title: t("web.journal.confirm.delete_title", "Delete journal entry?"),
+        description: t("web.journal.confirm.delete_body", "This removes the reflection from your journal timeline."),
+        confirmLabel: t("web.journal.action.delete_entry", "Delete entry"),
         tone: "danger",
       }))
     ) {
@@ -568,7 +574,7 @@ export default function JournalPage() {
         setEditingEntryId(null);
       }
       await loadData();
-      setFeedback("Journal entry deleted.");
+      setFeedback(t("web.journal.feedback.deleted", "Journal entry deleted."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -589,7 +595,7 @@ export default function JournalPage() {
 
   async function saveLifeAreaEdit(areaId: string) {
     if (!editAreaName.trim()) {
-      setErrorMessage("Life area name is required.");
+      setErrorMessage(t("web.life_areas.validation.name_required", "Life area name is required."));
       return;
     }
 
@@ -607,7 +613,7 @@ export default function JournalPage() {
       });
       setEditingAreaId(null);
       await loadData();
-      setFeedback("Life area updated.");
+      setFeedback(t("web.life_areas.feedback.updated", "Life area updated."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -622,9 +628,9 @@ export default function JournalPage() {
   async function deleteLifeArea(areaId: string) {
     if (
       !(await confirm({
-        title: "Delete life area?",
-        description: "This removes the life area from balance and journal context.",
-        confirmLabel: "Delete life area",
+        title: t("web.life_areas.confirm.delete_title", "Delete life area?"),
+        description: t("web.journal.life_area.confirm_delete_body", "This removes the life area from balance and journal context."),
+        confirmLabel: t("web.life_areas.action.delete_area", "Delete life area"),
         tone: "danger",
       }))
     ) {
@@ -642,7 +648,7 @@ export default function JournalPage() {
         setEditingAreaId(null);
       }
       await loadData();
-      setFeedback("Life area deleted.");
+      setFeedback(t("web.life_areas.feedback.deleted", "Life area deleted."));
     } catch (error) {
       if (getErrorStatus(error) === 401) {
         handleUnauthorized();
@@ -656,7 +662,7 @@ export default function JournalPage() {
 
   const latestEntry = displayEntries[0] ?? null;
   const latestEntryAreas = latestEntry ? latestEntry.life_areas ?? latestEntry.lifeAreas ?? [] : [];
-  const latestEntryDate = latestEntry?.entry_date ? formatEntryDate(latestEntry.entry_date) : "No entry yet";
+  const latestEntryDate = latestEntry?.entry_date ? formatEntryDate(latestEntry.entry_date) : t("web.journal.empty.no_entry_yet", "No entry yet");
   const topLifeArea = useMemo(() => {
     if (displayLifeAreas.length === 0) {
       return null;
@@ -741,35 +747,35 @@ export default function JournalPage() {
 
   const heroSummary =
     displayEntries.length > 0
-      ? "Return to what the day actually felt like, then write the smallest honest note that helps tomorrow."
-      : "This room should feel like a warm checkpoint, not homework. One useful sentence is enough to begin.";
+      ? t("web.journal.hero.summary.with_entries", "Return to what the day actually felt like, then write the smallest honest note that helps tomorrow.")
+      : t("web.journal.hero.summary.empty", "This room should feel like a warm checkpoint, not homework. One useful sentence is enough to begin.");
 
   const focusPrompt = useJournalShowcase
-    ? "What felt lighter after you slowed down?"
+    ? t("web.journal.focus.default_prompt", "What felt lighter after you slowed down?")
     : latestEntry
       ? latestEntry.body.slice(0, 120)
-      : "What felt lighter after you slowed down?";
+      : t("web.journal.focus.default_prompt", "What felt lighter after you slowed down?");
 
   const contextItems = [
     {
-      label: "Latest reflection",
-      value: latestEntry ? latestEntryDate : "Fresh start",
-      detail: latestEntry ? latestEntry.title : "No note yet. Start with a small true thing.",
+      label: t("web.journal.context.latest_reflection", "Latest reflection"),
+      value: latestEntry ? latestEntryDate : t("web.journal.context.fresh_start", "Fresh start"),
+      detail: latestEntry ? latestEntry.title : t("web.journal.context.no_note", "No note yet. Start with a small true thing."),
     },
     {
-      label: "Life-area gravity",
-      value: topLifeArea ? topLifeArea.name : "Unmapped",
+      label: t("web.journal.context.life_area_gravity", "Life-area gravity"),
+      value: topLifeArea ? topLifeArea.name : t("web.journal.context.unmapped", "Unmapped"),
       detail: topLifeArea
-        ? `${topLifeArea.weight}% declared weight is currently anchored there.`
-        : "Add a life area to give reflections more context.",
+        ? t("web.journal.context.declared_weight", "{weight}% declared weight is currently anchored there.").replace("{weight}", String(topLifeArea.weight))
+        : t("web.journal.context.add_life_area", "Add a life area to give reflections more context."),
       href: "#journal-life-areas",
     },
     {
-      label: "Balance signal",
-      value: displayBalance ? `${displayBalance.meta.global_balance_score.toFixed(0)}` : "Pending",
+      label: t("web.journal.context.balance_signal", "Balance signal"),
+      value: displayBalance ? `${displayBalance.meta.global_balance_score.toFixed(0)}` : t("web.journal.context.pending", "Pending"),
       detail: strongestBalanceDrift
-        ? `${strongestBalanceDrift.name} is drifting most from target share.`
-        : "Balance insight wakes up as more lived data arrives.",
+        ? t("web.journal.context.drifting", "{name} is drifting most from target share.").replace("{name}", strongestBalanceDrift.name)
+        : t("web.journal.context.balance_wakes", "Balance insight wakes up as more lived data arrives."),
       href: "/life-areas",
     },
   ];
@@ -781,8 +787,8 @@ export default function JournalPage() {
 
   return (
     <WorkspaceShell
-      title="Journal"
-      subtitle="Capture what happened and what it meant."
+      title={t("web.journal.title", "Journal")}
+      subtitle={t("web.journal.subtitle", "Capture what happened and what it meant.")}
       module="journal"
       shellTone="dashboard-canonical"
       utilityDateLabel="Friday, May 23, 2025"
@@ -794,12 +800,12 @@ export default function JournalPage() {
         {showJournalStatusStrip ? (
           <section className={`calendar-status-strip ${errorMessage ? "is-error" : "is-success"}`} aria-live="polite">
             <div className="calendar-status-copy">
-              <small>{errorMessage ? "Journal status" : "Live view"}</small>
+              <small>{errorMessage ? t("web.journal.status.error_label", "Journal status") : t("web.journal.status.live_view", "Live view")}</small>
               <strong>{journalStatusMessage}</strong>
             </div>
             <div className="planning-status-actions">
               <button type="button" className="pill-link" onClick={() => void loadData()}>
-                Refresh
+                {t("web.common.action.refresh", "Refresh")}
               </button>
             </div>
           </section>
@@ -809,10 +815,10 @@ export default function JournalPage() {
           <div className="journal-canonical-main">
             <DashboardHeroBand
               dateLabel="Friday, May 23, 2025"
-              weatherLabel={`${useJournalShowcase ? JOURNAL_SHOWCASE_ENTRY_COUNT : displayEntries.length} entries`}
-              title="Today's reflection room"
+              weatherLabel={t("web.journal.hero.entries_count", "{count} entries").replace("{count}", String(useJournalShowcase ? JOURNAL_SHOWCASE_ENTRY_COUNT : displayEntries.length))}
+              title={t("web.journal.hero.title", "Today's reflection room")}
               summary={heroSummary}
-              progressLabel="Reflection cadence"
+              progressLabel={t("web.journal.hero.progress", "Reflection cadence")}
               progressPercent={
                 useJournalShowcase
                   ? JOURNAL_SHOWCASE_CADENCE
@@ -820,14 +826,14 @@ export default function JournalPage() {
               }
               metrics={[
                 {
-                  label: "Entries",
+                  label: t("web.journal.metric.entries", "Entries"),
                   value: `${useJournalShowcase ? JOURNAL_SHOWCASE_ENTRY_COUNT : displayEntries.length}`,
                   icon: <JournalGlyph name="journal" />,
                 },
-                { label: "Life areas", value: `${displayLifeAreas.length}`, icon: <JournalGlyph name="spark" /> },
-                { label: "Mood", value: formatMood(latestEntry?.mood ?? null), icon: <JournalGlyph name="mood" /> },
+                { label: t("web.journal.metric.life_areas", "Life areas"), value: `${displayLifeAreas.length}`, icon: <JournalGlyph name="spark" /> },
+                { label: t("web.journal.metric.mood", "Mood"), value: formatMoodLabel(latestEntry?.mood ?? null, t), icon: <JournalGlyph name="mood" /> },
                 {
-                  label: "Balance",
+                  label: t("web.journal.metric.balance", "Balance"),
                   value: displayBalance ? `${displayBalance.meta.global_balance_score.toFixed(0)}` : "74",
                   icon: <JournalGlyph name="balance" />,
                 },
@@ -835,81 +841,81 @@ export default function JournalPage() {
             />
 
             {useJournalShowcase ? (
-              <section className="journal-showcase-focus" aria-label="Reflection focus">
+              <section className="journal-showcase-focus" aria-label={t("web.journal.focus.aria", "Reflection focus")}>
                 <div className="journal-showcase-focus-copy">
                   <p className="journal-showcase-focus-kicker">
                     <span className="journal-showcase-focus-kicker-icon" aria-hidden="true">
                       <JournalGlyph name="spark" />
                     </span>
-                    <span>Reflection focus</span>
+                    <span>{t("web.journal.focus.kicker", "Reflection focus")}</span>
                   </p>
                   <h2>{focusPrompt}</h2>
                   <div className="journal-showcase-focus-chips">
-                    <span className="journal-showcase-focus-chip">Today</span>
-                    <span className="journal-showcase-focus-chip">{formatMood(latestEntry?.mood ?? "good")} mood</span>
+                    <span className="journal-showcase-focus-chip">{t("web.journal.meta.today", "Today")}</span>
+                    <span className="journal-showcase-focus-chip">{t("web.journal.focus.mood_chip", "{mood} mood").replace("{mood}", formatMoodLabel(latestEntry?.mood ?? "good", t))}</span>
                     <span className="journal-showcase-focus-chip">
-                      {latestEntryAreas.length > 0 ? latestEntryAreas.map((area) => area.name).join(" + ") : "Health + Work"}
+                      {latestEntryAreas.length > 0 ? latestEntryAreas.map((area) => area.name).join(" + ") : t("web.journal.showcase.health_work", "Health + Work")}
                     </span>
                   </div>
                   <p className="journal-showcase-focus-detail">
-                    Use one gentle prompt, name the feeling honestly, and let the entry stay human instead of polished.
+                    {t("web.journal.focus.detail", "Use one gentle prompt, name the feeling honestly, and let the entry stay human instead of polished.")}
                   </p>
                 </div>
                 <div className="journal-showcase-focus-actions">
                   <a href="#journal-composer" className="btn-primary">
-                    Start reflection
+                    {t("web.journal.action.start_reflection", "Start reflection")}
                   </a>
                 </div>
               </section>
             ) : (
               <DashboardFocusCard
-                kicker="Reflection focus"
+                kicker={t("web.journal.focus.kicker", "Reflection focus")}
                 kickerIcon={<JournalGlyph name="spark" />}
                 title={focusPrompt}
                 detail={
                   latestEntry
-                    ? `Return to ${latestEntry.title.toLowerCase()} and notice what still matters after the first feeling passed.`
-                    : "Use one gentle prompt, name the mood honestly, and let the entry stay human instead of polished."
+                    ? t("web.journal.focus.live_detail", "Return to {title} and notice what still matters after the first feeling passed.").replace("{title}", latestEntry.title.toLowerCase())
+                    : t("web.journal.focus.detail_mood", "Use one gentle prompt, name the mood honestly, and let the entry stay human instead of polished.")
                 }
-                supportingLabel="Current context"
+                supportingLabel={t("web.journal.focus.current_context", "Current context")}
                 supportingValue={
                   latestEntryAreas.length > 0
                     ? latestEntryAreas.map((area) => area.name).join(" + ")
-                    : "Today + Good mood + Health + Work"
+                    : t("web.journal.focus.default_context", "Today + Good mood + Health + Work")
                 }
                 meta={[
-                  { label: "Date", value: latestEntry ? latestEntryDate : "Today" },
-                  { label: "Mood", value: formatMood(latestEntry?.mood ?? "good") },
+                  { label: t("web.journal.field.date", "Date"), value: latestEntry ? latestEntryDate : t("web.journal.meta.today", "Today") },
+                  { label: t("web.journal.metric.mood", "Mood"), value: formatMoodLabel(latestEntry?.mood ?? "good", t) },
                 ]}
                 href="#journal-composer"
-                cta="Start reflection"
+                cta={t("web.journal.action.start_reflection", "Start reflection")}
                 rationaleHref="#journal-reflection-ladder"
-                rationaleLabel="Why this?"
+                rationaleLabel={t("web.journal.action.why_this", "Why this?")}
               />
             )}
 
             <Panel
               id="journal-composer"
-              title="Write your reflection"
+              title={t("web.journal.panel.write_reflection", "Write your reflection")}
               className={`journal-canonical-composer ${useJournalShowcase ? "is-showcase" : ""}`}
             >
               <form className="form-grid" onSubmit={createJournalEntry}>
                 <div className="journal-composer-topline">
                   <label className="field">
-                    <span>Title</span>
+                    <span>{t("web.common.field.title", "Title")}</span>
                     <input
                       className="list-row"
                       data-journal-entry-autofocus="true"
                       type="text"
                       value={entryTitle}
                       onChange={(event) => setEntryTitle(event.target.value)}
-                      placeholder="Give this entry a title..."
+                      placeholder={t("web.journal.placeholder.title", "Give this entry a title...")}
                       disabled={isCreatingEntry}
                     />
                   </label>
 
                   <label className="field journal-date-field">
-                    <span>Entry date</span>
+                    <span>{t("web.journal.field.entry_date", "Entry date")}</span>
                     <input
                       className="list-row"
                       type="date"
@@ -921,12 +927,12 @@ export default function JournalPage() {
                 </div>
 
                 <label className="field">
-                  <span>Reflection</span>
+                  <span>{t("web.journal.field.reflection", "Reflection")}</span>
                   <textarea
                     className="list-row journal-canonical-textarea"
                     value={entryBody}
                     onChange={(event) => setEntryBody(event.target.value)}
-                    placeholder="What happened today? How did it feel? What mattered most?"
+                    placeholder={t("web.journal.placeholder.body", "What happened today? How did it feel? What mattered most?")}
                     rows={useJournalShowcase ? 3 : 5}
                     disabled={isCreatingEntry}
                   />
@@ -935,16 +941,16 @@ export default function JournalPage() {
 
                 <div className="journal-composer-context">
                   <div className="field">
-                    <span>Mood</span>
-                    <div className="journal-mood-chip-row" role="group" aria-label="Mood selection">
+                    <span>{t("web.journal.metric.mood", "Mood")}</span>
+                    <div className="journal-mood-chip-row" role="group" aria-label={t("web.journal.mood.selection", "Mood selection")}>
                       {(["low", "neutral", "good", "great"] as const).map((mood) => (
-                        <MoodChip key={mood} label={mood} active={entryMood === mood} onClick={() => setEntryMood(mood)} />
+                        <MoodChip key={mood} labelText={formatMoodLabel(mood, t)} active={entryMood === mood} onClick={() => setEntryMood(mood)} />
                       ))}
                     </div>
                   </div>
 
                   <div className="field">
-                    <span>Life areas</span>
+                    <span>{t("web.journal.metric.life_areas", "Life areas")}</span>
                     <div className="journal-chip-row journal-chip-row-canonical">
                       {lifeAreas.length === 0 ? (
                         useJournalShowcase ? (
@@ -958,7 +964,7 @@ export default function JournalPage() {
                             </span>
                           ))
                         ) : (
-                          <p className="journal-empty-copy">No life areas yet. Add one below and the reflections will gain more shape.</p>
+                          <p className="journal-empty-copy">{t("web.journal.empty.life_areas_for_entry", "No life areas yet. Add one below and the reflections will gain more shape.")}</p>
                         )
                       ) : (
                         lifeAreas.map((area) => (
@@ -994,24 +1000,24 @@ export default function JournalPage() {
                     <span><JournalGlyph name="date" /></span>
                   </div>
                   <button type="submit" className="btn-primary" disabled={isCreatingEntry}>
-                    {isCreatingEntry ? "Saving..." : "Save entry"}
+                    {isCreatingEntry ? t("web.common.action.saving", "Saving...") : t("web.journal.action.save_entry", "Save entry")}
                   </button>
                 </div>
               </form>
             </Panel>
 
             <Panel
-              title="Recent entries"
+              title={t("web.journal.panel.recent_entries", "Recent entries")}
               className={`journal-canonical-entries ${useJournalShowcase ? "is-showcase" : ""}`}
-              actions={useJournalShowcase ? <a href="/journal" className="dashboard-inline-action">View all entries</a> : undefined}
+              actions={useJournalShowcase ? <a href="/journal" className="dashboard-inline-action">{t("web.journal.action.view_all_entries", "View all entries")}</a> : undefined}
             >
               <div className={`journal-entry-toolbar ${useJournalShowcase ? "is-showcase" : ""}`}>
-                <div className="journal-entry-filters" role="group" aria-label="Journal entry filters">
+                <div className="journal-entry-filters" role="group" aria-label={t("web.journal.filters.aria", "Journal entry filters")}>
                   {([
-                    { key: "all" as const, label: "All" },
-                    { key: "good" as const, label: "Good" },
-                    { key: "heavy" as const, label: "Heavy" },
-                    { key: "week" as const, label: "This week" },
+                    { key: "all" as const, label: t("web.journal.filters.all", "All") },
+                    { key: "good" as const, label: t("web.journal.filters.good", "Good") },
+                    { key: "heavy" as const, label: t("web.journal.filters.heavy", "Heavy") },
+                    { key: "week" as const, label: t("web.journal.filters.week", "This week") },
                   ]).map((filter) => (
                     <button
                       key={filter.key}
@@ -1022,14 +1028,14 @@ export default function JournalPage() {
                       {filter.label}
                     </button>
                   ))}
-                  <a href="#journal-life-areas" className="filter-chip">Life areas</a>
+                  <a href="#journal-life-areas" className="filter-chip">{t("web.journal.metric.life_areas", "Life areas")}</a>
                 </div>
               </div>
 
               <div className="journal-entry-feed">
                 {visibleEntries.length === 0 ? (
                   <div className="journal-entry-row journal-entry-row-empty">
-                    <p>No entries match this view yet.</p>
+                    <p>{t("web.journal.empty.no_matching_entries", "No entries match this view yet.")}</p>
                   </div>
                 ) : (
                   visibleEntries.map((entry) => {
@@ -1039,7 +1045,7 @@ export default function JournalPage() {
                         {editingEntryId === entry.id ? (
                           <div className="form-grid">
                             <label className="field">
-                              <span>Title</span>
+                              <span>{t("web.common.field.title", "Title")}</span>
                               <input
                                 className="list-row"
                                 type="text"
@@ -1049,7 +1055,7 @@ export default function JournalPage() {
                               />
                             </label>
                             <label className="field">
-                              <span>Reflection</span>
+                              <span>{t("web.journal.field.reflection", "Reflection")}</span>
                               <textarea
                                 className="list-row"
                                 rows={4}
@@ -1060,7 +1066,7 @@ export default function JournalPage() {
                             </label>
                             <div className="journal-form-grid">
                               <label className="field">
-                                <span>Mood</span>
+                                <span>{t("web.journal.metric.mood", "Mood")}</span>
                                 <select
                                   className="list-row"
                                   value={editEntryMood}
@@ -1069,14 +1075,14 @@ export default function JournalPage() {
                                   }
                                   disabled={busyEntryId === entry.id}
                                 >
-                                  <option value="low">Low</option>
-                                  <option value="neutral">Neutral</option>
-                                  <option value="good">Good</option>
-                                  <option value="great">Great</option>
+                                  <option value="low">{t("web.journal.mood.low", "Low")}</option>
+                                  <option value="neutral">{t("web.journal.mood.neutral", "Neutral")}</option>
+                                  <option value="good">{t("web.journal.mood.good", "Good")}</option>
+                                  <option value="great">{t("web.journal.mood.great", "Great")}</option>
                                 </select>
                               </label>
                               <label className="field">
-                                <span>Entry date</span>
+                                <span>{t("web.journal.field.entry_date", "Entry date")}</span>
                                 <input
                                   className="list-row"
                                   type="date"
@@ -1087,7 +1093,7 @@ export default function JournalPage() {
                               </label>
                             </div>
                             <div className="field">
-                              <span>Life areas</span>
+                              <span>{t("web.journal.metric.life_areas", "Life areas")}</span>
                               <div className="journal-chip-row">
                                 {lifeAreas.map((area) => (
                                   <label key={`edit-${entry.id}-${area.id}`} className="journal-chip">
@@ -1115,7 +1121,7 @@ export default function JournalPage() {
                                 onClick={() => void saveEntryEdit(entry.id)}
                                 disabled={busyEntryId === entry.id}
                               >
-                                Save
+                                {t("web.common.action.save", "Save")}
                               </button>
                               <button
                                 type="button"
@@ -1123,7 +1129,7 @@ export default function JournalPage() {
                                 onClick={() => setEditingEntryId(null)}
                                 disabled={busyEntryId === entry.id}
                               >
-                                Cancel
+                                {t("web.common.action.cancel", "Cancel")}
                               </button>
                             </div>
                           </div>
@@ -1136,7 +1142,7 @@ export default function JournalPage() {
                               <strong>{entry.title}</strong>
                               <div className="journal-entry-meta">
                                 <span>{formatEntryDate(entry.entry_date)}</span>
-                                <span className={`journal-inline-mood is-${entry.mood ?? "none"}`}>{formatMood(entry.mood)}</span>
+                                <span className={`journal-inline-mood is-${entry.mood ?? "none"}`}>{formatMoodLabel(entry.mood, t)}</span>
                                 {linkedAreas.map((area) => (
                                   <span key={area.id} className="journal-inline-chip" style={{ "--chip-accent": area.color } as CSSProperties}>
                                     {area.name}
@@ -1163,7 +1169,7 @@ export default function JournalPage() {
                               <strong>{entry.title}</strong>
                               <div className="journal-entry-meta">
                                 <span>{formatEntryDate(entry.entry_date)}</span>
-                                <span className={`journal-inline-mood is-${entry.mood ?? "none"}`}>{formatMood(entry.mood)}</span>
+                                <span className={`journal-inline-mood is-${entry.mood ?? "none"}`}>{formatMoodLabel(entry.mood, t)}</span>
                                 {linkedAreas.map((area) => (
                                   <span key={area.id} className="journal-inline-chip" style={{ "--chip-accent": area.color } as CSSProperties}>
                                     {area.name}
@@ -1178,7 +1184,7 @@ export default function JournalPage() {
                                 className="journal-icon-action"
                                 onClick={() => startEntryEdit(entry)}
                                 disabled={busyEntryId === entry.id}
-                                aria-label="Edit entry"
+                                aria-label={t("web.journal.action.edit_entry", "Edit entry")}
                               >
                                 <JournalGlyph name="edit" />
                               </button>
@@ -1187,7 +1193,7 @@ export default function JournalPage() {
                                 className="journal-icon-action"
                                 onClick={() => void deleteEntry(entry.id)}
                                 disabled={busyEntryId === entry.id}
-                                aria-label="Delete entry"
+                                aria-label={t("web.journal.action.delete_entry", "Delete entry")}
                               >
                                 <JournalGlyph name="trash" />
                               </button>
@@ -1204,54 +1210,54 @@ export default function JournalPage() {
             <section
               id="journal-reflection-ladder"
               className={`planning-ladder journal-reflection-ladder ${useJournalShowcase ? "is-preview-hidden" : ""}`}
-              aria-label="Reflection ladder"
+              aria-label={t("web.journal.ladder.aria", "Reflection ladder")}
             >
               <div className="planning-ladder-copy">
-                <h3>Your reflection ladder</h3>
-                <p>Connect the day to feeling, context, and next intention.</p>
+                <h3>{t("web.journal.ladder.title", "Your reflection ladder")}</h3>
+                <p>{t("web.journal.ladder.copy", "Connect the day to feeling, context, and next intention.")}</p>
               </div>
               <div className="planning-ladder-chain">
                 <article className="planning-ladder-node">
-                  <small>Day event</small>
-                  <strong>{latestEntry?.title ?? "A lighter morning changed the whole day"}</strong>
+                  <small>{t("web.journal.ladder.day_event", "Day event")}</small>
+                  <strong>{latestEntry?.title ?? t("web.journal.showcase.entry_lighter_morning", "A lighter morning changed the whole day")}</strong>
                 </article>
                 <article className="planning-ladder-node">
-                  <small>Feeling</small>
-                  <strong>{formatMood(latestEntry?.mood ?? "good")}</strong>
+                  <small>{t("web.journal.ladder.feeling", "Feeling")}</small>
+                  <strong>{formatMoodLabel(latestEntry?.mood ?? "good", t)}</strong>
                 </article>
                 <article className="planning-ladder-node">
-                  <small>Life area</small>
-                  <strong>{latestEntryAreas[0]?.name ?? topLifeArea?.name ?? "Health"}</strong>
+                  <small>{t("web.journal.ladder.life_area", "Life area")}</small>
+                  <strong>{latestEntryAreas[0]?.name ?? topLifeArea?.name ?? t("web.journal.showcase.health", "Health")}</strong>
                 </article>
                 <article className="planning-ladder-node">
-                  <small>Next intention</small>
-                  <strong>Carry one calmer move into tomorrow</strong>
+                  <small>{t("web.journal.ladder.next_intention", "Next intention")}</small>
+                  <strong>{t("web.journal.ladder.next_intention_value", "Carry one calmer move into tomorrow")}</strong>
                 </article>
               </div>
             </section>
 
             <details id="journal-life-areas" className={`collapsible-panel ${useJournalShowcase ? "is-preview-hidden" : ""}`}>
-              <summary>Manage life areas</summary>
+              <summary>{t("web.journal.life_area.manage", "Manage life areas")}</summary>
               <div className="collapsible-content journal-life-area-management">
-                <Panel title="Life areas" className="journal-management-panel">
+                <Panel title={t("web.journal.metric.life_areas", "Life areas")} className="journal-management-panel">
                   <p className="journal-intro">
-                    Life areas keep reflection tied to reality. Weight shows what should matter; balance shows what is actually getting time.
+                    {t("web.journal.life_area.intro", "Life areas keep reflection tied to reality. Weight shows what should matter; balance shows what is actually getting time.")}
                   </p>
                   <form className="form-grid" onSubmit={createLifeArea}>
                     <label className="field">
-                      <span>Name</span>
+                      <span>{t("web.life_areas.field.name", "Name")}</span>
                       <input
                         className="list-row"
                         type="text"
                         value={newAreaName}
                         onChange={(event) => setNewAreaName(event.target.value)}
-                        placeholder="Example: Relationships"
+                        placeholder={t("web.life_areas.placeholder.name", "Example: Relationships")}
                         disabled={isCreatingArea}
                       />
                     </label>
                     <div className="journal-form-grid journal-life-area-form">
                       <label className="field">
-                        <span>Color</span>
+                        <span>{t("web.life_areas.field.color", "Color")}</span>
                         <input
                           className="list-row"
                           type="color"
@@ -1261,7 +1267,7 @@ export default function JournalPage() {
                         />
                       </label>
                       <label className="field">
-                        <span>Weight</span>
+                        <span>{t("web.life_areas.field.weight", "Weight")}</span>
                         <input
                           className="list-row"
                           type="number"
@@ -1275,7 +1281,7 @@ export default function JournalPage() {
                     </div>
                     <div className="journal-action-row">
                       <button type="submit" className="btn-secondary" disabled={isCreatingArea}>
-                        {isCreatingArea ? "Adding..." : "Add area"}
+                        {isCreatingArea ? t("web.common.action.adding", "Adding...") : t("web.life_areas.action.add", "Add area")}
                       </button>
                     </div>
                   </form>
@@ -1283,7 +1289,7 @@ export default function JournalPage() {
                   <ul className="list journal-life-area-list">
                     {lifeAreas.length === 0 ? (
                       <li className="list-row journal-life-area-card">
-                        <p>No life areas yet. Create one above.</p>
+                        <p>{t("web.journal.empty.no_life_areas_create", "No life areas yet. Create one above.")}</p>
                       </li>
                     ) : (
                       lifeAreas.map((area) => (
@@ -1291,7 +1297,7 @@ export default function JournalPage() {
                           {editingAreaId === area.id ? (
                             <div className="form-grid">
                               <label className="field">
-                                <span>Name</span>
+                                <span>{t("web.life_areas.field.name", "Name")}</span>
                                 <input
                                   className="list-row"
                                   type="text"
@@ -1302,7 +1308,7 @@ export default function JournalPage() {
                               </label>
                               <div className="journal-form-grid">
                                 <label className="field">
-                                  <span>Color</span>
+                                  <span>{t("web.life_areas.field.color", "Color")}</span>
                                   <input
                                     className="list-row"
                                     type="color"
@@ -1312,7 +1318,7 @@ export default function JournalPage() {
                                   />
                                 </label>
                                 <label className="field">
-                                  <span>Weight</span>
+                                  <span>{t("web.life_areas.field.weight", "Weight")}</span>
                                   <input
                                     className="list-row"
                                     type="number"
@@ -1331,7 +1337,7 @@ export default function JournalPage() {
                                   onClick={() => void saveLifeAreaEdit(area.id)}
                                   disabled={busyAreaId === area.id}
                                 >
-                                  Save
+                                  {t("web.common.action.save", "Save")}
                                 </button>
                                 <button
                                   type="button"
@@ -1339,7 +1345,7 @@ export default function JournalPage() {
                                   onClick={() => setEditingAreaId(null)}
                                   disabled={busyAreaId === area.id}
                                 >
-                                  Cancel
+                                  {t("web.common.action.cancel", "Cancel")}
                                 </button>
                               </div>
                             </div>
@@ -1351,7 +1357,7 @@ export default function JournalPage() {
                                   <strong>{area.name}</strong>
                                 </div>
                                 <p>
-                                  Weight: {area.weight}%{balance?.data ? ` | balance ${balance.data.find((item) => item.life_area_id === area.id)?.balance_score.toFixed(1) ?? "n/a"}` : ""}
+                                  {t("web.life_areas.field.weight", "Weight")}: {area.weight}%{balance?.data ? ` | ${t("web.journal.life_area.balance", "balance")} ${balance.data.find((item) => item.life_area_id === area.id)?.balance_score.toFixed(1) ?? "n/a"}` : ""}
                                 </p>
                               </div>
                               <div className="row-inline">
@@ -1361,7 +1367,7 @@ export default function JournalPage() {
                                   onClick={() => startLifeAreaEdit(area)}
                                   disabled={busyAreaId === area.id}
                                 >
-                                  Edit
+                                  {t("web.common.action.edit", "Edit")}
                                 </button>
                                 <button
                                   type="button"
@@ -1369,7 +1375,7 @@ export default function JournalPage() {
                                   onClick={() => void deleteLifeArea(area.id)}
                                   disabled={busyAreaId === area.id}
                                 >
-                                  Delete
+                                  {t("web.common.action.delete", "Delete")}
                                 </button>
                               </div>
                             </>
@@ -1386,11 +1392,11 @@ export default function JournalPage() {
           <aside className="journal-canonical-rail">
             <article className="dashboard-sidebar-card journal-writing-card">
               <div className="dashboard-sidebar-card-head">
-                <h3>Write with care</h3>
+                <h3>{t("web.journal.sidebar.write_with_care", "Write with care")}</h3>
                 <span>...</span>
               </div>
               <p className="dashboard-sidebar-card-script">
-                Your words are seeds. Give them honesty, not perfection.
+                {t("web.journal.sidebar.write_copy", "Your words are seeds. Give them honesty, not perfection.")}
               </p>
               <div className="journal-writing-divider" aria-hidden="true" />
             </article>
@@ -1399,15 +1405,15 @@ export default function JournalPage() {
               <div className="dashboard-sidebar-card-head">
                 <h3>
                   <JournalGlyph name="prompt" />
-                  <span>Quick prompts</span>
+                  <span>{t("web.journal.sidebar.quick_prompts", "Quick prompts")}</span>
                 </h3>
               </div>
               <div className="journal-prompt-list">
                 {[
-                  "What am I grateful for today?",
-                  "What challenged me today?",
-                  "What would make tomorrow better?",
-                  "What did I learn about myself?",
+                  t("web.journal.prompt.grateful", "What am I grateful for today?"),
+                  t("web.journal.prompt.challenge", "What challenged me today?"),
+                  t("web.journal.prompt.tomorrow", "What would make tomorrow better?"),
+                  t("web.journal.prompt.learned", "What did I learn about myself?"),
                 ].map((prompt) => (
                   <button
                     key={prompt}
@@ -1427,7 +1433,7 @@ export default function JournalPage() {
 
             <article className="dashboard-sidebar-card journal-mood-trend-card">
               <div className="dashboard-sidebar-card-head">
-                <h3>Mood over time</h3>
+                <h3>{t("web.journal.sidebar.mood_over_time", "Mood over time")}</h3>
               </div>
               <div className="journal-mood-chart">
                 <svg viewBox="0 0 240 96" aria-hidden="true">
@@ -1443,7 +1449,7 @@ export default function JournalPage() {
                 </svg>
                 <div className="journal-chart-labels">
                   {recentMoodTrend.length === 0 ? (
-                    <span>Trend wakes up after the first entries.</span>
+                    <span>{t("web.journal.sidebar.trend_empty", "Trend wakes up after the first entries.")}</span>
                   ) : (
                     <>
                       <span>{recentMoodTrend[0]?.label}</span>
@@ -1456,7 +1462,7 @@ export default function JournalPage() {
 
             <article className="dashboard-sidebar-card journal-life-reflection-card">
               <div className="dashboard-sidebar-card-head">
-                <h3>Life-area reflection</h3>
+                <h3>{t("web.journal.sidebar.life_area_reflection", "Life-area reflection")}</h3>
               </div>
               <div className="dashboard-balance-grid">
                 <div className="dashboard-balance-donut" style={{ background: balanceGradient ? `conic-gradient(${balanceGradient})` : "conic-gradient(#83915c 0deg 360deg)" }}>
@@ -1467,7 +1473,7 @@ export default function JournalPage() {
                 <ul className="dashboard-balance-legend">
                   {balanceSlices.length === 0 ? (
                     <li>
-                      <small>Reflection balance appears after life-area activity accumulates.</small>
+                      <small>{t("web.journal.sidebar.balance_empty", "Reflection balance appears after life-area activity accumulates.")}</small>
                     </li>
                   ) : (
                     balanceSlices.map((item) => (
@@ -1485,14 +1491,14 @@ export default function JournalPage() {
             {useJournalShowcase ? (
               <article className="dashboard-sidebar-card journal-ladder-card">
                 <div className="dashboard-sidebar-card-head">
-                  <h3>Your reflection ladder</h3>
+                  <h3>{t("web.journal.ladder.title", "Your reflection ladder")}</h3>
                 </div>
                 <div className="journal-ladder-mini">
                   {[
-                    { label: "Day event", value: latestEntry?.title ?? "A lighter morning" },
-                    { label: "Feeling", value: formatMood(latestEntry?.mood ?? "good") },
-                    { label: "Life area", value: latestEntryAreas[0]?.name ?? topLifeArea?.name ?? "Health" },
-                    { label: "Next intention", value: "Carry one calmer move into tomorrow" },
+                    { label: t("web.journal.ladder.day_event", "Day event"), value: latestEntry?.title ?? t("web.journal.showcase.lighter_morning_short", "A lighter morning") },
+                    { label: t("web.journal.ladder.feeling", "Feeling"), value: formatMoodLabel(latestEntry?.mood ?? "good", t) },
+                    { label: t("web.journal.ladder.life_area", "Life area"), value: latestEntryAreas[0]?.name ?? topLifeArea?.name ?? t("web.journal.showcase.health", "Health") },
+                    { label: t("web.journal.ladder.next_intention", "Next intention"), value: t("web.journal.ladder.next_intention_value", "Carry one calmer move into tomorrow") },
                   ].map((item) => (
                     <div key={item.label} className="journal-ladder-mini-item">
                       <small>{item.label}</small>
@@ -1500,13 +1506,13 @@ export default function JournalPage() {
                     </div>
                   ))}
                 </div>
-                <p className="dashboard-sidebar-card-note">Connected to Calendar, Life Areas and Planning.</p>
+                <p className="dashboard-sidebar-card-note">{t("web.journal.sidebar.connected_note", "Connected to Calendar, Life Areas and Planning.")}</p>
               </article>
             ) : null}
           </aside>
         </div>
 
-        {useJournalShowcase ? null : <DashboardContextRibbon title="Journal context" items={contextItems} />}
+        {useJournalShowcase ? null : <DashboardContextRibbon title={t("web.journal.context.ribbon_title", "Journal context")} items={contextItems} />}
       </div>
       {confirmDialog}
     </WorkspaceShell>

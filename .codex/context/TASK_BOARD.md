@@ -87,8 +87,11 @@ Last updated: 2026-05-03
     - Added Settings localization coverage for tabs, profile/application
       preferences, delegated credentials, AI agents, audit labels, feedback,
       confirmations, and visible access dates.
+    - Added Journal localization coverage for the primary reflection composer,
+      entry edit/delete flow, filters, sidebar prompts, life-area management,
+      and reflection ladder.
     - `pnpm lint` and `pnpm exec tsc --noEmit` passed for this first code
-      slice and the Settings slice.
+      slice, the Settings slice, and the Journal slice.
     - Add shared EN/PL dictionary keys for Planning, Calendar, Journal,
       Settings, and shared dashboard primitives.
     - Replace route-local labels, panel titles, placeholders, empty states,
