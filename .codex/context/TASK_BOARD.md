@@ -84,8 +84,11 @@ Last updated: 2026-05-03
   - Notes:
     - Started with a reusable web translator hook and shared EN/PL keys for
       Habits, Routines, and Life Areas.
+    - Added Settings localization coverage for tabs, profile/application
+      preferences, delegated credentials, AI agents, audit labels, feedback,
+      confirmations, and visible access dates.
     - `pnpm lint` and `pnpm exec tsc --noEmit` passed for this first code
-      slice.
+      slice and the Settings slice.
     - Add shared EN/PL dictionary keys for Planning, Calendar, Journal,
       Settings, and shared dashboard primitives.
     - Replace route-local labels, panel titles, placeholders, empty states,

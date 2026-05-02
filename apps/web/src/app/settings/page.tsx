@@ -2,11 +2,12 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { formatLocalizedDateTime } from "@nest/shared-types";
 import { useConfirmDialog } from "@/components/confirm-dialog";
 import { Panel, WorkspaceShell } from "@/components/workspace-shell";
 import { apiRequest, nestApiClient } from "@/lib/api-client";
 import { clearAuthSession } from "@/lib/auth-session";
-import { setStoredUiLanguage } from "@/lib/ui-language";
+import { setStoredUiLanguage, useTranslator, useUiLanguage } from "@/lib/ui-language";
 
 type SettingsTab = "profile" | "application" | "access" | "subscription";
 type ProfileLanguage = "en" | "pl";
@@ -119,7 +120,7 @@ function toIsoDateTime(localDateTimeValue: string): string | undefined {
   return Number.isNaN(Date.parse(iso)) ? undefined : iso;
 }
 
-function formatDateTime(value: string | null): string {
+function formatDateTime(value: string | null, language: ProfileLanguage): string {
   if (!value) {
     return "n/a";
   }
@@ -129,11 +130,13 @@ function formatDateTime(value: string | null): string {
     return value;
   }
 
-  return date.toLocaleString();
+  return formatLocalizedDateTime(date, language);
 }
 
 export default function SettingsPage() {
   const router = useRouter();
+  const t = useTranslator();
+  const uiLanguage = useUiLanguage();
   const { confirm, confirmDialog } = useConfirmDialog();
 
   const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
@@ -297,7 +300,7 @@ export default function SettingsPage() {
 
   async function persistUserSettings(successMessage: string) {
     if (!profileName.trim()) {
-      setErrorMessage("Display name is required.");
+      setErrorMessage(t("web.settings.validation.display_name_required", "Display name is required."));
       return;
     }
 
@@ -335,22 +338,22 @@ export default function SettingsPage() {
 
   async function saveProfilePreferences(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await persistUserSettings("Profile updated.");
+    await persistUserSettings(t("web.settings.feedback.profile_updated", "Profile updated."));
   }
 
   async function saveApplicationPreferences(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await persistUserSettings("Application preferences updated.");
+    await persistUserSettings(t("web.settings.feedback.application_updated", "Application preferences updated."));
   }
 
   async function createDelegatedCredential(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!delegatedName.trim()) {
-      setErrorMessage("Credential name is required.");
+      setErrorMessage(t("web.settings.validation.credential_name_required", "Credential name is required."));
       return;
     }
     if (delegatedScopes.length === 0) {
-      setErrorMessage("Select at least one scope.");
+      setErrorMessage(t("web.settings.validation.scope_required", "Select at least one scope."));
       return;
     }
 
@@ -365,7 +368,7 @@ export default function SettingsPage() {
       });
 
       setLatestDelegatedToken(response.data.plain_text_token);
-      setFeedback("Delegated credential issued.");
+      setFeedback(t("web.settings.feedback.delegated_issued", "Delegated credential issued."));
       await refreshData();
     } catch (error) {
       if (getErrorStatus(error) === 401) {
@@ -379,9 +382,9 @@ export default function SettingsPage() {
   async function revokeDelegatedCredential(credentialId: string) {
     if (
       !(await confirm({
-        title: "Revoke delegated credential?",
-        description: "This immediately disables the credential for external access. Existing integrations using it will stop working.",
-        confirmLabel: "Revoke credential",
+        title: t("web.settings.confirm.revoke_delegated_title", "Revoke delegated credential?"),
+        description: t("web.settings.confirm.revoke_delegated_body", "This immediately disables the credential for external access. Existing integrations using it will stop working."),
+        confirmLabel: t("web.settings.action.revoke_credential", "Revoke credential"),
         tone: "danger",
       }))
     ) {
@@ -393,7 +396,7 @@ export default function SettingsPage() {
 
     try {
       await nestApiClient.revokeDelegatedCredential(credentialId);
-      setFeedback("Delegated credential revoked.");
+      setFeedback(t("web.settings.feedback.delegated_revoked", "Delegated credential revoked."));
       await refreshData();
     } catch (error) {
       if (getErrorStatus(error) === 401) {
@@ -407,7 +410,7 @@ export default function SettingsPage() {
   async function createAiAgent(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!newAgentName.trim()) {
-      setErrorMessage("Agent name is required.");
+      setErrorMessage(t("web.settings.validation.agent_name_required", "Agent name is required."));
       return;
     }
 
@@ -417,7 +420,7 @@ export default function SettingsPage() {
     try {
       await nestApiClient.createAiAgent({ name: newAgentName.trim() });
       setNewAgentName("");
-      setFeedback("AI agent created.");
+      setFeedback(t("web.settings.feedback.agent_created", "AI agent created."));
       await refreshData();
     } catch (error) {
       if (getErrorStatus(error) === 401) {
@@ -431,11 +434,11 @@ export default function SettingsPage() {
   async function issueAiAgentCredential(agent: AiAgent) {
     const draft = agentCredentialDrafts[agent.id];
     if (!draft || !draft.name.trim()) {
-      setErrorMessage("Credential name is required.");
+      setErrorMessage(t("web.settings.validation.credential_name_required", "Credential name is required."));
       return;
     }
     if (draft.scopes.length === 0) {
-      setErrorMessage("Select at least one scope for agent credential.");
+      setErrorMessage(t("web.settings.validation.agent_scope_required", "Select at least one scope for agent credential."));
       return;
     }
 
@@ -452,7 +455,7 @@ export default function SettingsPage() {
         agentName: agent.name,
         token: response.data.plain_text_token,
       });
-      setFeedback(`AI agent credential issued for ${agent.name}.`);
+      setFeedback(t("web.settings.feedback.agent_credential_issued", "AI agent credential issued for {name}.").replace("{name}", agent.name));
       await refreshData();
     } catch (error) {
       if (getErrorStatus(error) === 401) {
@@ -466,9 +469,9 @@ export default function SettingsPage() {
   async function revokeAiAgentCredential(agentId: string, credentialId: string) {
     if (
       !(await confirm({
-        title: "Revoke AI agent credential?",
-        description: "This immediately disables the selected AI agent credential.",
-        confirmLabel: "Revoke credential",
+        title: t("web.settings.confirm.revoke_agent_credential_title", "Revoke AI agent credential?"),
+        description: t("web.settings.confirm.revoke_agent_credential_body", "This immediately disables the selected AI agent credential."),
+        confirmLabel: t("web.settings.action.revoke_credential", "Revoke credential"),
         tone: "danger",
       }))
     ) {
@@ -480,7 +483,7 @@ export default function SettingsPage() {
 
     try {
       await nestApiClient.revokeAiAgentCredential(agentId, credentialId);
-      setFeedback("AI agent credential revoked.");
+      setFeedback(t("web.settings.feedback.agent_credential_revoked", "AI agent credential revoked."));
       await refreshData();
     } catch (error) {
       if (getErrorStatus(error) === 401) {
@@ -494,9 +497,9 @@ export default function SettingsPage() {
   async function deactivateAiAgent(agent: AiAgent) {
     if (
       !(await confirm({
-        title: `Deactivate ${agent.name}?`,
-        description: "This deactivates the AI agent and revokes all credentials connected to it.",
-        confirmLabel: "Deactivate agent",
+        title: t("web.settings.confirm.deactivate_agent_title", "Deactivate {name}?").replace("{name}", agent.name),
+        description: t("web.settings.confirm.deactivate_agent_body", "This deactivates the AI agent and revokes all credentials connected to it."),
+        confirmLabel: t("web.settings.action.deactivate_agent", "Deactivate agent"),
         tone: "danger",
       }))
     ) {
@@ -508,7 +511,7 @@ export default function SettingsPage() {
 
     try {
       await nestApiClient.deactivateAiAgent(agent.id);
-      setFeedback(`AI agent "${agent.name}" deactivated.`);
+      setFeedback(t("web.settings.feedback.agent_deactivated", "AI agent \"{name}\" deactivated.").replace("{name}", agent.name));
       await refreshData();
     } catch (error) {
       if (getErrorStatus(error) === 401) {
@@ -521,57 +524,57 @@ export default function SettingsPage() {
 
   return (
     <WorkspaceShell
-      title="Settings"
-      subtitle="Personal preferences for your account, plus advanced AI and delegated access control."
+      title={t("web.settings.title", "Settings")}
+      subtitle={t("web.settings.subtitle", "Personal preferences for your account, plus advanced AI and delegated access control.")}
       navKey="settings"
       module="insights"
       shellTone="dashboard-canonical"
       hideRailFooterActions
     >
-      <Panel title="Settings Tabs">
+      <Panel title={t("web.settings.tabs.title", "Settings Tabs")}>
         <div className="settings-tabs">
           <button
             type="button"
             className={`settings-tab ${activeTab === "profile" ? "is-active" : ""}`}
             onClick={() => selectTab("profile")}
           >
-            <strong>Profile</strong>
-            <small>account basics</small>
+            <strong>{t("web.settings.tab.profile", "Profile")}</strong>
+            <small>{t("web.settings.tab.profile_hint", "account basics")}</small>
           </button>
           <button
             type="button"
             className={`settings-tab ${activeTab === "application" ? "is-active" : ""}`}
             onClick={() => selectTab("application")}
           >
-            <strong>App Preferences</strong>
-            <small>language and UI defaults</small>
+            <strong>{t("web.settings.tab.application", "App Preferences")}</strong>
+            <small>{t("web.settings.tab.application_hint", "language and UI defaults")}</small>
           </button>
           <button
             type="button"
             className={`settings-tab ${activeTab === "access" ? "is-active" : ""}`}
             onClick={() => selectTab("access")}
           >
-            <strong>Access & API</strong>
-            <small>tokens, AI agents, audit trail</small>
+            <strong>{t("web.settings.tab.access", "Access & API")}</strong>
+            <small>{t("web.settings.tab.access_hint", "tokens, AI agents, audit trail")}</small>
           </button>
           <button
             type="button"
             className={`settings-tab ${activeTab === "subscription" ? "is-active" : ""}`}
             onClick={() => selectTab("subscription")}
           >
-            <strong>Subscription</strong>
-            <small>plan and billing</small>
+            <strong>{t("web.settings.tab.subscription", "Subscription")}</strong>
+            <small>{t("web.settings.tab.subscription_hint", "plan and billing")}</small>
           </button>
         </div>
       </Panel>
 
       {activeTab === "profile" ? (
         <>
-          <Panel title="Profile">
+          <Panel title={t("web.settings.panel.profile", "Profile")}>
             <form className="form-grid" onSubmit={saveProfilePreferences}>
               <div className="settings-grid-dual">
                 <label className="field">
-                  <span>Display name</span>
+                  <span>{t("web.settings.field.display_name", "Display name")}</span>
                   <input
                     className="list-row"
                     type="text"
@@ -581,24 +584,23 @@ export default function SettingsPage() {
                   />
                 </label>
                 <label className="field">
-                  <span>Sign-in email</span>
+                  <span>{t("web.settings.field.sign_in_email", "Sign-in email")}</span>
                   <input className="list-row" type="email" value={user?.email ?? ""} disabled />
                 </label>
               </div>
               <label className="field">
-                <span>Timezone</span>
+                <span>{t("web.settings.field.timezone", "Timezone")}</span>
                 <input className="list-row" type="text" value={user?.timezone ?? "Europe/Warsaw"} disabled />
               </label>
               <button type="submit" className="btn-primary" disabled={isSavingProfile || isBootstrapping}>
-                {isSavingProfile ? "Saving..." : "Save profile"}
+                {isSavingProfile ? t("web.common.action.saving", "Saving...") : t("web.settings.action.save_profile", "Save profile")}
               </button>
             </form>
           </Panel>
 
-          <Panel title="Security">
+          <Panel title={t("web.settings.panel.security", "Security")}>
             <p className="callout">
-              Sign out is available from the main left navigation. Password changes and additional account security
-              controls will land here in a later slice.
+              {t("web.settings.security.copy", "Sign out is available from the main left navigation. Password changes and additional account security controls will land here in a later slice.")}
             </p>
           </Panel>
         </>
@@ -606,10 +608,10 @@ export default function SettingsPage() {
 
       {activeTab === "application" ? (
         <>
-          <Panel title="App Preferences">
+          <Panel title={t("web.settings.panel.application", "App Preferences")}>
             <form className="form-grid" onSubmit={saveApplicationPreferences}>
               <label className="field">
-                <span>App language</span>
+                <span>{t("web.settings.field.app_language", "App language")}</span>
                 <select
                   className="list-row"
                   value={profileLanguage}
@@ -621,17 +623,17 @@ export default function SettingsPage() {
                 </select>
               </label>
               <p className="form-hint">
-                Changing the language refreshes UI copy and the default locale (`en-US` or `pl-PL`) after save.
+                {t("web.settings.language_hint", "Changing the language refreshes UI copy and the default locale (`en-US` or `pl-PL`) after save.")}
               </p>
               <button type="submit" className="btn-primary" disabled={isSavingProfile || isBootstrapping}>
-                {isSavingProfile ? "Saving..." : "Save application settings"}
+                {isSavingProfile ? t("web.common.action.saving", "Saving...") : t("web.settings.action.save_application", "Save application settings")}
               </button>
             </form>
           </Panel>
 
-          <Panel title="Planned Preferences">
+          <Panel title={t("web.settings.panel.planned_preferences", "Planned Preferences")}>
             <p className="callout">
-              Next up for this area: week start, time format, dashboard personalization, and notification preferences.
+              {t("web.settings.planned.copy", "Next up for this area: week start, time format, dashboard personalization, and notification preferences.")}
             </p>
           </Panel>
         </>
@@ -640,7 +642,7 @@ export default function SettingsPage() {
       {activeTab === "access" ? (
         <>
           <Panel
-            title="Delegated Credentials"
+            title={t("web.settings.panel.delegated_credentials", "Delegated Credentials")}
             actions={
               <button
                 type="button"
@@ -648,13 +650,13 @@ export default function SettingsPage() {
                 onClick={() => void refreshData()}
                 disabled={isRefreshing || isBootstrapping}
               >
-                {isRefreshing ? "Refreshing..." : "Refresh"}
+                {isRefreshing ? t("web.common.action.refreshing", "Refreshing...") : t("web.common.action.refresh", "Refresh")}
               </button>
             }
           >
             <form className="form-grid" onSubmit={createDelegatedCredential}>
               <label className="field">
-                <span>Credential name</span>
+                <span>{t("web.settings.field.credential_name", "Credential name")}</span>
                 <input
                   className="list-row"
                   type="text"
@@ -664,7 +666,7 @@ export default function SettingsPage() {
                 />
               </label>
               <label className="field">
-                <span>Expires at (optional)</span>
+                <span>{t("web.settings.field.expires_at_optional", "Expires at (optional)")}</span>
                 <input
                   className="list-row"
                   type="datetime-local"
@@ -674,7 +676,7 @@ export default function SettingsPage() {
                 />
               </label>
               <div className="field">
-                <span>Scopes</span>
+                <span>{t("web.settings.field.scopes", "Scopes")}</span>
                 <div className="row-inline">
                   {scopeOptions.map((scope) => (
                     <label key={scope} className="pill-link">
@@ -690,14 +692,14 @@ export default function SettingsPage() {
                 </div>
               </div>
               <button type="submit" className="btn-primary" disabled={isBootstrapping}>
-                Issue delegated credential
+                {t("web.settings.action.issue_delegated", "Issue delegated credential")}
               </button>
             </form>
 
             <ul className="list">
               {delegatedCredentials.length === 0 ? (
                 <li className="list-row">
-                  <p>No delegated credentials yet.</p>
+                  <p>{t("web.settings.empty.delegated_credentials", "No delegated credentials yet.")}</p>
                 </li>
               ) : (
                 delegatedCredentials.map((credential) => (
@@ -705,10 +707,10 @@ export default function SettingsPage() {
                     <div>
                       <strong>{credential.name}</strong>
                       <p>
-                        {credential.status} | scopes: {credential.scopes.join(", ")}
+                        {credential.status} | {t("web.settings.field.scopes_lower", "scopes")}: {credential.scopes.join(", ")}
                       </p>
                       <p>
-                        last used: {formatDateTime(credential.last_used_at)} | expires: {formatDateTime(credential.expires_at)}
+                        {t("web.settings.meta.last_used", "last used")}: {formatDateTime(credential.last_used_at, uiLanguage)} | {t("web.settings.meta.expires", "expires")}: {formatDateTime(credential.expires_at, uiLanguage)}
                       </p>
                     </div>
                     <div className="row-inline">
@@ -719,7 +721,7 @@ export default function SettingsPage() {
                         disabled={credential.status !== "active"}
                         onClick={() => void revokeDelegatedCredential(credential.id)}
                       >
-                        Revoke
+                        {t("web.settings.action.revoke", "Revoke")}
                       </button>
                     </div>
                   </li>
@@ -728,10 +730,10 @@ export default function SettingsPage() {
             </ul>
           </Panel>
 
-          <Panel title="AI Agents">
+          <Panel title={t("web.settings.panel.ai_agents", "AI Agents")}>
             <form className="form-grid" onSubmit={createAiAgent}>
               <label className="field">
-                <span>New AI agent name</span>
+                <span>{t("web.settings.field.new_agent_name", "New AI agent name")}</span>
                 <input
                   className="list-row"
                   type="text"
@@ -741,14 +743,14 @@ export default function SettingsPage() {
                 />
               </label>
               <button type="submit" className="btn-secondary" disabled={isBootstrapping}>
-                Create AI agent
+                {t("web.settings.action.create_ai_agent", "Create AI agent")}
               </button>
             </form>
 
             <ul className="list">
               {aiAgents.length === 0 ? (
                 <li className="list-row">
-                  <p>No AI agents configured.</p>
+                  <p>{t("web.settings.empty.ai_agents", "No AI agents configured.")}</p>
                 </li>
               ) : (
                 aiAgents.map((agent) => {
@@ -761,16 +763,16 @@ export default function SettingsPage() {
                         <div>
                           <strong>{agent.name}</strong>
                           <p>
-                            {agent.email} | status: {agent.agent_status}
+                            {agent.email} | {t("web.settings.meta.status", "status")}: {agent.agent_status}
                           </p>
                           <p>
-                            created: {formatDateTime(agent.created_at)} | last used: {formatDateTime(agent.last_used_at)}
+                            {t("web.settings.meta.created", "created")}: {formatDateTime(agent.created_at, uiLanguage)} | {t("web.settings.meta.last_used", "last used")}: {formatDateTime(agent.last_used_at, uiLanguage)}
                           </p>
                         </div>
 
                         <div className="form-grid">
                           <label className="field">
-                            <span>Credential name</span>
+                            <span>{t("web.settings.field.credential_name", "Credential name")}</span>
                             <input
                               className="list-row"
                               type="text"
@@ -785,7 +787,7 @@ export default function SettingsPage() {
                             />
                           </label>
                           <label className="field">
-                            <span>Expires at (optional)</span>
+                            <span>{t("web.settings.field.expires_at_optional", "Expires at (optional)")}</span>
                             <input
                               className="list-row"
                               type="datetime-local"
@@ -800,7 +802,7 @@ export default function SettingsPage() {
                             />
                           </label>
                           <div className="field">
-                            <span>Scopes</span>
+                            <span>{t("web.settings.field.scopes", "Scopes")}</span>
                             <div className="row-inline">
                               {scopeOptions.map((scope) => (
                                 <label key={`${agent.id}-${scope}`} className="pill-link">
@@ -827,7 +829,7 @@ export default function SettingsPage() {
                               disabled={agent.agent_status !== "active"}
                               onClick={() => void issueAiAgentCredential(agent)}
                             >
-                              Issue credential
+                              {t("web.settings.action.issue_credential", "Issue credential")}
                             </button>
                             <button
                               type="button"
@@ -835,7 +837,7 @@ export default function SettingsPage() {
                               disabled={agent.agent_status !== "active"}
                               onClick={() => void deactivateAiAgent(agent)}
                             >
-                              Deactivate agent
+                              {t("web.settings.action.deactivate_agent", "Deactivate agent")}
                             </button>
                           </div>
                         </div>
@@ -843,7 +845,7 @@ export default function SettingsPage() {
                         <ul className="list">
                           {credentials.length === 0 ? (
                             <li className="list-row">
-                              <p>No credentials for this agent.</p>
+                              <p>{t("web.settings.empty.agent_credentials", "No credentials for this agent.")}</p>
                             </li>
                           ) : (
                             credentials.map((credential) => (
@@ -851,10 +853,10 @@ export default function SettingsPage() {
                                 <div>
                                   <strong>{credential.name}</strong>
                                   <p>
-                                    {credential.status} | scopes: {credential.scopes.join(", ")}
+                                    {credential.status} | {t("web.settings.field.scopes_lower", "scopes")}: {credential.scopes.join(", ")}
                                   </p>
                                   <p>
-                                    last used: {formatDateTime(credential.last_used_at)} | expires: {formatDateTime(credential.expires_at)}
+                                    {t("web.settings.meta.last_used", "last used")}: {formatDateTime(credential.last_used_at, uiLanguage)} | {t("web.settings.meta.expires", "expires")}: {formatDateTime(credential.expires_at, uiLanguage)}
                                   </p>
                                 </div>
                                 <button
@@ -863,7 +865,7 @@ export default function SettingsPage() {
                                   disabled={credential.status !== "active"}
                                   onClick={() => void revokeAiAgentCredential(agent.id, credential.id)}
                                 >
-                                  Revoke
+                                  {t("web.settings.action.revoke", "Revoke")}
                                 </button>
                               </li>
                             ))
@@ -877,11 +879,11 @@ export default function SettingsPage() {
             </ul>
           </Panel>
 
-          <Panel title="Access Audits">
+          <Panel title={t("web.settings.panel.access_audits", "Access Audits")}>
             <ul className="list">
               {accessAudits.length === 0 ? (
                 <li className="list-row">
-                  <p>No access-boundary audit events yet.</p>
+                  <p>{t("web.settings.empty.access_audits", "No access-boundary audit events yet.")}</p>
                 </li>
               ) : (
                 accessAudits.map((audit) => (
@@ -892,10 +894,10 @@ export default function SettingsPage() {
                       </strong>
                       <p>
                         {audit.method} {audit.route}
-                        {audit.required_scope ? ` | required: ${audit.required_scope}` : ""}
+                        {audit.required_scope ? ` | ${t("web.settings.meta.required", "required")}: ${audit.required_scope}` : ""}
                       </p>
                     </div>
-                    <span className="mono-note">{formatDateTime(audit.occurred_at)}</span>
+                    <span className="mono-note">{formatDateTime(audit.occurred_at, uiLanguage)}</span>
                   </li>
                 ))
               )}
@@ -903,13 +905,13 @@ export default function SettingsPage() {
           </Panel>
 
           {latestDelegatedToken ? (
-            <Panel title="New Delegated Token">
+            <Panel title={t("web.settings.panel.new_delegated_token", "New Delegated Token")}>
               <p className="callout">{latestDelegatedToken}</p>
             </Panel>
           ) : null}
 
           {latestAgentToken ? (
-            <Panel title={`New AI Agent Token (${latestAgentToken.agentName})`}>
+            <Panel title={t("web.settings.panel.new_agent_token", "New AI Agent Token ({name})").replace("{name}", latestAgentToken.agentName)}>
               <p className="callout">{latestAgentToken.token}</p>
             </Panel>
           ) : null}
@@ -918,30 +920,28 @@ export default function SettingsPage() {
 
       {activeTab === "subscription" ? (
         <>
-          <Panel title="Subscription">
+          <Panel title={t("web.settings.panel.subscription", "Subscription")}>
             <p className="callout">
-              This area will hold your plan, billing history, and subscription status. For now, the account remains in
-              development mode.
+              {t("web.settings.subscription.copy", "This area will hold your plan, billing history, and subscription status. For now, the account remains in development mode.")}
             </p>
           </Panel>
 
-          <Panel title="API & External Apps">
+          <Panel title={t("web.settings.panel.api_external_apps", "API & External Apps")}>
             <p className="callout">
-              API keys and external app connections stay in the <strong>Access & API</strong> tab so permissions and
-              tokens remain in one place.
+              {t("web.settings.external_apps.copy_prefix", "API keys and external app connections stay in the")} <strong>{t("web.settings.tab.access", "Access & API")}</strong> {t("web.settings.external_apps.copy_suffix", "tab so permissions and tokens remain in one place.")}
             </p>
           </Panel>
         </>
       ) : null}
 
       {feedback ? (
-        <Panel title="Status">
+        <Panel title={t("web.common.panel.status", "Status")}>
           <p className="callout">{feedback}</p>
         </Panel>
       ) : null}
 
       {errorMessage ? (
-        <Panel title="Error">
+        <Panel title={t("web.common.panel.error", "Error")}>
           <p className="callout state-error">{errorMessage}</p>
         </Panel>
       ) : null}
