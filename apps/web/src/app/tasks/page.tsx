@@ -3632,23 +3632,23 @@ export default function TasksPage() {
 
       {planningTab === "lists" ? (
         <>
-          <Panel id="planning-lists-composer" title="Create List">
+          <Panel id="planning-lists-composer" title={t("web.planning.action.create_list", "Create list")}>
             <form className="form-grid" onSubmit={createList}>
               <label className="field">
-                <span>Name</span>
+                <span>{t("web.planning.field.name", "Name")}</span>
                 <input
                   className="list-row"
                   type="text"
                   value={newListName}
                   onChange={(event) => setNewListName(event.target.value)}
-                  placeholder="Example: Weekly Focus"
+                  placeholder={t("web.planning.placeholder.weekly_focus", "Example: Weekly Focus")}
                   disabled={isCreatingList}
                 />
               </label>
 
               <div className="row-inline">
                 <label className="field">
-                  <span>Color</span>
+                  <span>{t("web.planning.field.color", "Color")}</span>
                   <input
                     className="list-row"
                     type="color"
@@ -3658,7 +3658,7 @@ export default function TasksPage() {
                   />
                 </label>
                 <label className="field">
-                  <span>Parent type</span>
+                  <span>{t("web.planning.field.parent_type", "Parent type")}</span>
                   <select
                     className="list-row"
                     value={newListParentType}
@@ -3668,22 +3668,22 @@ export default function TasksPage() {
                     }}
                     disabled={isCreatingList}
                   >
-                    <option value="none">No parent</option>
-                    <option value="goal">Goal</option>
-                    <option value="target">Target</option>
-                    <option value="life_area">Life area</option>
+                    <option value="none">{t("web.planning.option.no_parent", "No parent")}</option>
+                    <option value="goal">{t("web.planning.field.goal", "Goal")}</option>
+                    <option value="target">{t("web.planning.field.target", "Target")}</option>
+                    <option value="life_area">{t("web.journal.ladder.life_area", "Life area")}</option>
                   </select>
                 </label>
                 {newListParentType !== "none" ? (
                   <label className="field">
-                    <span>Parent</span>
+                    <span>{t("web.planning.field.parent", "Parent")}</span>
                     <select
                       className="list-row"
                       value={newListParentId}
                       onChange={(event) => setNewListParentId(event.target.value)}
                       disabled={isCreatingList}
                     >
-                      <option value="">Select parent</option>
+                      <option value="">{t("web.planning.option.select_parent", "Select parent")}</option>
                       {newListParentType === "goal"
                         ? goals.map((goal) => (
                             <option key={goal.id} value={goal.id}>
@@ -3711,16 +3711,16 @@ export default function TasksPage() {
               </div>
 
               <button type="submit" className="btn-primary" disabled={isCreatingList}>
-                {isCreatingList ? "Creating..." : "Create list"}
+                {isCreatingList ? t("web.common.action.saving", "Saving...") : t("web.planning.action.create_list", "Create list")}
               </button>
             </form>
           </Panel>
 
-          <Panel title="List Library" className={`planning-library-panel ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
+          <Panel title={t("web.planning.panel.list_library", "List Library")} className={`planning-library-panel ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
             <ul className="list">
               {lists.length === 0 ? (
                 <li className="list-row">
-                  <p>No lists yet. Add your first one above.</p>
+                  <p>{t("web.planning.empty.no_lists_first", "No lists yet. Add your first one above.")}</p>
                 </li>
               ) : (
                 lists.map((list) => {
@@ -3732,7 +3732,7 @@ export default function TasksPage() {
                       {editingListId === list.id ? (
                         <div className="form-grid">
                           <label className="field">
-                            <span>Name</span>
+                            <span>{t("web.planning.field.name", "Name")}</span>
                             <input
                               className="list-row"
                               type="text"
@@ -3744,7 +3744,7 @@ export default function TasksPage() {
 
                           <div className="row-inline">
                             <label className="field">
-                              <span>Color</span>
+                              <span>{t("web.planning.field.color", "Color")}</span>
                               <input
                                 className="list-row"
                                 type="color"
@@ -3754,7 +3754,7 @@ export default function TasksPage() {
                               />
                             </label>
                             <label className="field">
-                              <span>Parent type</span>
+                              <span>{t("web.planning.field.parent_type", "Parent type")}</span>
                               <select
                                 className="list-row"
                                 value={editListParentType}
@@ -3764,22 +3764,22 @@ export default function TasksPage() {
                                 }}
                                 disabled={busyListId === list.id}
                               >
-                                <option value="none">No parent</option>
-                                <option value="goal">Goal</option>
-                                <option value="target">Target</option>
-                                <option value="life_area">Life area</option>
+                                <option value="none">{t("web.planning.option.no_parent", "No parent")}</option>
+                                <option value="goal">{t("web.planning.field.goal", "Goal")}</option>
+                                <option value="target">{t("web.planning.field.target", "Target")}</option>
+                                <option value="life_area">{t("web.journal.ladder.life_area", "Life area")}</option>
                               </select>
                             </label>
                             {editListParentType !== "none" ? (
                               <label className="field">
-                                <span>Parent</span>
+                                <span>{t("web.planning.field.parent", "Parent")}</span>
                                 <select
                                   className="list-row"
                                   value={editListParentId}
                                   onChange={(event) => setEditListParentId(event.target.value)}
                                   disabled={busyListId === list.id}
                                 >
-                                  <option value="">Select parent</option>
+                                  <option value="">{t("web.planning.option.select_parent", "Select parent")}</option>
                                   {editListParentType === "goal"
                                     ? goals.map((goal) => (
                                         <option key={goal.id} value={goal.id}>
@@ -3813,7 +3813,7 @@ export default function TasksPage() {
                               onClick={() => void saveListEdit(list.id)}
                               disabled={busyListId === list.id}
                             >
-                              Save
+                              {t("web.common.action.save", "Save")}
                             </button>
                             <button
                               type="button"
@@ -3821,7 +3821,7 @@ export default function TasksPage() {
                               onClick={() => setEditingListId(null)}
                               disabled={busyListId === list.id}
                             >
-                              Cancel
+                              {t("web.common.action.cancel", "Cancel")}
                             </button>
                           </div>
                         </div>
@@ -3839,7 +3839,7 @@ export default function TasksPage() {
                               onClick={() => startListEdit(list)}
                               disabled={busyListId === list.id}
                             >
-                              Edit
+                              {t("web.common.action.edit", "Edit")}
                             </button>
                             <button
                               type="button"
@@ -3847,7 +3847,7 @@ export default function TasksPage() {
                               onClick={() => void deleteList(list.id)}
                               disabled={busyListId === list.id}
                             >
-                              Delete
+                              {t("web.common.action.delete", "Delete")}
                             </button>
                           </div>
                         </>
@@ -3863,21 +3863,21 @@ export default function TasksPage() {
 
       {planningTab === "goals" ? (
         <>
-          <Panel id="planning-goals-composer" title="Add Goal">
+          <Panel id="planning-goals-composer" title={t("web.planning.action.add_goal", "Add goal")}>
             <form className="form-grid" onSubmit={createGoal}>
               <label className="field">
-                <span>Title</span>
+                <span>{t("web.common.field.title", "Title")}</span>
                 <input
                   className="list-row"
                   type="text"
                   value={newGoalTitle}
                   onChange={(event) => setNewGoalTitle(event.target.value)}
-                  placeholder="Example: Build calmer weekly planning routine"
+                  placeholder={t("web.planning.placeholder.goal_title", "Example: Build calmer weekly planning routine")}
                   disabled={isCreatingGoal}
                 />
               </label>
               <label className="field">
-                <span>Target date (optional)</span>
+                <span>{t("web.planning.field.target_date_optional", "Target date (optional)")}</span>
                 <input
                   className="list-row"
                   type="date"
@@ -3887,16 +3887,16 @@ export default function TasksPage() {
                 />
               </label>
               <button type="submit" className="btn-primary" disabled={isCreatingGoal}>
-                {isCreatingGoal ? "Adding..." : "Add goal"}
+                {isCreatingGoal ? t("web.common.action.adding", "Adding...") : t("web.planning.action.add_goal", "Add goal")}
               </button>
             </form>
           </Panel>
 
-          <Panel title="Goal Roadmaps" className={`planning-library-panel ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
+          <Panel title={t("web.planning.panel.goal_roadmaps", "Goal Roadmaps")} className={`planning-library-panel ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
             <ul className="list">
               {goals.length === 0 ? (
                 <li className="list-row">
-                  <p>No goals yet. Add your first one above.</p>
+                  <p>{t("web.planning.empty.no_goals_first", "No goals yet. Add your first one above.")}</p>
                 </li>
               ) : (
                 goals.map((goal) => {
@@ -3918,7 +3918,7 @@ export default function TasksPage() {
                     {editingGoalId === goal.id ? (
                       <div className="form-grid">
                         <label className="field">
-                          <span>Title</span>
+                          <span>{t("web.common.field.title", "Title")}</span>
                           <input
                             className="list-row"
                             type="text"
@@ -3929,21 +3929,21 @@ export default function TasksPage() {
                         </label>
                         <div className="row-inline">
                           <label className="field">
-                            <span>Status</span>
+                            <span>{t("web.planning.field.status", "Status")}</span>
                             <select
                               className="list-row"
                               value={editGoalStatus}
                               onChange={(event) => setEditGoalStatus(event.target.value as GoalStatus)}
                               disabled={busyGoalId === goal.id}
                             >
-                              <option value="active">Active</option>
-                              <option value="paused">Paused</option>
-                              <option value="completed">Completed</option>
-                              <option value="archived">Archived</option>
+                              <option value="active">{formatGoalStatus("active", t)}</option>
+                              <option value="paused">{formatGoalStatus("paused", t)}</option>
+                              <option value="completed">{formatGoalStatus("completed", t)}</option>
+                              <option value="archived">{formatGoalStatus("archived", t)}</option>
                             </select>
                           </label>
                           <label className="field">
-                            <span>Target date</span>
+                            <span>{t("web.planning.field.target_date", "Target date")}</span>
                             <input
                               className="list-row"
                               type="date"
@@ -3960,7 +3960,7 @@ export default function TasksPage() {
                             onClick={() => void saveGoalEdit(goal.id)}
                             disabled={busyGoalId === goal.id}
                           >
-                            Save
+                            {t("web.common.action.save", "Save")}
                           </button>
                           <button
                             type="button"
@@ -3968,7 +3968,7 @@ export default function TasksPage() {
                             onClick={() => setEditingGoalId(null)}
                             disabled={busyGoalId === goal.id}
                           >
-                            Cancel
+                            {t("web.common.action.cancel", "Cancel")}
                           </button>
                         </div>
                       </div>
@@ -4006,7 +4006,7 @@ export default function TasksPage() {
                               })}
                             </div>
                           ) : (
-                            <p className="mono-note">No targets yet. Add one to build a concrete path.</p>
+                            <p className="mono-note">{t("web.planning.empty.no_targets_path", "No targets yet. Add one to build a concrete path.")}</p>
                           )}
                         </div>
                         <div className="row-inline">
@@ -4017,7 +4017,7 @@ export default function TasksPage() {
                             onClick={() => startGoalEdit(goal)}
                             disabled={busyGoalId === goal.id}
                           >
-                            Edit
+                            {t("web.common.action.edit", "Edit")}
                           </button>
                           <button
                             type="button"
@@ -4025,7 +4025,7 @@ export default function TasksPage() {
                             onClick={() => void deleteGoal(goal.id)}
                             disabled={busyGoalId === goal.id}
                           >
-                            Delete
+                            {t("web.common.action.delete", "Delete")}
                           </button>
                         </div>
                       </>
@@ -4041,20 +4041,20 @@ export default function TasksPage() {
 
       {planningTab === "targets" ? (
         <>
-          <Panel id="planning-targets-composer" title="Add Target">
+          <Panel id="planning-targets-composer" title={t("web.planning.action.add_target", "Add target")}>
             {goals.length === 0 ? (
-              <p className="callout state-empty">Create at least one goal in the Goals tab first.</p>
+              <p className="callout state-empty">{t("web.planning.empty.create_goal_first_tab", "Create at least one goal in the Goals tab first.")}</p>
             ) : null}
             <form className="form-grid" onSubmit={createTarget}>
               <label className="field">
-                <span>Goal</span>
+                <span>{t("web.planning.field.goal", "Goal")}</span>
                 <select
                   className="list-row"
                   value={newTargetGoalId}
                   onChange={(event) => setNewTargetGoalId(event.target.value)}
                   disabled={isCreatingTarget || goals.length === 0}
                 >
-                  {goals.length === 0 ? <option value="">No goals yet</option> : null}
+                  {goals.length === 0 ? <option value="">{t("web.planning.empty.no_goals_short", "No goals yet")}</option> : null}
                   {goals.map((goal) => (
                     <option key={goal.id} value={goal.id}>
                       {goal.title}
@@ -4063,19 +4063,19 @@ export default function TasksPage() {
                 </select>
               </label>
               <label className="field">
-                <span>Title</span>
+                <span>{t("web.common.field.title", "Title")}</span>
                 <input
                   className="list-row"
                   type="text"
                   value={newTargetTitle}
                   onChange={(event) => setNewTargetTitle(event.target.value)}
-                  placeholder="Example: 3 planning reviews per week"
+                  placeholder={t("web.planning.placeholder.target_title", "Example: 3 planning reviews per week")}
                   disabled={isCreatingTarget}
                 />
               </label>
               <div className="row-inline">
                 <label className="field">
-                  <span>Metric type</span>
+                  <span>{t("web.planning.field.metric_type", "Metric type")}</span>
                   <input
                     className="list-row"
                     type="text"
@@ -4085,7 +4085,7 @@ export default function TasksPage() {
                   />
                 </label>
                 <label className="field">
-                  <span>Target value</span>
+                  <span>{t("web.planning.field.target_value", "Target value")}</span>
                   <input
                     className="list-row"
                     type="number"
@@ -4095,7 +4095,7 @@ export default function TasksPage() {
                   />
                 </label>
                 <label className="field">
-                  <span>Unit</span>
+                  <span>{t("web.planning.field.unit", "Unit")}</span>
                   <input
                     className="list-row"
                     type="text"
@@ -4106,16 +4106,16 @@ export default function TasksPage() {
                 </label>
               </div>
               <button type="submit" className="btn-primary" disabled={isCreatingTarget || goals.length === 0}>
-                {isCreatingTarget ? "Adding..." : "Add target"}
+                {isCreatingTarget ? t("web.common.action.adding", "Adding...") : t("web.planning.action.add_target", "Add target")}
               </button>
             </form>
           </Panel>
 
-          <Panel title="Target Checkpoints" className={`planning-library-panel ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
+          <Panel title={t("web.planning.panel.target_checkpoints", "Target Checkpoints")} className={`planning-library-panel ${showPlanningShowcase ? "is-preview-hidden" : ""}`}>
             <ul className="list">
               {targets.length === 0 ? (
                 <li className="list-row">
-                  <p>No targets yet. Add your first checkpoint above.</p>
+                  <p>{t("web.planning.empty.no_targets_first", "No targets yet. Add your first checkpoint above.")}</p>
                 </li>
               ) : (
                 targets.map((target) => (
@@ -4123,7 +4123,7 @@ export default function TasksPage() {
                     {editingTargetId === target.id ? (
                       <div className="form-grid">
                         <label className="field">
-                          <span>Title</span>
+                          <span>{t("web.common.field.title", "Title")}</span>
                           <input
                             className="list-row"
                             type="text"
@@ -4134,7 +4134,7 @@ export default function TasksPage() {
                         </label>
                         <div className="row-inline">
                           <label className="field">
-                            <span>Metric type</span>
+                            <span>{t("web.planning.field.metric_type", "Metric type")}</span>
                             <input
                               className="list-row"
                               type="text"
@@ -4144,23 +4144,23 @@ export default function TasksPage() {
                             />
                           </label>
                           <label className="field">
-                            <span>Status</span>
+                            <span>{t("web.planning.field.status", "Status")}</span>
                             <select
                               className="list-row"
                               value={editTargetStatus}
                               onChange={(event) => setEditTargetStatus(event.target.value as GoalStatus)}
                               disabled={busyTargetId === target.id}
                             >
-                              <option value="active">Active</option>
-                              <option value="paused">Paused</option>
-                              <option value="completed">Completed</option>
-                              <option value="archived">Archived</option>
+                              <option value="active">{formatGoalStatus("active", t)}</option>
+                              <option value="paused">{formatGoalStatus("paused", t)}</option>
+                              <option value="completed">{formatGoalStatus("completed", t)}</option>
+                              <option value="archived">{formatGoalStatus("archived", t)}</option>
                             </select>
                           </label>
                         </div>
                         <div className="row-inline">
                           <label className="field">
-                            <span>Current</span>
+                            <span>{t("web.planning.field.current", "Current")}</span>
                             <input
                               className="list-row"
                               type="number"
@@ -4170,7 +4170,7 @@ export default function TasksPage() {
                             />
                           </label>
                           <label className="field">
-                            <span>Target</span>
+                            <span>{t("web.planning.field.target", "Target")}</span>
                             <input
                               className="list-row"
                               type="number"
@@ -4180,7 +4180,7 @@ export default function TasksPage() {
                             />
                           </label>
                           <label className="field">
-                            <span>Unit</span>
+                            <span>{t("web.planning.field.unit", "Unit")}</span>
                             <input
                               className="list-row"
                               type="text"
@@ -4190,7 +4190,7 @@ export default function TasksPage() {
                             />
                           </label>
                           <label className="field">
-                            <span>Due date</span>
+                            <span>{t("web.planning.field.due_date", "Due date")}</span>
                             <input
                               className="list-row"
                               type="date"
@@ -4207,7 +4207,7 @@ export default function TasksPage() {
                             onClick={() => void saveTargetEdit(target.id)}
                             disabled={busyTargetId === target.id}
                           >
-                            Save
+                            {t("web.common.action.save", "Save")}
                           </button>
                           <button
                             type="button"
@@ -4215,7 +4215,7 @@ export default function TasksPage() {
                             onClick={() => setEditingTargetId(null)}
                             disabled={busyTargetId === target.id}
                           >
-                            Cancel
+                            {t("web.common.action.cancel", "Cancel")}
                           </button>
                         </div>
                       </div>
@@ -4237,7 +4237,7 @@ export default function TasksPage() {
                             onClick={() => startTargetEdit(target)}
                             disabled={busyTargetId === target.id}
                           >
-                            Edit
+                            {t("web.common.action.edit", "Edit")}
                           </button>
                           <button
                             type="button"
@@ -4245,7 +4245,7 @@ export default function TasksPage() {
                             onClick={() => void deleteTarget(target.id)}
                             disabled={busyTargetId === target.id}
                           >
-                            Delete
+                            {t("web.common.action.delete", "Delete")}
                           </button>
                         </div>
                       </>

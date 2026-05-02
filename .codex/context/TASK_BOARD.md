@@ -103,6 +103,9 @@ Last updated: 2026-05-03
       optional setup, board filters, kanban empty states, and inline list
       editing controls so the creation path stays coherent below the canonical
       workspace.
+    - Closed the remaining Planning Lists, Goals, and Targets lower-surface
+      visible labels, placeholders, empty states, and edit actions; the static
+      hardcoded-copy scan for `tasks/page.tsx` now returns no remaining matches.
     - `pnpm lint` and `pnpm exec tsc --noEmit` passed for this first code
       slice, the Settings slice, the Journal slice, and the first Calendar
       slice, plus the first Planning task-composer slice and the expanded
