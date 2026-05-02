@@ -45,6 +45,10 @@ export default function AssistantPage() {
       navKey="assistant"
       module="insights"
       contentLayout="single"
+      shellTone="dashboard-canonical"
+      utilityDateLabel="Friday, May 23, 2025"
+      utilityWeatherLabel="18°C"
+      hideRailFooterActions
     >
       <section className="assistant-shell">
         <div className="assistant-layout">

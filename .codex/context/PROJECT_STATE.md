@@ -25,6 +25,18 @@ Last updated: 2026-05-02
 
 ## Recent Execution Updates
 
+- 2026-05-02: Completed `NEST-292` Assistant canonical shell alignment.
+  Optional-surface Assistant now renders in the current dashboard canonical
+  workspace shell tone, uses existing approved dashboard material assets for
+  the Assistant room panels, and softens panel headings to match the current
+  canonical module family. AI Copilot API behavior was unchanged. Fresh
+  evidence:
+  `docs/ux_canonical_artifacts/2026-05-02/nest-assistant-web-parity-preview-current.png`
+  and
+  `docs/ux_canonical_artifacts/2026-05-02/nest-assistant-web-parity-preview-phaseI.png`.
+  Web typecheck, lint, build, unit tests, Playwright screenshot smoke, and
+  `git diff --check` passed. Report:
+  `docs/ux/nest_292_assistant_canonical_shell_alignment_2026-05-02.md`.
 - 2026-05-02: Completed `NEST-291` Planning canonical rail and tail finish.
   Web Planning now labels the integrated core route as `Planning` in the
   shared workspace rail, carries an explicit showcase state, and suppresses

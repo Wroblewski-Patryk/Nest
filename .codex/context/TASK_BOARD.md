@@ -24,6 +24,29 @@ Last updated: 2026-05-02
 
 ## Backlog
 
+- [x] NEST-292 Assistant canonical shell alignment
+  - Status: DONE
+  - Owner: Execution Agent
+  - Depends on: NEST-213
+  - Done on: 2026-05-02
+  - Priority: P1
+  - Notes:
+    - Web-only V1 optional-surface task to align Assistant with the current
+      canonical workspace shell after Dashboard, Planning, Calendar, and
+      Journal convergence work.
+    - Moved Assistant onto the current dashboard canonical shell tone, fixed
+      the local Assistant material treatment with existing approved dashboard
+      assets, and softened panel headings to match the current canonical module
+      family. AI Copilot API behavior is unchanged.
+    - Report:
+      `docs/ux/nest_292_assistant_canonical_shell_alignment_2026-05-02.md`.
+    - Evidence:
+      `docs/ux_canonical_artifacts/2026-05-02/nest-assistant-web-parity-preview-current.png`,
+      `docs/ux_canonical_artifacts/2026-05-02/nest-assistant-web-parity-preview-phaseI.png`.
+    - Validation:
+      web typecheck, lint, build, unit tests, Playwright screenshot smoke, and
+      `git diff --check`.
+
 - [x] NEST-291 Planning canonical rail and tail finish
   - Status: DONE
   - Owner: Execution Agent
